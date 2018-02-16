@@ -1,0 +1,6 @@
+NGA - Functional Requirements
+19 January 2018
+
+The system shall offer a tutorial level before the first regular gameplay.
+The system shall provide 1-3 computer player(s) for independent gameplay.
+The system shall allow figure gestures that will bring movement to the game.
