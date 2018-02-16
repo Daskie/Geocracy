@@ -1,5 +1,5 @@
 3 User Stories
 
-1.
-2.
-3.
+1. As a user, I want to have the option to play in single-player mode, so that I don't need to make arrangements to play with other people. 
+2. As a beginner, I want to be provided with instructions at the beginning of the game, so I can easily learn how to play. 
+3. As a player, I want to have the option to pause the game at anytime, so I can take a break and resume later. 
