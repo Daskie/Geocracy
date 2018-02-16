@@ -1,0 +1,6 @@
+1. The world shall be able to be rotated with a single finger swipe.
+
+2. The system shall indicate the countries that are attackable from the selected country.
+
+3. The shape and arrangement of the continents and countries shall be different from game to game.
+

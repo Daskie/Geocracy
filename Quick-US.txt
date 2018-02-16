@@ -1,0 +1,6 @@
+1. As a player, I want to swipe with one finger to rotate the world, so that I can easily navigate the game space.
+
+2. As an attacking player, I want the countries I can attack from my selected country to be indicated, so that I can quickly see what my options are.
+
+3. As a player, I want the shape and arrangement of the continents and countries to be different from game to game, so that each game is a new experience.
+
