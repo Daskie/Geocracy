@@ -1,0 +1,5 @@
+1. The system shall provide 1 to 3 computer (A.I.) opponents.
+
+2. The system shall display the game time in-game.
+
+3. The system shall provide at least 2 maps to play on.

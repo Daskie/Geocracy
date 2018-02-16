@@ -1,0 +1,5 @@
+1. As a mobile gamer, I want a computer (A.I.) opponent, so that I can play on the go. 
+ 
+2. As a competitive player, I want the game to keep track of my best time, so that I can see if I improve. 
+ 
+3. As a gamer, I want to have at least 2 maps to play on, so the game will have replay value. 
