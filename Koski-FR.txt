@@ -1,0 +1,6 @@
+1. The system shall allow the user to revisit the tutorial at any time. 
+
+2. The system shall save game progress after every in-game move.
+
+3. The system shall include a step-by-step tutorial at the start of a new game.
+

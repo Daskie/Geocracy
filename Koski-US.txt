@@ -1,0 +1,8 @@
+1. As a new user, I want a step by step tutorial my first time playing, so I can understand
+how to use all parts of the game.
+
+2. As a user, I want to be able to save my game progress, so I can come back to my game
+without having to start over.
+
+3. As a veteran user, I want to be able to specify whether I want the step by step tutorial
+when I start a new game, so I don’t have to read the instructions everytime.
