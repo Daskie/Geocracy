@@ -1,5 +1,0 @@
-3 Functional Requirements
-
-1. The system shall store players information such as name, age and gender. 
-2. The system shall save progress of the game after each player's move. 
-3. The system shall display countries on a globe for the player to select. 
