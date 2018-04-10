@@ -10,17 +10,17 @@ import glm_.vec3.Vec3;
 
 public class Mesh {
 
-    private static final int LOCATION_COMPONENTS = 3, LOCATION_SIZE = LOCATION_COMPONENTS * 4;
-    private static final int NORMAL_COMPONENTS = 3, NORMAL_SIZE = NORMAL_COMPONENTS * 4;
-    private static final int VERTEX_SIZE = LOCATION_SIZE + NORMAL_SIZE;
+    protected static final int LOCATION_COMPONENTS = 3, LOCATION_SIZE = LOCATION_COMPONENTS * 4;
+    protected static final int NORMAL_COMPONENTS = 3, NORMAL_SIZE = NORMAL_COMPONENTS * 4;
+    protected static final int VERTEX_SIZE = LOCATION_SIZE + NORMAL_SIZE;
 
-    private String name;
-    private Vec3[] locations;
-    private Vec3[] normals;
-    private int[] indices;
-    private int vboHandle;
-    private int iboHandle;
-    private int vaoHandle;
+    protected String name;
+    protected Vec3[] locations;
+    protected Vec3[] normals;
+    protected int[] indices;
+    protected int vboHandle;
+    protected int iboHandle;
+    protected int vaoHandle;
 
     public Mesh(String name, Vec3[] locations, Vec3[] normals, int[] indices) {
         this.name = name;
