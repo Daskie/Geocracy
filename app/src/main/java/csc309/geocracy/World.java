@@ -13,7 +13,7 @@ public class World {
 
     public World() {
         shader = new BasicShader();
-        mesh = MeshMaker.makeIcosahedron("World", true);
+        mesh = MeshMaker.makeSphereUnindexed("World", 5);
     }
 
     public boolean load() {

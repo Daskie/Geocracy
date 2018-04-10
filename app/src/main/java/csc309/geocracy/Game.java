@@ -22,7 +22,7 @@ public class Game {
     public boolean setup() {
         world = new World();
         camera = new OrbitCamera();
-        camera.setElevation(3.0f);
+        camera.setElevation(2.0f);
         camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
 
         lastT = System.nanoTime();

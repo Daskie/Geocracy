@@ -120,7 +120,33 @@ public class Mesh {
         }
     }
 
+    // Unindexes mesh such that each face has its own vertices
+    public void unindex() {
+        Vec3[] newLocations = new Vec3[indices.length];
+        Vec3[] newNormals = new Vec3[newLocations.length];
+
+        for (int i = 0; i < indices.length; ++i) {
+            newLocations[i] = locations[indices[i]];
+        }
+
+        // Calculate new normals as perpendicular to each face
+        for (int i = 0; i < indices.length; i += 3) {
+            Vec3 n = (newLocations[i + 1].minus(newLocations[i])).cross(newLocations[i + 2].minus(newLocations[i])).normalize();
+            newNormals[i + 0] = n;
+            newNormals[i + 1] = n;
+            newNormals[i + 2] = n;
+        }
+
+        locations = newLocations;
+        normals = newNormals;
+        indices = null;
+    }
+
     public String getName() { return name; }
+
+    public Vec3[] getLocations() { return locations; }
+
+    public Vec3[] getNormals() { return normals; }
 
     public int getVAOHandle() { return vaoHandle; }
     public int getIBOHandle() { return iboHandle; }
