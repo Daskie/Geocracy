@@ -38,7 +38,5 @@ sonarqube {
         property "sonar.projectKey", "csc309.geocracy"
         property "sonar.projectVersion", "1.0"
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.sources", "app/src"
-        property "sonar.java.binaries", "app/build"
     }
 }
