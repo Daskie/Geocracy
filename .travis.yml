@@ -13,9 +13,6 @@ android:
 
   - sys-img-armeabi-v7a-android-27
 
-script:
-- chmod +x ./gradlew
-
 sudo: false
 install: true
 
@@ -24,10 +21,15 @@ addons:
     organization: "daskie-github"
     token:
       secure: "e3d5b00b78e2af8d0a0c63ff6edf089e6d21bf6f"
+
 jdk:
   - oraclejdk8
-script:
-  - ./gradlew sonarqube
+
+script: [
+  "chmod +x ./gradlew"
+  "./gradlew sonarqube"
+]
+
 cache:
   directories:
     - '$HOME/.m2/repository'
