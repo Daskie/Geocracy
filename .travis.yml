@@ -25,10 +25,12 @@ addons:
 jdk:
   - oraclejdk8
 
-script: [
-  "chmod +x ./gradlew",
-  "./gradlew sonarqube"
-]
+before_install:
+  - chmod +x gradlew
+
+script:
+  - "./gradlew sonarqube"
+
 
 cache:
   directories:
