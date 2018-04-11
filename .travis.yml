@@ -27,7 +27,7 @@ before_script:
   - chmod +x gradlew
 
 script:
-  # - ./gradlew assembleDebug --stacktrace
+  - ./gradlew clean build connectedCheck --stacktrace
   - sonar-scanner
 
 
