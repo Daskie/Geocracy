@@ -2,18 +2,17 @@ language: android
 
 android:
   components:
+  - tools
   - build-tools=27.0.3
   - android-27
+  - platform-tools
   - extra-android-support
   - extra-android-m2repository
-  # - extra-google-google_play_services
-  # - extra-google-m2repository
-  # - extra-android-m2repository
-  # - addon-google_apis-google-27
+  - extra-google-m2repository
 
   - sys-img-armeabi-v7a-android-27
 
-sudo: true
+sudo: required
 install: true
 
 addons:
@@ -25,7 +24,7 @@ addons:
 jdk:
   - oraclejdk8
 
-before_install:
+before_script:
   - chmod +x gradlew
 
 script:
