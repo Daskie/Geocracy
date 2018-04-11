@@ -12,7 +12,7 @@ android:
   - extra-android-m2repository
   - extra-google-m2repository
 
-  - sys-img-armeabi-v7a-android-27
+  # - sys-img-armeabi-v7a-android-27
 
 # install: true
 
@@ -24,12 +24,10 @@ addons:
 
 
 before_script:
-  - pwd
-  - ls -al
   - chmod +x gradlew
 
 script:
-  - ./gradlew assembleDebug --stacktrace
+  # - ./gradlew assembleDebug --stacktrace
   - sonar-scanner
 
 
