@@ -2,6 +2,10 @@ language: android
 sudo: required 
 jdk: oraclejdk8
 
+android:
+  components:
+    - build-tools=27.0.3
+
 addons:
   sonarcloud:
     organization: "daskie-github"
