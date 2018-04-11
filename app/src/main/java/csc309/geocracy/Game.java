@@ -18,7 +18,7 @@ public class Game {
     public Game(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         world = new World();
-        noiseTest = new NoiseTest();
+        //noiseTest = new NoiseTest();
         camera = new OrbitCamera();
         camera.setElevation(2.0f);
         camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
@@ -37,14 +37,19 @@ public class Game {
         GLES30.glBlendFuncSeparate(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA, GLES30.GL_ONE_MINUS_DST_ALPHA, GLES30.GL_ONE);
         GLES30.glBlendEquationSeparate(GLES30.GL_FUNC_ADD, GLES30.GL_FUNC_ADD);
 
+        if (Util.isGLError()) {
+            Log.e("Game", "Failed to setup OpenGL state");
+            return false;
+        }
+
         if (!world.load()) {
             Log.e("Game", "Failed to load world");
             return false;
         }
-        if (!noiseTest.load()) {
-            Log.e("Game", "Failed to load noise test");
-            return false;
-        }
+        //if (!noiseTest.load()) {
+        //    Log.e("Game", "Failed to load noise test");
+        //    return false;
+        //}
 
         // Check for OpenGL errors
         if (Util.isGLError()) {
@@ -82,8 +87,8 @@ public class Game {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
-        //world.render(camera, mainActivity.getAspectRatio());
-        noiseTest.render();
+        world.render(camera, mainActivity.getAspectRatio());
+        //noiseTest.render();
     }
 
 }

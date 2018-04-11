@@ -31,7 +31,7 @@ public class World {
     }
 
     public void render(Camera camera, float aspectRatio) {
-        // Render icosahedron
+        // Render terrain
         shader.setActive();
         shader.setModelMatrix(new Mat4());
         shader.setNormalMatrix(new Mat3());
@@ -50,6 +50,10 @@ public class World {
     public void unload() {
         shader.unload();
         mesh.unload();
+    }
+
+    private void terraform() {
+
     }
 
 }

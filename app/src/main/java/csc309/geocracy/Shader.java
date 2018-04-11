@@ -82,7 +82,7 @@ public abstract class Shader {
     }
 
     public void unload() {
-        if (programHandle != 0) {
+        if (programHandle != 0 && GLES30.glIsProgram(programHandle)) {
             GLES30.glDeleteProgram(programHandle);
             programHandle = 0;
         }

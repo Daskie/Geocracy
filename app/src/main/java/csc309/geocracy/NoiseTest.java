@@ -54,11 +54,11 @@ public class NoiseTest {
                 double px = (double)x / width;
                 double py = (double)y / height;
                 double v = 0.0;
-                for (int i = 0; i < 8; ++i) {
-                    v += simplex.noise(px * 1 * (1 << i), py * 1 * (1 << i)) / (1 << i);
+                for (int i = 0; i < 1; ++i) {
+                    v += simplex.noise(px * 2 * (1 << i), py * 2 * (1 << i)) / (1 << i);
                 }
-                //v = v * 0.25 + 0.5;
-                v = 1.0 - Math.abs(v) * 0.5;
+                v = v * 0.25 + 0.5;
+                //v = 1.0 - Math.abs(v) * 0.5;
                 byte bv = (byte)(v * 255.0);
                 int i = (y * width + x) * 3;
                 image[i + 0] = bv;

@@ -36,14 +36,18 @@ public abstract class Util {
     }
 
     // Checks the OpenGL state for an error and logs it if found
-    public static boolean isGLError() {
+    public static boolean isGLError(boolean printError) {
         int error = GLES30.glGetError();
         if (error == GLES30.GL_NO_ERROR) {
             return false;
         }
 
-        Log.e("Util", "OpenGL error: " + Integer.toHexString(error) + "(" + gluErrorString(error) + ")");
+        if (printError) Log.e("Util", "OpenGL error: " + Integer.toHexString(error) + "(" + gluErrorString(error) + ")");
         return true;
+    }
+
+    public static boolean isGLError() {
+        return isGLError(true);
     }
 
     // Hard exit application

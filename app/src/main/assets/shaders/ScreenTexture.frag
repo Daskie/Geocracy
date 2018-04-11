@@ -21,6 +21,7 @@ void main() {
     vec3 xvec = vec3(psize.x, 0.0f, vx - v0);
     vec3 yvec = vec3(0.0f, psize.y, vy - v0);
     vec3 norm = normalize(cross(xvec, yvec));
+    out_color.rgb = vec3(v0);
     out_color.rgb = vec3(dot(norm, lightDir) * 0.5f + 0.5f);
     out_color.rg *= v0;
     //out_color.rg = norm.xy * 0.5f + 0.5f;
