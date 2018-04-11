@@ -1,4 +1,6 @@
 language: android
+sudo: required
+jdk: oraclejdk8
 
 android:
   components:
@@ -12,8 +14,7 @@ android:
 
   - sys-img-armeabi-v7a-android-27
 
-sudo: required
-install: true
+# install: true
 
 addons:
   sonarcloud:
@@ -21,8 +22,6 @@ addons:
     token:
       secure: "e3d5b00b78e2af8d0a0c63ff6edf089e6d21bf6f"
 
-jdk:
-  - oraclejdk8
 
 before_script:
   - pwd
@@ -30,7 +29,8 @@ before_script:
   - chmod +x gradlew
 
 script:
-  - "./gradlew sonarqube"
+  - ./gradlew assembleDebug --stacktrace
+  - sonar-scanner
 
 
 cache:
