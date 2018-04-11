@@ -22,6 +22,8 @@ before_script:
 script:
   - ./gradlew clean build connectedCheck sonarqube --stacktrace
   # - sonar-scanner
+  
+
 
 cache:
   directories:
