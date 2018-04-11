@@ -13,7 +13,7 @@ android:
 
   - sys-img-armeabi-v7a-android-27
 
-sudo: false
+sudo: true
 install: true
 
 addons:
