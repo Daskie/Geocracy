@@ -75,7 +75,7 @@ public abstract class Shader {
         // setup uniforms
         if (!setupUniforms()) {
             Log.e("Shader", "Failed to setup uniforms");
-            // It's okay if this step fails, as it does when uniforms are optimized out
+            return false;
         }
 
         return true;
@@ -89,6 +89,11 @@ public abstract class Shader {
     }
 
     public void setActive() {
+        if (programHandle == 0) {
+            Log.e("Shader", "Invalid program handle");
+            return;
+        }
+
         GLES30.glUseProgram(programHandle);
     }
 

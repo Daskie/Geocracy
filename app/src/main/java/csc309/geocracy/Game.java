@@ -11,23 +11,20 @@ public class Game {
     private MainActivity mainActivity;
     private long lastT; // timestamp of last frame
     private World world;
+    private NoiseTest noiseTest;
     private OrbitCamera camera;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
 
     public Game(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        swipeDelta = new Vec2();
-    }
-
-    public boolean setup() {
         world = new World();
+        noiseTest = new NoiseTest();
         camera = new OrbitCamera();
         camera.setElevation(2.0f);
         camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
+        swipeDelta = new Vec2();
 
         lastT = System.nanoTime();
-
-        return true;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)
@@ -42,6 +39,10 @@ public class Game {
 
         if (!world.load()) {
             Log.e("Game", "Failed to load world");
+            return false;
+        }
+        if (!noiseTest.load()) {
+            Log.e("Game", "Failed to load noise test");
             return false;
         }
 
@@ -81,11 +82,8 @@ public class Game {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
-        world.render(camera, mainActivity.getAspectRatio());
-    }
-
-    void cleanup() {
-        world.unload();
+        //world.render(camera, mainActivity.getAspectRatio());
+        noiseTest.render();
     }
 
 }

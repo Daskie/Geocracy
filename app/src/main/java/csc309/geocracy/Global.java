@@ -8,7 +8,6 @@ import android.content.Context;
 public class Global extends Application {
 
     private static Application application;
-
     public static Application getApplication() { return application; }
 
     public static Context getContext() { return application.getApplicationContext(); }

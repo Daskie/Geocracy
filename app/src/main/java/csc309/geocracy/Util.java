@@ -1,6 +1,7 @@
 package csc309.geocracy;
 
 import android.opengl.GLES30;
+import android.os.Process;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -45,6 +46,11 @@ public abstract class Util {
         return true;
     }
 
+    // Hard exit application
+    public static void exit() {
+        Process.killProcess(Process.myPid());
+    }
+
     // Returns a vector rotated 90 degrees CCW
     public static Vec2 orthogonal(Vec2 v) {
         return new Vec2(-v.y, v.x.floatValue());
@@ -67,6 +73,45 @@ public abstract class Util {
 
     public static boolean isZero(Vec4 v) {
         return isZero(v.x) && isZero(v.y) && isZero(v.z) && isZero(v.w);
+    }
+
+    // Some base-2 integer functions
+
+    // Returns 2 raised to the power v
+    public static int pow2(int v) {
+        return 1 << v;
+    }
+
+    // Returns whether or not the v is a power of 2
+    public static boolean isPow2(int v) {
+        return (v & (v - 1)) == 0;
+    }
+
+    // Returns log2 of the largest power of two less than or equal to v
+    public static int log2Floor(int v) {
+        int log = 0;
+        if ((v & 0xFFFF0000) != 0) { v >>>= 16; log += 16; }
+        if ((v & 0x0000FF00) != 0) { v >>>=  8; log +=  8; }
+        if ((v & 0x000000F0) != 0) { v >>>=  4; log +=  4; }
+        if ((v & 0x0000000C) != 0) { v >>>=  2; log +=  2; }
+        if ((v & 0x00000002) != 0) {            log +=  1; }
+
+        return log;
+    }
+
+    // Returns log2 of the smallest power of two greater than or equal to v
+    public static int log2Ceil(int v) {
+        return log2Floor(2 * v - 1);
+    }
+
+    // Returns the largest power of 2 less than or equal to v
+    public static int floor2(int v) {
+        return 1 << log2Floor(v);
+    }
+
+    // Returns the smallest power of 2 greater than or equal to v
+    public static int ceil2(int v) {
+        return 1 << log2Ceil(v);
     }
 
 }

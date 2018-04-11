@@ -34,51 +34,51 @@ public class Mesh {
         unload();
 
         // Create VBO
-        int[] vboArr = { 0 };
-        GLES30.glGenBuffers(1, vboArr, 0);
-        vboHandle = vboArr[0];
+        int[] vboHandleArr = { 0 };
+        GLES30.glGenBuffers(1, vboHandleArr, 0);
+        vboHandle = vboHandleArr[0];
         if (vboHandle == 0) {
-            Log.e("Mesh", "Failed to create vbo");
+            Log.e("Mesh", "Failed to generate vbo");
             return false;
         }
         // Upload vbo data
         ByteBuffer vertexData = getVertexBufferData();
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboHandle);
-        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexData.capacity(), vertexData, GLES30.GL_STATIC_DRAW);
+        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexData.limit(), vertexData, GLES30.GL_STATIC_DRAW);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("Mesh", "Failed to upload vbo data");
+            Log.e("Mesh", "Failed to upload vbo");
             return false;
         }
 
         // Create IBO
         if (indices != null) {
-            int[] iboArr = {0};
-            GLES30.glGenBuffers(1, iboArr, 0);
-            iboHandle = iboArr[0];
+            int[] iboHandleArr = {0};
+            GLES30.glGenBuffers(1, iboHandleArr, 0);
+            iboHandle = iboHandleArr[0];
             if (iboHandle == 0) {
-                Log.e("Mesh", "Failed to create ibo");
+                Log.e("Mesh", "Failed to generate ibo");
                 return false;
             }
             // Upload ibo data
             ByteBuffer indexData = getIndexBufferData();
             GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, iboHandle);
-            GLES30.glBufferData(GLES30.GL_ELEMENT_ARRAY_BUFFER, indexData.capacity(), indexData, GLES30.GL_STATIC_DRAW);
+            GLES30.glBufferData(GLES30.GL_ELEMENT_ARRAY_BUFFER, indexData.limit(), indexData, GLES30.GL_STATIC_DRAW);
             GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, 0);
             // Check for OpenGL errors
             if (Util.isGLError()) {
-                Log.e("Mesh", "Failed to upload ibo data");
+                Log.e("Mesh", "Failed to upload ibo");
                 return false;
             }
         }
 
         // Create VAO
-        int[] vaoArr = { 0 };
-        GLES30.glGenVertexArrays(1, vaoArr, 0);
-        vaoHandle = vaoArr[0];
+        int[] vaoHandleArr = { 0 };
+        GLES30.glGenVertexArrays(1, vaoHandleArr, 0);
+        vaoHandle = vaoHandleArr[0];
         if (vaoHandle == 0) {
-            Log.e("Mesh", "Failed to create vao");
+            Log.e("Mesh", "Failed to generate vao");
         }
         // Setup vao attributes and bindings
         GLES30.glBindVertexArray(vaoHandle);

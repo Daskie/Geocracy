@@ -13,7 +13,7 @@ public class BasicShader extends Shader {
     protected int projMatUniformHandle;
 
     public BasicShader() {
-        super("Basic", "shaders/basic.vert", "shaders/basic.frag");
+        super("Basic", "shaders/Basic.vert", "shaders/Basic.frag");
     }
 
     // Shader program must be active when any glUniform call happens!
@@ -32,26 +32,20 @@ public class BasicShader extends Shader {
 
     @Override
     protected boolean setupUniforms() {
-        boolean success = true;
-
         if ((modelMatUniformHandle = getUniformLocation("u_modelMat")) == -1) {
             Log.e("Basic Shader", "Failed to get color uniform location");
-            success = false;
         }
         if ((normMatUniformHandle = getUniformLocation("u_normMat")) == -1) {
             Log.e("Basic Shader", "Failed to get color uniform location");
-            success = false;
         }
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
             Log.e("Basic Shader", "Failed to get color uniform location");
-            success = false;
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
             Log.e("Basic Shader", "Failed to get color uniform location");
-            success = false;
         }
 
-        return success;
+        return true;
     }
 
 }
