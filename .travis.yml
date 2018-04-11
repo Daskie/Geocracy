@@ -1,28 +1,6 @@
-language: android
-sudo: required
+language: java
+sudo: false
 jdk: oraclejdk8
-
-# android:
-#   components:
-  # - tools
-  # - build-tools=27.0.3
-  # - android-27
-  # - platform-tools
-  # - extra-android-support
-  # - extra-android-m2repository
-  # - extra-google-m2repository
-
-  # - sys-img-armeabi-v7a-android-27
-
-# install: true
-
-#  licenses:
-#   - android-sdk-license-.+
-#   - google-gdk-license-.+
-# licenses:
-#     - 'android-sdk-preview-license-.+'
-#     - 'android-sdk-license-.+'
-#     - 'google-gdk-license-.+'
 
 addons:
   sonarcloud:
@@ -38,9 +16,7 @@ before_script:
   - chmod +x gradlew
 
 script:
-  - ./gradlew connectedCheck
-  - ./gradlew clean --stacktrace
-  - ./gradlew build --stacktrace
+  - ./gradlew clean build connectedCheck --stacktrace
   - sonar-scanner
 
 
