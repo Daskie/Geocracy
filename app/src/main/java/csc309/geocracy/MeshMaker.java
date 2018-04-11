@@ -4,25 +4,7 @@ import glm_.vec3.Vec3;
 
 public abstract class MeshMaker {
 
-    public static Mesh unindex(String name, Vec3[] locs, int[] indices) {
-        Vec3[] newLocs = new Vec3[indices.length];
-        Vec3[] newNorms = new Vec3[indices.length];
-
-        for (int i = 0; i < indices.length; ++i) {
-            newLocs[i] = locs[indices[i]];
-        }
-
-        for (int i = 0; i < indices.length; i += 3) {
-            Vec3 norm = (newLocs[i + 1].minus(newLocs[i])).cross(newLocs[i + 2].minus(newLocs[i])).normalize();
-            newNorms[i + 0] = norm;
-            newNorms[i + 1] = norm;
-            newNorms[i + 2] = norm;
-        }
-
-        return new Mesh(name, newLocs, newNorms, null);
-    }
-
-    public static Mesh makeIcosahedron(String name, boolean faces) {
+    public static Mesh makeIcosahedron(String name) {
         float phi = (float)((1.0 + Math.sqrt(5.0)) / 2.0);
         int nVerts = 12;
         Vec3[] locs = {
@@ -66,11 +48,54 @@ public abstract class MeshMaker {
             3, 11,  7
         };
 
-        if (faces) {
-            return unindex(name, locs, indices);
+        return new Mesh(name, locs, norms, indices);
+    }
+
+    public static Mesh makeSphereUnindexed(String name, int degree) {
+        Mesh icoMesh = makeIcosahedron(name);
+        icoMesh.unindex();
+        Vec3[] locations = icoMesh.getLocations();
+
+        // Tessellate
+        for (int iteration = 0; iteration < degree; ++iteration) {
+            Vec3[] newLocations = new Vec3[locations.length * 4];
+            // Tessellate each face
+            for (int oldI = 0, newI = 0; oldI < locations.length; oldI += 3, newI += 12) {
+                // All points involved
+                Vec3 a = locations[oldI + 0];
+                Vec3 b = locations[oldI + 1];
+                Vec3 c = locations[oldI + 2];
+                Vec3 d = a.plus(b).times(0.5f).normalize();
+                Vec3 e = b.plus(c).times(0.5f).normalize();
+                Vec3 f = c.plus(a).times(0.5f).normalize();
+
+                newLocations[newI +  0] = a;
+                newLocations[newI +  1] = d;
+                newLocations[newI +  2] = f;
+                newLocations[newI +  3] = b;
+                newLocations[newI +  4] = e;
+                newLocations[newI +  5] = d;
+                newLocations[newI +  6] = c;
+                newLocations[newI +  7] = f;
+                newLocations[newI +  8] = e;
+                newLocations[newI +  9] = d;
+                newLocations[newI + 10] = e;
+                newLocations[newI + 11] = f;
+            }
+
+            locations = newLocations;
         }
 
-        return new Mesh(name, locs, norms, indices);
+        // Set normals
+        Vec3[] normals = new Vec3[locations.length];
+        for (int i = 0; i < locations.length; i += 3) {
+            Vec3 n = (locations[i + 1].minus(locations[i])).cross(locations[i + 2].minus(locations[i])).normalize();
+            normals[i + 0] = n;
+            normals[i + 1] = n;
+            normals[i + 2] = n;
+        }
+
+        return new Mesh(name, locations, normals, null);
     }
 
 }
