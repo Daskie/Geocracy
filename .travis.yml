@@ -1,6 +1,21 @@
-language: java
+language: android
+
+android:
+  components:
+  - build-tools=27.0.3
+  - android-27
+  - add-on
+  - extra
+  # - extra-google-google_play_services
+  # - extra-google-m2repository
+  # - extra-android-m2repository
+  # - addon-google_apis-google-27
+
+  - sys-img-armeabi-v7a-android-27
+
 sudo: false
 install: true
+
 addons:
   sonarcloud:
     organization: "daskie-github"
