@@ -2,20 +2,24 @@ language: android
 sudo: required
 jdk: oraclejdk8
 
-android:
-  components:
-  - tools
-  - tools
-  - build-tools=27.0.3
-  - android-27
-  - platform-tools
-  - extra-android-support
-  - extra-android-m2repository
-  - extra-google-m2repository
+# android:
+#   components:
+#   - tools
+#   - tools
+#   - build-tools=27.0.3
+#   - android-27
+#   - platform-tools
+#   - extra-android-support
+#   - extra-android-m2repository
+#   - extra-google-m2repository
 
   # - sys-img-armeabi-v7a-android-27
 
 # install: true
+
+ licenses:
+  - android-sdk-license-.+
+  - google-gdk-license-.+
 
 addons:
   sonarcloud:
