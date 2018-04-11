@@ -1,3 +1,3 @@
 # Geocracy
 
-little change for travis
+https://travis-ci.com/Daskie/Geocracy/branches
