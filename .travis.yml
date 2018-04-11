@@ -1,5 +1,5 @@
-language: java
-sudo: false
+language: android
+sudo: required 
 jdk: oraclejdk8
 
 addons:
