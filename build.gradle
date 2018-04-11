@@ -17,10 +17,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "org.sonarqube" version "2.6.2"
-}
-
 allprojects {
     repositories {
         google()
@@ -30,13 +26,4 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-sonarqube {
-    properties {
-        property "sonar.projectName", "Geocracy"
-        property "sonar.projectKey", "csc309.geocracy"
-        property "sonar.projectVersion", "1.0"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
 }
