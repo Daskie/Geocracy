@@ -21,6 +21,7 @@ jdk: oraclejdk8
   - android-sdk-license-.+
   - google-gdk-license-.+
 
+
 addons:
   sonarcloud:
     organization: "daskie-github"
