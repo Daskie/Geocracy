@@ -2,15 +2,15 @@ language: android
 sudo: required
 jdk: oraclejdk8
 
-android:
-  components:
-  - tools
-  - build-tools=27.0.3
-  - android-27
-  - platform-tools
-  - extra-android-support
-  - extra-android-m2repository
-  - extra-google-m2repository
+# android:
+#   components:
+  # - tools
+  # - build-tools=27.0.3
+  # - android-27
+  # - platform-tools
+  # - extra-android-support
+  # - extra-android-m2repository
+  # - extra-google-m2repository
 
   # - sys-img-armeabi-v7a-android-27
 
@@ -19,10 +19,10 @@ android:
 #  licenses:
 #   - android-sdk-license-.+
 #   - google-gdk-license-.+
-licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+# licenses:
+#     - 'android-sdk-preview-license-.+'
+#     - 'android-sdk-license-.+'
+#     - 'google-gdk-license-.+'
 
 addons:
   sonarcloud:
@@ -30,6 +30,9 @@ addons:
     token:
       secure: "e3d5b00b78e2af8d0a0c63ff6edf089e6d21bf6f"
 
+before_install:
+  - mkdir "$ANDROID_HOME/licenses" || true
+  - cp ./licenses/* "$ANDROID_HOME/licenses/"
 
 before_script:
   - chmod +x gradlew
