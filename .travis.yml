@@ -25,6 +25,8 @@ jdk:
   - oraclejdk8
 
 before_script:
+  - pwd
+  - ls -al
   - chmod +x gradlew
 
 script:
