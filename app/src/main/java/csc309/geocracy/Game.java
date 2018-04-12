@@ -17,7 +17,7 @@ public class Game {
 
     public Game(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        world = new World();
+        world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
         camera = new OrbitCamera();
         camera.setElevation(2.0f);

@@ -79,6 +79,28 @@ public abstract class Util {
         return isZero(v.x) && isZero(v.y) && isZero(v.z) && isZero(v.w);
     }
 
+    public static boolean areEqual(float v1, float v2) {
+        return isZero(v1 - v2);
+    }
+
+    public static boolean areEqual(Vec2 v1, Vec2 v2) {
+        return areEqual(v1.x, v2.x) && areEqual(v1.y, v2.y);
+    }
+
+    public static boolean areEqual(Vec3 v1, Vec3 v2) {
+        return areEqual(v1.x, v2.x) && areEqual(v1.y, v2.y) && areEqual(v1.z, v2.z);
+    }
+
+    public static boolean areEqual(Vec4 v1, Vec4 v2) {
+        return areEqual(v1.x, v2.x) && areEqual(v1.y, v2.y) && areEqual(v1.z, v2.z) && areEqual(v1.w, v2.w);
+    }
+
+    public static void assign(Vec3 dst, Vec3 src) {
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.z = src.z;
+    }
+
     // Some base-2 integer functions
 
     // Returns 2 raised to the power v

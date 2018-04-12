@@ -123,23 +123,39 @@ public class Mesh {
     // Unindexes mesh such that each face has its own vertices
     public void unindex() {
         Vec3[] newLocations = new Vec3[indices.length];
-        Vec3[] newNormals = new Vec3[newLocations.length];
-
         for (int i = 0; i < indices.length; ++i) {
-            newLocations[i] = locations[indices[i]];
+            newLocations[i] = new Vec3(locations[indices[i]]);
         }
-
-        // Calculate new normals as perpendicular to each face
-        for (int i = 0; i < indices.length; i += 3) {
-            Vec3 n = (newLocations[i + 1].minus(newLocations[i])).cross(newLocations[i + 2].minus(newLocations[i])).normalize();
-            newNormals[i + 0] = n;
-            newNormals[i + 1] = n;
-            newNormals[i + 2] = n;
-        }
-
         locations = newLocations;
-        normals = newNormals;
+        normals = new Vec3[locations.length];
         indices = null;
+        calcFaceNormals();
+    }
+
+    // Sets each vertex normal to that of last face it belongs to
+    public void calcFaceNormals() {
+        if (indices != null) {
+            for (int i = 0; i < indices.length; i += 3) {
+                Vec3 v1 = locations[indices[i + 0]];
+                Vec3 v2 = locations[indices[i + 1]];
+                Vec3 v3 = locations[indices[i + 2]];
+                Vec3 n = (v2.minus(v1)).cross(v3.minus(v1)).normalize();
+                normals[i + 0] = new Vec3(n);
+                normals[i + 1] = new Vec3(n);
+                normals[i + 2] = new Vec3(n);
+            }
+        }
+        else {
+            for (int i = 0; i < locations.length; i += 3) {
+                Vec3 v1 = locations[i + 0];
+                Vec3 v2 = locations[i + 1];
+                Vec3 v3 = locations[i + 2];
+                Vec3 n = (v2.minus(v1)).cross(v3.minus(v1)).normalize();
+                normals[i + 0] = new Vec3(n);
+                normals[i + 1] = new Vec3(n);
+                normals[i + 2] = new Vec3(n);
+            }
+        }
     }
 
     public String getName() { return name; }

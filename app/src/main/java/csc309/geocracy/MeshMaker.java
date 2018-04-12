@@ -38,14 +38,14 @@ public abstract class MeshMaker {
              7,  5, 10,  5,  7, 11,
              8,  10, 0, 10,  8,  1,
             11,  9,  2,  9, 11,  3,
-            0,  4,  8,
-            1,  8,  6,
-            2,  9,  4,
-            3,  6,  9,
-            0, 10,  5,
-            1,  7, 10,
-            2,  5, 11,
-            3, 11,  7
+             0,  4,  8,
+             1,  8,  6,
+             2,  9,  4,
+             3,  6,  9,
+             0, 10,  5,
+             1,  7, 10,
+             2,  5, 11,
+             3, 11,  7
         };
 
         return new Mesh(name, locs, norms, indices);
@@ -65,19 +65,19 @@ public abstract class MeshMaker {
                 Vec3 a = locations[oldI + 0];
                 Vec3 b = locations[oldI + 1];
                 Vec3 c = locations[oldI + 2];
-                Vec3 d = a.plus(b).times(0.5f).normalize();
-                Vec3 e = b.plus(c).times(0.5f).normalize();
-                Vec3 f = c.plus(a).times(0.5f).normalize();
+                Vec3 d = a.plus(b); d.timesAssign(0.5f); d.normalizeAssign();
+                Vec3 e = b.plus(c); e.timesAssign(0.5f); e.normalizeAssign();
+                Vec3 f = c.plus(a); f.timesAssign(0.5f); f.normalizeAssign();
 
                 newLocations[newI +  0] = a;
-                newLocations[newI +  1] = d;
-                newLocations[newI +  2] = f;
+                newLocations[newI +  1] = new Vec3(d);
+                newLocations[newI +  2] = new Vec3(f);
                 newLocations[newI +  3] = b;
-                newLocations[newI +  4] = e;
-                newLocations[newI +  5] = d;
+                newLocations[newI +  4] = new Vec3(e);
+                newLocations[newI +  5] = new Vec3(d);
                 newLocations[newI +  6] = c;
-                newLocations[newI +  7] = f;
-                newLocations[newI +  8] = e;
+                newLocations[newI +  7] = new Vec3(f);
+                newLocations[newI +  8] = new Vec3(e);
                 newLocations[newI +  9] = d;
                 newLocations[newI + 10] = e;
                 newLocations[newI + 11] = f;
@@ -90,9 +90,9 @@ public abstract class MeshMaker {
         Vec3[] normals = new Vec3[locations.length];
         for (int i = 0; i < locations.length; i += 3) {
             Vec3 n = (locations[i + 1].minus(locations[i])).cross(locations[i + 2].minus(locations[i])).normalize();
-            normals[i + 0] = n;
-            normals[i + 1] = n;
-            normals[i + 2] = n;
+            normals[i + 0] = new Vec3(n);
+            normals[i + 1] = new Vec3(n);
+            normals[i + 2] = new Vec3(n);
         }
 
         return new Mesh(name, locations, normals, null);
