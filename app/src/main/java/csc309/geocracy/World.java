@@ -17,8 +17,8 @@ public class World {
 
     public World(long seed) {
         shader = new BasicShader();
-        mesh = MeshMaker.makeSphereUnindexed("World", TESSELLATION_DEGREE);
-        terraform();
+        mesh = MeshMaker.makeSphereUnindexed("World", TESSELLATION_DEGREE, true);
+        //terraform();
     }
 
     public boolean load() {
@@ -61,34 +61,38 @@ public class World {
 
     private void terraform() {
         final int N_OCTAVES = 8;
-        final double INIT_FREQUENCY = 2.0;
+        final double INIT_FREQUENCY = 1.0;
         final double PERSISTENCE = 0.5;
-        final double LOW = 0.75, HIGH = 1.25;
+        final double LOW = 0.9, HIGH = 1.1;
 
         SimplexNoise simplex = new SimplexNoise(seed);
         double maxAmplitude = ((double)(1 << N_OCTAVES) - 1) / (double)(1 << (N_OCTAVES - 1));
         double invMaxAmplitude = 1.0 / maxAmplitude;
 
-        Vec3[] locations = mesh.getLocations();
-        for (int i = 0; i < locations.length; ++i) {
-            Vec3 location = locations[i];
+        float[] locations = mesh.getLocations();
+        for (int i = 0; i < mesh.getNumVertices(); ++i) {
+            int ci = i * 3;
 
             double v = 0.0;
             double frequency = INIT_FREQUENCY;
             double amplitude = 1.0f;
             for (int octave = 0; octave < N_OCTAVES; ++octave) {
-                v += simplex.noise(location.x * frequency, location.y * frequency, location.z * frequency) * amplitude;
+                v += simplex.noise(
+                    locations[ci + 0] * frequency,
+                    locations[ci + 1] * frequency,
+                    locations[ci + 2] * frequency
+                ) * amplitude;
                 frequency *= 2.0;
                 amplitude *= PERSISTENCE;
             }
             v *= invMaxAmplitude; // in range [-1.0, 1.0]
             v = 1.0 - Math.abs(v); // in range [0.0, 1.0]
+            //v = v * 0.5 + 0.5;
             v = v * (HIGH - LOW) + LOW; // in range [LOW, HIGH]
 
-            if (!Util.areEqual(locations[i].getLength2(), 1.0f)) {
-                int x = 0;
-            }
-            locations[i].timesAssign((float)v);
+            locations[ci + 0] *= v;
+            locations[ci + 1] *= v;
+            locations[ci + 2] *= v;
         }
 
         mesh.calcFaceNormals();

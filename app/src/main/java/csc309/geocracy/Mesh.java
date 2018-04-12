@@ -15,15 +15,17 @@ public class Mesh {
     private static final int VERTEX_SIZE = LOCATION_SIZE + NORMAL_SIZE;
 
     private String name;
-    private Vec3[] locations;
-    private Vec3[] normals;
+    private int nVertices;
+    private float[] locations;
+    private float[] normals;
     private int[] indices;
     private int vboHandle;
     private int iboHandle;
     private int vaoHandle;
 
-    public Mesh(String name, Vec3[] locations, Vec3[] normals, int[] indices) {
+    public Mesh(String name, float[] locations, float[] normals, int[] indices) {
         this.name = name;
+        nVertices = locations.length / 3;
         this.locations = locations;
         this.normals = normals;
         this.indices = indices;
@@ -122,12 +124,16 @@ public class Mesh {
 
     // Unindexes mesh such that each face has its own vertices
     public void unindex() {
-        Vec3[] newLocations = new Vec3[indices.length];
+        float[] newLocations = new float[indices.length * 3];
         for (int i = 0; i < indices.length; ++i) {
-            newLocations[i] = new Vec3(locations[indices[i]]);
+            int ci = i * 3, ci0 = indices[i] * 3;
+            newLocations[ci + 0] = locations[ci0 + 0];
+            newLocations[ci + 1] = locations[ci0 + 1];
+            newLocations[ci + 2] = locations[ci0 + 2];
         }
+        nVertices = indices.length;
         locations = newLocations;
-        normals = new Vec3[locations.length];
+        normals = new float[nVertices * 3];
         indices = null;
         calcFaceNormals();
     }
@@ -136,54 +142,55 @@ public class Mesh {
     public void calcFaceNormals() {
         if (indices != null) {
             for (int i = 0; i < indices.length; i += 3) {
-                Vec3 v1 = locations[indices[i + 0]];
-                Vec3 v2 = locations[indices[i + 1]];
-                Vec3 v3 = locations[indices[i + 2]];
+                Vec3 v1 = Util.getVec3(locations, indices[i + 0]);
+                Vec3 v2 = Util.getVec3(locations, indices[i + 1]);
+                Vec3 v3 = Util.getVec3(locations, indices[i + 2]);
                 Vec3 n = (v2.minus(v1)).cross(v3.minus(v1)).normalize();
-                normals[i + 0] = new Vec3(n);
-                normals[i + 1] = new Vec3(n);
-                normals[i + 2] = new Vec3(n);
+                Util.setVec3(normals, i + 0, n);
+                Util.setVec3(normals, i + 1, n);
+                Util.setVec3(normals, i + 2, n);
             }
         }
         else {
-            for (int i = 0; i < locations.length; i += 3) {
-                Vec3 v1 = locations[i + 0];
-                Vec3 v2 = locations[i + 1];
-                Vec3 v3 = locations[i + 2];
+            for (int i = 0; i < nVertices; i += 3) {
+                Vec3 v1 = Util.getVec3(locations, i + 0);
+                Vec3 v2 = Util.getVec3(locations, i + 1);
+                Vec3 v3 = Util.getVec3(locations, i + 2);
                 Vec3 n = (v2.minus(v1)).cross(v3.minus(v1)).normalize();
-                normals[i + 0] = new Vec3(n);
-                normals[i + 1] = new Vec3(n);
-                normals[i + 2] = new Vec3(n);
+                Util.setVec3(normals, i + 0, n);
+                Util.setVec3(normals, i + 1, n);
+                Util.setVec3(normals, i + 2, n);
             }
         }
     }
 
     public String getName() { return name; }
 
-    public Vec3[] getLocations() { return locations; }
+    public float[] getLocations() { return locations; }
 
-    public Vec3[] getNormals() { return normals; }
+    public float[] getNormals() { return normals; }
 
     public int getVAOHandle() { return vaoHandle; }
     public int getIBOHandle() { return iboHandle; }
     public int getVBOHandle() { return vboHandle; }
 
-    public int getNumVertices() { return locations.length; }
+    public int getNumVertices() { return nVertices; }
 
     public int getNumIndices() { return indices == null ? 0 : indices.length; }
 
     private ByteBuffer getVertexBufferData() {
-        int nVertices = locations.length;
         ByteBuffer vertexData = ByteBuffer.allocateDirect(nVertices * VERTEX_SIZE);
         vertexData.order(ByteOrder.nativeOrder());
         // Interlace vertex data
+        // TODO: this can be done using put array
         for (int i = 0; i < nVertices; ++i) {
-            vertexData.putFloat(locations[i].x);
-            vertexData.putFloat(locations[i].y);
-            vertexData.putFloat(locations[i].z);
-            vertexData.putFloat(normals[i].x);
-            vertexData.putFloat(normals[i].y);
-            vertexData.putFloat(normals[i].z);
+            int ci = i * 3;
+            vertexData.putFloat(locations[ci + 0]);
+            vertexData.putFloat(locations[ci + 1]);
+            vertexData.putFloat(locations[ci + 2]);
+            vertexData.putFloat(normals[ci + 0]);
+            vertexData.putFloat(normals[ci + 1]);
+            vertexData.putFloat(normals[ci + 2]);
         }
         vertexData.flip();
         return vertexData;
