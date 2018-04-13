@@ -72,11 +72,6 @@ public class MainActivity extends Activity {
         return surfaceView.renderer.size;
     }
 
-    float getAspectRatio() {
-        Vec2i size = getRenderSize();
-        return (float)size.x / (float)size.y;
-    }
-
     class MainSurfaceView extends GLSurfaceView {
 
         final MainRenderer renderer;
@@ -136,8 +131,7 @@ public class MainActivity extends Activity {
         @Override
         public void onSurfaceChanged(GL10 unused, int width, int height) {
             size.x = width; size.y = height;
-
-            GLES30.glViewport(0, 0, size.x, size.y);
+            game.screenResized(size);
         }
     }
 
