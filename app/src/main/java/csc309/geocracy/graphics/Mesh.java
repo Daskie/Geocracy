@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.opengl.GLES30;
 import android.util.Log;
@@ -6,6 +6,7 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import csc309.geocracy.Util;
 import glm_.vec3.Vec3;
 
 public class Mesh {
@@ -44,7 +45,7 @@ public class Mesh {
             return false;
         }
         // Upload vbo data
-        ByteBuffer vertexData = getVertexBufferData();
+        ByteBuffer vertexData = genVertexBufferData();
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboHandle);
         GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexData.limit(), vertexData, GLES30.GL_STATIC_DRAW);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
@@ -64,7 +65,7 @@ public class Mesh {
                 return false;
             }
             // Upload ibo data
-            ByteBuffer indexData = getIndexBufferData();
+            ByteBuffer indexData = genIndexBufferData();
             GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, iboHandle);
             GLES30.glBufferData(GLES30.GL_ELEMENT_ARRAY_BUFFER, indexData.limit(), indexData, GLES30.GL_STATIC_DRAW);
             GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -102,6 +103,18 @@ public class Mesh {
         }
 
         return true;
+    }
+
+    // Expects a shader to be active
+    public void render() {
+        GLES30.glBindVertexArray(vaoHandle);
+        if (indices == null) {
+            GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, nVertices);
+        }
+        else {
+            GLES30.glDrawElements(GLES30.GL_TRIANGLES, indices.length, GLES30.GL_UNSIGNED_INT, 0);
+        }
+        GLES30.glBindVertexArray(0);
     }
 
     public void unload() {
@@ -145,7 +158,7 @@ public class Mesh {
                 Vec3 v1 = Util.getVec3(locations, indices[i + 0]);
                 Vec3 v2 = Util.getVec3(locations, indices[i + 1]);
                 Vec3 v3 = Util.getVec3(locations, indices[i + 2]);
-                Vec3 n = (v2.minus(v1)).cross(v3.minus(v1)).normalize();
+                Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
                 Util.setVec3(normals, i + 0, n);
                 Util.setVec3(normals, i + 1, n);
                 Util.setVec3(normals, i + 2, n);
@@ -156,7 +169,7 @@ public class Mesh {
                 Vec3 v1 = Util.getVec3(locations, i + 0);
                 Vec3 v2 = Util.getVec3(locations, i + 1);
                 Vec3 v3 = Util.getVec3(locations, i + 2);
-                Vec3 n = (v2.minus(v1)).cross(v3.minus(v1)).normalize();
+                Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
                 Util.setVec3(normals, i + 0, n);
                 Util.setVec3(normals, i + 1, n);
                 Util.setVec3(normals, i + 2, n);
@@ -170,19 +183,16 @@ public class Mesh {
 
     public float[] getNormals() { return normals; }
 
-    public int getVAOHandle() { return vaoHandle; }
-    public int getIBOHandle() { return iboHandle; }
-    public int getVBOHandle() { return vboHandle; }
+    public int[] getIndices() { return indices; }
 
     public int getNumVertices() { return nVertices; }
 
     public int getNumIndices() { return indices == null ? 0 : indices.length; }
 
-    private ByteBuffer getVertexBufferData() {
+    private ByteBuffer genVertexBufferData() {
         ByteBuffer vertexData = ByteBuffer.allocateDirect(nVertices * VERTEX_SIZE);
         vertexData.order(ByteOrder.nativeOrder());
         // Interlace vertex data
-        // TODO: this can be done using put array
         for (int i = 0; i < nVertices; ++i) {
             int ci = i * 3;
             vertexData.putFloat(locations[ci + 0]);
@@ -196,7 +206,7 @@ public class Mesh {
         return vertexData;
     }
 
-    private ByteBuffer getIndexBufferData() {
+    private ByteBuffer genIndexBufferData() {
         if (indices == null) {
             return null;
         }

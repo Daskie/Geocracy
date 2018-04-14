@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.opengl.GLES30;
 import android.util.Log;
@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import csc309.geocracy.Util;
 import glm_.mat2x2.Mat2;
 import glm_.mat3x3.Mat3;
 import glm_.mat4x4.Mat4;

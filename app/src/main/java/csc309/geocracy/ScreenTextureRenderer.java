@@ -7,6 +7,8 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import csc309.geocracy.graphics.Texture;
+
 public class ScreenTextureRenderer {
 
     private ScreenTextureShader shader;

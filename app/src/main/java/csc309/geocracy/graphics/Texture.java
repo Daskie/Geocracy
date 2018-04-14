@@ -1,10 +1,11 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.opengl.GLES30;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 
+import csc309.geocracy.Util;
 import glm_.vec2.Vec2i;
 
 public class Texture {

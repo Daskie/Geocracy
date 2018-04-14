@@ -42,7 +42,7 @@ public abstract class Util {
             return false;
         }
 
-        if (printError) Log.e("Util", "OpenGL error: " + Integer.toHexString(error) + "(" + gluErrorString(error) + ")");
+        if (printError) Log.e("OpenGL", Integer.toHexString(error) + "(" + gluErrorString(error) + ")", new Exception());
         return true;
     }
 
@@ -95,12 +95,6 @@ public abstract class Util {
         return areEqual(v1.x, v2.x) && areEqual(v1.y, v2.y) && areEqual(v1.z, v2.z) && areEqual(v1.w, v2.w);
     }
 
-    public static void assign(Vec3 dst, Vec3 src) {
-        dst.x = src.x;
-        dst.y = src.y;
-        dst.z = src.z;
-    }
-
     // Some base-2 integer functions
 
     // Returns 2 raised to the power v
@@ -140,6 +134,20 @@ public abstract class Util {
         return 1 << log2Ceil(v);
     }
 
+    public static void assign(Vec3 dst, Vec3 src) {
+        dst.x = src.x;
+        dst.y = src.y;
+        dst.z = src.z;
+    }
+
+    public static void assignVec3(float[] dst, int dstI, float[] src, int srcI) {
+        int dci = dstI * 3;
+        int sci = srcI * 3;
+        dst[dci + 0] = src[sci + 0];
+        dst[dci + 1] = src[sci + 1];
+        dst[dci + 2] = src[sci + 2];
+    }
+
     // Returns a Vec3 from an xyz float array at the given vertex index
     public static Vec3 getVec3(float[] arr, int vertexI) {
         int ci = vertexI * 3;
@@ -157,14 +165,14 @@ public abstract class Util {
         arr[ci + 0] = v.x; arr[ci + 1] = v.y; arr[ci + 2] = v.z;
     }
 
-    public static void add(float[] arr, int vertexI, float v) {
+    public static void addVec3(float[] arr, int vertexI, float v) {
         int ci = vertexI * 3;
         arr[ci + 0] += v;
         arr[ci + 1] += v;
         arr[ci + 2] += v;
     }
 
-    public static void multiply(float[] arr, int vertexI, float v) {
+    public static void multiplyVec3(float[] arr, int vertexI, float v) {
         int ci = vertexI * 3;
         arr[ci + 0] *= v;
         arr[ci + 1] *= v;
@@ -172,7 +180,7 @@ public abstract class Util {
     }
 
     // Normalizes the xyz at the given vertex index in arr
-    public static void normalize(float[] arr, int vertexI) {
+    public static void normalizeVec3(float[] arr, int vertexI) {
         int ci = vertexI * 3;
         float x = arr[ci + 0], y = arr[ci + 1], z = arr[ci + 2];
         float v = x * x + y * y + z * z;
@@ -184,6 +192,10 @@ public abstract class Util {
             x *= v; y *= v; z *= v;
         }
         arr[ci + 0] = x; arr[ci + 1] = y; arr[ci + 2] = z;
+    }
+
+    public static long toLong(int low, int high) {
+        return ((long)high << 32) | ((long)low & 0x00000000FFFFFFFFL);
     }
 
 }

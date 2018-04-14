@@ -2,6 +2,7 @@ package csc309.geocracy;
 
 import android.util.Log;
 
+import csc309.geocracy.graphics.Shader;
 import glm_.mat3x3.Mat3;
 import glm_.mat4x4.Mat4;
 

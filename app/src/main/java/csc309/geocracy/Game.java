@@ -3,8 +3,13 @@ package csc309.geocracy;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import csc309.geocracy.noise.NoiseTest;
+import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
+import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
+
+import static glm_.Java.glm;
 
 public class Game {
 
@@ -19,9 +24,11 @@ public class Game {
         this.mainActivity = mainActivity;
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
-        camera = new OrbitCamera();
-        camera.setElevation(2.0f);
-        camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
+
+        // Setup camera
+        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 10.0f, 1.0f, 2.0f);
+        //camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
+
         swipeDelta = new Vec2();
 
         lastT = System.nanoTime();
@@ -71,6 +78,11 @@ public class Game {
         lastT = t;
     }
 
+    public void screenResized(Vec2i size) {
+        GLES30.glViewport(0, 0, size.x, size.y);
+        camera.setAspectRatio((float)size.x / (float)size.y);
+    }
+
     // The core game logic
     private void update(float dt) {
         // TODO: replace with proper input system
@@ -87,7 +99,8 @@ public class Game {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
-        world.render(camera, mainActivity.getAspectRatio());
+        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
+        world.render(camera, lightDir);
         //noiseTest.render();
     }
 

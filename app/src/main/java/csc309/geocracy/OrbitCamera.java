@@ -1,5 +1,6 @@
 package csc309.geocracy;
 
+import csc309.geocracy.graphics.Camera;
 import glm_.mat3x3.Mat3;
 import glm_.quat.Quat;
 import glm_.vec2.Vec2;
@@ -10,14 +11,13 @@ import static glm_.Java.glm;
 // Camera that resides at a certain radius from the origin and always looks at the origin
 public class OrbitCamera extends Camera {
 
-    private static final float DEF_ELEVATION = 1.0f;
-
     private float elevation;
     private Quat orientation;
     private Mat3 orientMatrix;
 
-    public OrbitCamera() {
-        elevation = DEF_ELEVATION;
+    public OrbitCamera(float fov, float near, float far, float aspectRatio, float elevation) {
+        super(fov, near, far, aspectRatio);
+        this.elevation = elevation;
         orientation = new Quat();
         orientMatrix = new Mat3();
     }
@@ -27,22 +27,16 @@ public class OrbitCamera extends Camera {
         orientation = rotation.times(orientation);
         orientation.normalizeAssign();
         orientMatrix = orientation.toMat3();
-    }
-
-    // Moves the camera in orbit where delta corresponds to the camera's u and v vectors
-    public void move(Vec2 delta) {
-        float angle = delta.getLength();
-        Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
-        axis = orientMatrix.times(axis); // convert to world space
-        rotate(glm.angleAxis(angle, axis));
+        viewMatrix = null;
     }
 
     public void setElevation(float elevation) {
         this.elevation = elevation;
+        viewMatrix = null;
     }
 
     public void changeElevation(float delta) {
-        this.elevation += delta;
+        setElevation(elevation + delta);
     }
 
     public void setLocation(Vec3 location) {
@@ -50,6 +44,14 @@ public class OrbitCamera extends Camera {
         Vec3 b = location.normalize();
         float angle = (float)Math.acos(a.dot(b));
         Vec3 axis = a.cross(b);
+        rotate(glm.angleAxis(angle, axis));
+    }
+
+    // Moves the camera in orbit where delta corresponds to the camera's u and v vectors
+    public void move(Vec2 delta) {
+        float angle = delta.getLength();
+        Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
+        axis = orientMatrix.times(axis); // convert to world space
         rotate(glm.angleAxis(angle, axis));
     }
 
