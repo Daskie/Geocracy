@@ -8,13 +8,10 @@ import glm_.vec3.Vec3;
 public class Background {
     private BackgroundShader shader;
     private BackgroundMesh mesh;
-    private float highElevation, lowElevation;
 
-    public Background(int tessellationDegree) {
+    public Background() {
         shader = new BackgroundShader();
-        mesh = new BackgroundMesh(tessellationDegree);
-        highElevation = 1.1f;
-        lowElevation = 0.95f;
+        mesh = new BackgroundMesh();
 
     }
 

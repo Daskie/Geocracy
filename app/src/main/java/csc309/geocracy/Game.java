@@ -26,7 +26,7 @@ public class Game {
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
 
-        background = new Background(4);
+        background = new Background();
 
         // Setup camera
         camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 10.0f, 1.0f, 2.0f);
@@ -107,7 +107,7 @@ public class Game {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
-        world.render(camera, lightDir);
+//        world.render(camera, lightDir);
         background.render(camera, lightDir);
         //noiseTest.render();
     }

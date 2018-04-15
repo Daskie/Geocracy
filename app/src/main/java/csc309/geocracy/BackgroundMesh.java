@@ -18,10 +18,10 @@ public class BackgroundMesh {
     private int vaoHandle;
     private SparseArray<int[]> faceAdjacencies;
 
-    public BackgroundMesh(int tessellationDegree) {
-        Mesh sphereMesh = MeshMaker.makeSphereIndexed("Background", tessellationDegree);
-        locations = sphereMesh.getLocations();
-        indices = sphereMesh.getIndices();
+    public BackgroundMesh() {
+        Mesh squareMesh = MeshMaker.makeSquare("Background");
+        locations = squareMesh.getLocations();
+        indices = squareMesh.getIndices();
         int nFaces = indices.length / 3;
         identities = new int[nFaces];
         genFaceAdjacencies();
