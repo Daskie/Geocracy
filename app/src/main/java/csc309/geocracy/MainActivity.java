@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLES30;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +34,8 @@ public class MainActivity extends Activity {
             Log.e("MainActivity", "Device does not support OpenGL ES 3.0. Supported version: " + Integer.toHexString(info.reqGlEsVersion));
         }
 
+        // 8 bit color format
+        getWindow().setFormat(PixelFormat.RGBA_8888);
         // Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // No title bar
@@ -46,10 +48,6 @@ public class MainActivity extends Activity {
 
         // Setup game
         game = new Game(this);
-        if (!game.setup()) {
-            Log.e("MainActivity", "Failed to setup game");
-            return;
-        }
     }
 
     @Override
@@ -67,16 +65,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        game.cleanup();
     }
 
     Vec2i getRenderSize() {
         return surfaceView.renderer.size;
-    }
-
-    float getAspectRatio() {
-        Vec2i size = getRenderSize();
-        return (float)size.x / (float)size.y;
     }
 
     class MainSurfaceView extends GLSurfaceView {
@@ -124,7 +116,9 @@ public class MainActivity extends Activity {
         public void onSurfaceCreated(GL10 unused, EGLConfig config) {
             // May be called more than once during app execution (waking from sleep, for instance)
             // In this method we need to create/recreate any GPU resources
-            game.loadOpenGL();
+            if (!game.loadOpenGL()) {
+                Util.exit();
+            }
         }
 
         @Override
@@ -136,8 +130,7 @@ public class MainActivity extends Activity {
         @Override
         public void onSurfaceChanged(GL10 unused, int width, int height) {
             size.x = width; size.y = height;
-
-            GLES30.glViewport(0, 0, size.x, size.y);
+            game.screenResized(size);
         }
     }
 
