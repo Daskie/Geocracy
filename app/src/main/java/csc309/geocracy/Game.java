@@ -16,6 +16,7 @@ public class Game {
     private MainActivity mainActivity;
     private long lastT; // timestamp of last frame
     private World world;
+    private Background background;
     private NoiseTest noiseTest;
     private OrbitCamera camera;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
@@ -24,6 +25,8 @@ public class Game {
         this.mainActivity = mainActivity;
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
+
+        background = new Background(4);
 
         // Setup camera
         camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 10.0f, 1.0f, 2.0f);
@@ -50,6 +53,10 @@ public class Game {
         }
 
         if (!world.load()) {
+            Log.e("Game", "Failed to load world");
+            return false;
+        }
+        if (!background.load()) {
             Log.e("Game", "Failed to load world");
             return false;
         }
@@ -101,6 +108,7 @@ public class Game {
 
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
         world.render(camera, lightDir);
+        background.render(camera, lightDir);
         //noiseTest.render();
     }
 
