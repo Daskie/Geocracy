@@ -25,10 +25,10 @@ public abstract class MeshMaker {
 
     public static Mesh makeSquare(String name) {
         float[] locations = {
-            0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
             1.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f
+            -1.0f, 1.0f, 0.0f
         };
         float[] normals = {
             0.0f, 0.0f, 1.0f,

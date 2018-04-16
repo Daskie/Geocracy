@@ -32,11 +32,11 @@ public class Background {
 
         return true;
     }
-    public void render(Camera camera, Vec3 lightDir) {
+    public void render(Camera camera) {
         shader.setActive();
-        shader.setViewMatrix(camera.getViewMatrix());
-        shader.setProjectionMatrix(camera.getProjectionMatrix());
-        shader.setLightDirection(lightDir);
+//        shader.setViewMatrix(camera.getViewMatrix());
+//        shader.setProjectionMatrix(camera.getProjectionMatrix());
+//        shader.setLightDirection(lightDir);
         mesh.render();
     }
 

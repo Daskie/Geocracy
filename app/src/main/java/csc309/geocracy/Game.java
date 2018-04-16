@@ -107,8 +107,8 @@ public class Game {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
-//        world.render(camera, lightDir);
-        background.render(camera, lightDir);
+        background.render(camera);
+        world.render(camera, lightDir);
         //noiseTest.render();
     }
 
