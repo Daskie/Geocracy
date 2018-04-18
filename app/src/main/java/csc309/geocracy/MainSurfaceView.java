@@ -42,7 +42,7 @@ class MainSurfaceView extends GLSurfaceView {
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
                     Vec2 delta = new Vec2(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0)));
-                    synchronized (MainActivity.game) { MainActivity.game.swipeDelta.plusAssign(delta); }
+                    synchronized (GameActivity.game) { GameActivity.game.swipeDelta.plusAssign(delta); }
                 }
                 return true;
             default:

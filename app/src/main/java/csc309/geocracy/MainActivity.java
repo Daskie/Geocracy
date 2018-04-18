@@ -15,9 +15,6 @@ import glm_.vec2.Vec2i;
 
 public class MainActivity extends Activity {
 
-    static public MainSurfaceView surfaceView;
-    static public Game game;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,43 +33,7 @@ public class MainActivity extends Activity {
         // No title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.gameplay);
-
-        // Create a GLSurfaceView instance and set it
-        // as the ContentView for this Activity.
-
-//        surfaceView = new MainSurfaceView(this);
-
-        surfaceView = (MainSurfaceView) findViewById(R.id.gameplaySurfaceView);
-
-
-//        setContentView(surfaceView);
-
-        // Setup game
-        game = new Game();
-
         startActivity(new Intent(this, GameActivity.class));
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        surfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        surfaceView.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-//    Vec2i getRenderSize() {
-//        return surfaceView.renderer.size;
-//    }
 
 }

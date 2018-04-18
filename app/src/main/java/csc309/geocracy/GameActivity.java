@@ -8,10 +8,14 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
-    private MainSurfaceView mainSurfaceView;
+    static public MainSurfaceView mainSurfaceView;
+    static public Game game;
 
     /** Called when the activity is first created. */
     @Override
@@ -25,9 +29,44 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         // No title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        setContentView(R.layout.gameplay);
+
+//        mainSurfaceView = (MainSurfaceView) findViewById(R.id.gameplaySurfaceView);
+
+        // Setup game
+        game = new Game();
+
         mainSurfaceView = new MainSurfaceView(this);
-        setContentView(mainSurfaceView);
+//        setContentView(mainSurfaceView);
         mainSurfaceView.getHolder().addCallback(this);
+
+        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        frame.addView(mainSurfaceView);
+
+        LinearLayout uiLayout = new LinearLayout(this);
+
+        Button testButton = new  Button(this);
+        testButton.setText("HELLO WORLD");
+
+        uiLayout.addView(testButton);
+        frame.addView(uiLayout);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mainSurfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mainSurfaceView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

@@ -19,7 +19,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // May be called more than once during app execution (waking from sleep, for instance)
         // In this method we need to create/recreate any GPU resources
-        if (!MainActivity.game.loadOpenGL()) {
+        if (!GameActivity.game.loadOpenGL()) {
             Util.exit();
         }
     }
@@ -27,12 +27,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 unused) {
         // Called ~60x a second from a render thread which we'll use as main game thread
-        MainActivity.game.step();
+        GameActivity.game.step();
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         size.x = width; size.y = height;
-        MainActivity.game.screenResized(size);
+        GameActivity.game.screenResized(size);
     }
 }
