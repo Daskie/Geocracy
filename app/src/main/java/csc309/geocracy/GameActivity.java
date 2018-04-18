@@ -1,10 +1,8 @@
 package csc309.geocracy;
 
 import android.app.Activity;
-import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,8 +29,6 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
         setContentView(R.layout.gameplay);
 
-//        mainSurfaceView = (MainSurfaceView) findViewById(R.id.gameplaySurfaceView);
-
         // Setup game
         game = new Game();
 
@@ -46,7 +42,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         LinearLayout uiLayout = new LinearLayout(this);
 
         Button testButton = new  Button(this);
-        testButton.setText("HELLO WORLD");
+        testButton.setText("Geocracy (v0.0.1)");
 
         uiLayout.addView(testButton);
         frame.addView(uiLayout);
