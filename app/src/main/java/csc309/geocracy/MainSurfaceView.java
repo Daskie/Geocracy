@@ -1,18 +1,30 @@
 package csc309.geocracy;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 
 import glm_.vec2.Vec2;
 
 class MainSurfaceView extends GLSurfaceView {
 
-    final MainRenderer renderer;
+    MainRenderer renderer;
 
     public MainSurfaceView(Context context){
         super(context);
+        init();
 
+    }
+
+    public MainSurfaceView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    private void init() {
         setEGLContextClientVersion(3);
         renderer = new MainRenderer();
         setRenderer(renderer);
@@ -37,4 +49,5 @@ class MainSurfaceView extends GLSurfaceView {
                 return super.onTouchEvent(event);
         }
     }
+
 }

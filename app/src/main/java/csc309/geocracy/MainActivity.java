@@ -3,6 +3,7 @@ package csc309.geocracy;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -35,13 +36,22 @@ public class MainActivity extends Activity {
         // No title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        setContentView(R.layout.gameplay);
+
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
-        surfaceView = new MainSurfaceView(this);
-        setContentView(surfaceView);
+
+//        surfaceView = new MainSurfaceView(this);
+
+        surfaceView = (MainSurfaceView) findViewById(R.id.gameplaySurfaceView);
+
+
+//        setContentView(surfaceView);
 
         // Setup game
-        game = new Game(this);
+        game = new Game();
+
+        startActivity(new Intent(this, GameActivity.class));
     }
 
     @Override
@@ -64,4 +74,5 @@ public class MainActivity extends Activity {
 //    Vec2i getRenderSize() {
 //        return surfaceView.renderer.size;
 //    }
+
 }
