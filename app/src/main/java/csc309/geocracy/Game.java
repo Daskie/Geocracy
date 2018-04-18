@@ -42,6 +42,7 @@ public class Game {
     public boolean loadOpenGL() {
         GLES30.glClearColor(0.0f, 0.5f, 1.0f, 1.0f); // background color
         GLES30.glEnable(GLES30.GL_DEPTH_TEST); // enable depth testing (close things rendered on top of far things)
+        GLES30.glDepthFunc(GLES30.GL_LEQUAL);
         GLES30.glEnable(GLES30.GL_CULL_FACE); // enable face culling (back faces of triangles aren't rendered)
         GLES30.glEnable(GLES30.GL_BLEND); // enable alpha blending (allows for transparency/translucency)
         GLES30.glBlendFuncSeparate(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA, GLES30.GL_ONE_MINUS_DST_ALPHA, GLES30.GL_ONE);
@@ -57,7 +58,7 @@ public class Game {
             return false;
         }
         if (!background.load()) {
-            Log.e("Game", "Failed to load world");
+            Log.e("Game", "Failed to load background");
             return false;
         }
         //if (!noiseTest.load()) {

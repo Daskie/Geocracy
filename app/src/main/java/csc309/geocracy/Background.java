@@ -35,7 +35,7 @@ public class Background {
     public void render(Camera camera) {
         shader.setActive();
 //        shader.setViewMatrix(camera.getViewMatrix());
-//        shader.setProjectionMatrix(camera.getProjectionMatrix());
+        shader.setProjectionMatrix(camera.getProjectionMatrix());
 //        shader.setLightDirection(lightDir);
         mesh.render();
     }
