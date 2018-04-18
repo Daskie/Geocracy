@@ -27,7 +27,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation files('libs/glm.jar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.github.matecode:Snacky:1.0.3'
 }
+
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
