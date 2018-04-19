@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.view.Menu;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,14 +48,20 @@ public class MenuActivity extends Activity implements SurfaceHolder.Callback {
         CoordinatorLayout frame = findViewById(R.id.menuLayout);
 //        frame.addView(mainSurfaceView);
 
-        LinearLayout uiLayout = new LinearLayout(this);
+        LinearLayout uiLayout = new LinearLayout(frame.getContext());
+        uiLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+
         uiLayout.setOrientation(LinearLayout.VERTICAL);
+        uiLayout.setVerticalGravity(Gravity.CENTER_VERTICAL);
+        uiLayout.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
 
         TextView header = new TextView(this);
         header.setText("Geocracy Main Menu (v0.0.1)");
 
         Button continueGameButton = new Button(this);
         continueGameButton.setText("Continue");
+        continueGameButton.setWidth(100);
+
         continueGameButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -144,8 +149,6 @@ public class MenuActivity extends Activity implements SurfaceHolder.Callback {
         uiLayout.addView(tutorialButton);
         uiLayout.addView(settingsButton);
         uiLayout.addView(exitButton);
-
-
 
         frame.addView(uiLayout);
     }
