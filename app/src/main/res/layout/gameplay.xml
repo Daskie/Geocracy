@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/frame">
+    android:id="@+id/gameLayout"
+    tools:context=".GameActivity">
 
     <!--<csc309.geocracy.MainSurfaceView-->
         <!--android:id="@+id/gameplaySurfaceView"-->
@@ -13,4 +16,4 @@
         <!--<Button android:text="Button" android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>-->
     <!--</LinearLayout>-->
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -3,12 +3,18 @@ package csc309.geocracy;
 import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import es.dmoral.toasty.Toasty;
 
 public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
@@ -36,7 +42,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 //        setContentView(mainSurfaceView);
         mainSurfaceView.getHolder().addCallback(this);
 
-        FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
+        CoordinatorLayout frame = findViewById(R.id.gameLayout);
         frame.addView(mainSurfaceView);
 
         LinearLayout uiLayout = new LinearLayout(this);
@@ -44,7 +50,24 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         Button testButton = new  Button(this);
         testButton.setText("Geocracy (v0.0.1)");
 
+        Button rollDice = new Button(this);
+        rollDice.setText("Roll dice!");
+        rollDice.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // PRESSED
+                        // Toasty Library for displaying notifications.
+                        Toasty.success(GameActivity.this, "Success!", Toast.LENGTH_SHORT, true).show();
+                        return true; // if you want to handle the touch event
+                }
+                return false;
+            }
+        });
+
         uiLayout.addView(testButton);
+        uiLayout.addView(rollDice);
         frame.addView(uiLayout);
     }
 
