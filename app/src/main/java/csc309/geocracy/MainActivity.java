@@ -33,7 +33,9 @@ public class MainActivity extends Activity {
         // No title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        startActivity(new Intent(this, GameActivity.class));
+        startActivity(new Intent(this, MenuActivity.class));
+
+//        startActivity(new Intent(this, GameActivity.class));
     }
 
 }
