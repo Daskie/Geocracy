@@ -2,9 +2,11 @@ package csc309.geocracy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -46,6 +48,7 @@ public class MenuActivity extends Activity implements SurfaceHolder.Callback {
 //        mainSurfaceView.getHolder().addCallback(this);
 
         CoordinatorLayout frame = findViewById(R.id.menuLayout);
+        frame.setBackgroundColor(Color.BLUE);
 //        frame.addView(mainSurfaceView);
 
         LinearLayout uiLayout = new LinearLayout(frame.getContext());
@@ -57,88 +60,46 @@ public class MenuActivity extends Activity implements SurfaceHolder.Callback {
 
         TextView header = new TextView(this);
         header.setText("Geocracy Main Menu (v0.0.1)");
+        header.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        header.setTextSize(28);
+        header.setPadding(10, 0, 10, 40);
+        header.setTextColor(Color.WHITE);
 
-        Button continueGameButton = new Button(this);
-        continueGameButton.setText("Continue");
-        continueGameButton.setWidth(100);
-
-        continueGameButton.setOnTouchListener(new View.OnTouchListener() {
+        MenuButton continueGameButton = new MenuButton(MenuActivity.this, "Continue", new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // PRESSED
-                        // Toasty Library for displaying notifications.
-                        startActivity(new Intent(MenuActivity.this, GameActivity.class));
-                        return true; // if you want to handle the touch event
-                }
+                startActivity(new Intent(MenuActivity.this, GameActivity.class));
                 return false;
             }
         });
 
-        Button startGameButton = new Button(this);
-        startGameButton.setText("Start");
-        startGameButton.setOnTouchListener(new View.OnTouchListener() {
+        MenuButton startGameButton = new MenuButton(MenuActivity.this, "Start", new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // PRESSED
-                        // Toasty Library for displaying notifications.
-                        startActivity(new Intent(MenuActivity.this, GameActivity.class));
-                        return true; // if you want to handle the touch event
-                }
+                startActivity(new Intent(MenuActivity.this, GameActivity.class));
                 return false;
             }
         });
 
-        Button tutorialButton = new Button(this);
-        tutorialButton.setText("Tutorial");
-        tutorialButton.setOnTouchListener(new View.OnTouchListener() {
+        MenuButton tutorialButton = new MenuButton(MenuActivity.this, "Tutorial", new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // PRESSED
-                        // Toasty Library for displaying notifications.
-//                        startActivity(new Intent(MenuActivity.this, GameActivity.class));
-                        Toasty.warning(MenuActivity.this, "Need to Launch Tutorial!", Toast.LENGTH_SHORT, true).show();
-                        return true; // if you want to handle the touch event
-                }
+                public boolean onTouch(View v, MotionEvent event) { Toasty.warning(MenuActivity.this, "Need to Launch Tutorial!", Toast.LENGTH_SHORT, true).show();
                 return false;
             }
         });
 
-        Button settingsButton = new Button(this);
-        settingsButton.setText("Settings");
-        settingsButton.setOnTouchListener(new View.OnTouchListener() {
+        MenuButton settingsButton = new MenuButton(MenuActivity.this, "Settings", new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // PRESSED
-                        // Toasty Library for displaying notifications.
-//                        startActivity(new Intent(MenuActivity.this, GameActivity.class));
-                        Toasty.warning(MenuActivity.this, "Need to Launch Settings!", Toast.LENGTH_SHORT, true).show();
-                        return true; // if you want to handle the touch event
-                }
+                Toasty.warning(MenuActivity.this, "Need to Launch Settings!", Toast.LENGTH_SHORT, true).show();
                 return false;
             }
         });
 
-        Button exitButton = new Button(this);
-        exitButton.setText("Exit");
-        exitButton.setOnTouchListener(new View.OnTouchListener() {
+        MenuButton exitButton = new MenuButton(MenuActivity.this, "Exit", new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // PRESSED
-                        // Toasty Library for displaying notifications.
-//                        startActivity(new Intent(MenuActivity.this, GameActivity.class));
-                        Toasty.warning(MenuActivity.this, "Need to Exit Application!", Toast.LENGTH_SHORT, true).show();
-                        return true; // if you want to handle the touch event
-                }
+                Toasty.warning(MenuActivity.this, "Need to Exit Application!", Toast.LENGTH_SHORT, true).show();
                 return false;
             }
         });
