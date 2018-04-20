@@ -56,11 +56,10 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_UP:
                         // PRESSED
                         // Toasty Library for displaying notifications.
                         Toasty.success(GameActivity.this, "Success!", Toast.LENGTH_SHORT, true).show();
-                        return true; // if you want to handle the touch event
                 }
                 return false;
             }
