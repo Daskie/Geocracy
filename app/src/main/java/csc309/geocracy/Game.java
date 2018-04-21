@@ -13,7 +13,6 @@ import static glm_.Java.glm;
 
 public class Game {
 
-    private MainActivity mainActivity;
     private long lastT; // timestamp of last frame
     private World world;
     private Background background;
@@ -21,8 +20,7 @@ public class Game {
     private OrbitCamera camera;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
 
-    public Game(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public Game() {
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
 
