@@ -18,5 +18,25 @@ package csc309.geocracy.GameStates;
 //          You receive 3 armies for Africa, 7 armies for Asia, 2 armies for Australia,
 //          5 armies for Europe, 5 armies for North America and 2 armies for South America.
 
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
 public class GainArmiesState {
+    void constructor(){
+
+    }
+
+    void handleInput(Game game, GameInputHandler input){
+
+    }
+
+    void draw(Game game){
+
+    }
+    void enter(Game game, GameInputHandler input){
+
+    }
+    void exit(Game game, GameInputHandler input){
+
+    }
 }

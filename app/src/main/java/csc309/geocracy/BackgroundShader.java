@@ -10,6 +10,8 @@ public class BackgroundShader extends Shader {
     protected int viewMatUniformHandle;
     protected int projMatUniformHandle;
     protected int lightDirUniformHandle;
+    protected int timeUniformHandle;
+
 
     public BackgroundShader() {
         super("Background", "shaders/Background.vert", "shaders/Background.frag");
@@ -28,6 +30,9 @@ public class BackgroundShader extends Shader {
         uploadUniform(lightDirUniformHandle, dir);
     }
 
+    public void setTimeFloat(float time) { uploadUniform(timeUniformHandle, time); }
+
+
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
@@ -37,6 +42,9 @@ public class BackgroundShader extends Shader {
             Log.e("BackgroundShader", "Failed to get projection matrix uniform location");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
+            Log.e("BackgroundShader", "Failed to get light uniform location");
+        }
+        if ((timeUniformHandle = getUniformLocation("u_time")) == -1) {
             Log.e("BackgroundShader", "Failed to get light uniform location");
         }
 

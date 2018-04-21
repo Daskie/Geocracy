@@ -18,5 +18,25 @@ package csc309.geocracy.GameStates;
 // make sure that you leave at least one of your army pieces on each territory
 // that you own. Otherwise, you will no longer have control of the territory.
 
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
 public class FortifyTerritoriesState {
+    void constructor(){
+
+    }
+
+    void handleInput(Game game, GameInputHandler input){
+
+    }
+
+    void draw(Game game){
+
+    }
+    void enter(Game game, GameInputHandler input){
+
+    }
+    void exit(Game game, GameInputHandler input){
+
+    }
 }

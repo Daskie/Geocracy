@@ -16,13 +16,14 @@ const vec3 k_sunColor = vec3(1.0f, 1.0f, 0.9f);
 const vec3 k_moonColor = vec3(0.9f, 0.9f, 1.0f);
 
 void main() {
-	mat4 invProj = inverse(u_projMat);
-	vec4 temp1 = invProj * vec4(v2f_loc.x, v2f_loc.y, 1.0f, 1.0f);
-	vec4 temp2 = invProj * vec4(v2f_loc.x, v2f_loc.y, 0.0f, 1.0f);
+	vec4 temp1 = u_projMat * vec4(v2f_loc.x, v2f_loc.y, 1.0f, 1.0f);
+	vec4 temp2 = u_projMat * vec4(v2f_loc.x, v2f_loc.y, 0.0f, 1.0f);
 	vec3 ray = normalize(temp1.xyz / temp1.w - temp2.xyz / temp2.w);
 	ray = normalize(inverse(mat3(u_viewMat)) * ray);
 
 	vec3 sun = vec3(cos(u_time), sin(u_time), 0.0f);
+//	vec3 sun = vec3(1.0f, 0.0f, 0.0f);
+
 
 	float horizonIntensity = 1.0f - abs(dot(ray, vec3(0.0f, 1.0f, 0.0f)));
 
@@ -37,7 +38,9 @@ void main() {
 
 	out_color = vec4(skyColor + horizonColor + sunColor + moonColor, 1.0f);
 
+
+
 	// collision
 
-	out_color.rgb += u_collision;
+//	out_color.rgb += u_collision;
 }

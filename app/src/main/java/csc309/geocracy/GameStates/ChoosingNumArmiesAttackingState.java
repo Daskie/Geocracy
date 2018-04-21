@@ -11,5 +11,26 @@ package csc309.geocracy.GameStates;
 //2 armies = 2 dice
 //3 armies = 3 dice
 
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
+
 public class ChoosingNumArmiesAttackingState {
+    void constructor(){
+
+    }
+
+    void handleInput(Game game, GameInputHandler input){
+
+    }
+
+    void draw(Game game){
+
+    }
+    void enter(Game game, GameInputHandler input){
+
+    }
+    void exit(Game game, GameInputHandler input){
+
+    }
 }
