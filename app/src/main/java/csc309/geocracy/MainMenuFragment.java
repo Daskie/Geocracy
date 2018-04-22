@@ -1,5 +1,6 @@
 package csc309.geocracy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
+import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {
 
@@ -25,11 +29,28 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu, container, false);
         continueButton = (Button) view.findViewById(R.id.continueButton);
-        startButton = (Button) view.findViewById(R.id.startButton);
-        tutorialButton = (Button) view.findViewById(R.id.tutorialButton);
-        settingsButton = (Button) view.findViewById(R.id.settingsButton);
 
-        settingsButton.setOnTouchListener(new View.OnTouchListener() {
+        continueButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                startActivity(new Intent(getContext(), GameActivity.class));
+                return false;
+            }
+        });
+
+        startButton = (Button) view.findViewById(R.id.startButton);
+
+        startButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                startActivity(new Intent(getContext(), GameActivity.class));
+                return false;
+            }
+        });
+
+        tutorialButton = (Button) view.findViewById(R.id.tutorialButton);
+
+        tutorialButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 ((MenuActivity)getActivity()).setViewPager(1);
@@ -37,7 +58,26 @@ public class MainMenuFragment extends Fragment {
             }
         });
 
+        settingsButton = (Button) view.findViewById(R.id.settingsButton);
+
+        settingsButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ((MenuActivity)getActivity()).setViewPager(2);
+                return false;
+            }
+        });
+
         exitButton = (Button) view.findViewById(R.id.exitButton);
+
+        exitButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Toasty.warning(getContext(), "Need to Exit Application!", Toast.LENGTH_SHORT, true).show();
+                return false;
+            }
+        });
+
         return view;
     }
 

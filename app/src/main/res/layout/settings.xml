@@ -6,6 +6,15 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_gravity="left"
+        android:layout_marginTop="-60dp"
+        android:layout_marginBottom="60px"
+        android:id="@+id/backButton"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

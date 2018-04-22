@@ -12,20 +12,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 
-public class SettingsFragment extends Fragment {
+public class TutorialFragment extends Fragment {
 
-    private static final String TAG = "SETTINGS_FRAGMENT";
+    private static final String TAG = "TUTORIAL_FRAGMENT";
 
     private Button backButton;
-
-    private SeekBar masterVolume;
-    private SeekBar musicVolume;
-    private CheckBox musicEnabled;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.settings, container, false);
+        View view = inflater.inflate(R.layout.tutorial, container, false);
 
         backButton = (Button) view.findViewById(R.id.backButton);
 
@@ -36,10 +32,6 @@ public class SettingsFragment extends Fragment {
                 return false;
             }
         });
-
-        masterVolume = (SeekBar) view.findViewById(R.id.masterVolume);
-        musicVolume = (SeekBar) view.findViewById(R.id.musicVolume);
-        musicEnabled = (CheckBox) view.findViewById(R.id.musicEnabled);
 
         return view;
     }

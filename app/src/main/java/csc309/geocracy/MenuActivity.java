@@ -126,6 +126,7 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void setupViewPager(ViewPager vp) {
         MenuPagerAdapter adapter = new MenuPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MainMenuFragment(), "Main Menu");
+        adapter.addFragment(new TutorialFragment(), "Tutorial");
         adapter.addFragment(new SettingsFragment(), "Settings");
         vp.setAdapter(adapter);
         setViewPager(0);
