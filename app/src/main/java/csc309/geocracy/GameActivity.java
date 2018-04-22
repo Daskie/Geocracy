@@ -16,15 +16,22 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.reactivestreams.Subscriber;
+
 import java.util.Random;
 import java.util.concurrent.Callable;
 
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class GameActivity extends Activity implements SurfaceHolder.Callback {
@@ -80,15 +87,11 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
                                 .subscribeOn(Schedulers.io())
                                 // Be notified on the main thread
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeWith(new DisposableObserver<Integer>() {
-                                    @Override public void onComplete() {
-                                        Log.d(TAG, "onComplete()");
-
-                                    }
+                                .subscribeWith(new DisposableSingleObserver<Integer>() {
                                     @Override public void onError(Throwable e) {
                                         Log.e(TAG, "onError()", e);
                                     }
-                                    @Override public void onNext(Integer number) {
+                                    @Override public void onSuccess(Integer number) {
                                         Log.d(TAG, "onNext(" + number + ")");
                                         Toasty.success(GameActivity.this, "You rolled a: " + number, Toast.LENGTH_SHORT, true).show();
                                     }
@@ -104,12 +107,12 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         frame.addView(uiLayout);
     }
 
-    static Observable<Integer> rollDice() {
-        return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
-            @Override public ObservableSource<? extends Integer> call() throws Exception {
+    static Single<Integer> rollDice() {
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override public Integer call() throws Exception {
                 // wait 1.5 sec before returning a value between 1 and 6 (inclusive)
                 SystemClock.sleep(1500);
-                return Observable.just(random.nextInt(6) + 1);
+                return random.nextInt(6) + 1;
             }
         });
     }
