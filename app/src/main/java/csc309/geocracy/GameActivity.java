@@ -74,8 +74,6 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_UP:
-                        // PRESSED
-                        // Toasty Library for displaying notifications.
                         Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
                         disposables.add(rollDice()
                                 // Run on a background thread
