@@ -4,19 +4,26 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.view.RxView;
+
+import es.dmoral.toasty.Toasty;
 import glm_.vec2.Vec2;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 class MainSurfaceView extends GLSurfaceView {
+
+    private static final String TAG = "MAIN_SURFACE_VIEW";
 
     MainRenderer renderer;
 
     public MainSurfaceView(Context context){
         super(context);
         init();
-
     }
 
     public MainSurfaceView(Context context, AttributeSet attrs) {
@@ -29,6 +36,11 @@ class MainSurfaceView extends GLSurfaceView {
         renderer = new MainRenderer();
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
+    }
+
+    public void initEventing() {
+        Log.d(TAG, GameActivity.screenTapsObservable.toString());
+        GameActivity.screenTapsObservable.subscribe(e -> onTouchEvent(e));
     }
 
     // TODO: implement a proper input system that works between threads

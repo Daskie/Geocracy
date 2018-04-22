@@ -16,6 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.view.RxView;
+
 import org.reactivestreams.Subscriber;
 
 import java.util.Random;
@@ -24,6 +26,7 @@ import java.util.concurrent.Callable;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
@@ -43,6 +46,8 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
     private final CompositeDisposable disposables = new CompositeDisposable();
     private static final Random random = new Random();
+
+    static public Observable<MotionEvent> screenTapsObservable;
 
 
     /** Called when the activity is first created. */
@@ -66,6 +71,12 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 //        setContentView(mainSurfaceView);
         mainSurfaceView.getHolder().addCallback(this);
 
+        this.screenTapsObservable = RxView.touches(mainSurfaceView)
+                .subscribeOn(Schedulers.trampoline())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        mainSurfaceView.initEventing();
+
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
         frame.addView(mainSurfaceView);
 
@@ -84,7 +95,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
                         Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
                         disposables.add(rollDice()
                                 // Run on a background thread
-                                .subscribeOn(Schedulers.io())
+                                .subscribeOn(Schedulers.computation())
                                 // Be notified on the main thread
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeWith(new DisposableSingleObserver<Integer>() {
