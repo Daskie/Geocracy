@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -18,13 +20,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.concurrent.Callable;
+
 import es.dmoral.toasty.Toasty;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class MenuActivity extends Activity implements SurfaceHolder.Callback {
 
+    private static final String TAG = "MENU";
+
     static public MainSurfaceView mainSurfaceView;
     static public Game game;
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
+
 
     /** Called when the activity is first created. */
     @Override
@@ -92,6 +107,27 @@ public class MenuActivity extends Activity implements SurfaceHolder.Callback {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Toasty.warning(MenuActivity.this, "Need to Launch Settings!", Toast.LENGTH_SHORT, true).show();
+
+                disposables.add(sampleObservable()
+                        // Run on a background thread
+                        .subscribeOn(Schedulers.io())
+                        // Be notified on the main thread
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<String>() {
+                            @Override public void onComplete() {
+                                Log.d(TAG, "onComplete()");
+                            }
+
+                            @Override public void onError(Throwable e) {
+                                Log.e(TAG, "onError()", e);
+                            }
+
+                            @Override public void onNext(String string) {
+                                Log.d(TAG, "onNext(" + string + ")");
+                            }
+                        }));
+
+
                 return false;
             }
         });
@@ -112,6 +148,16 @@ public class MenuActivity extends Activity implements SurfaceHolder.Callback {
         uiLayout.addView(exitButton);
 
         frame.addView(uiLayout);
+    }
+
+    static Observable<String> sampleObservable() {
+        return Observable.defer(new Callable<ObservableSource<? extends String>>() {
+            @Override public ObservableSource<? extends String> call() throws Exception {
+                // Do some long running operation
+                SystemClock.sleep(5000);
+                return Observable.just("one", "two", "three", "four", "five");
+            }
+        });
     }
 
     @Override
