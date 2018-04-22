@@ -3,7 +3,9 @@ package csc309.geocracy;
 import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -14,12 +16,27 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.Random;
+import java.util.concurrent.Callable;
+
 import es.dmoral.toasty.Toasty;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
+    private static final String TAG = "GAME";
+
     static public MainSurfaceView mainSurfaceView;
     static public Game game;
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
+    private static final Random random = new Random();
+
 
     /** Called when the activity is first created. */
     @Override
@@ -59,7 +76,26 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
                     case MotionEvent.ACTION_UP:
                         // PRESSED
                         // Toasty Library for displaying notifications.
-                        Toasty.success(GameActivity.this, "Success!", Toast.LENGTH_SHORT, true).show();
+                        Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
+                        disposables.add(rollDice()
+                                // Run on a background thread
+                                .subscribeOn(Schedulers.io())
+                                // Be notified on the main thread
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeWith(new DisposableObserver<Integer>() {
+                                    @Override public void onComplete() {
+                                        Log.d(TAG, "onComplete()");
+
+                                    }
+                                    @Override public void onError(Throwable e) {
+                                        Log.e(TAG, "onError()", e);
+                                    }
+                                    @Override public void onNext(Integer number) {
+                                        Log.d(TAG, "onNext(" + number + ")");
+                                        Toasty.success(GameActivity.this, "You rolled a: " + number, Toast.LENGTH_SHORT, true).show();
+                                    }
+                                }));
+
                 }
                 return false;
             }
@@ -68,6 +104,16 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         uiLayout.addView(testButton);
         uiLayout.addView(rollDice);
         frame.addView(uiLayout);
+    }
+
+    static Observable<Integer> rollDice() {
+        return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+            @Override public ObservableSource<? extends Integer> call() throws Exception {
+                // wait 1.5 sec before returning a value between 1 and 6 (inclusive)
+                SystemClock.sleep(1500);
+                return Observable.just(random.nextInt(6) + 1);
+            }
+        });
     }
 
     @Override
