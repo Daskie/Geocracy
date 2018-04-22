@@ -1,19 +1,11 @@
 package csc309.geocracy;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.widget.Toast;
-
-import com.jakewharton.rxbinding2.view.RxView;
-
-import es.dmoral.toasty.Toasty;
 import glm_.vec2.Vec2;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 class MainSurfaceView extends GLSurfaceView {
 
