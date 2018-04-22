@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/menuLayout"
-    tools:context=".MenuActivity">
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <!--<csc309.geocracy.MainSurfaceView-->
-    <!--android:id="@+id/gameplaySurfaceView"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="fill_parent" />-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geocracy (v0.0.2)"
+        android:textSize="28dp"
+        android:paddingBottom="40dp"
+        android:labelFor="@+id/settingsHeader"/>
 
-    <!--<LinearLayout android:id="@+id/gameplayUI" android:layout_width="wrap_content" android:layout_height="wrap_content">-->
-    <!--<Button android:text="Button" android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>-->
-    <!--</LinearLayout>-->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:id="@+id/continueButton"/>
 
-</android.support.design.widget.CoordinatorLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/startButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tutorial"
+        android:id="@+id/tutorialButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:id="@+id/settingsButton"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit"
+        android:id="@+id/exitButton"/>
+
+</LinearLayout>
