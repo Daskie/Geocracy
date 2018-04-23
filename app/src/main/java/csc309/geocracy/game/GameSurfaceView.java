@@ -12,6 +12,7 @@ import glm_.vec2.Vec2;
 public class GameSurfaceView extends GLSurfaceView {
 
     private static final String TAG = "MAIN_SURFACE_VIEW";
+    private static final double ROTATION_DAMPER = 4.0;
 
     MainRenderer renderer;
 
@@ -45,7 +46,7 @@ public class GameSurfaceView extends GLSurfaceView {
         switch (action) {
 
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "Tap released: " + event.toString());
+//                Log.d(TAG, "Tap released: " + event.toString());
                 if (!didPanCamera) Log.d(TAG, "No camera pan, so check for territory selection");
                 didPanCamera = false;
                 
@@ -55,16 +56,16 @@ public class GameSurfaceView extends GLSurfaceView {
 
             case MotionEvent.ACTION_MOVE:
                 didPanCamera = true;
-                Log.d(TAG, "Touch moved: " + event.toString());
+//                Log.d(TAG, "Touch moved: " + event.toString());
 
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
                     Vec2 delta = new Vec2(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0)));
-                    synchronized (GameActivity.game) { GameActivity.game.swipeDelta.plusAssign(delta); }
+                    synchronized (GameActivity.game) { GameActivity.game.swipeDelta.plusAssign(delta.div(ROTATION_DAMPER)); }
                 }
                 return true;
             default:
-                Log.d(TAG, "event default: " + event.toString());
+//                Log.d(TAG, "event default: " + event.toString());
 
                 return super.onTouchEvent(event);
         }
