@@ -32,13 +32,14 @@ public class GameSurfaceView extends GLSurfaceView {
         renderer = new MainRenderer();
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
+        EventBus.subscribe("TEST_EVENT", this, e -> Log.d(TAG, e.toString()));
+        EventBus.subscribe("CAMERA_EVENT", this, e -> handleTouchEvent((MotionEvent) e));
     }
 
-    public void initEventing() {
-        EventBus.subscribe("TEST_EVENT", this, e -> Log.d(TAG, e.toString()));
-        Log.d(TAG, GameActivity.screenTapsObservable.toString());
-        GameActivity.screenTapsObservable.subscribe(e -> handleTouchEvent(e));
-    }
+//    public void initEventing() {
+////        EventBus.subscribe("TEST_EVENT", this, e -> Log.d(TAG, e.toString()));
+////        EventBus.subscribe("CAMERA_EVENT", this, e -> handleTouchEvent((MotionEvent) e));
+//    }
 
     private boolean didPanCamera = false;
 

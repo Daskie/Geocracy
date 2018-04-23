@@ -38,7 +38,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
     private final CompositeDisposable disposables = new CompositeDisposable();
     private static final Random random = new Random();
 
-    static public Observable<MotionEvent> screenTapsObservable;
+//    static public Observable<MotionEvent> screenTapsObservable;
 
 
     /** Called when the activity is first created. */
@@ -62,11 +62,8 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 //        setContentView(mainSurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
 
-        this.screenTapsObservable = RxView.touches(gameSurfaceView)
-                .subscribeOn(Schedulers.trampoline())
-                .observeOn(AndroidSchedulers.mainThread());
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
 
-        gameSurfaceView.initEventing();
 
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
         frame.addView(gameSurfaceView);
