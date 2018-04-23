@@ -18,6 +18,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
+import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
@@ -74,34 +75,29 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
         Button testButton = new  Button(this);
         testButton.setText("Geocracy (v0.0.1)");
+        disposables.add(RxView.touches(testButton).subscribe(e -> EventBus.publish("TEST_EVENT", e)));
+
 
         Button rollDice = new Button(this);
         rollDice.setText("Roll dice!");
-        rollDice.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
-                        disposables.add(rollDice()
-                                // Run on a background thread
-                                .subscribeOn(Schedulers.computation())
-                                // Be notified on the main thread
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeWith(new DisposableSingleObserver<Integer>() {
-                                    @Override public void onError(Throwable e) {
-                                        Log.e(TAG, "onError()", e);
-                                    }
-                                    @Override public void onSuccess(Integer number) {
-                                        Log.d(TAG, "onNext(" + number + ")");
-                                        Toasty.success(GameActivity.this, "You rolled a: " + number, Toast.LENGTH_SHORT, true).show();
-                                    }
-                                }));
-
-                }
-                return false;
-            }
-        });
+        disposables.add(RxView.touches(rollDice).subscribe(e -> {
+            if (e.getAction() != MotionEvent.ACTION_UP) return;
+            Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
+            disposables.add(rollDice()
+                // Run on a background thread
+                .subscribeOn(Schedulers.computation())
+                // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Integer>() {
+                    @Override public void onError(Throwable e) {
+                        Log.e(TAG, "onError()", e);
+                    }
+                    @Override public void onSuccess(Integer number) {
+                        Log.d(TAG, "onNext(" + number + ")");
+                        Toasty.success(GameActivity.this, "You rolled a: " + number, Toast.LENGTH_SHORT, true).show();
+                    }
+                }));
+        }));
 
         uiLayout.addView(testButton);
         uiLayout.addView(rollDice);
@@ -133,6 +129,8 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        disposables.dispose();
+        EventBus.unregister(this);
     }
 
     @Override

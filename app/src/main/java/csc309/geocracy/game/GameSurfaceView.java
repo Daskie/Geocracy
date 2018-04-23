@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import csc309.geocracy.EventBus;
 import csc309.geocracy.graphics.MainRenderer;
 import glm_.vec2.Vec2;
 
@@ -34,6 +35,7 @@ public class GameSurfaceView extends GLSurfaceView {
     }
 
     public void initEventing() {
+        EventBus.subscribe("TEST_EVENT", this, e -> Log.d(TAG, e.toString()));
         Log.d(TAG, GameActivity.screenTapsObservable.toString());
         GameActivity.screenTapsObservable.subscribe(e -> handleTouchEvent(e));
     }
@@ -69,6 +71,8 @@ public class GameSurfaceView extends GLSurfaceView {
 
                 return super.onTouchEvent(event);
         }
+
+
     }
 
 }

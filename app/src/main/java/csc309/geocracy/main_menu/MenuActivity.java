@@ -16,8 +16,6 @@ import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.fragments.TutorialFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameSurfaceView;
-import csc309.geocracy.main_menu.MenuPagerAdapter;
-import csc309.geocracy.main_menu.NonSwipeableViewPager;
 
 
 public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Callback {

@@ -31,6 +31,7 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu, container, false);
+
         continueButton = (Button) view.findViewById(R.id.continueButton);
 
         continueButton.setOnTouchListener(new View.OnTouchListener() {
