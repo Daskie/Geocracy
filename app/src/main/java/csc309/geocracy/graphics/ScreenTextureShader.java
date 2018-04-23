@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.util.Log;
 

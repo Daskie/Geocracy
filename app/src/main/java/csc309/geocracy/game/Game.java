@@ -1,8 +1,10 @@
-package csc309.geocracy;
+package csc309.geocracy.game;
 
 import android.opengl.GLES30;
 import android.util.Log;
 
+import csc309.geocracy.Util;
+import csc309.geocracy.graphics.OrbitCamera;
 import csc309.geocracy.noise.NoiseTest;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;

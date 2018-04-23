@@ -2,8 +2,8 @@ package csc309.geocracy.world;
 
 import android.util.Log;
 
-import csc309.geocracy.BasicShader;
-import csc309.geocracy.MeshMaker;
+import csc309.geocracy.graphics.BasicShader;
+import csc309.geocracy.graphics.MeshMaker;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import glm_.mat3x3.Mat3;
