@@ -3,12 +3,10 @@ package csc309.geocracy.world;
 import android.opengl.GLES30;
 import android.util.Log;
 import android.util.LongSparseArray;
-import android.util.SparseArray;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import csc309.geocracy.MeshMaker;
@@ -22,13 +20,17 @@ import static glm_.Java.glm;
 
 public class TerrainMesh {
 
+    class Face {
+        int[] adjacencies = new int[3];
+        byte coastDist;
+        byte territory;
+    }
+
     private float[] locations;
     private int[] indices;
-    private byte[] coastDist;
-    private byte[] territories;
     private int vboHandle;
     private int vaoHandle;
-    private SparseArray<int[]> faceAdjacencies;
+    Face[] faces;
     int maxCoastDist;
     int[] territorySpawnFaces;
 
@@ -36,6 +38,8 @@ public class TerrainMesh {
         Mesh sphereMesh = MeshMaker.makeSphereIndexed("Terrain", tessellationDegree);
         locations = sphereMesh.getLocations();
         indices = sphereMesh.getIndices();
+        faces = new Face[indices.length / 3];
+        for (int fi = 0; fi < faces.length; ++fi) faces[fi] = new Face();
         genFaceAdjacencies();
     }
 
@@ -123,14 +127,14 @@ public class TerrainMesh {
         vertexData.order(ByteOrder.nativeOrder());
 
         // Interlace vertex data
-        int nFaces = indices.length / 3;
-        for (int fi = 0; fi < nFaces; ++fi) {
+        for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
             Vec3 v1 = VecArrayUtil.get(locations, indices[ii + 0]);
             Vec3 v2 = VecArrayUtil.get(locations, indices[ii + 1]);
             Vec3 v3 = VecArrayUtil.get(locations, indices[ii + 2]);
             Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
-            int info = Util.toInt(coastDist[fi], territories[fi], (byte)0, (byte)0);
+            Face face = faces[fi];
+            int info = Util.toInt(face.coastDist, face.territory, (byte)0, (byte)0);
 
             vertexData.putFloat(v1.x);
             vertexData.putFloat(v1.y);
@@ -166,18 +170,13 @@ public class TerrainMesh {
             Edge(int faceI, int faceEdgeI) { this.faceI = faceI; this.faceEdgeI = faceEdgeI; }
         }
 
-        faceAdjacencies = new SparseArray<>();
-
         LongSparseArray<Edge> edges = new LongSparseArray<>();
-        int nFaces = indices.length / 3;
-        for (int fi = 0; fi < nFaces; ++fi) {
+        for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
             int vi1 = indices[ii + 0];
             int vi2 = indices[ii + 1];
             int vi3 = indices[ii + 2];
-
-            int[] adjacencies = new int[3];
-            faceAdjacencies.put(fi, adjacencies);
+            Face face = faces[fi];
 
             // Edge v1 -> v2
             long key = vi1 < vi2 ? Util.toLong(vi1, vi2) : Util.toLong(vi2, vi1);
@@ -186,8 +185,8 @@ public class TerrainMesh {
                 edges.put(key, new Edge(fi, 0));
             }
             else {
-                adjacencies[0] = edge.faceI;
-                faceAdjacencies.get(edge.faceI)[edge.faceEdgeI] = fi;
+                face.adjacencies[0] = edge.faceI;
+                faces[edge.faceI].adjacencies[edge.faceEdgeI] = fi;
             }
 
             // Edge v2 -> v3
@@ -197,8 +196,8 @@ public class TerrainMesh {
                 edges.put(key, new Edge(fi, 1));
             }
             else {
-                adjacencies[1] = edge.faceI;
-                faceAdjacencies.get(edge.faceI)[edge.faceEdgeI] = fi;
+                face.adjacencies[1] = edge.faceI;
+                faces[edge.faceI].adjacencies[edge.faceEdgeI] = fi;
             }
 
             // Edge v3 -> v1
@@ -208,8 +207,8 @@ public class TerrainMesh {
                 edges.put(key, new Edge(fi, 2));
             }
             else {
-                adjacencies[2] = edge.faceI;
-                faceAdjacencies.get(edge.faceI)[edge.faceEdgeI] = fi;
+                face.adjacencies[2] = edge.faceI;
+                faces[edge.faceI].adjacencies[edge.faceEdgeI] = fi;
             }
         }
     }
@@ -270,16 +269,14 @@ public class TerrainMesh {
     }
 
     void calcCoastDistance() {
-        int nFaces = indices.length / 3;
-        coastDist = new byte[nFaces];
 
         HashSet<Integer> currFaces = new HashSet<>();
         HashSet<Integer> nextFaces = new HashSet<>();
-        byte[] signs = new byte[nFaces];
+        byte[] signs = new byte[faces.length];
 
         // Start with coast faces
-        for (int fi = 0; fi < nFaces; ++fi) {
-            coastDist[fi] = -1;
+        for (int fi = 0; fi < faces.length; ++fi) {
+            faces[fi].coastDist = -1;
             int ii = fi * 3;
             float elev1 = VecArrayUtil.length2(locations, indices[ii + 0]);
             float elev2 = VecArrayUtil.length2(locations, indices[ii + 1]);
@@ -294,12 +291,12 @@ public class TerrainMesh {
         int currDist = 0;
         while (true) {
             for (Integer fi : currFaces) {
-                coastDist[fi] = (byte) currDist;
+                faces[fi].coastDist = (byte)currDist;
 
-                int[] adjacencies = faceAdjacencies.get(fi);
-                if (coastDist[adjacencies[0]] == -1) nextFaces.add(adjacencies[0]);
-                if (coastDist[adjacencies[1]] == -1) nextFaces.add(adjacencies[1]);
-                if (coastDist[adjacencies[2]] == -1) nextFaces.add(adjacencies[2]);
+                int[] adjacencies = faces[fi].adjacencies;
+                if (faces[adjacencies[0]].coastDist == -1) nextFaces.add(adjacencies[0]);
+                if (faces[adjacencies[1]].coastDist == -1) nextFaces.add(adjacencies[1]);
+                if (faces[adjacencies[2]].coastDist == -1) nextFaces.add(adjacencies[2]);
             }
 
             if (nextFaces.isEmpty()) {
@@ -313,8 +310,8 @@ public class TerrainMesh {
             ++currDist;
         }
 
-        for (int fi = 0; fi < nFaces; ++fi) {
-            coastDist[fi] *= signs[fi];
+        for (int fi = 0; fi < faces.length; ++fi) {
+            faces[fi].coastDist *= signs[fi];
         }
 
         maxCoastDist = currDist;
@@ -328,9 +325,7 @@ public class TerrainMesh {
     }
 
     void spreadTerritories() {
-        int nFaces = indices.length / 3;
-        territories = new byte[nFaces];
-        Arrays.fill(territories, (byte)-1);
+        for (Face face : faces) face.territory = (byte)-1;
         int nTerritories = territorySpawnFaces.length;
         HashSet<Integer> fringes = new HashSet<>();
         ArrayDeque<Integer> fringeQueue = new ArrayDeque<>();
@@ -338,7 +333,7 @@ public class TerrainMesh {
         for (int ti = 0; ti < nTerritories; ++ti) {
             int fi = territorySpawnFaces[ti];
             if (!fringes.contains(fi)) {
-                territories[fi] = (byte)ti;
+                faces[fi].territory = (byte)ti;
                 fringes.add(fi);
                 fringeQueue.addLast(fi);
             }
@@ -346,12 +341,12 @@ public class TerrainMesh {
 
         while (!fringeQueue.isEmpty()) {
             int origFI = fringeQueue.getFirst();
-            byte territory = territories[origFI];
-            int[] adjacencies = faceAdjacencies.get(origFI);
+            byte territory = faces[origFI].territory;
+            int[] adjacencies = faces[origFI].adjacencies;
             for (int i = 0; i < 3; ++i) {
                 int fi = adjacencies[i];
-                if (!fringes.contains(fi) && territories[fi] == -1) {
-                    territories[fi] = territory;
+                if (!fringes.contains(fi) && faces[fi].territory == -1) {
+                    faces[fi].territory = territory;
                     fringes.add(fi);
                     fringeQueue.addLast(fi);
                 }
@@ -377,9 +372,8 @@ public class TerrainMesh {
         while (true) {
             prevFI = currFI;
             currFI = nextFI;
-            int[] adjacencies = faceAdjacencies.get(currFI);
             for (int i = 0; i < 3; ++i) {
-                int fi = adjacencies[i];
+                int fi = faces[currFI].adjacencies[i];
                 if (fi != prevFI) {
                     float dist2 = glm.length2(p.minus(centerOfFace(fi)));
                     if (dist2 < minDist2) {

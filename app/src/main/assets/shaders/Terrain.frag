@@ -41,8 +41,8 @@ void main() {
     }*/
     out_color.a = 1.0f;
 
-    //out_color.rgb = u_continentColors[v2f_territory % MAX_N_CONTINENTS];
-    out_color.rgb = vec3(max(v2f_coastDist, 0.0f), 0.0f, max(-v2f_coastDist, 0.0f));
+    out_color.rgb = u_continentColors[v2f_territory % MAX_N_CONTINENTS];
+    //out_color.rgb = vec3(max(v2f_coastDist, 0.0f), 0.0f, max(-v2f_coastDist, 0.0f));
 
     // Diffuse lighting
     float diffuseK = max(dot(norm, u_lightDir), 0.0f) + k_ambience;

@@ -19,7 +19,7 @@ public class Terrain {
         lowElevation = 0.95f;
 
         mesh.calcTerritorySpawns(40);
-        mesh.terraform(seed, highElevation, lowElevation);
+        //mesh.terraform(seed, highElevation, lowElevation);
         mesh.calcCoastDistance();
         mesh.spreadTerritories();
     }
