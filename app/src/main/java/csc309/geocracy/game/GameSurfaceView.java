@@ -5,20 +5,22 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import csc309.geocracy.graphics.MainRenderer;
 import glm_.vec2.Vec2;
 
-class MainSurfaceView extends GLSurfaceView {
+public class GameSurfaceView extends GLSurfaceView {
 
     private static final String TAG = "MAIN_SURFACE_VIEW";
 
     MainRenderer renderer;
 
-    public MainSurfaceView(Context context){
+    public GameSurfaceView(Context context){
         super(context);
         init();
     }
 
-    public MainSurfaceView(Context context, AttributeSet attrs) {
+    public GameSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }

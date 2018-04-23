@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding2.view.RxView;
 import java.util.Random;
 import java.util.concurrent.Callable;
+
+import csc309.geocracy.game.Game;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -29,7 +31,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
     private static final String TAG = "GAME";
 
-    static public MainSurfaceView mainSurfaceView;
+    static public GameSurfaceView gameSurfaceView;
     static public Game game;
 
     private final CompositeDisposable disposables = new CompositeDisposable();
@@ -55,18 +57,18 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         // Setup game
         game = new Game();
 
-        mainSurfaceView = new MainSurfaceView(this);
+        gameSurfaceView = new GameSurfaceView(this);
 //        setContentView(mainSurfaceView);
-        mainSurfaceView.getHolder().addCallback(this);
+        gameSurfaceView.getHolder().addCallback(this);
 
-        this.screenTapsObservable = RxView.touches(mainSurfaceView)
+        this.screenTapsObservable = RxView.touches(gameSurfaceView)
                 .subscribeOn(Schedulers.trampoline())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        mainSurfaceView.initEventing();
+        gameSurfaceView.initEventing();
 
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
-        frame.addView(mainSurfaceView);
+        frame.addView(gameSurfaceView);
 
         LinearLayout uiLayout = new LinearLayout(this);
 
@@ -119,13 +121,13 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
     @Override
     protected void onResume() {
         super.onResume();
-        mainSurfaceView.onResume();
+        gameSurfaceView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mainSurfaceView.onPause();
+        gameSurfaceView.onPause();
     }
 
     @Override
