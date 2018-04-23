@@ -37,13 +37,26 @@ public class GameSurfaceView extends GLSurfaceView {
         GameActivity.screenTapsObservable.subscribe(e -> handleTouchEvent(e));
     }
 
+    private boolean didPanCamera = false;
+
     // TODO: implement a proper input system that works between threads
     public boolean handleTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
         switch (action) {
+
+            case MotionEvent.ACTION_UP:
+                Log.d(TAG, "Tap released: " + event.toString());
+                if (!didPanCamera) Log.d(TAG, "No camera pan, so check for territory selection");
+                didPanCamera = false;
+                
             case MotionEvent.ACTION_DOWN:
+                didPanCamera = false;
                 return true; // just here so we get the move action
+
             case MotionEvent.ACTION_MOVE:
+                didPanCamera = true;
+                Log.d(TAG, "Touch moved: " + event.toString());
+
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
                     Vec2 delta = new Vec2(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0)));
@@ -51,6 +64,8 @@ public class GameSurfaceView extends GLSurfaceView {
                 }
                 return true;
             default:
+                Log.d(TAG, "event default: " + event.toString());
+
                 return super.onTouchEvent(event);
         }
     }
