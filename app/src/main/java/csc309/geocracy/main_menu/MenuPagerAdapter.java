@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.main_menu;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

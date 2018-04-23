@@ -1,5 +1,6 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
+import csc309.geocracy.Util;
 import csc309.geocracy.graphics.Camera;
 import glm_.mat3x3.Mat3;
 import glm_.quat.Quat;

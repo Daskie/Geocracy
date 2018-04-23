@@ -1,10 +1,12 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.opengl.GLSurfaceView;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.Util;
 import glm_.vec2.Vec2i;
 
 public class MainRenderer implements GLSurfaceView.Renderer {

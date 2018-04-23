@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.main_menu.MenuActivity;
+import csc309.geocracy.R;
 import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {

@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.opengl.GLES20;
 import android.opengl.GLES30;
@@ -7,7 +7,7 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import csc309.geocracy.graphics.Texture;
+import csc309.geocracy.Util;
 
 public class ScreenTextureRenderer {
 

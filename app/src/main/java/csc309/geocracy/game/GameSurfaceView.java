@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.game;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -34,12 +34,11 @@ public class GameSurfaceView extends GLSurfaceView {
 
     public void initEventing() {
         Log.d(TAG, GameActivity.screenTapsObservable.toString());
-        GameActivity.screenTapsObservable.subscribe(e -> onTouchEvent(e));
+        GameActivity.screenTapsObservable.subscribe(e -> handleTouchEvent(e));
     }
 
     // TODO: implement a proper input system that works between threads
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean handleTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:

@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.main_menu;
 
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -10,10 +10,12 @@ import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
 
+import csc309.geocracy.R;
 import csc309.geocracy.fragments.MainMenuFragment;
 import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.fragments.TutorialFragment;
 import csc309.geocracy.game.Game;
+import csc309.geocracy.game.GameSurfaceView;
 import csc309.geocracy.main_menu.MenuPagerAdapter;
 import csc309.geocracy.main_menu.NonSwipeableViewPager;
 

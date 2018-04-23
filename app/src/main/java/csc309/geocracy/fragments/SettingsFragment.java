@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
+
+import csc309.geocracy.main_menu.MenuActivity;
+import csc309.geocracy.R;
 
 public class SettingsFragment extends Fragment {
 

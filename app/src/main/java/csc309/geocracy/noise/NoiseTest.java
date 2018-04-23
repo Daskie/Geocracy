@@ -2,7 +2,7 @@ package csc309.geocracy.noise;
 
 import android.util.Log;
 
-import csc309.geocracy.ScreenTextureRenderer;
+import csc309.geocracy.graphics.ScreenTextureRenderer;
 import csc309.geocracy.graphics.Texture;
 import glm_.vec2.Vec2i;
 

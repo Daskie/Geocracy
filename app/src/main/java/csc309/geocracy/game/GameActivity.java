@@ -1,4 +1,4 @@
-package csc309.geocracy;
+package csc309.geocracy.game;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
@@ -18,7 +18,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-import csc309.geocracy.game.Game;
+import csc309.geocracy.R;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Observable;
 import io.reactivex.Single;

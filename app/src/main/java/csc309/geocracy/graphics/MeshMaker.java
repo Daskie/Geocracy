@@ -1,7 +1,8 @@
-package csc309.geocracy;
+package csc309.geocracy.graphics;
 
 import android.util.LongSparseArray;
 
+import csc309.geocracy.Util;
 import csc309.geocracy.graphics.Mesh;
 import glm_.vec3.Vec3;
 

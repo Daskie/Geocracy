@@ -7,7 +7,7 @@ import android.util.SparseArray;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import csc309.geocracy.MeshMaker;
+import csc309.geocracy.graphics.MeshMaker;
 import csc309.geocracy.Util;
 import csc309.geocracy.graphics.Mesh;
 import glm_.vec3.Vec3;
