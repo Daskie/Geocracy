@@ -98,9 +98,7 @@ public abstract class Util {
     // Some base-2 integer functions
 
     // Returns 2 raised to the power v
-    public static int pow2(int v) {
-        return 1 << v;
-    }
+    public static int pow2(int v) { return 1 << v; }
 
     // Returns whether or not the v is a power of 2
     public static boolean isPow2(int v) {
