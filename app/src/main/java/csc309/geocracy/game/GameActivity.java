@@ -8,7 +8,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -17,11 +16,9 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding2.view.RxView;
 import java.util.Random;
 import java.util.concurrent.Callable;
-
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import es.dmoral.toasty.Toasty;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -38,10 +35,7 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
     private final CompositeDisposable disposables = new CompositeDisposable();
     private static final Random random = new Random();
 
-//    static public Observable<MotionEvent> screenTapsObservable;
 
-
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
