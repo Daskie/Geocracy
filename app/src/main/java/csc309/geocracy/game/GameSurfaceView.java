@@ -57,14 +57,15 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
             case MotionEvent.ACTION_UP:
 //                Log.d(TAG, "Tap released: " + event.toString());
-                if (!didPanCamera) Log.d(TAG, "No camera pan, so check for territory selection");
+                if (!didPanCamera && event.getPointerCount() == 1) Log.d(TAG, "No camera pan, so check for territory selection");
                 didPanCamera = false;
                 
             case MotionEvent.ACTION_DOWN:
-                didPanCamera = false;
+                if (event.getPointerCount() == 1) didPanCamera = false;
                 return true; // just here so we get the move action
 
             case MotionEvent.ACTION_MOVE:
+                if (event.getPointerCount() == 2) return true;
                 didPanCamera = true;
 //                Log.d(TAG, "Touch moved: " + event.toString());
 
@@ -84,7 +85,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        double zoom = (detector.getScaleFactor() - 1.0);
+        double zoom = -(detector.getScaleFactor() - 1.0) / 1.25;
         EventBus.publish("CAMERA_ZOOM_EVENT", new Double(zoom));
         return true;
     }
