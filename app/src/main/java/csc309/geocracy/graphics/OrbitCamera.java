@@ -36,7 +36,7 @@ public class OrbitCamera extends Camera {
     }
 
     public void setElevation(float elevation) {
-        this.elevation = elevation;
+        this.elevation = clamp(elevation, MIN_ELEVATION, MAX_ELEVATION);
         viewMatrix = null;
     }
 
@@ -44,9 +44,8 @@ public class OrbitCamera extends Camera {
         setElevation(elevation + delta);
     }
     public void changeElevation(double delta) {
-        setElevation(clamp(elevation + (float) delta, MIN_ELEVATION, MAX_ELEVATION));
+        setElevation(elevation + (float) delta);
     }
-
 
     public void setLocation(Vec3 location) {
         Vec3 a = getW();
