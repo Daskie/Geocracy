@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-import csc309.geocracy.MeshMaker;
+import csc309.geocracy.graphics.MeshMaker;
 import csc309.geocracy.Util;
 import csc309.geocracy.VecArrayUtil;
 import csc309.geocracy.graphics.Camera;

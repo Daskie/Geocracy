@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.Random;
 
-import csc309.geocracy.ScreenTextureRenderer;
+import csc309.geocracy.graphics.ScreenTextureRenderer;
 import csc309.geocracy.graphics.Texture;
 import glm_.vec2.Vec2i;
 
