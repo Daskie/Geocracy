@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Random;
 
 import csc309.geocracy.MeshMaker;
 import csc309.geocracy.Util;
@@ -15,6 +16,7 @@ import csc309.geocracy.VecArrayUtil;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.noise.SimplexNoise;
+import glm_.mat3x3.Mat3;
 import glm_.vec3.Vec3;
 
 import static glm_.Java.glm;
@@ -30,6 +32,7 @@ public class Terrain {
     private TerrainShader shader;
     private float highElevation, lowElevation;
     private float[] locations;
+    private boolean[] borders;
     private int[] indices;
     private int vboHandle;
     private int vaoHandle;
@@ -37,7 +40,7 @@ public class Terrain {
     private int maxCoastDist;
     private int[] territorySpawnFaces;
 
-    public Terrain(int tessellationDegree, long seed) {
+    public Terrain(int tessellationDegree, Random rand) {
         shader = new TerrainShader();
         highElevation = 1.1f;
         lowElevation = 0.95f;
@@ -48,10 +51,11 @@ public class Terrain {
         for (int fi = 0; fi < faces.length; ++fi) faces[fi] = new Face();
 
         genFaceAdjacencies();
-        calcTerritorySpawns(40);
+        calcTerritorySpawns(40, rand);
         //mesh.terraform(seed, highElevation, lowElevation);
         calcCoastDistance();
         spreadTerritories();
+        detBorders();
     }
 
     public boolean load() {
@@ -113,7 +117,11 @@ public class Terrain {
         shader.setLowElevation(lowElevation);
         shader.setHighElevation(highElevation);
         shader.setMaxCoastDist(maxCoastDist);
-        shader.setContinentColors(genContinentColors(40));
+        Vec3[] continentColors = genContinentColors(40);
+        Vec3[] allColors = new Vec3[continentColors.length + 1];
+        System.arraycopy(continentColors, 0, allColors, 1, continentColors.length);
+        allColors[0] = new Vec3(0.0f);
+        shader.setContinentColors(allColors);
 
         return true;
     }
@@ -152,12 +160,23 @@ public class Terrain {
         // Interlace vertex data
         for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
-            Vec3 v1 = VecArrayUtil.get(locations, indices[ii + 0]);
-            Vec3 v2 = VecArrayUtil.get(locations, indices[ii + 1]);
-            Vec3 v3 = VecArrayUtil.get(locations, indices[ii + 2]);
+            int vi1 = indices[ii + 0];
+            int vi2 = indices[ii + 1];
+            int vi3 = indices[ii + 2];
+            Vec3 v1 = VecArrayUtil.get(locations, vi1);
+            Vec3 v2 = VecArrayUtil.get(locations, vi2);
+            Vec3 v3 = VecArrayUtil.get(locations, vi3);
             Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
+
             Face face = faces[fi];
+            boolean e12 = (borders[vi1] || borders[vi2]) && face.territory != faces[face.adjacencies[0]].territory;
+            boolean e23 = (borders[vi2] || borders[vi3]) && face.territory != faces[face.adjacencies[1]].territory;
+            boolean e31 = (borders[vi3] || borders[vi1]) && face.territory != faces[face.adjacencies[2]].territory;
+
             int info = Util.toInt(face.coastDist, face.territory, (byte)0, (byte)0);
+            int info1 = info | (((borders[vi1] ? 1 : 0) | (e12 ? 2 : 0)                 | (e31 ? 8 : 0)) << 16);
+            int info2 = info | (((borders[vi2] ? 1 : 0) | (e12 ? 2 : 0) | (e23 ? 4 : 0)                ) << 16);
+            int info3 = info | (((borders[vi3] ? 1 : 0)                 | (e23 ? 4 : 0) | (e31 ? 8 : 0)) << 16);
 
             vertexData.putFloat(v1.x);
             vertexData.putFloat(v1.y);
@@ -165,21 +184,21 @@ public class Terrain {
             vertexData.putFloat(n.x);
             vertexData.putFloat(n.y);
             vertexData.putFloat(n.z);
-            vertexData.putInt(info);
+            vertexData.putInt(info1);
             vertexData.putFloat(v2.x);
             vertexData.putFloat(v2.y);
             vertexData.putFloat(v2.z);
             vertexData.putFloat(n.x);
             vertexData.putFloat(n.y);
             vertexData.putFloat(n.z);
-            vertexData.putInt(info);
+            vertexData.putInt(info2);
             vertexData.putFloat(v3.x);
             vertexData.putFloat(v3.y);
             vertexData.putFloat(v3.z);
             vertexData.putFloat(n.x);
             vertexData.putFloat(n.y);
             vertexData.putFloat(n.z);
-            vertexData.putInt(info);
+            vertexData.putInt(info3);
         }
 
         vertexData.flip();
@@ -348,15 +367,18 @@ public class Terrain {
         maxCoastDist = currDist;
     }
 
-    private void calcTerritorySpawns(int nTerritories) {
+    private void calcTerritorySpawns(int nTerritories, Random rand) {
         territorySpawnFaces = new int[nTerritories];
+        Vec3 w = Util.pointOnSphereRandom(rand);
+        Vec3 v = Util.ortho(w);
+        Vec3 u = v.cross(w);
+        Mat3 basis = new Mat3(u, v, w);
         for (int ti = 0; ti < nTerritories; ++ti) {
-            territorySpawnFaces[ti] = faceNearestTo(Util.pointOnSphereFibonacci(ti, nTerritories));
+            territorySpawnFaces[ti] = faceNearestTo(basis.times(Util.pointOnSphereFibonacci(ti, nTerritories)));
         }
     }
 
     private void spreadTerritories() {
-        for (Face face : faces) face.territory = (byte)-1;
         int nTerritories = territorySpawnFaces.length;
         HashSet<Integer> fringes = new HashSet<>();
         ArrayDeque<Integer> fringeQueue = new ArrayDeque<>();
@@ -364,7 +386,7 @@ public class Terrain {
         for (int ti = 0; ti < nTerritories; ++ti) {
             int fi = territorySpawnFaces[ti];
             if (!fringes.contains(fi)) {
-                faces[fi].territory = (byte)ti;
+                faces[fi].territory = (byte)(ti + 1);
                 fringes.add(fi);
                 fringeQueue.addLast(fi);
             }
@@ -376,7 +398,7 @@ public class Terrain {
             int[] adjacencies = faces[origFI].adjacencies;
             for (int i = 0; i < 3; ++i) {
                 int fi = adjacencies[i];
-                if (!fringes.contains(fi) && faces[fi].territory == -1) {
+                if (faces[fi].territory == 0 && !fringes.contains(fi)) {
                     faces[fi].territory = territory;
                     fringes.add(fi);
                     fringeQueue.addLast(fi);
@@ -384,6 +406,24 @@ public class Terrain {
             }
             fringeQueue.removeFirst();
             fringes.remove(origFI);
+        }
+    }
+
+    private void detBorders() {
+        borders = new boolean[locations.length];
+        byte[] territories = new byte[borders.length];
+        for (int fi = 0; fi < faces.length; ++fi) {
+            int ii = fi * 3;
+            Face face = faces[fi];
+            for (int i = 0; i < 3; ++i) {
+                int vi = indices[ii + i];
+                if (territories[vi] == 0) {
+                    territories[vi] = face.territory;
+                }
+                else if (territories[vi] != face.territory) {
+                    borders[vi] = true;
+                }
+            }
         }
     }
 

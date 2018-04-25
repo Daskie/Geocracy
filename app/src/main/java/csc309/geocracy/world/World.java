@@ -2,6 +2,8 @@ package csc309.geocracy.world;
 
 import android.util.Log;
 
+import java.util.Random;
+
 import csc309.geocracy.graphics.Camera;
 import glm_.vec3.Vec3;
 
@@ -11,10 +13,12 @@ public class World {
 
     private Terrain terrain;
     private long seed;
+    private Random rand;
     private OceanRenderer oceanRenderer;
 
     public World(long seed) {
-        terrain = new Terrain(TESSELLATION_DEGREE, seed);
+        rand = new Random(seed);
+        terrain = new Terrain(TESSELLATION_DEGREE, rand);
         this.seed = seed;
 
         //oceanRenderer = new OceanRenderer();

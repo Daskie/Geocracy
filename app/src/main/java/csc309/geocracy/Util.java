@@ -8,13 +8,14 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
-import glm_.glm;
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
 import glm_.vec4.Vec4;
 
 import static android.opengl.GLU.gluErrorString;
+import static glm_.Java.glm;
 
 public abstract class Util {
 
@@ -22,7 +23,7 @@ public abstract class Util {
     public static final float EPSILON = 1e-6f;
 
     // PI
-    public static final float PI = glm.PIf;
+    public static final float PI = glm_.glm.PIf;
     // Golden ratio
     public static final float PHI = (float)((1.0 + Math.sqrt(5.0)) / 2.0);
 
@@ -163,7 +164,15 @@ public abstract class Util {
     // Returns the ith of n evenly distributed points on the unit sphere
     public static Vec3 pointOnSphereFibonacci(int i, int n) {
         float z = 1.0f - (float)(2 * i) / (float)(n - 1);
-        return cylindricToCartesian((float)Math.sqrt(1.0f - z * z), 2.0f * PI * (2.0f - PHI) * (float)i, z);
+        float theta = 2.0f * PI * (2.0f - PHI) * (float)i;
+        return cylindricToCartesian((float)Math.sqrt(1.0f - z * z), theta, z);
+    }
+
+    // Returns random point evenly distributed on unit sphere
+    public static Vec3 pointOnSphereRandom(Random rand) {
+        float z = rand.nextFloat() * 2.0f - 1.0f;
+        float theta = rand.nextFloat() * 2.0f * PI;
+        return cylindricToCartesian((float)Math.sqrt(1.0f - z * z), theta, z);
     }
 
     // Get RGB color from Hue Saturation Luminosity
@@ -176,6 +185,24 @@ public abstract class Util {
             ((color >> 8) & 0xFF) * factor,
             (color & 0xFF) * factor
         );
+    }
+
+    // Returns v rotated 90 degrees CCW
+    public static Vec2 ortho(Vec2 v) {
+        return new Vec2(-v.y, +v.x);
+    }
+
+    // Returns an arbitrary unit vector orthogonal to v
+    public static Vec3 ortho(Vec3 v) {
+        if (glm.abs(v.z) <= glm.abs(v.y) && glm.abs(v.z) <= glm.abs(v.x)) { // z is smallest
+            return new Vec3(-v.y, +v.x, 0.0f).normalizeAssign(); // rotate around z
+        }
+        else if (glm.abs(v.y) <= glm.abs(v.x)) { // y is smallest
+            return new Vec3(+v.z, 0.0f, -v.x).normalizeAssign(); // rotate around y
+        }
+        else { // x is smallest
+            return new Vec3(0.0f, -v.z, +v.y).normalizeAssign(); // rotate around x
+        }
     }
 
 }
