@@ -1,5 +1,6 @@
 package csc309.geocracy;
 
+import android.graphics.Color;
 import android.opengl.GLES30;
 import android.os.Process;
 import android.util.Log;
@@ -7,14 +8,24 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
 import glm_.vec4.Vec4;
 
 import static android.opengl.GLU.gluErrorString;
+import static glm_.Java.glm;
 
 public abstract class Util {
+
+    // For use with floating point comparisons
+    public static final float EPSILON = 1e-6f;
+
+    // PI
+    public static final float PI = glm_.glm.PIf;
+    // Golden ratio
+    public static final float PHI = (float)((1.0 + Math.sqrt(5.0)) / 2.0);
 
     // Reads text file from assets folder into string
     public static String readTextFile(String filename) {
@@ -59,9 +70,6 @@ public abstract class Util {
     public static Vec2 orthogonal(Vec2 v) {
         return new Vec2(-v.y, v.x.floatValue());
     }
-
-    // For use with floating point comparisons
-    public static final float EPSILON = 1e-6f;
 
     public static boolean isZero(float v) {
         return Math.abs(v) < EPSILON;
@@ -138,62 +146,61 @@ public abstract class Util {
         dst.z = src.z;
     }
 
-    public static void assignVec3(float[] dst, int dstI, float[] src, int srcI) {
-        int dci = dstI * 3;
-        int sci = srcI * 3;
-        dst[dci + 0] = src[sci + 0];
-        dst[dci + 1] = src[sci + 1];
-        dst[dci + 2] = src[sci + 2];
-    }
-
-    // Returns a Vec3 from an xyz float array at the given vertex index
-    public static Vec3 getVec3(float[] arr, int vertexI) {
-        int ci = vertexI * 3;
-        return new Vec3(arr[ci + 0], arr[ci + 1], arr[ci + 2]);
-    }
-
-    public static void getVec3(float[] arr, int vertexI, Vec3 dst) {
-        int ci = vertexI * 3;
-        dst.x = arr[ci + 0]; dst.y = arr[ci + 1]; dst.z = arr[ci + 2];
-    }
-
-    // Sets xyz at the given vertex index to that of the given Vec3
-    public static void setVec3(float[] arr, int vertexI, Vec3 v) {
-        int ci = vertexI * 3;
-        arr[ci + 0] = v.x; arr[ci + 1] = v.y; arr[ci + 2] = v.z;
-    }
-
-    public static void addVec3(float[] arr, int vertexI, float v) {
-        int ci = vertexI * 3;
-        arr[ci + 0] += v;
-        arr[ci + 1] += v;
-        arr[ci + 2] += v;
-    }
-
-    public static void multiplyVec3(float[] arr, int vertexI, float v) {
-        int ci = vertexI * 3;
-        arr[ci + 0] *= v;
-        arr[ci + 1] *= v;
-        arr[ci + 2] *= v;
-    }
-
-    // Normalizes the xyz at the given vertex index in arr
-    public static void normalizeVec3(float[] arr, int vertexI) {
-        int ci = vertexI * 3;
-        float x = arr[ci + 0], y = arr[ci + 1], z = arr[ci + 2];
-        float v = x * x + y * y + z * z;
-        if (isZero(v)) {
-            x = 0.0f; y = 0.0f; z = 0.0f;
-        }
-        else {
-            v = 1.0f / (float)Math.sqrt(v);
-            x *= v; y *= v; z *= v;
-        }
-        arr[ci + 0] = x; arr[ci + 1] = y; arr[ci + 2] = z;
-    }
-
     public static long toLong(int low, int high) {
         return ((long)high << 32) | ((long)low & 0x00000000FFFFFFFFL);
+    }
+
+    // I hate Java
+    public static int toInt(byte lowest, byte low, byte high, byte highest) {
+        return ((int)highest << 24) | (((int)high & 0xFF) << 16) | (((int)low & 0xFF) << 8) | ((int)lowest & 0xFF);
+    }
+
+    public static Vec3 cylindricToCartesian(float radius, float theta, float z) {
+        return new Vec3(radius * Math.cos(theta), radius * Math.sin(theta), z);
+    }
+
+    // Returns the ith of n evenly distributed points on the unit sphere
+    public static Vec3 pointOnSphereFibonacci(int i, int n) {
+        float z = 1.0f - (float)(2 * i) / (float)(n - 1);
+        float theta = 2.0f * PI * (2.0f - PHI) * (float)i;
+        return cylindricToCartesian((float)Math.sqrt(1.0f - z * z), theta, z);
+    }
+
+    // Returns random point evenly distributed on unit sphere
+    public static Vec3 pointOnSphereRandom(Random rand) {
+        float z = rand.nextFloat() * 2.0f - 1.0f;
+        float theta = rand.nextFloat() * 2.0f * PI;
+        return cylindricToCartesian((float)Math.sqrt(1.0f - z * z), theta, z);
+    }
+
+    // Get RGB color from Hue Saturation Luminosity
+    // All three inputs are between 0.0 and 1.0
+    public static Vec3 hsv2rgb(float hue, float sat, float val) {
+        int color = Color.HSVToColor(new float[]{ 360.0f * hue, sat, val });
+        final float factor = 1.0f / 255.0f;
+        return new Vec3(
+            ((color >> 16) & 0xFF) * factor,
+            ((color >> 8) & 0xFF) * factor,
+            (color & 0xFF) * factor
+        );
+    }
+
+    // Returns v rotated 90 degrees CCW
+    public static Vec2 ortho(Vec2 v) {
+        return new Vec2(-v.y, +v.x);
+    }
+
+    // Returns an arbitrary unit vector orthogonal to v
+    public static Vec3 ortho(Vec3 v) {
+        if (glm.abs(v.z) <= glm.abs(v.y) && glm.abs(v.z) <= glm.abs(v.x)) { // z is smallest
+            return new Vec3(-v.y, +v.x, 0.0f).normalizeAssign(); // rotate around z
+        }
+        else if (glm.abs(v.y) <= glm.abs(v.x)) { // y is smallest
+            return new Vec3(+v.z, 0.0f, -v.x).normalizeAssign(); // rotate around y
+        }
+        else { // x is smallest
+            return new Vec3(0.0f, -v.z, +v.y).normalizeAssign(); // rotate around x
+        }
     }
 
 }

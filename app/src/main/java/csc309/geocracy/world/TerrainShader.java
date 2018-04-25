@@ -13,6 +13,8 @@ public class TerrainShader extends Shader {
     protected int lightDirUniformHandle;
     protected int lowElevationUniformHandle;
     protected int highElevationUniformHandle;
+    protected int maxCoastDistUniformHandle;
+    protected int continentColorsUniformHandle;
 
     public TerrainShader() {
         super("Terrain", "shaders/Terrain.vert", "shaders/Terrain.frag");
@@ -39,6 +41,14 @@ public class TerrainShader extends Shader {
         uploadUniform(highElevationUniformHandle, elevation);
     }
 
+    public void setMaxCoastDist(int dist) {
+        uploadUniform(maxCoastDistUniformHandle, dist);
+    }
+
+    public void setContinentColors(Vec3[] colors) {
+        uploadUniform(continentColorsUniformHandle, colors);
+    }
+
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
@@ -55,6 +65,12 @@ public class TerrainShader extends Shader {
         }
         if ((highElevationUniformHandle = getUniformLocation("u_highElevation")) == -1) {
             Log.e("TerrainShader", "Failed to get high elevation uniform location");
+        }
+        if ((maxCoastDistUniformHandle = getUniformLocation("u_maxCoastDist")) == -1) {
+            Log.e("TerrainShader", "Failed to get max coast distance uniform location");
+        }
+        if ((continentColorsUniformHandle = getUniformLocation("u_continentColors")) == -1) {
+            Log.e("TerrainShader", "Failed to get continent colors uniform location");
         }
 
         return true;

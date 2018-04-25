@@ -128,6 +128,15 @@ public abstract class Shader {
         GLES30.glUniform3f(handle, v.x, v.y, v.z);
     }
 
+    protected void uploadUniform(int handle, Vec3[] vs) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(vs.length * 3 * 4);
+        bb.order(ByteOrder.nativeOrder());
+        FloatBuffer fb = bb.asFloatBuffer();
+        for (Vec3 v : vs) { fb.put(v.x); fb.put(v.y); fb.put(v.z); }
+        fb.flip();
+        GLES30.glUniform3fv(handle, vs.length, fb);
+    }
+
     protected void uploadUniform(int handle, Vec4 v) {
         GLES30.glUniform4f(handle, v.x, v.y, v.z, v.w);
     }
@@ -135,6 +144,10 @@ public abstract class Shader {
     protected void uploadUniform(int handle, int v) {
         GLES30.glUniform1i(handle, v);
     }
+    protected void uploadUniformUnsigned(int handle, int v) {
+        GLES30.glUniform1ui(handle, v);
+    }
+
     protected void uploadUniform(int handle, Vec2i v) {
         GLES30.glUniform2i(handle, v.x, v.y);
     }

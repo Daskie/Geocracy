@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import csc309.geocracy.Util;
+import csc309.geocracy.VecArrayUtil;
 import glm_.vec3.Vec3;
 
 public class Mesh {
@@ -155,24 +156,24 @@ public class Mesh {
     public void calcFaceNormals() {
         if (indices != null) {
             for (int i = 0; i < indices.length; i += 3) {
-                Vec3 v1 = Util.getVec3(locations, indices[i + 0]);
-                Vec3 v2 = Util.getVec3(locations, indices[i + 1]);
-                Vec3 v3 = Util.getVec3(locations, indices[i + 2]);
+                Vec3 v1 = VecArrayUtil.get(locations, indices[i + 0]);
+                Vec3 v2 = VecArrayUtil.get(locations, indices[i + 1]);
+                Vec3 v3 = VecArrayUtil.get(locations, indices[i + 2]);
                 Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
-                Util.setVec3(normals, i + 0, n);
-                Util.setVec3(normals, i + 1, n);
-                Util.setVec3(normals, i + 2, n);
+                VecArrayUtil.set(normals, i + 0, n);
+                VecArrayUtil.set(normals, i + 1, n);
+                VecArrayUtil.set(normals, i + 2, n);
             }
         }
         else {
             for (int i = 0; i < nVertices; i += 3) {
-                Vec3 v1 = Util.getVec3(locations, i + 0);
-                Vec3 v2 = Util.getVec3(locations, i + 1);
-                Vec3 v3 = Util.getVec3(locations, i + 2);
+                Vec3 v1 = VecArrayUtil.get(locations, i + 0);
+                Vec3 v2 = VecArrayUtil.get(locations, i + 1);
+                Vec3 v3 = VecArrayUtil.get(locations, i + 2);
                 Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
-                Util.setVec3(normals, i + 0, n);
-                Util.setVec3(normals, i + 1, n);
-                Util.setVec3(normals, i + 2, n);
+                VecArrayUtil.set(normals, i + 0, n);
+                VecArrayUtil.set(normals, i + 1, n);
+                VecArrayUtil.set(normals, i + 2, n);
             }
         }
     }
