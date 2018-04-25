@@ -58,7 +58,6 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
 
-
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
         frame.addView(gameSurfaceView);
 

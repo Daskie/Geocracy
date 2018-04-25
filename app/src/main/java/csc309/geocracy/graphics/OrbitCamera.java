@@ -7,6 +7,7 @@ import glm_.quat.Quat;
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
 
+import static android.support.v4.math.MathUtils.clamp;
 import static glm_.Java.glm;
 
 // Camera that resides at a certain radius from the origin and always looks at the origin
@@ -15,6 +16,9 @@ public class OrbitCamera extends Camera {
     private float elevation;
     private Quat orientation;
     private Mat3 orientMatrix;
+
+    private final float MAX_ELEVATION = 5.f;
+    private final float MIN_ELEVATION = 2f;
 
     public OrbitCamera(float fov, float near, float far, float aspectRatio, float elevation) {
         super(fov, near, far, aspectRatio);
@@ -32,12 +36,15 @@ public class OrbitCamera extends Camera {
     }
 
     public void setElevation(float elevation) {
-        this.elevation = elevation;
+        this.elevation = clamp(elevation, MIN_ELEVATION, MAX_ELEVATION);
         viewMatrix = null;
     }
 
     public void changeElevation(float delta) {
         setElevation(elevation + delta);
+    }
+    public void changeElevation(double delta) {
+        setElevation(elevation + (float) delta);
     }
 
     public void setLocation(Vec3 location) {
