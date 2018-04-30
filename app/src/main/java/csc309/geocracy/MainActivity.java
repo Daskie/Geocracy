@@ -79,6 +79,7 @@ public class MainActivity extends Activity {
             super(context);
 
             setEGLContextClientVersion(3);
+            setEGLConfigChooser(8, 8, 8, 8, 24, 0);
             renderer = new MainRenderer();
             setRenderer(renderer);
             setRenderMode(RENDERMODE_CONTINUOUSLY);

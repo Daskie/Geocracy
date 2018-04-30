@@ -9,19 +9,18 @@ import glm_.vec3.Vec3;
 
 public class World {
 
-    private final int TESSELLATION_DEGREE = 4;
+    private final int TESSELLATION_DEGREE = 5;
 
-    private Terrain terrain;
     private long seed;
     private Random rand;
+    private Terrain terrain;
     private OceanRenderer oceanRenderer;
 
     public World(long seed) {
+        this.seed = seed;
         rand = new Random(seed);
         terrain = new Terrain(TESSELLATION_DEGREE, rand);
-        this.seed = seed;
-
-        //oceanRenderer = new OceanRenderer();
+        oceanRenderer = new OceanRenderer(TESSELLATION_DEGREE);
     }
 
     public boolean load() {
@@ -31,22 +30,22 @@ public class World {
             Log.e("Game", "Failed to load terrain");
             return false;
         }
-        /*if (!oceanRenderer.load()) {
+        if (!oceanRenderer.load()) {
             Log.e("Game", "Failed to load ocean renderer");
             return false;
-        }*/
+        }
 
         return true;
     }
 
     public void render(Camera camera, Vec3 lightDir) {
         terrain.render(camera, lightDir);
-        //oceanRenderer.render(camera);
+        //oceanRenderer.render(camera, lightDir);
     }
 
     public void unload() {
         terrain.unload();
-        //oceanRenderer.unload();
+        oceanRenderer.unload();
     }
 
 }

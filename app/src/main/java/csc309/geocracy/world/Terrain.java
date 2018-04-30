@@ -3,12 +3,13 @@ package csc309.geocracy.world;
 import android.opengl.GLES30;
 import android.util.Log;
 import android.util.LongSparseArray;
+import android.util.SparseIntArray;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -18,7 +19,6 @@ import csc309.geocracy.VecArrayUtil;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.noise.SimplexNoise;
-import glm_.mat3x3.Mat3;
 import glm_.vec3.Vec3;
 
 import static glm_.Java.glm;
@@ -32,10 +32,14 @@ public class Terrain {
     }
 
     private class TerritorySpec {
-        HashSet<Integer> faces = new HashSet<>();
+        HashSet<Integer> landFaces = new HashSet<>();
+        HashSet<Integer> oceanFaces = new HashSet<>();
+        HashSet<Integer> coastFaces = new HashSet<>();
         HashSet<Integer> borderFaces = new HashSet<>();
-        int superCount, subCount;
-        int totalCount() { return superCount + subCount; }
+        SparseIntArray adjacentLandTerrs = new SparseIntArray();
+        SparseIntArray adjacentOceanTerrs = new SparseIntArray();
+        //int landAndCoastCount() { return landFaces.size() + coastFaces.size(); }
+        //int totalCount() { return landAndCoastCount() + oceanFaces.size(); }
     }
 
     private TerrainShader shader;
@@ -46,14 +50,17 @@ public class Terrain {
     private int vboHandle;
     private int vaoHandle;
     private Face[] faces;
+    private int[] landFaces;
+    private int[] oceanFaces;
+    private int[] coastFaces;
     private int maxCoastDist;
     private int[] territorySpawnFaces;
-    private HashMap<Integer, TerritorySpec> territorySpecs;
+    private TerritorySpec[] territorySpecs;
 
     public Terrain(int tessellationDegree, Random rand) {
         shader = new TerrainShader();
-        highElevation = 1.1f;
-        lowElevation = 0.95f;
+        highElevation = 1.05f;
+        lowElevation = 0.975f;
         Mesh sphereMesh = MeshMaker.makeSphereIndexed("Terrain", tessellationDegree);
         locations = sphereMesh.getLocations();
         indices = sphereMesh.getIndices();
@@ -61,12 +68,11 @@ public class Terrain {
         for (int fi = 0; fi < faces.length; ++fi) faces[fi] = new Face();
 
         genFaceAdjacencies();
-        calcTerritorySpawns(40, rand);
         terraform(highElevation, lowElevation, rand);
-        calcCoastDistance();
-        createTerritories();
+        processFaces();
+        createTerritories(40, rand);
         smoothTerritories();
-        detBorders();
+        //detBorders();
     }
 
     public boolean load() {
@@ -128,11 +134,11 @@ public class Terrain {
         shader.setLowElevation(lowElevation);
         shader.setHighElevation(highElevation);
         shader.setMaxCoastDist(maxCoastDist);
-        Vec3[] continentColors = genContinentColors(40);
-        Vec3[] allColors = new Vec3[continentColors.length + 1];
-        System.arraycopy(continentColors, 0, allColors, 1, continentColors.length);
-        allColors[0] = new Vec3(0.5f);
-        shader.setContinentColors(allColors);
+        Vec3[] colors = new Vec3[41];
+        System.arraycopy(genContinentColors(40), 0, colors, 1, 40);
+        colors[0] = new Vec3();
+
+        shader.setContinentColors(colors);
 
         return true;
     }
@@ -179,6 +185,7 @@ public class Terrain {
             Vec3 v3 = VecArrayUtil.get(locations, vi3);
             Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
 
+            /*
             Face face = faces[fi];
             Face af1 = faces[face.adjacencies[0]];
             Face af2 = faces[face.adjacencies[1]];
@@ -192,6 +199,9 @@ public class Terrain {
             int info1 = info | (((borders[vi1] ? 1 : 0) | (e12 ? 2 : 0)                 | (e31 ? 8 : 0)) << 16);
             int info2 = info | (((borders[vi2] ? 1 : 0) | (e12 ? 2 : 0) | (e23 ? 4 : 0)                ) << 16);
             int info3 = info | (((borders[vi3] ? 1 : 0)                 | (e23 ? 4 : 0) | (e31 ? 8 : 0)) << 16);
+            */
+            int info = Util.toInt((byte)faces[fi].coastDist, (byte)faces[fi].territory, (byte)0, (byte)0);
+            int info1 = info, info2 = info, info3 = info;
 
             vertexData.putFloat(v1.x);
             vertexData.putFloat(v1.y);
@@ -279,89 +289,133 @@ public class Terrain {
     }
 
     private void terraform(float highElevation, float lowElevation, Random rand) {
-        final int N_OCTAVES = 5;
-        final float INIT_FREQUENCY = 1.0f;
-        final float PERSISTENCE = 0.5f;
+        final int k_nOctaves = 5;
+        final float k_initFrequency = 0.75f;
+        final float k_persistence = 0.5f;
+        final float k_dropoffHeight = 0.01f;
 
         SimplexNoise simplex = new SimplexNoise(rand);
-        float maxAmplitude = ((float)(1 << N_OCTAVES) - 1) / (float)(1 << (N_OCTAVES - 1));
-        float adjustFactor = 1.0f / ((maxAmplitude + 1.0f) * 0.5f);
+        float maxAmplitude = ((float)(1 << k_nOctaves) - 1) / (float)(1 << (k_nOctaves - 1));
+        //float adjustFactor = 1.0f / maxAmplitude;
         float superRange = highElevation - 1.0f;
         float subRange = 1.0f - lowElevation;
+        float minV = 0.0f, maxV = 0.0f;
 
         int nVertices = locations.length / 3;
+        float[] vs = new float[nVertices];
         for (int i = 0; i < nVertices; ++i) {
             int ci = i * 3;
-
             float v = 0.0f;
-            float frequency = INIT_FREQUENCY;
+            float frequency = k_initFrequency;
             float amplitude = 1.0f;
-            for (int octave = 0; octave < N_OCTAVES; ++octave) {
+            for (int octave = 0; octave < k_nOctaves; ++octave) {
                 v += simplex.noise(
                     locations[ci + 0] * frequency,
                     locations[ci + 1] * frequency,
                     locations[ci + 2] * frequency
                 ) * amplitude;
                 frequency *= 2.0f;
-                amplitude *= PERSISTENCE;
+                amplitude *= k_persistence;
             }
-            v *= adjustFactor; // in range [-1.0, 1.0]
+            if (v < minV) minV = v;
+            else if (v > maxV) maxV = v;
+            vs[i] = v;
+        }
+
+        float adjustFactor = 2.0f / (maxV - minV);
+        final float sinkExp = 1.25f;
+        final float sinkFactor = (float)Math.pow(2.0f, 1.0f - sinkExp);
+        for (int i = 0; i < nVertices; ++i) {
+            int ci = i * 3;
+            float v = vs[i];
+            v = (v - minV) * adjustFactor - 1.0f; // in range [-1.0, 1.0]
+
+            v = sinkFactor * (float)Math.pow(v + 1.0f, sinkExp) - 1.0f;
 
             // Super transformation (make mountainous)
             if (v >= 0.0f) {
-                v *= v * v; // [-1.0, 1.0]
+                v *= v * v;
+                //v *= v; // [-1.0, 1.0]
             }
             // Sub transformation (make gradual drop-off)
             else {
-                if (v >= -0.5f) {
+                v += 1;
+                v *= v;
+                v -= 1;
+                /*if (v >= -0.5f) {
                     v = -2.0f * v * v;
                 }
                 else {
                     v = 2.0f * (v + 1.0f) * (v + 1.0f) - 1.0f;
-                }
+                }*/
             }
+            //v *= (4.0f / (1.0f + 2500.0f * v * v)) + 1.0f;
+            //if (v > 0.0f && v < 0.01f) v = 0.01f;
+            //else if (v < 0.0f && v > -0.01f) v = -0.01f;
 
-            if (v >= 0.0f) {
+            if (v > 0.0f) {
+                v = (1.0f - k_dropoffHeight) * v + k_dropoffHeight;
+                //if (v < k_dropoffHeight) v = k_dropoffHeight; // small offset from sea level to help with z-fighting
                 v = 1.0f + v * superRange; // [lowElevation, highElevation]
             }
-            else {
+            else if (v < 0.0f) {
+                v = (1.0f - k_dropoffHeight) * v - k_dropoffHeight;
+                //if (v > -k_dropoffHeight) v = -k_dropoffHeight; // small offset from sea level to help with z-fighting
                 v = 1.0f + v * subRange; // [lowElevation, highElevation]
             }
+
             locations[ci + 0] *= v;
             locations[ci + 1] *= v;
             locations[ci + 2] *= v;
         }
     }
 
-    private void calcCoastDistance() {
+    private void processFaces() {
+        ArrayList<Integer> tempLandFaces = new ArrayList<>();
+        ArrayList<Integer> tempOceanFaces = new ArrayList<>();
+        ArrayList<Integer> tempCoastFaces = new ArrayList<>();
+        byte[] faceSigns = new byte[faces.length];
 
-        HashSet<Integer> currFaces = new HashSet<>();
-        HashSet<Integer> nextFaces = new HashSet<>();
-        byte[] signs = new byte[faces.length];
-
-        // Start with coast faces
         for (int fi = 0; fi < faces.length; ++fi) {
-            faces[fi].coastDist = -1;
             int ii = fi * 3;
             float elev1 = VecArrayUtil.length2(locations, indices[ii + 0]);
             float elev2 = VecArrayUtil.length2(locations, indices[ii + 1]);
             float elev3 = VecArrayUtil.length2(locations, indices[ii + 2]);
-            if (elev1 > 1.0f || elev2 > 1.0f || elev3 > 1.0f) signs[fi] += 1;
-            if (elev1 < 1.0f || elev2 < 1.0f || elev3 < 1.0f) signs[fi] -= 1;
-            if (signs[fi] == 0) {
-                currFaces.add(fi);
-            }
+            if (elev1 > 1.0f || elev2 > 1.0f || elev3 > 1.0f) ++faceSigns[fi];
+            if (elev1 < 1.0f || elev2 < 1.0f || elev3 < 1.0f) --faceSigns[fi];
+            if (faceSigns[fi] > 0) tempLandFaces.add(fi);
+            else if (faceSigns[fi] < 0) tempOceanFaces.add(fi);
+            else tempCoastFaces.add(fi);
         }
+
+        landFaces = new int[tempLandFaces.size()];
+        oceanFaces = new int[tempOceanFaces.size()];
+        coastFaces = new int[tempCoastFaces.size()];
+        for (int i = 0; i < landFaces.length; ++i) landFaces[i] = tempLandFaces.get(i);
+        for (int i = 0; i < oceanFaces.length; ++i) oceanFaces[i] = tempOceanFaces.get(i);
+        for (int i = 0; i < coastFaces.length; ++i) coastFaces[i] = tempCoastFaces.get(i);
+
+        calcCoastDistances(faceSigns);
+    }
+
+    private void calcCoastDistances(byte[] faceSigns) {
+        HashSet<Integer> currFaces = new HashSet<>();
+        HashSet<Integer> nextFaces = new HashSet<>();
+        boolean[] checked = new boolean[faces.length];
+
+        // Start with coast faces
+        for (int i = 0; i < coastFaces.length; ++i) currFaces.add(coastFaces[i]);
 
         int currDist = 0;
         while (true) {
             for (Integer fi : currFaces) {
-                faces[fi].coastDist = currDist;
+                faces[fi].coastDist = currDist * faceSigns[fi];
+                checked[fi] = true;
 
                 int[] adjacencies = faces[fi].adjacencies;
-                if (faces[adjacencies[0]].coastDist == -1) nextFaces.add(adjacencies[0]);
-                if (faces[adjacencies[1]].coastDist == -1) nextFaces.add(adjacencies[1]);
-                if (faces[adjacencies[2]].coastDist == -1) nextFaces.add(adjacencies[2]);
+                if (!checked[adjacencies[0]]) nextFaces.add(adjacencies[0]);
+                if (!checked[adjacencies[1]]) nextFaces.add(adjacencies[1]);
+                if (!checked[adjacencies[2]]) nextFaces.add(adjacencies[2]);
             }
 
             if (nextFaces.isEmpty()) {
@@ -374,15 +428,10 @@ public class Terrain {
             nextFaces.clear();
             ++currDist;
         }
-
-        for (int fi = 0; fi < faces.length; ++fi) {
-            faces[fi].coastDist *= signs[fi];
-        }
-
         maxCoastDist = currDist;
     }
 
-    private void calcTerritorySpawns(int nTerritories, Random rand) {
+    /*private void calcTerritorySpawns(int nTerritories, Random rand) {
         territorySpawnFaces = new int[nTerritories];
         Vec3 w = Util.pointOnSphereRandom(rand);
         Vec3 v = Util.ortho(w);
@@ -391,40 +440,44 @@ public class Terrain {
         for (int ti = 0; ti < nTerritories; ++ti) {
             territorySpawnFaces[ti] = faceNearestTo(basis.times(Util.pointOnSphereFibonacci(ti, nTerritories)));
         }
-    }
+    }*/
 
-    private void createTerritories() {
+    private void createTerritories(int targetNTerritories, Random rand) {
+        ArrayList<Integer> spawnFaces = new ArrayList<>();
+
+        // Spawn on random land faces
+        for (int ti = 0; ti < targetNTerritories; ++ti) spawnFaces.add(landFaces[rand.nextInt(landFaces.length)]);
+
+        ArrayList<TerritorySpec> tempTerritorySpecs = new ArrayList<>();
+        tempTerritorySpecs.add(null);
+        HashSet<Integer> landLeft = new HashSet<>();
         HashSet<Integer> superFringes = new HashSet<>();
         ArrayDeque<Integer> superFringeQueue = new ArrayDeque<>();
         HashSet<Integer> subFringes = new HashSet<>();
         ArrayDeque<Integer> subFringeQueue = new ArrayDeque<>();
-        territorySpecs = new HashMap<>();
 
-        // Start off with spawns, move to nearest beach if in ocean
-        for (int tsi = 0, ti = 1; tsi < territorySpawnFaces.length; ++tsi) {
-            int fi = territorySpawnFaces[tsi];
-            if (faces[fi].coastDist < 0) {
-                fi = nearestCoastFace(fi);
-            }
-            // Trying to spawn where another territory is spawning
-            if (superFringes.contains(fi)) {
-                continue;
-            }
-            faces[fi].territory = ti;
-            superFringes.add(fi);
-            superFringeQueue.addLast(fi);
-            TerritorySpec terr = new TerritorySpec();
-            terr.faces.add(fi);
-            ++terr.superCount;
-            territorySpecs.put(ti, terr);
-            ++ti;
-        }
+        for (int fi : landFaces) landLeft.add(fi);
 
-        while (!superFringeQueue.isEmpty()) {
-            // Spread across land
+        // Spread across land
+        while (!spawnFaces.isEmpty()) {
+            for (int fi : spawnFaces) {
+                if (!landLeft.contains(fi)) {
+                    continue;
+                }
+                faces[fi].territory = tempTerritorySpecs.size();
+                landLeft.remove(fi);
+                TerritorySpec terr = new TerritorySpec();
+                terr.landFaces.add(fi);
+                tempTerritorySpecs.add(terr);
+                superFringes.add(fi);
+                superFringeQueue.addLast(fi);
+            }
+            spawnFaces.clear();
+
             while (!superFringeQueue.isEmpty()) {
                 int origFI = superFringeQueue.getFirst();
                 int territory = faces[origFI].territory;
+                TerritorySpec terr = tempTerritorySpecs.get(territory);
                 int[] adjacencies = faces[origFI].adjacencies;
                 for (int i = 0; i < 3; ++i) {
                     int fi = adjacencies[i];
@@ -432,56 +485,175 @@ public class Terrain {
                     if (face.territory == 0) {
                         if (!superFringes.contains(fi)) {
                             face.territory = territory;
+                            landLeft.remove(fi);
                             if (face.coastDist >= 0) {
+                                if (face.coastDist > 0) terr.landFaces.add(fi);
+                                else terr.coastFaces.add(fi);
                                 superFringes.add(fi);
                                 superFringeQueue.addLast(fi);
-                                ++territorySpecs.get(territory).superCount;
                             }
                             else {
+                                terr.oceanFaces.add(fi);
                                 subFringes.add(fi);
                                 subFringeQueue.addLast(fi);
-                                ++territorySpecs.get(territory).subCount;
                             }
                         }
                     }
                     else if (face.territory != territory) {
-                        territorySpecs.get(territory).borderFaces.add(fi);
-                        territorySpecs.get(face.territory).borderFaces.add(origFI);
+                        terr.adjacentLandTerrs.put(face.territory, face.territory);
+                        tempTerritorySpecs.get(face.territory).adjacentLandTerrs.put(territory, territory);
                     }
                 }
                 superFringeQueue.removeFirst();
                 superFringes.remove(origFI);
             }
-            // Spread through ocean
-            while (!subFringeQueue.isEmpty()) {
-                int origFI = subFringeQueue.getFirst();
-                int territory = faces[origFI].territory;
-                int[] adjacencies = faces[origFI].adjacencies;
-                for (int i = 0; i < 3; ++i) {
-                    int fi = adjacencies[i];
-                    Face face = faces[fi];
-                    if (face.territory == 0) {
-                        if (!subFringes.contains(fi)) {
-                            face.territory = territory;
-                            if (face.coastDist >= 0) {
-                                subFringes.add(fi);
-                                subFringeQueue.addLast(fi);
-                                ++territorySpecs.get(territory).subCount;
-                            }
-                            else {
-                                superFringes.add(fi);
-                                superFringeQueue.addLast(fi);
-                                ++territorySpecs.get(territory).superCount;
-                            }
-                        }
-                    }
-                    else if (face.territory != territory) {
-                        territorySpecs.get(territory).borderFaces.add(fi);
-                        territorySpecs.get(face.territory).borderFaces.add(origFI);
+
+            if (!landLeft.isEmpty()) {
+                spawnFaces.add(landLeft.iterator().next());
+            }
+        }
+
+        // Spread through ocean
+        while (!subFringeQueue.isEmpty()) {
+            int origFI = subFringeQueue.getFirst();
+            int territory = faces[origFI].territory;
+            TerritorySpec terr = tempTerritorySpecs.get(territory);
+            int[] adjacencies = faces[origFI].adjacencies;
+            for (int i = 0; i < 3; ++i) {
+                int fi = adjacencies[i];
+                Face face = faces[fi];
+                if (face.territory == 0) {
+                    if (face.coastDist < 0 && !subFringes.contains(fi)) {
+                        face.territory = territory;
+                        terr.oceanFaces.add(fi);
+                        subFringes.add(fi);
+                        subFringeQueue.addLast(fi);
                     }
                 }
-                subFringeQueue.removeFirst();
-                subFringes.remove(origFI);
+                else if (face.territory != territory) {
+                    terr.adjacentOceanTerrs.put(face.territory, face.territory);
+                    tempTerritorySpecs.get(face.territory).adjacentOceanTerrs.put(territory, territory);
+                }
+            }
+            subFringeQueue.removeFirst();
+            subFringes.remove(origFI);
+        }
+
+        TerritorySpec t = tempTerritorySpecs.get(31);
+
+        consolidateSmallTerritories(tempTerritorySpecs, targetNTerritories);
+
+        territorySpecs = new TerritorySpec[tempTerritorySpecs.size()];
+        for (int i = 0; i < territorySpecs.length; ++i) territorySpecs[i] = tempTerritorySpecs.get(i);
+
+        detTerritoryBorders();
+    }
+
+    private void consolidateSmallTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int targetNTerritories) {
+        int targetNLandFaces = Math.round((float)landFaces.length / (float)targetNTerritories);
+
+        while (true) {
+            boolean wasChange = false;
+            for (int ti = 1; ti < tempTerritorySpecs.size(); ++ti) {
+                TerritorySpec terr = tempTerritorySpecs.get(ti);
+                if (terr == null) {
+                    continue;
+                }
+
+                int currN = terr.landFaces.size();
+                int bestDif = Math.abs(targetNLandFaces - currN);
+                int bestAI = -1;
+                for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
+                    TerritorySpec adjTerr = tempTerritorySpecs.get(terr.adjacentLandTerrs.keyAt(ai));
+                    int potN = currN + adjTerr.landFaces.size();
+                    int potDif = glm.abs(targetNLandFaces - potN);
+                    if (potDif < bestDif) {
+                        bestDif = potDif;
+                        bestAI = ai;
+                    }
+                }
+
+                if (bestAI != -1) {
+                    // Combine current territory into other territory
+                    int otherTI = terr.adjacentLandTerrs.keyAt(bestAI);
+                    TerritorySpec otherTerr = tempTerritorySpecs.get(otherTI);
+                    for (int fi : terr.landFaces) faces[fi].territory = otherTI;
+                    for (int fi : terr.oceanFaces) faces[fi].territory = otherTI;
+                    for (int fi : terr.coastFaces) faces[fi].territory = otherTI;
+                    otherTerr.landFaces.addAll(terr.landFaces);
+                    otherTerr.oceanFaces.addAll(terr.oceanFaces);
+                    otherTerr.coastFaces.addAll(terr.coastFaces);
+                    for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
+                        int adjTI = terr.adjacentLandTerrs.keyAt(ai);
+                        TerritorySpec adjTerr = tempTerritorySpecs.get(adjTI);
+                        adjTerr.adjacentLandTerrs.delete(ti);
+                        adjTerr.adjacentLandTerrs.put(otherTI, otherTI);
+                        otherTerr.adjacentLandTerrs.put(adjTI, adjTI);
+                    }
+                    for (int ai = 0; ai < terr.adjacentOceanTerrs.size(); ++ai) {
+                        int adjTI = terr.adjacentOceanTerrs.keyAt(ai);
+                        TerritorySpec adjTerr = tempTerritorySpecs.get(adjTI);
+                        adjTerr.adjacentOceanTerrs.delete(ti);
+                        adjTerr.adjacentOceanTerrs.put(otherTI, otherTI);
+                        otherTerr.adjacentOceanTerrs.put(adjTI, adjTI);
+                    }
+                    otherTerr.adjacentLandTerrs.delete(otherTI);
+                    otherTerr.adjacentOceanTerrs.delete(otherTI);
+                    tempTerritorySpecs.set(ti, null);
+                    wasChange = true;
+                    break;
+                }
+            }
+            if (!wasChange) {
+                break;
+            }
+        }
+
+        // Remove gaps
+        SparseIntArray map = new SparseIntArray();
+        for (int srcTI = 1, dstTI = 1; srcTI < tempTerritorySpecs.size(); ++srcTI) {
+            if (tempTerritorySpecs.get(srcTI) != null) {
+                map.put(srcTI, dstTI);
+                ++dstTI;
+            }
+        }
+        for (int i = 1; i < tempTerritorySpecs.size(); ++i) {
+            if (tempTerritorySpecs.get(i) == null) {
+                tempTerritorySpecs.remove(i);
+                --i;
+            }
+        }
+        for (int ti = 1; ti < tempTerritorySpecs.size(); ++ti) {
+            TerritorySpec terr = tempTerritorySpecs.get(ti);
+            SparseIntArray newLandAdjacents = new SparseIntArray();
+            for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ ai) {
+                int ati = map.get(terr.adjacentLandTerrs.keyAt(ai));
+                newLandAdjacents.put(ati, ati);
+            }
+            terr.adjacentLandTerrs = newLandAdjacents;
+            SparseIntArray newOceanAdjacents = new SparseIntArray();
+            for (int ai = 0; ai < terr.adjacentOceanTerrs.size(); ++ ai) {
+                int ati = map.get(terr.adjacentOceanTerrs.keyAt(ai));
+                newOceanAdjacents.put(ati, ati);
+            }
+            terr.adjacentOceanTerrs = newOceanAdjacents;
+        }
+        for (Face face : faces) {
+            face.territory = map.get(face.territory);
+        }
+    }
+
+    private void detTerritoryBorders() {
+        for (int fi = 0; fi < faces.length; ++fi) {
+            Face face = faces[fi];
+            if (face.territory == 0) {
+                continue;
+            }
+            for (int ai = 0; ai < 3; ++ai) {
+                if (faces[face.adjacencies[ai]].territory != face.territory) {
+                    territorySpecs[face.territory].borderFaces.add(fi);
+                    break;
+                }
             }
         }
     }
@@ -489,7 +661,8 @@ public class Terrain {
     private void smoothTerritories() {
         HashSet<Integer> toRefresh = new HashSet<>();
 
-        for (TerritorySpec terr : territorySpecs.values()) {
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            TerritorySpec terr = territorySpecs[ti];
             for (int fi : terr.borderFaces) {
                 Face face = faces[fi];
                 int f1i = -1, f2i = -1, f3i = -1;
@@ -506,29 +679,29 @@ public class Terrain {
                     continue;
                 }
                 Face f1 = faces[f1i], f2 = faces[f2i];
-                if (f1.territory != f2.territory) {
+                if (f1.territory != f2.territory || f1.territory == 0) {
                     continue;
                 }
-                boolean isLand = face.coastDist >= 0;
-                boolean isLand1 = f1.coastDist >= 0;
-                boolean isLand2 = f2.coastDist >= 0;
-                if (isLand1 != isLand || isLand2 != isLand) {
+                int sign = glm.sign(face.coastDist);
+                int sign1 = glm.sign(f1.coastDist);
+                int sign2 = glm.sign(f2.coastDist);
+                if (sign1 != sign || sign2 != sign || sign == 0) {
                     continue;
                 }
 
-                TerritorySpec terrOther = territorySpecs.get(f1.territory);
+                TerritorySpec terrOther = territorySpecs[f1.territory];
                 boolean did = false;
-                if (isLand) {
-                    if (terrOther.superCount <= terr.superCount) {
-                        --terr.superCount;
-                        ++terrOther.superCount;
+                if (sign > 0) {
+                    if (terrOther.landFaces.size() <= terr.landFaces.size()) {
+                        terr.landFaces.remove(fi);
+                        terrOther.landFaces.add(fi);
                         did = true;
                     }
                 }
                 else {
-                    if (terrOther.subCount <= terr.subCount) {
-                        --terr.subCount;
-                        ++terrOther.subCount;
+                    if (terrOther.oceanFaces.size() <= terr.oceanFaces.size()) {
+                        terr.oceanFaces.remove(fi);
+                        terrOther.oceanFaces.add(fi);
                         did = true;
                     }
                 }
@@ -546,7 +719,7 @@ public class Terrain {
 
     private void refreshBorderStatus(int fi) {
         Face face = faces[fi];
-        TerritorySpec terr = territorySpecs.get(face.territory);
+        TerritorySpec terr = territorySpecs[face.territory];
         for (int ai = 0; ai < 3; ++ai) {
             if (faces[face.adjacencies[ai]].territory != face.territory) {
                 terr.borderFaces.add(fi);
@@ -556,7 +729,7 @@ public class Terrain {
         terr.borderFaces.remove(fi);
     }
 
-    private void subtractTerritory(int fi) {
+    /*private void subtractTerritory(int fi) {
         Face face = faces[fi];
         int territory = face.territory;
 
@@ -578,31 +751,31 @@ public class Terrain {
         else if (borderCount == 2) {
             Face f1 = faces[dfi1];
             Face f2 = faces[dfi2];
-            int nt1 = territorySpecs.get(f1.territory).totalCount();
-            int nt2 = territorySpecs.get(f2.territory).totalCount();
+            int nt1 = territorySpecs[f1.territory].totalCount();
+            int nt2 = territorySpecs[f2.territory].totalCount();
             face.territory = nt1 >= nt2 ? f1.territory : f2.territory;
         }
         else if (borderCount == 3) {
             Face f1 = faces[dfi1];
             Face f2 = faces[dfi2];
             Face f3 = faces[dfi3];
-            int nt1 = territorySpecs.get(f1.territory).totalCount();
-            int nt2 = territorySpecs.get(f2.territory).totalCount();
-            int nt3 = territorySpecs.get(f3.territory).totalCount();
+            int nt1 = territorySpecs[f1.territory].totalCount();
+            int nt2 = territorySpecs[f2.territory].totalCount();
+            int nt3 = territorySpecs[f3.territory].totalCount();
             face.territory = nt1 >= nt2 && nt1 >= nt3 ? f1.territory : nt2 >= nt3 ? f2.territory : f3.territory;
         }
 
         if (borderCount > 0) {
             if (face.coastDist >= 0) {
-                --territorySpecs.get(territory).superCount;
-                ++territorySpecs.get(face.territory).superCount;
+                --territorySpecs[territory].superCount;
+                ++territorySpecs[face.territory].superCount;
             }
             else {
-                --territorySpecs.get(territory).subCount;
-                ++territorySpecs.get(face.territory).subCount;
+                --territorySpecs[territory].subCount;
+                ++territorySpecs[face.territory].subCount;
             }
         }
-    }
+    }*/
 
     private void detBorders() {
         borders = new boolean[locations.length];

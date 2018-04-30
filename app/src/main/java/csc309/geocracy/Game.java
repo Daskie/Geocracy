@@ -26,8 +26,7 @@ public class Game {
         //noiseTest = new NoiseTest();
 
         // Setup camera
-        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 10.0f, 1.0f, 2.0f);
-        //camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
+        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 3.0f, 1.0f, 2.0f);
 
         swipeDelta = new Vec2();
 
@@ -99,7 +98,7 @@ public class Game {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
-        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
+        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
         world.render(camera, lightDir);
         //noiseTest.render();
     }

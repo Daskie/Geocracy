@@ -52,25 +52,25 @@ public class TerrainShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("TerrainShader", "Failed to get view matrix uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("TerrainShader", "Failed to get projection matrix uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_projMat");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
-            Log.e("TerrainShader", "Failed to get light uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_lightDir");
         }
         if ((lowElevationUniformHandle = getUniformLocation("u_lowElevation")) == -1) {
-            Log.e("TerrainShader", "Failed to get low elevation uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_lowElevation");
         }
         if ((highElevationUniformHandle = getUniformLocation("u_highElevation")) == -1) {
-            Log.e("TerrainShader", "Failed to get high elevation uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_highElevation");
         }
         if ((maxCoastDistUniformHandle = getUniformLocation("u_maxCoastDist")) == -1) {
-            Log.e("TerrainShader", "Failed to get max coast distance uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_maxCoastDist");
         }
         if ((continentColorsUniformHandle = getUniformLocation("u_continentColors")) == -1) {
-            Log.e("TerrainShader", "Failed to get continent colors uniform location");
+            Log.e("TerrainShader", "Failed to get location of u_continentColors");
         }
 
         return true;
