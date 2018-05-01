@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import csc309.geocracy.LoadingScreenActivity;
 import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.main_menu.MenuActivity;
 import csc309.geocracy.R;
@@ -37,7 +38,7 @@ public class MainMenuFragment extends Fragment {
         continueButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                startActivity(new Intent(getContext(), GameActivity.class));
+                startActivity(new Intent(getContext(), LoadingScreenActivity.class));
                 return false;
             }
         });
@@ -47,7 +48,7 @@ public class MainMenuFragment extends Fragment {
         startButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                startActivity(new Intent(getContext(), GameActivity.class));
+                startActivity(new Intent(getContext(), LoadingScreenActivity.class));
                 return false;
             }
         });
