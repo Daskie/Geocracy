@@ -7,13 +7,18 @@
     android:id="@+id/gameLayout"
     tools:context=".game.GameActivity">
 
-    <!--<csc309.geocracy.MainSurfaceView-->
-        <!--android:id="@+id/gameplaySurfaceView"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="fill_parent" />-->
+    <csc309.geocracy.game.GameSurfaceView
+        android:id="@+id/gameplaySurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <!--<LinearLayout android:id="@+id/gameplayUI" android:layout_width="wrap_content" android:layout_height="wrap_content">-->
         <!--<Button android:text="Button" android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>-->
     <!--</LinearLayout>-->
+
+
+
+    <!-- include bottom sheet -->
+    <include layout="@layout/troop_selection" />
 
 </android.support.design.widget.CoordinatorLayout>
