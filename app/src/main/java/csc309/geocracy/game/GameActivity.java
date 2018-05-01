@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.Window;
@@ -52,14 +54,21 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         // Setup game
         game = new Game();
 
-        gameSurfaceView = new GameSurfaceView(this);
+        gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
+//        gameSurfaceView = new GameSurfaceView(this);
 //        setContentView(mainSurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
+
+        // get the bottom sheet view
+        LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
+        llBottomSheet.bringToFront();
+// init the bottom sheet behavior
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
 
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
-        frame.addView(gameSurfaceView);
+//        frame.addView(gameSurfaceView);
 
         LinearLayout uiLayout = new LinearLayout(this);
 
