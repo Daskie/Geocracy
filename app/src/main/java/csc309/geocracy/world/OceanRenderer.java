@@ -2,7 +2,6 @@ package csc309.geocracy.world;
 
 import android.util.Log;
 
-import csc309.geocracy.MeshMaker;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import glm_.vec3.Vec3;
@@ -12,9 +11,9 @@ public class OceanRenderer {
     private OceanShader shader;
     private Mesh mesh;
 
-    public OceanRenderer(int tessellationDegree) {
+    public OceanRenderer(Mesh sphereMesh) {
         shader = new OceanShader();
-        mesh = MeshMaker.makeSphereIndexed("Ocean", tessellationDegree);
+        mesh = sphereMesh;
     }
 
     public boolean load() {

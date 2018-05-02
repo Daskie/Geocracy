@@ -4,6 +4,7 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import csc309.geocracy.noise.NoiseTest;
+import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
@@ -14,7 +15,8 @@ import static glm_.Java.glm;
 public class Game {
 
     private MainActivity mainActivity;
-    private long lastT; // timestamp of last frame
+    private long startT; // time the game was started
+    private long lastT; // time last frame happened
     private World world;
     private NoiseTest noiseTest;
     private OrbitCamera camera;
@@ -30,7 +32,8 @@ public class Game {
 
         swipeDelta = new Vec2();
 
-        lastT = System.nanoTime();
+        startT = System.nanoTime();
+        lastT = 0;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)
@@ -67,12 +70,12 @@ public class Game {
 
     // One iteration of the game loop
     public void step() {
-        long t = System.nanoTime();
+        long t = System.nanoTime() - startT;
         float dt = (t - lastT) * 1e-9f;
         //System.out.println("FPS: " + (1.0f / dt));
 
-        update(dt);
-        render();
+        update(t, dt);
+        render(t, dt);
 
         lastT = t;
     }
@@ -83,7 +86,8 @@ public class Game {
     }
 
     // The core game logic
-    private void update(float dt) {
+    private float accumDT = 10.0f;
+    private void update(long t, float dt) {
         // TODO: replace with proper input system
         synchronized (this) {
             if (!Util.isZero(swipeDelta)) {
@@ -91,15 +95,24 @@ public class Game {
                 swipeDelta.x = 0.0f; swipeDelta.y = 0.0f;
             }
         }
+
+        accumDT += dt;
+        if (accumDT >= 10.0f) {
+            world.deselectAllTerritories();
+            Territory terr = world.getTerritories()[(int)(Math.random() * world.getTerritories().length)];
+            terr.select();
+            terr.highlightAllAdjacent();
+            accumDT = 0.0f;
+        }
     }
 
     // Render the game
-    private void render() {
+    private void render(long t, float dt) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
-        world.render(camera, lightDir);
+        world.render(t, camera, lightDir);
         //noiseTest.render();
     }
 
