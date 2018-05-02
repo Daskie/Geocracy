@@ -18,7 +18,7 @@ public class ScreenTextureShader extends Shader {
         boolean success = true;
 
         if ((textureUniformHandle = getUniformLocation("u_texture")) == -1) {
-            Log.e("ScreenTextureShader", "Failed to get texture uniform location");
+            Log.e("ScreenTextureShader", "Failed to get location of u_texture");
             success = false;
         }
 

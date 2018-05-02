@@ -2,21 +2,18 @@ package csc309.geocracy.world;
 
 import android.util.Log;
 
-import csc309.geocracy.graphics.BasicShader;
-import csc309.geocracy.graphics.MeshMaker;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
-import glm_.mat3x3.Mat3;
-import glm_.mat4x4.Mat4;
+import glm_.vec3.Vec3;
 
 public class OceanRenderer {
 
-    private BasicShader shader;
+    private OceanShader shader;
     private Mesh mesh;
 
-    public OceanRenderer() {
-        shader = new BasicShader();
-        mesh = MeshMaker.makeSphereIndexed("Ocean", 5);
+    public OceanRenderer(Mesh sphereMesh) {
+        shader = new OceanShader();
+        mesh = sphereMesh;
     }
 
     public boolean load() {
@@ -34,12 +31,12 @@ public class OceanRenderer {
         return true;
     }
 
-    public void render(Camera camera) {
+    public void render(Camera camera, Vec3 lightDir) {
         shader.setActive();
-        shader.setModelMatrix(new Mat4());
-        shader.setNormalMatrix(new Mat3());
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
+        shader.setCameraLocation(camera.getLocation());
+        shader.setLightDirection(lightDir);
         mesh.render();
     }
 

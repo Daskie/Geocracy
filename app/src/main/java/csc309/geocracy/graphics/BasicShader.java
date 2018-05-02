@@ -34,16 +34,16 @@ public class BasicShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((modelMatUniformHandle = getUniformLocation("u_modelMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_modelMat");
         }
         if ((normMatUniformHandle = getUniformLocation("u_normMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_normMat");
         }
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_projMat");
         }
 
         return true;
