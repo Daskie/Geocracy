@@ -45,6 +45,7 @@ public class Terrain {
         HashSet<Integer> territories = new HashSet<>();
         HashSet<Integer> adjacentLandConts = new HashSet<>();
         HashSet<Integer> adjacentOceanConts = new HashSet<>();
+        HashSet<Integer> waterwayConts = new HashSet<>();
     }
 
     public static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
@@ -994,6 +995,110 @@ public class Terrain {
         }
     }
 
+    private void createWaterways() {
+        // Connect portions of continent separated by ocean
+        for (int ci = 1; ci < continentSpecs.length; ++ci) {
+            ArrayList<HashSet<Integer>> lands = detContinentLands(ci);
+            if (lands.size() <= 1) {
+                continue;
+            }
+            for (int l1i = 0; l1i < lands.size() - 1; ++l1i) {
+                for (int l2i = l1i + 1; l2i < lands.size(); ++l2i) {
+                    Pair<Integer, Integer> pair = detShortestWaterway(lands.get(l1i), lands.get(l2i));
+                    if (pair == null) {
+                        continue;
+                    }
+                    int t1i = pair.first, t2i = pair.second;
+                    territorySpecs[t1i].waterwayTerrs.add(t2i);
+                    territorySpecs[t2i].waterwayTerrs.add(t1i);
+                }
+            }
+        }
+        // Connect adjacent continents not connected by land
+        for (int c1i = 1; c1i < continentSpecs.length; ++c1i) {
+            ContinentSpec cont1 = continentSpecs[c1i];
+            for (int c2i : cont1.adjacentOceanConts) {
+                ContinentSpec cont2 = continentSpecs[c2i];
+                if (!cont1.adjacentLandConts.contains(c2i) && !cont1.waterwayConts.contains(c2i)) {
+                    Pair<Integer, Integer> pair = detShortestWaterway(cont1.territories, cont2.territories);
+                    if (pair == null) {
+                        continue;
+                    }
+                    int t1i = pair.first, t2i = pair.second;
+                    territorySpecs[t1i].waterwayTerrs.add(t2i);
+                    territorySpecs[t2i].waterwayTerrs.add(t1i);
+                    cont1.waterwayConts.add(c2i);
+                    cont2.waterwayConts.add(c1i);
+                }
+            }
+        }
+    }
+
+    private ArrayList<HashSet<Integer>> detContinentLands(int ci) {
+        ContinentSpec cont = continentSpecs[ci];
+        ArrayList<HashSet<Integer>> lands = new ArrayList<>();
+        HashSet<Integer> land = new HashSet<>();
+        HashSet<Integer> terrsLeft = new HashSet<>(cont.territories);
+        HashSet<Integer> fringe = new HashSet<>();
+        HashSet<Integer> nextFringe = new HashSet<>();
+        while (!terrsLeft.isEmpty()) {
+            int startTI = terrsLeft.iterator().next();
+            land.add(startTI);
+            terrsLeft.remove(startTI);
+            fringe.add(startTI);
+            while (!fringe.isEmpty()) {
+                for (int ti : fringe) {
+                    TerritorySpec terr = territorySpecs[ti];
+                    for (int ati : terr.adjacentLandTerrs) {
+                        if (territorySpecs[ati].continent == ci && !land.contains(ati)) {
+                            land.add(ati);
+                            terrsLeft.remove(ati);
+                            nextFringe.add(ati);
+                        }
+                    }
+                }
+                HashSet<Integer> temp = fringe;
+                fringe = nextFringe;
+                nextFringe = temp;
+                nextFringe.clear();
+            }
+            lands.add(land);
+            land = new HashSet<>();
+        }
+        return lands;
+    }
+
+    private Pair<Integer, Integer> detShortestWaterway(HashSet<Integer> terrs1, HashSet<Integer> terrs2) {
+        SparseIntArray possibles = new SparseIntArray();
+        for (int t1i : terrs1) {
+            TerritorySpec terr1 = territorySpecs[t1i];
+            for (int t2i : terrs2) {
+                if (terr1.adjacentOceanTerrs.contains(t2i)) {
+                    possibles.put(t1i, t2i);
+                }
+            }
+        }
+
+        if (possibles.size() == 0) {
+            return null;
+        }
+        if (possibles.size() == 1) {
+            return new Pair<>(possibles.keyAt(0), possibles.valueAt(0));
+        }
+
+        int minDist = Integer.MAX_VALUE;
+        int minI = -1;
+        for (int i = 0; i < possibles.size(); ++i) {
+            int dist = detOceanDistanceBetweenTerritories(possibles.keyAt(i), possibles.valueAt(i));
+            if (dist < minDist) {
+                minDist = dist;
+                minI = i;
+            }
+        }
+
+        return new Pair<>(possibles.keyAt(minI), possibles.valueAt(minI));
+    }
+
     private int detOceanDistanceBetweenTerritories(int t1i, int t2i) {
         TerritorySpec terr1 = territorySpecs[t1i];
         TerritorySpec terr2 = territorySpecs[t2i];
@@ -1051,30 +1156,6 @@ public class Terrain {
             temp = currFringe2;
             currFringe2 = nextFringe2;
             nextFringe2 = temp;
-        }
-    }
-
-    private void createWaterways() {
-        // Connect any territories disconnected from continent
-        for (int ti = 1; ti < territorySpecs.length; ++ti) {
-            TerritorySpec terr = territorySpecs[ti];
-            boolean isConnected = false;
-            for (int ati : terr.adjacentLandTerrs) {
-                if (territorySpecs[ati].continent == terr.continent) {
-                    isConnected = true;
-                    break;
-                }
-            }
-            if (isConnected) {
-                continue;
-            }
-            for (int ati : terr.adjacentOceanTerrs) {
-                TerritorySpec adjTerr = territorySpecs[ati];
-                if (adjTerr.continent == terr.continent) {
-                    terr.waterwayTerrs.add(ati);
-                    adjTerr.waterwayTerrs.add(ti);
-                }
-            }
         }
     }
 
