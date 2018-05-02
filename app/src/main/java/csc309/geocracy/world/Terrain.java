@@ -35,8 +35,8 @@ public class Terrain {
         HashSet<Integer> landFaces = new HashSet<>();
         HashSet<Integer> oceanFaces = new HashSet<>();
         HashSet<Integer> coastFaces = new HashSet<>();
-        SparseIntArray adjacentLandTerrs = new SparseIntArray();
-        SparseIntArray adjacentOceanTerrs = new SparseIntArray();
+        HashSet<Integer> adjacentLandTerrs = new HashSet<>();
+        HashSet<Integer> adjacentOceanTerrs = new HashSet<>();
         int continent;
     }
 
@@ -212,11 +212,11 @@ public class Terrain {
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
             HashSet<Territory> adjTerrs = territories[ti - 1].getAdjacentTerritories();
-            for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
-                adjTerrs.add(territories[terr.adjacentLandTerrs.keyAt(ai) - 1]);
+            for (int ati : terr.adjacentLandTerrs) {
+                adjTerrs.add(territories[ati - 1]);
             }
-            for (int ai = 0; ai < terr.adjacentOceanTerrs.size(); ++ai) {
-                adjTerrs.add(territories[terr.adjacentOceanTerrs.keyAt(ai) - 1]);
+            for (int ati : terr.adjacentOceanTerrs) {
+                adjTerrs.add(territories[ati - 1]);
             }
         }
 
@@ -541,8 +541,8 @@ public class Terrain {
                         }
                     }
                     else if (face.territory != territory) {
-                        terr.adjacentLandTerrs.put(face.territory, face.territory);
-                        tempTerritorySpecs.get(face.territory).adjacentLandTerrs.put(territory, territory);
+                        terr.adjacentLandTerrs.add(face.territory);
+                        tempTerritorySpecs.get(face.territory).adjacentLandTerrs.add(territory);
                     }
                 }
                 superFringeQueue.removeFirst();
@@ -572,8 +572,8 @@ public class Terrain {
                     }
                 }
                 else if (face.territory != territory) {
-                    terr.adjacentOceanTerrs.put(face.territory, face.territory);
-                    tempTerritorySpecs.get(face.territory).adjacentOceanTerrs.put(territory, territory);
+                    terr.adjacentOceanTerrs.add(face.territory);
+                    tempTerritorySpecs.get(face.territory).adjacentOceanTerrs.add(territory);
                 }
             }
             subFringeQueue.removeFirst();
@@ -600,9 +600,7 @@ public class Terrain {
                 if (terr == null) {
                     continue;
                 }
-                int nAdjecents = doingLand ? terr.adjacentLandTerrs.size() : terr.adjacentOceanTerrs.size();
-                for (int ai = 0; ai < nAdjecents; ++ai) {
-                    int t2i = doingLand ? terr.adjacentLandTerrs.keyAt(ai) : terr.adjacentOceanTerrs.keyAt(ai);
+                for (int t2i : doingLand ? terr.adjacentLandTerrs : terr.adjacentOceanTerrs) {
                     TerritorySpec adjTerr = tempTerritorySpecs.get(t2i);
                     int potN = terr.landFaces.size() + adjTerr.landFaces.size();
                     if (potN < minN) {
@@ -636,16 +634,14 @@ public class Terrain {
             }
             for (int ti = 1; ti < tempTerritorySpecs.size(); ++ti) {
                 TerritorySpec terr = tempTerritorySpecs.get(ti);
-                SparseIntArray newLandAdjacents = new SparseIntArray();
-                for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
-                    int ati = map.get(terr.adjacentLandTerrs.keyAt(ai));
-                    newLandAdjacents.put(ati, ati);
+                HashSet<Integer> newLandAdjacents = new HashSet<>();
+                for (int ati : terr.adjacentLandTerrs) {
+                    newLandAdjacents.add(map.get(ati));
                 }
                 terr.adjacentLandTerrs = newLandAdjacents;
-                SparseIntArray newOceanAdjacents = new SparseIntArray();
-                for (int ai = 0; ai < terr.adjacentOceanTerrs.size(); ++ai) {
-                    int ati = map.get(terr.adjacentOceanTerrs.keyAt(ai));
-                    newOceanAdjacents.put(ati, ati);
+                HashSet<Integer> newOceanAdjacents = new HashSet<>();
+                for (int ati : terr.adjacentOceanTerrs) {
+                    newOceanAdjacents.add(map.get(ati));
                 }
                 terr.adjacentOceanTerrs = newOceanAdjacents;
             }
@@ -664,22 +660,20 @@ public class Terrain {
         dstTerr.landFaces.addAll(srcTerr.landFaces);
         dstTerr.oceanFaces.addAll(srcTerr.oceanFaces);
         dstTerr.coastFaces.addAll(srcTerr.coastFaces);
-        for (int ai = 0; ai < srcTerr.adjacentLandTerrs.size(); ++ai) {
-            int ati = srcTerr.adjacentLandTerrs.keyAt(ai);
+        for (int ati : srcTerr.adjacentLandTerrs) {
             TerritorySpec adjTerr = tempTerritorySpecs.get(ati);
-            adjTerr.adjacentLandTerrs.delete(srcTI);
-            adjTerr.adjacentLandTerrs.put(dstTI, dstTI);
-            dstTerr.adjacentLandTerrs.put(ati, ati);
+            adjTerr.adjacentLandTerrs.remove(srcTI);
+            adjTerr.adjacentLandTerrs.add(dstTI);
+            dstTerr.adjacentLandTerrs.add(ati);
         }
-        for (int ai = 0; ai < srcTerr.adjacentOceanTerrs.size(); ++ai) {
-            int ati = srcTerr.adjacentOceanTerrs.keyAt(ai);
+        for (int ati : srcTerr.adjacentOceanTerrs) {
             TerritorySpec adjTerr = tempTerritorySpecs.get(ati);
-            adjTerr.adjacentOceanTerrs.delete(srcTI);
-            adjTerr.adjacentOceanTerrs.put(dstTI, dstTI);
-            dstTerr.adjacentOceanTerrs.put(ati, ati);
+            adjTerr.adjacentOceanTerrs.remove(srcTI);
+            adjTerr.adjacentOceanTerrs.add(dstTI);
+            dstTerr.adjacentOceanTerrs.add(ati);
         }
-        dstTerr.adjacentLandTerrs.delete(dstTI);
-        dstTerr.adjacentOceanTerrs.delete(dstTI);
+        dstTerr.adjacentLandTerrs.remove(dstTI);
+        dstTerr.adjacentOceanTerrs.remove(dstTI);
         tempTerritorySpecs.set(srcTI, null);
     }
 
@@ -761,8 +755,7 @@ public class Terrain {
                     ContinentSpec cont = new ContinentSpec();
                     cont.territories.add(ti);
                     terr.continent = tempContinentSpecs.size();
-                    for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
-                        int ati = terr.adjacentLandTerrs.keyAt(ai);
+                    for (int ati : terr.adjacentLandTerrs) {
                         TerritorySpec adjTerr = territorySpecs[ati];
                         if (adjTerr.continent == 0) {
                             cont.territories.add(ati);
@@ -790,8 +783,7 @@ public class Terrain {
     private int getTerritoryAdjacentLandContinentMajority(int ti) {
         TerritorySpec terr = territorySpecs[ti];
         SparseIntArray continentCounts = new SparseIntArray();
-        for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
-            int ati = terr.adjacentLandTerrs.keyAt(ai);
+        for (int ati : terr.adjacentLandTerrs) {
             TerritorySpec adjTerr = territorySpecs[ati];
             continentCounts.put(adjTerr.continent, continentCounts.get(adjTerr.continent, 1));
         }
@@ -810,15 +802,15 @@ public class Terrain {
     private void detContinentAdjacencies(ArrayList<ContinentSpec> tempContinentSpecs) {
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
-            for (int ai = 0; ai < terr.adjacentLandTerrs.size(); ++ai) {
-                TerritorySpec adjTerr = territorySpecs[terr.adjacentLandTerrs.keyAt(ai)];
+            for (int ati : terr.adjacentLandTerrs) {
+                TerritorySpec adjTerr = territorySpecs[ati];
                 if (terr.continent != adjTerr.continent) {
                     tempContinentSpecs.get(terr.continent).adjacentLandConts.add(adjTerr.continent);
                     tempContinentSpecs.get(adjTerr.continent).adjacentLandConts.add(terr.continent);
                 }
             }
-            for (int ai = 0; ai < terr.adjacentOceanTerrs.size(); ++ai) {
-                TerritorySpec adjTerr = territorySpecs[terr.adjacentOceanTerrs.keyAt(ai)];
+            for (int ati : terr.adjacentOceanTerrs) {
+                TerritorySpec adjTerr = territorySpecs[ati];
                 if (terr.continent != adjTerr.continent) {
                     tempContinentSpecs.get(terr.continent).adjacentOceanConts.add(adjTerr.continent);
                     tempContinentSpecs.get(adjTerr.continent).adjacentOceanConts.add(terr.continent);
@@ -1003,7 +995,7 @@ public class Terrain {
     private int detOceanDistanceBetweenTerritories(int t1i, int t2i) {
         TerritorySpec terr1 = territorySpecs[t1i];
         TerritorySpec terr2 = territorySpecs[t2i];
-        if (terr1.adjacentOceanTerrs.get(t2i, -1) == -1) {
+        if (!terr1.adjacentOceanTerrs.contains(t2i)) {
             return -1;
         }
         HashSet<Integer> currFringe1 = new HashSet<>(terr1.coastFaces);
