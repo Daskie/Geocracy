@@ -13,9 +13,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.jakewharton.rxbinding2.view.RxView;
+
 import java.util.Random;
 import java.util.concurrent.Callable;
+
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import es.dmoral.toasty.Toasty;
