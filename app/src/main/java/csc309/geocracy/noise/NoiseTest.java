@@ -2,6 +2,8 @@ package csc309.geocracy.noise;
 
 import android.util.Log;
 
+import java.util.Random;
+
 import csc309.geocracy.graphics.ScreenTextureRenderer;
 import csc309.geocracy.graphics.Texture;
 import glm_.vec2.Vec2i;
@@ -50,7 +52,7 @@ public class NoiseTest {
     }
 
     private void generateNoise() {
-        SimplexNoise simplex = new SimplexNoise(0);
+        SimplexNoise simplex = new SimplexNoise(new Random(0));
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 double px = (double)x / width;

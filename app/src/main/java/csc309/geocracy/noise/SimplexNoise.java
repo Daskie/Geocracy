@@ -63,21 +63,18 @@ public class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
     // To remove the need for index wrapping, double the permutation table length
     private short perm[] = new short[512];
     private short permMod12[] = new short[512];
-    long seed;
 
-    public SimplexNoise(long seed) {
-        this.seed = seed;
-        generatePermutations();
+    public SimplexNoise(Random rand) {
+        generatePermutations(rand);
     }
 
-    private void generatePermutations() {
+    private void generatePermutations(Random rand) {
         for (int i = 0; i < 256; ++i) {
             perm[i] = (short)i;
         }
         // Shuffle
-        Random random = new Random(seed);
         for (int i = 0; i < 255; ++i) {
-            int j = random.nextInt(255 - i) + 1;
+            int j = rand.nextInt(255 - i) + 1;
             short temp = perm[i];
             perm[i] = perm[j];
             perm[j] = temp;

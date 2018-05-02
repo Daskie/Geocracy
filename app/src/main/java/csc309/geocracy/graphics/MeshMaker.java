@@ -3,6 +3,7 @@ package csc309.geocracy.graphics;
 import android.util.LongSparseArray;
 
 import csc309.geocracy.Util;
+import csc309.geocracy.VecArrayUtil;
 import csc309.geocracy.graphics.Mesh;
 import glm_.vec3.Vec3;
 
@@ -43,26 +44,25 @@ public abstract class MeshMaker {
     }
 
     public static Mesh makeIcosahedron(String name) {
-        float phi = (float)((1.0 + Math.sqrt(5.0)) / 2.0);
         int nVertices = 12;
         float[] locations = {
-             0.0f,  1.0f,   phi,
-             0.0f,  1.0f,  -phi,
-             0.0f, -1.0f,   phi,
-             0.0f, -1.0f,  -phi,
+             0.0f,  1.0f,   Util.PHI,
+             0.0f,  1.0f,  -Util.PHI,
+             0.0f, -1.0f,   Util.PHI,
+             0.0f, -1.0f,  -Util.PHI,
 
-              phi,  0.0f,  1.0f,
-             -phi,  0.0f,  1.0f,
-              phi,  0.0f, -1.0f,
-             -phi,  0.0f, -1.0f,
+              Util.PHI,  0.0f,  1.0f,
+             -Util.PHI,  0.0f,  1.0f,
+              Util.PHI,  0.0f, -1.0f,
+             -Util.PHI,  0.0f, -1.0f,
 
-             1.0f,   phi,  0.0f,
-             1.0f,  -phi,  0.0f,
-            -1.0f,   phi,  0.0f,
-            -1.0f,  -phi,  0.0f
+             1.0f,   Util.PHI,  0.0f,
+             1.0f,  -Util.PHI,  0.0f,
+            -1.0f,   Util.PHI,  0.0f,
+            -1.0f,  -Util.PHI,  0.0f
         };
         for (int i = 0; i < nVertices; ++i) {
-            Util.normalizeVec3(locations, i);
+            VecArrayUtil.normalize(locations, i);
         }
         float[] normals = locations.clone();
 
@@ -72,7 +72,7 @@ public abstract class MeshMaker {
              3,  1,  6,  1,  3,  7,
              4,  6,  8,  6,  4,  9,
              7,  5, 10,  5,  7, 11,
-             8,  10, 0, 10,  8,  1,
+             8, 10,  0, 10,  8,  1,
             11,  9,  2,  9, 11,  3,
              0,  4,  8,
              1,  8,  6,
@@ -225,25 +225,25 @@ public abstract class MeshMaker {
                 int vi = fi * 3, newVI = fi * 12;
 
                 // All points involved
-                Util.getVec3(locations, vi + 0, a);
-                Util.getVec3(locations, vi + 1, b);
-                Util.getVec3(locations, vi + 2, c);
+                VecArrayUtil.get(locations, vi + 0, a);
+                VecArrayUtil.get(locations, vi + 1, b);
+                VecArrayUtil.get(locations, vi + 2, c);
                 Util.assign(d, a); d.plusAssign(b); d.timesAssign(0.5f); d.normalizeAssign();
                 Util.assign(e, b); e.plusAssign(c); e.timesAssign(0.5f); e.normalizeAssign();
                 Util.assign(f, c); f.plusAssign(a); f.timesAssign(0.5f); f.normalizeAssign();
 
-                Util.setVec3(newLocations, newVI +  0, a);
-                Util.setVec3(newLocations, newVI +  1, d);
-                Util.setVec3(newLocations, newVI +  2, f);
-                Util.setVec3(newLocations, newVI +  3, b);
-                Util.setVec3(newLocations, newVI +  4, e);
-                Util.setVec3(newLocations, newVI +  5, d);
-                Util.setVec3(newLocations, newVI +  6, c);
-                Util.setVec3(newLocations, newVI +  7, f);
-                Util.setVec3(newLocations, newVI +  8, e);
-                Util.setVec3(newLocations, newVI +  9, d);
-                Util.setVec3(newLocations, newVI + 10, e);
-                Util.setVec3(newLocations, newVI + 11, f);
+                VecArrayUtil.set(newLocations, newVI +  0, a);
+                VecArrayUtil.set(newLocations, newVI +  1, d);
+                VecArrayUtil.set(newLocations, newVI +  2, f);
+                VecArrayUtil.set(newLocations, newVI +  3, b);
+                VecArrayUtil.set(newLocations, newVI +  4, e);
+                VecArrayUtil.set(newLocations, newVI +  5, d);
+                VecArrayUtil.set(newLocations, newVI +  6, c);
+                VecArrayUtil.set(newLocations, newVI +  7, f);
+                VecArrayUtil.set(newLocations, newVI +  8, e);
+                VecArrayUtil.set(newLocations, newVI +  9, d);
+                VecArrayUtil.set(newLocations, newVI + 10, e);
+                VecArrayUtil.set(newLocations, newVI + 11, f);
             }
 
             nFaces = nNewFaces;
