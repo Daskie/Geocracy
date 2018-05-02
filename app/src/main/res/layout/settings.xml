@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Master Volume"
         android:labelFor="@id/masterVolume"/>
+    
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +31,7 @@
         android:layout_height="wrap_content"
         android:text="Music Volume"
         android:labelFor="@id/musicVolume"/>
-    
+
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
