@@ -1,7 +1,7 @@
 package csc309.geocracy.graphics;
 
 import csc309.geocracy.Util;
-import csc309.geocracy.graphics.Camera;
+import csc309.geocracy.world.Terrain;
 import glm_.mat3x3.Mat3;
 import glm_.quat.Quat;
 import glm_.vec2.Vec2;
@@ -17,8 +17,8 @@ public class OrbitCamera extends Camera {
     private Quat orientation;
     private Mat3 orientMatrix;
 
-    private final float MAX_ELEVATION = 5.f;
-    private final float MIN_ELEVATION = 2f;
+    private final float MAX_ELEVATION = 5.0f;
+    private final float MIN_ELEVATION = Terrain.HIGH_ELEVATION + 0.1f;
 
     public OrbitCamera(float fov, float near, float far, float aspectRatio, float elevation) {
         super(fov, near, far, aspectRatio);
@@ -43,8 +43,15 @@ public class OrbitCamera extends Camera {
     public void changeElevation(float delta) {
         setElevation(elevation + delta);
     }
-    public void changeElevation(double delta) {
-        setElevation(elevation + (float) delta);
+
+    // Zooms on a parabola rather than a line. Zoom "slows" closer to surface
+    public void easeElevation(float delta) {
+        float actualP = (elevation - MIN_ELEVATION) / (MAX_ELEVATION - MIN_ELEVATION);
+        float easeP = (float)Math.sqrt(actualP);
+        easeP += delta;
+        actualP = easeP * easeP;
+        actualP = glm.clamp(actualP, 0.0f, 1.0f);
+        setElevation(actualP * (MAX_ELEVATION - MIN_ELEVATION) + MIN_ELEVATION);
     }
 
     public void setLocation(Vec3 location) {

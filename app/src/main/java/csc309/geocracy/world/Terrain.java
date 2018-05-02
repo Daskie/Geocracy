@@ -46,7 +46,7 @@ public class Terrain {
         HashSet<Integer> adjacentOceanConts = new HashSet<>();
     }
 
-    private static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
+    public static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
 
     private TerrainShader shader;
     private World world;

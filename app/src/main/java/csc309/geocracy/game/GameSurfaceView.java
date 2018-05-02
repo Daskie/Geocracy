@@ -11,8 +11,6 @@ import csc309.geocracy.EventBus;
 import csc309.geocracy.graphics.MainRenderer;
 import glm_.vec2.Vec2;
 
-import static android.support.v4.math.MathUtils.clamp;
-
 public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetector.OnScaleGestureListener {
 
     private static final String TAG = "MAIN_SURFACE_VIEW";
@@ -36,6 +34,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     private void init() {
         setEGLContextClientVersion(3);
+        setEGLConfigChooser(8, 8, 8, 8, 24, 0);
         renderer = new MainRenderer();
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
@@ -85,8 +84,8 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        double zoom = -(detector.getScaleFactor() - 1.0) / 1.25;
-        EventBus.publish("CAMERA_ZOOM_EVENT", new Double(zoom));
+        float zoom = -(detector.getScaleFactor() - 1.0f) / 1.25f;
+        EventBus.publish("CAMERA_ZOOM_EVENT", zoom);
         return true;
     }
 

@@ -66,6 +66,6 @@ void main() {
     float border = step(borderThreshold, v2f_border) * (max(corner, edge));
     vec3 borderColor = mix(continentColor * 0.5f, continentColor + shTime, selectedOrHighlighted);
 
-    out_color.rgb = mix(albedo * (diffuse + (0.25 + shTime * 0.25f) * selectedOrHighlighted), borderColor * mix(diffuse, 1.0f, selectedOrHighlighted), border);
+    out_color.rgb = mix(albedo * (diffuse + (0.25 + shTime * 0.25f) * selectedOrHighlighted * land), borderColor * mix(diffuse, 1.0f, selectedOrHighlighted), border * land);
     out_color.a = 1.0f;
 }

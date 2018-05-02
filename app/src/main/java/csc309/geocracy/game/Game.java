@@ -1,9 +1,7 @@
 package csc309.geocracy.game;
 
-import android.nfc.Tag;
 import android.opengl.GLES30;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
@@ -31,9 +29,9 @@ public class Game {
         //noiseTest = new NoiseTest();
 
         // Setup camera
-        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 3.0f, 1.0f, 2.0f);
+        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 6.0f, 1.0f, 2.0f);
 
-        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.changeElevation((double) e));
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.easeElevation((float)e));
 
         swipeDelta = new Vec2();
 

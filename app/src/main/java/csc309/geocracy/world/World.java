@@ -3,9 +3,9 @@ package csc309.geocracy.world;
 import android.util.Log;
 import android.util.Pair;
 
-import csc309.geocracy.MeshMaker;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
+import csc309.geocracy.graphics.MeshMaker;
 import glm_.vec3.Vec3;
 
 public class World {
