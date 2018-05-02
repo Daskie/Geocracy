@@ -37,6 +37,7 @@ public class Terrain {
         HashSet<Integer> coastFaces = new HashSet<>();
         HashSet<Integer> adjacentLandTerrs = new HashSet<>();
         HashSet<Integer> adjacentOceanTerrs = new HashSet<>();
+        HashSet<Integer> waterwayTerrs = new HashSet<>();
         int continent;
     }
 
@@ -79,6 +80,7 @@ public class Terrain {
         categorizeFaces();
         createTerritories(maxNTerritories, rand);
         createContinents(maxNContinents);
+        createWaterways();
         createVerticesInfo();
 
         wasSelectedTerrChange = false;
@@ -198,10 +200,10 @@ public class Terrain {
         Continent[] continents = new Continent[continentSpecs.length - 1];
 
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
-            continents[ci - 1] = new Continent(ci, world, new HashSet<Territory>());
+            continents[ci - 1] = new Continent(ci, world, new HashSet<>());
         }
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
-            territories[ti - 1] = new Territory(ti, world, continents[territorySpecs[ti].continent - 1], new HashSet<Territory>());
+            territories[ti - 1] = new Territory(ti, world, continents[territorySpecs[ti].continent - 1], new HashSet<>());
         }
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
             HashSet<Territory> contTerrs = continents[ci - 1].getTerritories();
@@ -215,7 +217,7 @@ public class Terrain {
             for (int ati : terr.adjacentLandTerrs) {
                 adjTerrs.add(territories[ati - 1]);
             }
-            for (int ati : terr.adjacentOceanTerrs) {
+            for (int ati : terr.waterwayTerrs) {
                 adjTerrs.add(territories[ati - 1]);
             }
         }
@@ -1049,6 +1051,30 @@ public class Terrain {
             temp = currFringe2;
             currFringe2 = nextFringe2;
             nextFringe2 = temp;
+        }
+    }
+
+    private void createWaterways() {
+        // Connect any territories disconnected from continent
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            TerritorySpec terr = territorySpecs[ti];
+            boolean isConnected = false;
+            for (int ati : terr.adjacentLandTerrs) {
+                if (territorySpecs[ati].continent == terr.continent) {
+                    isConnected = true;
+                    break;
+                }
+            }
+            if (isConnected) {
+                continue;
+            }
+            for (int ati : terr.adjacentOceanTerrs) {
+                TerritorySpec adjTerr = territorySpecs[ati];
+                if (adjTerr.continent == terr.continent) {
+                    terr.waterwayTerrs.add(ati);
+                    adjTerr.waterwayTerrs.add(ti);
+                }
+            }
         }
     }
 
