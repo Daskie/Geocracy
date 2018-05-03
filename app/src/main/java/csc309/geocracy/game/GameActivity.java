@@ -71,10 +71,11 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 //        frame.addView(gameSurfaceView);
 
         LinearLayout uiLayout = new LinearLayout(this);
-
-        Button testButton = new  Button(this);
-        testButton.setText("Geocracy (v0.0.1)");
-        disposables.add(RxView.touches(testButton).subscribe(e -> EventBus.publish("TEST_EVENT", e)));
+//
+        Button gameDevBtn = new  Button(this);
+        gameDevBtn.setText("Geocracy (v0.0.3)");
+        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> EventBus.publish("GAME_NAME_TAP_EVENT", e)));
+        EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
 
 
         Button rollDice = new Button(this);
@@ -98,9 +99,13 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
                 }));
         }));
 
-        uiLayout.addView(testButton);
+        uiLayout.addView(gameDevBtn);
         uiLayout.addView(rollDice);
         frame.addView(uiLayout);
+    }
+
+    void showGameDevelopers() {
+        Toasty.info(this, "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
     }
 
     static Single<Integer> rollDice() {
