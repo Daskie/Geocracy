@@ -4,6 +4,7 @@ import android.opengl.GLES30;
 import android.util.Log;
 import android.util.SparseArray;
 import csc309.geocracy.Util;
+import csc309.geocracy.VecArrayUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -114,9 +115,9 @@ public class BackgroundMesh {
         int nFaces = indices.length / 3;
         for (int fi = 0; fi < nFaces; ++fi) {
             int ii = fi * 3;
-            Vec3 v1 = Util.getVec3(locations, indices[ii + 0]);
-            Vec3 v2 = Util.getVec3(locations, indices[ii + 1]);
-            Vec3 v3 = Util.getVec3(locations, indices[ii + 2]);
+            Vec3 v1 = VecArrayUtil.get(locations, indices[ii + 0]);
+            Vec3 v2 = VecArrayUtil.get(locations, indices[ii + 1]);
+            Vec3 v3 = VecArrayUtil.get(locations, indices[ii + 2]);
             Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
             int identity = identities[fi];
 

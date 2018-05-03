@@ -21,6 +21,7 @@ public class ChoosingNumArmiesAttackingState implements State{
     }
 
     public void draw(GameData game){
+//        View view = inflater.inflate(R.layout.troop_selection, container, false);
 
     }
     public void enter(GameData game, GameInputHandler input){

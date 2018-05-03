@@ -8,6 +8,11 @@ public class GameData {
     public Button endTurnButton;
     public Button settingsButton;
     public Button exitButton;
+    private Button backButton;
+    private Button okButton;
+    private Button doneButton;
+    private Button attackButton;
+    private Button fortTerrButton;
 
     public GameData(GameState game_state){
         this.state = game_state.start;
