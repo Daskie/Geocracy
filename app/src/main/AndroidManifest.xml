@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".game.GameActivity"
             android:parentActivityName=".MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/AppFullScreenTheme">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -28,7 +29,8 @@
         </activity>
         <activity android:name=".LoadingScreenActivity"
             android:parentActivityName=".MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/AppFullScreenTheme">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

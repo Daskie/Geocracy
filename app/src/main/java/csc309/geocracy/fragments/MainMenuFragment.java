@@ -58,7 +58,7 @@ public class MainMenuFragment extends Fragment {
         tutorialButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ((MenuActivity)getActivity()).setViewPager(1);
+                ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Tutorial);
                 return false;
             }
         });
@@ -68,7 +68,7 @@ public class MainMenuFragment extends Fragment {
         settingsButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ((MenuActivity)getActivity()).setViewPager(2);
+                ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Settings);
                 return false;
             }
         });

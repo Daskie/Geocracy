@@ -1,7 +1,6 @@
 package csc309.geocracy.graphics;
 
 import csc309.geocracy.Util;
-import csc309.geocracy.graphics.Camera;
 import glm_.mat3x3.Mat3;
 import glm_.quat.Quat;
 import glm_.vec2.Vec2;
@@ -13,15 +12,16 @@ import static glm_.Java.glm;
 // Camera that resides at a certain radius from the origin and always looks at the origin
 public class OrbitCamera extends Camera {
 
+    private float minElevation;
+    private float maxElevation;
     private float elevation;
     private Quat orientation;
     private Mat3 orientMatrix;
 
-    private final float MAX_ELEVATION = 5.f;
-    private final float MIN_ELEVATION = 2f;
-
-    public OrbitCamera(float fov, float near, float far, float aspectRatio, float elevation) {
+    public OrbitCamera(float fov, float near, float far, float aspectRatio, float minElevation, float maxElevation, float elevation) {
         super(fov, near, far, aspectRatio);
+        this.minElevation = minElevation;
+        this.maxElevation = maxElevation;
         this.elevation = elevation;
         orientation = new Quat();
         orientMatrix = new Mat3();
@@ -36,15 +36,22 @@ public class OrbitCamera extends Camera {
     }
 
     public void setElevation(float elevation) {
-        this.elevation = clamp(elevation, MIN_ELEVATION, MAX_ELEVATION);
+        this.elevation = clamp(elevation, minElevation, maxElevation);
         viewMatrix = null;
     }
 
     public void changeElevation(float delta) {
         setElevation(elevation + delta);
     }
-    public void changeElevation(double delta) {
-        setElevation(elevation + (float) delta);
+
+    // Zooms on a parabola rather than a line. Zoom "slows" closer to surface
+    public void easeElevation(float delta) {
+        float actualP = (elevation - minElevation) / (maxElevation - minElevation);
+        float easeP = (float)Math.sqrt(actualP);
+        easeP += delta;
+        actualP = easeP * easeP;
+        actualP = glm.clamp(actualP, 0.0f, 1.0f);
+        setElevation(actualP * (maxElevation - minElevation) + minElevation);
     }
 
     public void setLocation(Vec3 location) {

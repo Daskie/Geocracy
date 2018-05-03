@@ -1,14 +1,13 @@
 package csc309.geocracy.game;
 
-import android.nfc.Tag;
 import android.opengl.GLES30;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.graphics.OrbitCamera;
 import csc309.geocracy.noise.NoiseTest;
+import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import csc309.geocracy.graphics.Background;
 import glm_.vec2.Vec2;
@@ -19,7 +18,8 @@ import static glm_.Java.glm;
 
 public class Game {
 
-    private long lastT; // timestamp of last frame
+    private long startT; // time the game was started
+    private long lastT; // time last frame happened
     private World world;
     private Background background;
     private NoiseTest noiseTest;
@@ -32,14 +32,14 @@ public class Game {
 
         background = new Background();
         // Setup camera
-        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 10.0f, 1.0f, 2.0f);
-        //camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
+        camera = new OrbitCamera(glm.radians(60.0f), 0.01f, 6.0f, 1.0f, 1.5f, 5.0f, 3.0f);
 
-        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.changeElevation((double) e));
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.easeElevation((float)e));
 
         swipeDelta = new Vec2();
 
-        lastT = System.nanoTime();
+        startT = System.nanoTime();
+        lastT = 0;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)
@@ -82,12 +82,12 @@ public class Game {
 
     // One iteration of the game loop
     public void step() {
-        long t = System.nanoTime();
+        long t = System.nanoTime() - startT;
         float dt = (t - lastT) * 1e-9f;
         //System.out.println("FPS: " + (1.0f / dt));
 
-        update(dt);
-        render();
+        update(t, dt);
+        render(t, dt);
 
         lastT = t;
     }
@@ -98,7 +98,8 @@ public class Game {
     }
 
     // The core game logic
-    private void update(float dt) {
+    private float accumDT = 10.0f;
+    private void update(long t, float dt) {
         // TODO: replace with proper input system
         synchronized (this) {
             if (!Util.isZero(swipeDelta)) {
@@ -106,16 +107,30 @@ public class Game {
                 swipeDelta.x = 0.0f; swipeDelta.y = 0.0f;
             }
         }
+
+        accumDT += dt;
+        if (accumDT >= 10.0f) {
+            world.deselectAllTerritories();
+            Territory terr = world.getTerritories()[(int)(Math.random() * world.getTerritories().length)];
+            terr.select();
+            terr.highlightAllAdjacent();
+            accumDT = 0.0f;
+        }
     }
 
     // Render the game
-    private void render() {
+    private void render(long t, float dt) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
+<<<<<<< HEAD
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
         background.render(camera, lightDir);
         world.render(camera, lightDir);
+=======
+        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
+        world.render(t, camera, lightDir);
+>>>>>>> 91cc828bec89a66c8ce528216ed86d8738617696
         //noiseTest.render();
     }
 

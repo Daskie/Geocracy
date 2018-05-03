@@ -2,16 +2,15 @@ package csc309.geocracy.graphics;
 
 import android.util.Log;
 
-import csc309.geocracy.graphics.Shader;
 import glm_.mat3x3.Mat3;
 import glm_.mat4x4.Mat4;
 
 public class BasicShader extends Shader {
 
-    protected int modelMatUniformHandle;
-    protected int normMatUniformHandle;
-    protected int viewMatUniformHandle;
-    protected int projMatUniformHandle;
+    private int modelMatUniformHandle;
+    private int normMatUniformHandle;
+    private int viewMatUniformHandle;
+    private int projMatUniformHandle;
 
     public BasicShader() {
         super("Basic", "shaders/Basic.vert", "shaders/Basic.frag");
@@ -34,16 +33,16 @@ public class BasicShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((modelMatUniformHandle = getUniformLocation("u_modelMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_modelMat");
         }
         if ((normMatUniformHandle = getUniformLocation("u_normMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_normMat");
         }
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("Basic Shader", "Failed to get color uniform location");
+            Log.e("Basic Shader", "Failed to get location of u_projMat");
         }
 
         return true;

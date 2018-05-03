@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -19,10 +22,14 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
+import csc309.geocracy.fragments.SettingsFragment;
+import csc309.geocracy.fragments.TerritoryDetailFragment;
+import csc309.geocracy.fragments.TroopSelectionFragment;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,7 +37,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class GameActivity extends Activity implements SurfaceHolder.Callback {
+public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = "GAME";
 
@@ -39,6 +46,14 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
 
     private final CompositeDisposable disposables = new CompositeDisposable();
     private static final Random random = new Random();
+
+    private Fragment activeBottomPaneFragment = null;
+    private TerritoryDetailFragment territoryDetailFragment = new TerritoryDetailFragment();
+    private TroopSelectionFragment troopSelectionFragment = new TroopSelectionFragment();
+
+    private SettingsFragment settingsFragment = new SettingsFragment();
+    private FragmentTransaction userInterfaceFT;
+    private boolean settingsVisible = false;
 
 
     @Override
@@ -58,52 +73,115 @@ public class GameActivity extends Activity implements SurfaceHolder.Callback {
         game = new Game();
 
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
-//        gameSurfaceView = new GameSurfaceView(this);
-//        setContentView(mainSurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
-
-        // get the bottom sheet view
-        LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
-        llBottomSheet.bringToFront();
-// init the bottom sheet behavior
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
-
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
+
+//        // Begin the transaction
+//        userInterfaceFT = getSupportFragmentManager().beginTransaction();
+//        userInterfaceFT.replace(R.id.gameLayout, new TerritoryDetailFragment());
+//        userInterfaceFT.commit();
 
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
 //        frame.addView(gameSurfaceView);
 
         LinearLayout uiLayout = new LinearLayout(this);
+//
+        Button gameDevBtn = new  Button(this);
+        gameDevBtn.setText("Geocracy (v0.0.3)");
+        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("GAME_NAME_TAP_EVENT", e);
+        }));
+        EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
 
-        Button testButton = new  Button(this);
-        testButton.setText("Geocracy (v0.0.1)");
-        disposables.add(RxView.touches(testButton).subscribe(e -> EventBus.publish("TEST_EVENT", e)));
 
+        Button selectBtn = new Button(this);
+        selectBtn.setText("SELECT");
 
-        Button rollDice = new Button(this);
-        rollDice.setText("Roll dice!");
-        disposables.add(RxView.touches(rollDice).subscribe(e -> {
+        disposables.add(RxView.touches(selectBtn).subscribe(e -> {
             if (e.getAction() != MotionEvent.ACTION_UP) return;
-            Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
-            disposables.add(rollDice()
-                // Run on a background thread
-                .subscribeOn(Schedulers.computation())
-                // Be notified on the main thread
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<Integer>() {
-                    @Override public void onError(Throwable e) {
-                        Log.e(TAG, "onError()", e);
-                    }
-                    @Override public void onSuccess(Integer number) {
-                        Log.d(TAG, "onNext(" + number + ")");
-                        Toasty.success(GameActivity.this, "You rolled a: " + number, Toast.LENGTH_SHORT, true).show();
-                    }
-                }));
+            showBottomPaneFragment(new TerritoryDetailFragment());
         }));
 
-        uiLayout.addView(testButton);
-        uiLayout.addView(rollDice);
+        Button attackBtn = new Button(this);
+        attackBtn.setText("ATTACK");
+
+        disposables.add(RxView.touches(attackBtn).subscribe(e -> {
+            if (e.getAction() != MotionEvent.ACTION_UP) return;
+            showBottomPaneFragment(new TroopSelectionFragment());
+        }));
+
+
+        Button settingBtn = new Button(this);
+        settingBtn.setText("SETTINGS");
+
+        disposables.add(RxView.touches(settingBtn).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) toggleSettingsFragment();
+        }));
+
+//        Button rollDice = new Button(this);
+//        rollDice.setText("Roll dice!");
+
+
+//        disposables.add(RxView.touches(rollDice).subscribe(e -> {
+//            if (e.getAction() != MotionEvent.ACTION_UP) return;
+//            Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
+//            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+//            userInterfaceFT.replace(R.id.gameLayout, new SettingsFragment());
+//            userInterfaceFT.commit();
+//            disposables.add(rollDice()
+//                // Run on a background thread
+//                .subscribeOn(Schedulers.computation())
+//                // Be notified on the main thread
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeWith(new DisposableSingleObserver<Integer>() {
+//                    @Override public void onError(Throwable e) {
+//                        Log.e(TAG, "onError()", e);
+//                    }
+//                    @Override public void onSuccess(Integer number) {
+//                        Log.d(TAG, "onNext(" + number + ")");
+//                        Toasty.success(GameActivity.this, "You rolled a: " + number, Toast.LENGTH_SHORT, true).show();
+//                    }
+//                }));
+//        }));
+
+        uiLayout.addView(gameDevBtn);
+        uiLayout.addView(settingBtn);
+        uiLayout.addView(selectBtn);
+        uiLayout.addView(attackBtn);
+
         frame.addView(uiLayout);
+    }
+
+    void toggleSettingsFragment() {
+        if (settingsVisible) {
+            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT.remove(settingsFragment);
+            userInterfaceFT.commit();
+        } else {
+            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT.add(R.id.gameLayout, settingsFragment);
+            userInterfaceFT.commit();
+        }
+        settingsVisible = !settingsVisible;
+    }
+
+    void showBottomPaneFragment(Fragment bottomPaneFragment) {
+        if (activeBottomPaneFragment != null) {
+            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT.remove(activeBottomPaneFragment);
+            userInterfaceFT.commit();
+            activeBottomPaneFragment = null;
+        }
+
+        userInterfaceFT = getSupportFragmentManager().beginTransaction();
+        userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
+        userInterfaceFT.commit();
+
+        activeBottomPaneFragment = bottomPaneFragment;
+    }
+
+    void showGameDevelopers() {
+        Toasty.info(this, "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
     }
 
     static Single<Integer> rollDice() {

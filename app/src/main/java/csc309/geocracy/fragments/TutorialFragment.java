@@ -24,16 +24,6 @@ public class TutorialFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tutorial, container, false);
 
-        backButton = (Button) view.findViewById(R.id.backButton);
-
-        backButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ((MenuActivity)getActivity()).setViewPager(0);
-                return false;
-            }
-        });
-
         return view;
     }
 }
