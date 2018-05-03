@@ -8,17 +8,17 @@ import glm_.vec3.Vec3;
 
 public class TerrainShader extends Shader {
 
-    protected int viewMatUniformHandle;
-    protected int projMatUniformHandle;
-    protected int lightDirUniformHandle;
-    protected int timeUniformHandle;
-    protected int lowElevationUniformHandle;
-    protected int highElevationUniformHandle;
-    protected int maxCoastDistUniformHandle;
-    protected int continentColorsUniformHandle;
-    protected int selectedTerritoryHandle;
-    protected int highlightedTerritoriesLowerHandle;
-    protected int highlightedTerritoriesUpperHandle;
+    private int viewMatUniformHandle;
+    private int projMatUniformHandle;
+    private int lightDirUniformHandle;
+    private int timeUniformHandle;
+    private int lowElevationUniformHandle;
+    private int highElevationUniformHandle;
+    private int maxCoastDistUniformHandle;
+    private int continentColorsUniformHandle;
+    private int selectedTerritoryHandle;
+    private int highlightedTerritoriesLowerHandle;
+    private int highlightedTerritoriesUpperHandle;
 
     public TerrainShader() {
         super("Terrain", "shaders/Terrain.vert", "shaders/Terrain.frag");
