@@ -4,6 +4,7 @@ import android.opengl.GLES30;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.Pair;
+import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import java.nio.ByteBuffer;
@@ -232,6 +233,111 @@ public class Terrain {
 
     void highlightedTerritoriesChanged() {
         wasHighlightedTerrsChange = true;
+    }
+
+    Pair<Vec3[], Vec3[]> calcWaterwayPoints() {
+        ArrayList<Vec3> p1s = new ArrayList<>();
+        ArrayList<Vec3> p2s = new ArrayList<>();
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            TerritorySpec terr = territorySpecs[ti];
+            for (int wti : terr.waterwayTerrs) {
+                if (ti < wti) {
+                    calcWaterwayPointsBetween(ti, wti, p1s, p2s);
+                }
+            }
+        }
+
+        Vec3[] starts = new Vec3[p1s.size()];
+        Vec3[] ends = new Vec3[p2s.size()];
+        for (int i = 0; i < p1s.size(); ++i) starts[i] = p1s.get(i);
+        for (int i = 0; i < p2s.size(); ++i) ends[i] = p2s.get(i);
+        return new Pair<>(starts, ends);
+    }
+
+    private void calcWaterwayPointsBetween(int t1i, int t2i, ArrayList<Vec3> p1s, ArrayList<Vec3> p2s) {
+        SparseArray<Vec3> faces1 = new SparseArray<>();
+        SparseArray<Vec3> faces2 = new SparseArray<>();
+        for (int cfi : territorySpecs[t1i].coastFaces) {
+            for (int fi : faces[cfi].adjacencies) {
+                Face face = faces[fi];
+                if (face.territory == t1i && face.coastDist > 0 && hasAdjacentCoast(fi)) {
+                    faces1.put(fi, getFaceCenter(fi));
+                }
+            }
+        }
+        for (int cfi : territorySpecs[t2i].coastFaces) {
+            for (int fi : faces[cfi].adjacencies) {
+                Face face = faces[fi];
+                if (face.territory == t2i && face.coastDist > 0 && hasAdjacentCoast(fi)) {
+                    faces2.put(fi, getFaceCenter(fi));
+                }
+            }
+        }
+
+        float minDist = Float.POSITIVE_INFINITY;
+        int minFI1 = -1, minFI2 = -1;
+        for (int i1 = 0; i1 < faces1.size(); ++i1) {
+            int fi1 = faces1.keyAt(i1);
+            Vec3 center1 = faces1.valueAt(i1);
+            int penalty = distToDifferentLandTerritoryWithin(fi1, 2);
+            for (int i2 = 0; i2 < faces2.size(); ++i2) {
+                int fi2 = faces2.keyAt(i2);
+                Vec3 center2 = faces2.valueAt(i2);
+                penalty = glm.max(penalty, distToDifferentLandTerritoryWithin(fi2, 3));
+
+                float dist = center2.minus(center1).getLength2();
+                dist *= 1 << penalty;
+                if (dist < minDist) {
+                    minDist = dist;
+                    minFI1 = fi1;
+                    minFI2 = fi2;
+                }
+            }
+        }
+
+        p1s.add(faces1.get(minFI1));
+        p2s.add(faces2.get(minFI2));
+    }
+
+    private boolean hasAdjacentCoast(int fi) {
+        for (int afi : faces[fi].adjacencies) {
+            if (faces[afi].coastDist == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int distToDifferentLandTerritoryWithin(int origFI, int n) {
+        Face face = faces[origFI];
+        int ti = face.territory;
+        HashSet<Integer> checked = new HashSet<>();
+        HashSet<Integer> fringe = new HashSet<>();
+        HashSet<Integer> nextFringe = new HashSet<>();
+        checked.add(origFI);
+        fringe.add(origFI);
+        for (int i = 0; i < n && !fringe.isEmpty(); ++i) {
+            for (int fi : fringe) {
+                for (int afi : faces[fi].adjacencies) {
+                    if (checked.contains(afi)) {
+                        continue;
+                    }
+                    if (faces[afi].coastDist < 1) {
+                        continue;
+                    }
+                    if (faces[afi].territory != ti) {
+                        return i + 1;
+                    }
+                    nextFringe.add(afi);
+                }
+            }
+            HashSet<Integer> temp = fringe;
+            fringe = nextFringe;
+            nextFringe = temp;
+            nextFringe.clear();
+            checked.addAll(fringe);
+        }
+        return 0;
     }
 
     private ByteBuffer genVertexBufferData() {
@@ -1004,7 +1110,7 @@ public class Terrain {
             }
             for (int l1i = 0; l1i < lands.size() - 1; ++l1i) {
                 for (int l2i = l1i + 1; l2i < lands.size(); ++l2i) {
-                    Pair<Integer, Integer> pair = detShortestWaterway(lands.get(l1i), lands.get(l2i));
+                    Pair<Integer, Integer> pair = detMainWaterway(lands.get(l1i), lands.get(l2i));
                     if (pair == null) {
                         continue;
                     }
@@ -1020,7 +1126,7 @@ public class Terrain {
             for (int c2i : cont1.adjacentOceanConts) {
                 ContinentSpec cont2 = continentSpecs[c2i];
                 if (!cont1.adjacentLandConts.contains(c2i) && !cont1.waterwayConts.contains(c2i)) {
-                    Pair<Integer, Integer> pair = detShortestWaterway(cont1.territories, cont2.territories);
+                    Pair<Integer, Integer> pair = detMainWaterway(cont1.territories, cont2.territories);
                     if (pair == null) {
                         continue;
                     }
@@ -1097,6 +1203,37 @@ public class Terrain {
         }
 
         return new Pair<>(possibles.keyAt(minI), possibles.valueAt(minI));
+    }
+
+    private Pair<Integer, Integer> detMainWaterway(HashSet<Integer> terrs1, HashSet<Integer> terrs2) {
+        LongSparseArray<Integer> counts = new LongSparseArray<>();
+        for (int ti : terrs1) {
+            for (int fi : territorySpecs[ti].oceanFaces) {
+                for (int afi : faces[fi].adjacencies) {
+                    int ati = faces[afi].territory;
+                    if (ati != ti && terrs2.contains(ati)) {
+                        long key = Util.toLong(ti, ati);
+                        counts.put(key, counts.get(key, 0) + 1);
+                    }
+                }
+            }
+        }
+        int maxCount = 0;
+        int maxTI1 = -1, maxTI2 = -1;
+        for (int i = 0; i < counts.size(); ++i) {
+            if (counts.valueAt(i) > maxCount) {
+                maxCount = counts.valueAt(i);
+                Pair<Integer, Integer> pair = Util.fromLong(counts.keyAt(i));
+                maxTI1 = pair.first;
+                maxTI2 = pair.second;
+            }
+        }
+
+        if (maxTI1 == -1 || maxTI2 == -1) {
+            return null;
+        }
+
+        return new Pair<>(maxTI1, maxTI2);
     }
 
     private int detOceanDistanceBetweenTerritories(int t1i, int t2i) {
@@ -1249,7 +1386,7 @@ public class Terrain {
         return vertDistances;
     }
 
-    private Vec3 centerOfFace(int fi) {
+    private Vec3 getFaceCenter(int fi) {
         int ii = fi * 3;
         Vec3 v = VecArrayUtil.get(locations, indices[ii + 0]);
         v.plusAssign(VecArrayUtil.get(locations, indices[ii + 1]));
@@ -1258,9 +1395,13 @@ public class Terrain {
         return v;
     }
 
+    private Vec3 getFaceCorner(int fi, int i) {
+        return VecArrayUtil.get(locations, indices[fi * 3 + i]);
+    }
+
     private int faceNearestTo(Vec3 p) {
         int currFI = 0, prevFI = currFI, nextFI = currFI;
-        float minDist2 = glm.length2(p.minus(centerOfFace(currFI)));
+        float minDist2 = glm.length2(p.minus(getFaceCenter(currFI)));
 
         while (true) {
             prevFI = currFI;
@@ -1268,7 +1409,7 @@ public class Terrain {
             for (int i = 0; i < 3; ++i) {
                 int fi = faces[currFI].adjacencies[i];
                 if (fi != prevFI) {
-                    float dist2 = glm.length2(p.minus(centerOfFace(fi)));
+                    float dist2 = glm.length2(p.minus(getFaceCenter(fi)));
                     if (dist2 < minDist2) {
                         nextFI = fi;
                         minDist2 = dist2;

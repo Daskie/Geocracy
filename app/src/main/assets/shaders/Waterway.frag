@@ -4,6 +4,7 @@ precision highp float;
 
 in vec3 v2f_loc;
 in vec3 v2f_norm;
+in vec2 v2f_pos;
 
 out vec4 out_color;
 
@@ -18,5 +19,5 @@ void main() {
     float diffuse = (1.0f - k_ambience) * max(dot(norm, -u_lightDir), 0.0f) + k_ambience;
 
     out_color.rgb = vec3(0.0f);//vec3(diffuse);
-    out_color.a = 1.0f;
+    out_color.a = step(0.5f, abs(v2f_pos.y));
 }

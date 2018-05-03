@@ -162,11 +162,10 @@ public class WaterwayRenderer {
 
         for (int i = 0; i < nWaterways; ++i) {
             Vec3 u = starts[i].normalize();
-            Vec3 w = u.cross(ends[i].normalize());
-            float mag = w.getLength();
-            angles[i] = (float)Math.asin(mag);
-            w.div(mag);
-            Vec3 v = w.cross(u);
+            Vec3 v = ends[i].normalize();
+            Vec3 w = u.cross(v).normalizeAssign();
+            angles[i] = (float)Math.acos(u.dot(v));
+            v = w.cross(u);
 
             bases[i * 9 + 0] = u.x;
             bases[i * 9 + 1] = u.y;

@@ -31,7 +31,8 @@ public class World {
         territories = pair.first;
         continents = pair.second;
         oceanRenderer = new OceanRenderer(sphereMesh);
-        waterwayRenderer = new WaterwayRenderer(100, new Vec3[]{ new Vec3(0.0f, 0.0f, 1.0f) }, new Vec3[]{ new Vec3(0.0f, 1.0f, 0.0f) });
+        Pair<Vec3[], Vec3[]> waterwayPoints = terrain.calcWaterwayPoints();
+        waterwayRenderer = new WaterwayRenderer(100, waterwayPoints.first, waterwayPoints.second);
     }
 
     public boolean load() {
