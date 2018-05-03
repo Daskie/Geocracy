@@ -17,6 +17,6 @@ void main() {
     // Diffuse lighting
     float diffuse = (1.0f - k_ambience) * max(dot(norm, -u_lightDir), 0.0f) + k_ambience;
 
-    out_color.rgb = vec3(diffuse);
+    out_color.rgb = vec3(0.0f);//vec3(diffuse);
     out_color.a = 1.0f;
 }

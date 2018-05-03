@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
 import csc309.geocracy.Util;
 import csc309.geocracy.graphics.Camera;
@@ -13,13 +14,18 @@ import glm_.vec3.Vec3;
 public class WaterwayRenderer {
 
     private WaterwayShader shader;
+    private int nWaterways;
     private float[] positions;
+    private float[] angles;
+    private float[] bases;
     private int vboHandle;
     private int vaoHandle;
 
-    public WaterwayRenderer(int nSegments) {
+    public WaterwayRenderer(int nSegments, Vec3[] startPoints, Vec3[] endPoints) {
         shader = new WaterwayShader();
         genMesh(nSegments);
+        nWaterways = startPoints.length;
+        calcAnglesAndBases(startPoints, endPoints);
     }
 
     public boolean load() {
@@ -60,10 +66,36 @@ public class WaterwayRenderer {
         GLES30.glBindVertexArray(vaoHandle);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboHandle);
         GLES30.glEnableVertexAttribArray(0);
-        GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, 2 * 4, 0);
+        GLES30.glEnableVertexAttribArray(1);
+        GLES30.glEnableVertexAttribArray(2);
+        GLES30.glEnableVertexAttribArray(3);
+        GLES30.glEnableVertexAttribArray(4);
+        int positionSize = 8;
+        int positionsOffset = 0;
+        int angleSize = 4;
+        int anglesOffset = positionsOffset + positionSize * (positions.length / 2);
+        int basisSize = 9 * 4;
+        int basesOffset = anglesOffset + angleSize * angles.length;
+        GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, positionSize, positionsOffset);
+        GLES30.glVertexAttribPointer(1, 1, GLES30.GL_FLOAT, false, angleSize, anglesOffset);
+        GLES30.glVertexAttribPointer(2, 4, GLES30.GL_FLOAT, false, basisSize, basesOffset + 0 * 3 * 4);
+        GLES30.glVertexAttribPointer(3, 4, GLES30.GL_FLOAT, false, basisSize, basesOffset + 1 * 3 * 4);
+        GLES30.glVertexAttribPointer(4, 4, GLES30.GL_FLOAT, false, basisSize, basesOffset + 2 * 3 * 4);
+        GLES30.glVertexAttribDivisor(1, 1);
+        GLES30.glVertexAttribDivisor(2, 1);
+        GLES30.glVertexAttribDivisor(3, 1);
+        GLES30.glVertexAttribDivisor(4, 1);
         GLES30.glBindVertexArray(0);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
+        GLES30.glVertexAttribDivisor(1, 0);
+        GLES30.glVertexAttribDivisor(2, 0);
+        GLES30.glVertexAttribDivisor(3, 0);
+        GLES30.glVertexAttribDivisor(4, 0);
         GLES30.glDisableVertexAttribArray(0);
+        GLES30.glDisableVertexAttribArray(1);
+        GLES30.glDisableVertexAttribArray(2);
+        GLES30.glDisableVertexAttribArray(3);
+        GLES30.glDisableVertexAttribArray(4);
         // Check for OpenGL errors
         if (Util.isGLError()) {
             Log.e("WaterwayRenderer", "Failed to setup vao");
@@ -80,7 +112,7 @@ public class WaterwayRenderer {
         shader.setProjectionMatrix(camera.getProjectionMatrix());
         shader.setLightDirection(lightDir);
         GLES30.glBindVertexArray(vaoHandle);
-        GLES30.glDrawArrays(GLES30.GL_TRIANGLE_STRIP, 0, positions.length / 2);
+        GLES30.glDrawArraysInstanced(GLES30.GL_TRIANGLE_STRIP, 0, positions.length / 2, nWaterways);
         GLES30.glBindVertexArray(0);
     }
 
@@ -114,10 +146,38 @@ public class WaterwayRenderer {
     }
 
     private ByteBuffer genVertexBufferData() {
-        ByteBuffer vertexData = ByteBuffer.allocateDirect(positions.length * 4);
-        vertexData.order(ByteOrder.nativeOrder());
-        vertexData.asFloatBuffer().put(positions);
-        return vertexData;
+        ByteBuffer bb = ByteBuffer.allocateDirect(positions.length * 4 + angles.length * 4 + bases.length * 9 * 4);
+        bb.order(ByteOrder.nativeOrder());
+        FloatBuffer fb = bb.asFloatBuffer();
+        fb.put(positions);
+        fb.put(angles);
+        fb.put(bases);
+
+        return bb;
+    }
+
+    private void calcAnglesAndBases(Vec3[] starts, Vec3[] ends) {
+        angles = new float[nWaterways];
+        bases = new float[nWaterways * 9];
+
+        for (int i = 0; i < nWaterways; ++i) {
+            Vec3 u = starts[i].normalize();
+            Vec3 w = u.cross(ends[i].normalize());
+            float mag = w.getLength();
+            angles[i] = (float)Math.asin(mag);
+            w.div(mag);
+            Vec3 v = w.cross(u);
+
+            bases[i * 9 + 0] = u.x;
+            bases[i * 9 + 1] = u.y;
+            bases[i * 9 + 2] = u.z;
+            bases[i * 9 + 3] = v.x;
+            bases[i * 9 + 4] = v.y;
+            bases[i * 9 + 5] = v.z;
+            bases[i * 9 + 6] = w.x;
+            bases[i * 9 + 7] = w.y;
+            bases[i * 9 + 8] = w.z;
+        }
     }
 
 }
