@@ -11,7 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -1165,37 +1164,6 @@ public class Terrain {
         return lands;
     }
 
-    private Pair<Integer, Integer> detShortestWaterway(HashSet<Integer> terrs1, HashSet<Integer> terrs2) {
-        SparseIntArray possibles = new SparseIntArray();
-        for (int t1i : terrs1) {
-            TerritorySpec terr1 = territorySpecs[t1i];
-            for (int t2i : terrs2) {
-                if (terr1.adjacentOceanTerrs.contains(t2i)) {
-                    possibles.put(t1i, t2i);
-                }
-            }
-        }
-
-        if (possibles.size() == 0) {
-            return null;
-        }
-        if (possibles.size() == 1) {
-            return new Pair<>(possibles.keyAt(0), possibles.valueAt(0));
-        }
-
-        int minDist = Integer.MAX_VALUE;
-        int minI = -1;
-        for (int i = 0; i < possibles.size(); ++i) {
-            int dist = detOceanDistanceBetweenTerritories(possibles.keyAt(i), possibles.valueAt(i));
-            if (dist < minDist) {
-                minDist = dist;
-                minI = i;
-            }
-        }
-
-        return new Pair<>(possibles.keyAt(minI), possibles.valueAt(minI));
-    }
-
     private Pair<Integer, Integer> detMainWaterway(HashSet<Integer> terrs1, HashSet<Integer> terrs2) {
         LongSparseArray<Integer> counts = new LongSparseArray<>();
         for (int ti : terrs1) {
@@ -1330,53 +1298,6 @@ public class Terrain {
         return vertBorders;
     }
 
-    private int[] detTerrEdgeDistances(HashSet<Integer> edgeFaces) {
-        int[] distances = new int[faces.length];
-        HashSet<Integer> currFaces = edgeFaces;
-        HashSet<Integer> nextFaces = new HashSet<>();
-        boolean[] checked = new boolean[faces.length];
-
-        int currDist = 0;
-        while (true) {
-            for (Integer fi : currFaces) {
-                distances[fi] = currDist;
-                checked[fi] = true;
-            }
-            for (Integer fi : currFaces) {
-                int[] adjacencies = faces[fi].adjacencies;
-                if (!checked[adjacencies[0]]) nextFaces.add(adjacencies[0]);
-                if (!checked[adjacencies[1]]) nextFaces.add(adjacencies[1]);
-                if (!checked[adjacencies[2]]) nextFaces.add(adjacencies[2]);
-            }
-
-            if (nextFaces.isEmpty()) {
-                break;
-            }
-
-            HashSet<Integer> temp = currFaces;
-            currFaces = nextFaces;
-            nextFaces = temp;
-            nextFaces.clear();
-            ++currDist;
-        }
-
-        return distances;
-    }
-
-    private int[] detVertTerrEdgeDistances(int[] faceDistances) {
-        int[] vertDistances = new int[locations.length];
-        Arrays.fill(vertDistances, Integer.MAX_VALUE);
-        for (int fi = 0; fi < faces.length; ++fi) {
-            int ii = fi * 3;
-            int faceDist = faceDistances[fi];
-            for (int i = 0; i < 3; ++i) {
-                int vi = indices[ii + i];
-                vertDistances[vi] = glm.min(vertDistances[vi], faceDist);
-            }
-        }
-        return vertDistances;
-    }
-
     private Vec3 getFaceCenter(int fi) {
         int ii = fi * 3;
         Vec3 v = VecArrayUtil.get(locations, indices[ii + 0]);
@@ -1384,80 +1305,6 @@ public class Terrain {
         v.plusAssign(VecArrayUtil.get(locations, indices[ii + 2]));
         v.timesAssign(1.0f / 3.0f);
         return v;
-    }
-
-    private Vec3 getFaceCorner(int fi, int i) {
-        return VecArrayUtil.get(locations, indices[fi * 3 + i]);
-    }
-
-    private int faceNearestTo(Vec3 p) {
-        int currFI = 0, prevFI = currFI, nextFI = currFI;
-        float minDist2 = glm.length2(p.minus(getFaceCenter(currFI)));
-
-        while (true) {
-            prevFI = currFI;
-            currFI = nextFI;
-            for (int i = 0; i < 3; ++i) {
-                int fi = faces[currFI].adjacencies[i];
-                if (fi != prevFI) {
-                    float dist2 = glm.length2(p.minus(getFaceCenter(fi)));
-                    if (dist2 < minDist2) {
-                        nextFI = fi;
-                        minDist2 = dist2;
-                    }
-                }
-            }
-
-            if (nextFI == currFI) {
-                break;
-            }
-        }
-
-        return currFI;
-    }
-
-    private int nearestCoastFace(int fi) {
-        while (true) {
-            Face face = faces[fi];
-            int dist = glm.abs(face.coastDist);
-            if (face.coastDist == 0) {
-                return fi;
-            }
-
-            int dist1 = glm.abs(faces[face.adjacencies[0]].coastDist);
-            if (dist1 < dist) {
-                fi = face.adjacencies[0];
-                continue;
-            }
-            int dist2 = glm.abs(faces[face.adjacencies[1]].coastDist);
-            if (dist2 < dist) {
-                fi = face.adjacencies[1];
-                continue;
-            }
-            int dist3 = glm.abs(faces[face.adjacencies[2]].coastDist);
-            if (dist3 < dist) {
-                fi = face.adjacencies[2];
-                continue;
-            }
-
-            if (dist1 == dist) {
-                fi = face.adjacencies[0];
-                continue;
-            }
-            if (dist2 == dist) {
-                fi = face.adjacencies[1];
-                continue;
-            }
-            if (dist3 == dist) {
-                fi = face.adjacencies[2];
-                continue;
-            }
-
-            break;
-        }
-
-        // Should never get here
-        return -1;
     }
 
 }
