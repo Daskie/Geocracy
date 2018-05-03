@@ -663,7 +663,7 @@ public class Terrain {
                 int fi = adjacencies[i];
                 Face face = faces[fi];
                 if (face.territory == 0) {
-                    if (face.coastDist < 0 && !subFringes.contains(fi)) {
+                    if (face.coastDist <= 0 && !subFringes.contains(fi)) {
                         face.territory = territory;
                         terr.oceanFaces.add(fi);
                         subFringes.add(fi);
