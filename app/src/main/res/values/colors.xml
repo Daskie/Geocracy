@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="attackingColor">#EFFED00A</color>
+    <color name="defendingColor">#EF98948E</color>
+    <color name="territoryDetailColor">#EF719BA5</color>
+    <color name="whiteTransparent">#EFFFFFFF</color>
 </resources>
