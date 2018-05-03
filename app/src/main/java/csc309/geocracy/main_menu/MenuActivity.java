@@ -3,12 +3,18 @@ package csc309.geocracy.main_menu;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.Map;
 
 import csc309.geocracy.R;
 import csc309.geocracy.fragments.MainMenuFragment;
@@ -16,7 +22,6 @@ import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.fragments.TutorialFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameSurfaceView;
-
 
 public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -28,6 +33,13 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     static public GameSurfaceView gameSurfaceView;
     static public Game game;
 
+    public Toolbar toolbar;
+
+    public enum Pages {
+        Home,
+        Tutorial,
+        Settings
+    }
 
     /** Called when the activity is first created. */
     @Override
@@ -42,6 +54,19 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.menu_main);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToPage(Pages.Home);
+            }
+        });
 
         mMenuPagerAdapter = new MenuPagerAdapter(getSupportFragmentManager());
         mViewPager = (NonSwipeableViewPager) findViewById(R.id.menuContainer);
@@ -64,7 +89,29 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         adapter.addFragment(new TutorialFragment(), "Tutorial");
         adapter.addFragment(new SettingsFragment(), "Settings");
         vp.setAdapter(adapter);
-        setViewPager(0);
+        navigateToPage(Pages.Home);
+    }
+
+    public void navigateToPage(Pages page) {
+        switch (page) {
+
+            case Home:
+                toolbar.setVisibility(View.INVISIBLE);
+                setViewPager(0);
+                break;
+
+            case Tutorial:
+                toolbar.setVisibility(View.VISIBLE);
+                setViewPager(1);
+                break;
+
+            case Settings:
+                toolbar.setVisibility(View.VISIBLE);
+                setViewPager(2);
+
+            default:
+                break;
+        }
     }
 
     public void setViewPager(int fragmentNumber) {
