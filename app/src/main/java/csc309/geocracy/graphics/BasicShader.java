@@ -2,16 +2,15 @@ package csc309.geocracy.graphics;
 
 import android.util.Log;
 
-import csc309.geocracy.graphics.Shader;
 import glm_.mat3x3.Mat3;
 import glm_.mat4x4.Mat4;
 
 public class BasicShader extends Shader {
 
-    protected int modelMatUniformHandle;
-    protected int normMatUniformHandle;
-    protected int viewMatUniformHandle;
-    protected int projMatUniformHandle;
+    private int modelMatUniformHandle;
+    private int normMatUniformHandle;
+    private int viewMatUniformHandle;
+    private int projMatUniformHandle;
 
     public BasicShader() {
         super("Basic", "shaders/Basic.vert", "shaders/Basic.frag");

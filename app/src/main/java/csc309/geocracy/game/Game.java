@@ -29,7 +29,7 @@ public class Game {
         //noiseTest = new NoiseTest();
 
         // Setup camera
-        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 6.0f, 1.0f, 2.0f);
+        camera = new OrbitCamera(glm.radians(60.0f), 0.01f, 6.0f, 1.0f, 1.5f, 5.0f, 3.0f);
 
         EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.easeElevation((float)e));
 

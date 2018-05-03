@@ -19,6 +19,7 @@ public class World {
     private Territory[] territories;
     private Continent[] continents;
     private OceanRenderer oceanRenderer;
+    private WaterwayRenderer waterwayRenderer;
 
     public World(long seed) {
         this.seed = seed;
@@ -30,6 +31,8 @@ public class World {
         territories = pair.first;
         continents = pair.second;
         oceanRenderer = new OceanRenderer(sphereMesh);
+        Pair<Vec3[], Vec3[]> waterwayPoints = terrain.calcWaterwayPoints();
+        waterwayRenderer = new WaterwayRenderer(100, waterwayPoints.first, waterwayPoints.second);
     }
 
     public boolean load() {
@@ -43,6 +46,10 @@ public class World {
             Log.e("Game", "Failed to load ocean renderer");
             return false;
         }
+        if (!waterwayRenderer.load()) {
+            Log.e("Game", "Failed to load waterway renderer");
+            return false;
+        }
 
         return true;
     }
@@ -50,11 +57,13 @@ public class World {
     public void render(long t, Camera camera, Vec3 lightDir) {
         terrain.render(t, camera, lightDir);
         oceanRenderer.render(camera, lightDir);
+        waterwayRenderer.render(camera, lightDir);
     }
 
     public void unload() {
         terrain.unload();
         oceanRenderer.unload();
+        waterwayRenderer.unload();
     }
 
     public void deselectAllTerritories() {
@@ -74,4 +83,5 @@ public class World {
     Terrain getTerrain() {
         return terrain;
     }
+
 }

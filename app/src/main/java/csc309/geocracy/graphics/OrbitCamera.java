@@ -1,7 +1,6 @@
 package csc309.geocracy.graphics;
 
 import csc309.geocracy.Util;
-import csc309.geocracy.world.Terrain;
 import glm_.mat3x3.Mat3;
 import glm_.quat.Quat;
 import glm_.vec2.Vec2;
@@ -13,15 +12,16 @@ import static glm_.Java.glm;
 // Camera that resides at a certain radius from the origin and always looks at the origin
 public class OrbitCamera extends Camera {
 
+    private float minElevation;
+    private float maxElevation;
     private float elevation;
     private Quat orientation;
     private Mat3 orientMatrix;
 
-    private final float MAX_ELEVATION = 5.0f;
-    private final float MIN_ELEVATION = Terrain.HIGH_ELEVATION + 0.1f;
-
-    public OrbitCamera(float fov, float near, float far, float aspectRatio, float elevation) {
+    public OrbitCamera(float fov, float near, float far, float aspectRatio, float minElevation, float maxElevation, float elevation) {
         super(fov, near, far, aspectRatio);
+        this.minElevation = minElevation;
+        this.maxElevation = maxElevation;
         this.elevation = elevation;
         orientation = new Quat();
         orientMatrix = new Mat3();
@@ -36,7 +36,7 @@ public class OrbitCamera extends Camera {
     }
 
     public void setElevation(float elevation) {
-        this.elevation = clamp(elevation, MIN_ELEVATION, MAX_ELEVATION);
+        this.elevation = clamp(elevation, minElevation, maxElevation);
         viewMatrix = null;
     }
 
@@ -46,12 +46,12 @@ public class OrbitCamera extends Camera {
 
     // Zooms on a parabola rather than a line. Zoom "slows" closer to surface
     public void easeElevation(float delta) {
-        float actualP = (elevation - MIN_ELEVATION) / (MAX_ELEVATION - MIN_ELEVATION);
+        float actualP = (elevation - minElevation) / (maxElevation - minElevation);
         float easeP = (float)Math.sqrt(actualP);
         easeP += delta;
         actualP = easeP * easeP;
         actualP = glm.clamp(actualP, 0.0f, 1.0f);
-        setElevation(actualP * (MAX_ELEVATION - MIN_ELEVATION) + MIN_ELEVATION);
+        setElevation(actualP * (maxElevation - minElevation) + minElevation);
     }
 
     public void setLocation(Vec3 location) {

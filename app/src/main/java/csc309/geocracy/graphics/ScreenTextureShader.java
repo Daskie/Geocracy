@@ -2,12 +2,10 @@ package csc309.geocracy.graphics;
 
 import android.util.Log;
 
-import csc309.geocracy.graphics.Shader;
-
 // Simply draws texture over screen
 public class ScreenTextureShader extends Shader {
 
-    protected int textureUniformHandle;
+    private int textureUniformHandle;
 
     public ScreenTextureShader() {
         super("Noise", "shaders/ScreenTexture.vert", "shaders/ScreenTexture.frag");

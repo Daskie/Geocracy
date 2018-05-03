@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.opengl.GLES30;
 import android.os.Process;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -147,7 +148,11 @@ public abstract class Util {
     }
 
     public static long toLong(int low, int high) {
-        return ((long)high << 32) | ((long)low & 0x00000000FFFFFFFFL);
+        return ((long)low & 0xFFFFFFFFL) | ((long)high << 32);
+    }
+
+    public static Pair<Integer, Integer> fromLong(long v) {
+        return new Pair<>((int)(v & 0xFFFFFFFFL), (int)(v >> 32));
     }
 
     // I hate Java
