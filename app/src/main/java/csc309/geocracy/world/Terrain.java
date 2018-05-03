@@ -260,7 +260,7 @@ public class Terrain {
         for (int cfi : territorySpecs[t1i].coastFaces) {
             for (int fi : faces[cfi].adjacencies) {
                 Face face = faces[fi];
-                if (face.territory == t1i && face.coastDist > 0 && hasAdjacentCoast(fi)) {
+                if (face.territory == t1i && face.coastDist > 0) {
                     faces1.put(fi, getFaceCenter(fi));
                 }
             }
@@ -268,7 +268,7 @@ public class Terrain {
         for (int cfi : territorySpecs[t2i].coastFaces) {
             for (int fi : faces[cfi].adjacencies) {
                 Face face = faces[fi];
-                if (face.territory == t2i && face.coastDist > 0 && hasAdjacentCoast(fi)) {
+                if (face.territory == t2i && face.coastDist > 0) {
                     faces2.put(fi, getFaceCenter(fi));
                 }
             }
@@ -279,14 +279,14 @@ public class Terrain {
         for (int i1 = 0; i1 < faces1.size(); ++i1) {
             int fi1 = faces1.keyAt(i1);
             Vec3 center1 = faces1.valueAt(i1);
-            int penalty = distToDifferentLandTerritoryWithin(fi1, 2);
+            int penalty1 = distToDifferentLandTerritoryWithin(fi1, 2);
             for (int i2 = 0; i2 < faces2.size(); ++i2) {
                 int fi2 = faces2.keyAt(i2);
                 Vec3 center2 = faces2.valueAt(i2);
-                penalty = glm.max(penalty, distToDifferentLandTerritoryWithin(fi2, 3));
+                int penalty2 = distToDifferentLandTerritoryWithin(fi2, 2);
 
                 float dist = center2.minus(center1).getLength2();
-                dist *= 1 << penalty;
+                dist *= 1 << (penalty1 + penalty2);
                 if (dist < minDist) {
                     minDist = dist;
                     minFI1 = fi1;
@@ -297,15 +297,6 @@ public class Terrain {
 
         p1s.add(faces1.get(minFI1));
         p2s.add(faces2.get(minFI2));
-    }
-
-    private boolean hasAdjacentCoast(int fi) {
-        for (int afi : faces[fi].adjacencies) {
-            if (faces[afi].coastDist == 0) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int distToDifferentLandTerritoryWithin(int origFI, int n) {
