@@ -73,8 +73,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameSurfaceView.getHolder().addCallback(this);
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
 
-
-
 //        // Begin the transaction
 //        userInterfaceFT = getSupportFragmentManager().beginTransaction();
 //        userInterfaceFT.replace(R.id.gameLayout, new TerritoryDetailFragment());
@@ -87,7 +85,9 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 //
         Button gameDevBtn = new  Button(this);
         gameDevBtn.setText("Geocracy (v0.0.3)");
-        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> EventBus.publish("GAME_NAME_TAP_EVENT", e)));
+        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("GAME_NAME_TAP_EVENT", e);
+        }));
         EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
 
 
@@ -112,8 +112,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingBtn.setText("SETTINGS");
 
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_UP) return;
-            toggleSettingsFragment();
+            if (e.getAction() == MotionEvent.ACTION_DOWN) toggleSettingsFragment();
         }));
 
 //        Button rollDice = new Button(this);
