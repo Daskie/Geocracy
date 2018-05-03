@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="troopSelectionColor">#EFFED00A</color>
+    <color name="territoryDetailColor">#EF98948E</color>
+    <color name="whiteTransparent">#EFFFFFFF</color>
 </resources>
