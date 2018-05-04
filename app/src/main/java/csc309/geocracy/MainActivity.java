@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -34,6 +35,9 @@ public class MainActivity extends Activity {
             Log.e("MainActivity", "Device does not support OpenGL ES 3.0. Supported version: " + Integer.toHexString(info.reqGlEsVersion));
             Toasty.error(getApplicationContext(), "Device does not support OpenGL ES 3.0. Supported version: \" + Integer.toHexString(info.reqGlEsVersion)");
         }
+
+
+        startService(new Intent(this, AudioService.class));
 
         Intent intent = new Intent(this, MenuActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

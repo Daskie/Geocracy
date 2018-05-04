@@ -2,6 +2,7 @@ package csc309.geocracy.game;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
@@ -147,8 +148,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         uiLayout.addView(attackBtn);
 
         frame.addView(uiLayout);
-    }
 
+    }
     void toggleSettingsFragment() {
         if (settingsVisible) {
             userInterfaceFT = getSupportFragmentManager().beginTransaction();
