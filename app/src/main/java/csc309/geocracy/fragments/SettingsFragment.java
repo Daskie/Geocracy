@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxSeekBar;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.main_menu.MenuActivity;
@@ -31,13 +32,20 @@ public class SettingsFragment extends Fragment {
 
     private boolean isMusicEnabled = true;
 
+    private float musicVolumeSliderVal;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings, container, false);
 
         masterVolume = (SeekBar) view.findViewById(R.id.masterVolume);
+
+
         musicVolume = (SeekBar) view.findViewById(R.id.musicVolume);
+        musicVolume.setProgress(100);
+        RxSeekBar.changeEvents(musicVolume).subscribe(e -> EventBus.publish("SET_MUSIC_VOLUME_LEVEL_EVENT", e.view().getProgress()));
+
         musicEnabledCheckbox = (CheckBox) view.findViewById(R.id.musicEnabled);
         musicEnabledCheckbox.setChecked(isMusicEnabled);
 
