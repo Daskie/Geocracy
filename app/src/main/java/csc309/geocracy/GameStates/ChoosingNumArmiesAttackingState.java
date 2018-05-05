@@ -11,23 +11,26 @@ package csc309.geocracy.GameStates;
 //2 armies = 2 dice
 //3 armies = 3 dice
 
-public class ChoosingNumArmiesAttackingState implements State{
-    public ChoosingNumArmiesAttackingState(){
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
+
+public class ChoosingNumArmiesAttackingState {
+    void constructor(){
 
     }
 
-    public void handleInput(GameData game, GameInputHandler input){
+    void handleInput(Game game, GameInputHandler input){
 
     }
 
-    public void draw(GameData game){
-//        View view = inflater.inflate(R.layout.troop_selection, container, false);
+    void draw(Game game){
 
     }
-    public void enter(GameData game, GameInputHandler input){
+    void enter(Game game, GameInputHandler input){
 
     }
-    public void exit(GameData game, GameInputHandler input){
+    void exit(Game game, GameInputHandler input){
 
     }
 }

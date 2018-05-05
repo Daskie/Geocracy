@@ -3,7 +3,7 @@ package csc309.geocracy.GameStates;
 import csc309.geocracy.Game;
 import csc309.geocracy.GameInputHandler;
 
-public class DisplayGlobeState {
+public class SetUpInitialTerritoriesState {
     void constructor(){
 
     }

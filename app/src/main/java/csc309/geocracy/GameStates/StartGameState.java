@@ -1,25 +1,24 @@
 package csc309.geocracy.GameStates;
 
-public class StartGameState implements State{
-    public StartGameState(){
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
+public class StartGameState {
+    void constructor(){
 
     }
 
-    public void handleInput(GameData game, GameInputHandler input){
+    void handleInput(Game game, GameInputHandler input){
 
     }
 
-    public void draw(GameData game){
+    void draw(Game game){
 
     }
-
-    public void enter(GameData game, GameInputHandler input){
-
-    }
-    public void exit(GameData game, GameInputHandler input){
+    void enter(Game game, GameInputHandler input){
 
     }
+    void exit(Game game, GameInputHandler input){
 
-
-    //event bus == gameinputhandler. publish in game activity and subscribe in certain game states is similar to gameinputhandler class
+    }
 }

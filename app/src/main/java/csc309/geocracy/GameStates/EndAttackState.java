@@ -9,22 +9,25 @@ package csc309.geocracy.GameStates;
 // his or her last army, you gain possession of all
 // the Risk cards he or she may have had in their hands.
 
-public class EndAttackState implements State{
-    public EndAttackState(){
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
+public class EndAttackState {
+    void constructor(){
 
     }
 
-    public void handleInput(GameData game, GameInputHandler input){
+    void handleInput(Game game, GameInputHandler input){
 
     }
 
-    public void draw(GameData game){
+    void draw(Game game){
 
     }
-    public void enter(GameData game, GameInputHandler input){
+    void enter(Game game, GameInputHandler input){
 
     }
-    public void exit(GameData game, GameInputHandler input){
+    void exit(Game game, GameInputHandler input){
 
     }
 }

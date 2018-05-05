@@ -14,24 +14,25 @@ package csc309.geocracy.GameStates;
 // Remove one of your opponent’s pieces from the defending
 // territory if the red die is higher to its corresponding white die.
 
-import csc309.geocracy.game.Game;
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
 
-public class RollDiceState implements State{
-    public RollDiceState(){
-
-    }
-
-    public void handleInput(GameData game, GameInputHandler input){
+public class RollDiceState {
+    void constructor(){
 
     }
 
-    public void draw(GameData game){
+    void handleInput(Game game, GameInputHandler input){
 
     }
-    public void enter(GameData game, GameInputHandler input){
+
+    void draw(Game game){
 
     }
-    public void exit(GameData game, GameInputHandler input){
+    void enter(Game game, GameInputHandler input){
+
+    }
+    void exit(Game game, GameInputHandler input){
 
     }
 }

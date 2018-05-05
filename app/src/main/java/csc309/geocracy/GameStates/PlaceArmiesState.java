@@ -9,22 +9,25 @@ package csc309.geocracy.GameStates;
 // with a territory that you owned, you receive two extra infantrymen.
 // You must place those infantrymen on the territory specified by the card.
 
-public class PlaceArmiesState implements State{
-    public PlaceArmiesState(){
+import csc309.geocracy.Game;
+import csc309.geocracy.GameInputHandler;
+
+public class PlaceArmiesState {
+    void constructor(){
 
     }
 
-    public void handleInput(GameData game, GameInputHandler input){
+    void handleInput(Game game, GameInputHandler input){
 
     }
 
-    public void draw(GameData game){
+    void draw(Game game){
 
     }
-    public void enter(GameData game, GameInputHandler input){
+    void enter(Game game, GameInputHandler input){
 
     }
-    public void exit(GameData game, GameInputHandler input){
+    void exit(Game game, GameInputHandler input){
 
     }
 }
