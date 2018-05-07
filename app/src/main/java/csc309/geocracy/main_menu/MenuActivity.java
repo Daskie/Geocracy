@@ -1,6 +1,7 @@
 package csc309.geocracy.main_menu;
 
 import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,8 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     static public GameSurfaceView gameSurfaceView;
     static public Game game;
+
+    public MediaPlayer mp;
 
     public Toolbar toolbar;
 
@@ -80,7 +83,6 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 ////        setContentView(mainSurfaceView);
 //        mainSurfaceView.getHolder().addCallback(this);
 
-        CoordinatorLayout frame = findViewById(R.id.menuLayout);
     }
 
     private void setupViewPager(ViewPager vp) {

@@ -2,10 +2,12 @@ package csc309.geocracy.game;
 
 import android.app.Activity;
 import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,6 +26,7 @@ import java.util.concurrent.Callable;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import csc309.geocracy.fragments.SettingsFragment;
+import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
@@ -41,6 +44,10 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private final CompositeDisposable disposables = new CompositeDisposable();
     private static final Random random = new Random();
+
+    private Fragment activeBottomPaneFragment = null;
+    private TerritoryDetailFragment territoryDetailFragment = new TerritoryDetailFragment();
+    private TroopSelectionFragment troopSelectionFragment = new TroopSelectionFragment();
 
     private SettingsFragment settingsFragment = new SettingsFragment();
     private FragmentTransaction userInterfaceFT;
@@ -67,12 +74,10 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameSurfaceView.getHolder().addCallback(this);
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
 
-        // Begin the transaction
-        userInterfaceFT = getSupportFragmentManager().beginTransaction();
-        userInterfaceFT.replace(R.id.gameLayout, new TroopSelectionFragment());
-        userInterfaceFT.commit();
-
-
+//        // Begin the transaction
+//        userInterfaceFT = getSupportFragmentManager().beginTransaction();
+//        userInterfaceFT.replace(R.id.gameLayout, new TerritoryDetailFragment());
+//        userInterfaceFT.commit();
 
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
 //        frame.addView(gameSurfaceView);
@@ -81,25 +86,34 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 //
         Button gameDevBtn = new  Button(this);
         gameDevBtn.setText("Geocracy (v0.0.3)");
-        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> EventBus.publish("GAME_NAME_TAP_EVENT", e)));
+        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("GAME_NAME_TAP_EVENT", e);
+        }));
         EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
+
+
+        Button selectBtn = new Button(this);
+        selectBtn.setText("SELECT");
+
+        disposables.add(RxView.touches(selectBtn).subscribe(e -> {
+            if (e.getAction() != MotionEvent.ACTION_UP) return;
+            showBottomPaneFragment(new TerritoryDetailFragment());
+        }));
+
+        Button attackBtn = new Button(this);
+        attackBtn.setText("ATTACK");
+
+        disposables.add(RxView.touches(attackBtn).subscribe(e -> {
+            if (e.getAction() != MotionEvent.ACTION_UP) return;
+            showBottomPaneFragment(new TroopSelectionFragment());
+        }));
 
 
         Button settingBtn = new Button(this);
         settingBtn.setText("SETTINGS");
 
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_UP) return;
-            if (settingsVisible) {
-                userInterfaceFT = getSupportFragmentManager().beginTransaction();
-                userInterfaceFT.remove(settingsFragment);
-                userInterfaceFT.commit();
-            } else {
-                userInterfaceFT = getSupportFragmentManager().beginTransaction();
-                userInterfaceFT.add(R.id.gameLayout, settingsFragment);
-                userInterfaceFT.commit();
-            }
-            settingsVisible = !settingsVisible;
+            if (e.getAction() == MotionEvent.ACTION_DOWN) toggleSettingsFragment();
         }));
 
 //        Button rollDice = new Button(this);
@@ -130,7 +144,38 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         uiLayout.addView(gameDevBtn);
         uiLayout.addView(settingBtn);
+        uiLayout.addView(selectBtn);
+        uiLayout.addView(attackBtn);
+
         frame.addView(uiLayout);
+
+    }
+    void toggleSettingsFragment() {
+        if (settingsVisible) {
+            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT.remove(settingsFragment);
+            userInterfaceFT.commit();
+        } else {
+            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT.add(R.id.gameLayout, settingsFragment);
+            userInterfaceFT.commit();
+        }
+        settingsVisible = !settingsVisible;
+    }
+
+    void showBottomPaneFragment(Fragment bottomPaneFragment) {
+        if (activeBottomPaneFragment != null) {
+            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT.remove(activeBottomPaneFragment);
+            userInterfaceFT.commit();
+            activeBottomPaneFragment = null;
+        }
+
+        userInterfaceFT = getSupportFragmentManager().beginTransaction();
+        userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
+        userInterfaceFT.commit();
+
+        activeBottomPaneFragment = bottomPaneFragment;
     }
 
     void showGameDevelopers() {

@@ -71,7 +71,9 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
                     Vec2 delta = new Vec2(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0)));
-                    synchronized (GameActivity.game) { GameActivity.game.swipeDelta.plusAssign(delta.div(ROTATION_DAMPER)); }
+                    synchronized (GameActivity.game) {
+                        GameActivity.game.swipeDelta.plusAssign(delta.div(ROTATION_DAMPER));
+                    }
                 }
                 return true;
             default:
