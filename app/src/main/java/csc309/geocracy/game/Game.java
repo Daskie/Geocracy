@@ -101,10 +101,11 @@ public class Game {
 
         accumDT += dt;
         if (accumDT >= 10.0f) {
-            world.deselectAllTerritories();
+            world.deselectTerritory();
+            world.unhighlightTerritories();
             Territory terr = world.getTerritories()[(int)(Math.random() * world.getTerritories().length)];
-            terr.select();
-            terr.highlightAllAdjacent();
+            world.selectTerritory(terr);
+            world.highlightTerritories(terr.getAdjacentTerritories());
             accumDT = 0.0f;
         }
     }

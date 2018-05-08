@@ -160,6 +160,10 @@ public abstract class Util {
         return ((int)highest << 24) | (((int)high & 0xFF) << 16) | (((int)low & 0xFF) << 8) | ((int)lowest & 0xFF);
     }
 
+    public static int toInt(short low, short high) {
+        return ((int)low & 0xFFFF) | ((int)high << 16);
+    }
+
     public static Vec3 cylindricToCartesian(float radius, float theta, float z) {
         return new Vec3(radius * Math.cos(theta), radius * Math.sin(theta), z);
     }
@@ -188,6 +192,14 @@ public abstract class Util {
             ((color >> 8) & 0xFF) * factor,
             (color & 0xFF) * factor
         );
+    }
+
+    public static Vec3[] genDistinctColors(int n) {
+        Vec3[] colors = new Vec3[n];
+        for(int i = 0; i < n; ++i) {
+            colors[i] = hsv2rgb((float)i / n, 1.0f, 1.0f);
+        }
+        return colors;
     }
 
     // Returns v rotated 90 degrees CCW
