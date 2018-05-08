@@ -50,8 +50,8 @@ public class Terrain {
 
     public static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
 
-    private TerrainShader shader;
     private World world;
+    private TerrainShader shader;
     private float[] locations;
     private int[] indices;
     private int vboHandle;
@@ -64,12 +64,10 @@ public class Terrain {
     private TerritorySpec[] territorySpecs;
     private ContinentSpec[] continentSpecs;
     private int[] verticesInfo;
-    private boolean wasSelectedTerrChange;
-    private boolean wasHighlightedTerrsChange;
 
     public Terrain(World world, Mesh sphereMesh, long seed, int maxNTerritories, int maxNContinents) {
-        shader = new TerrainShader();
         this.world = world;
+        shader = new TerrainShader();
         locations = sphereMesh.getLocations().clone();
         indices = sphereMesh.getIndices().clone();
         faces = new Face[indices.length / 3];
@@ -81,11 +79,8 @@ public class Terrain {
         categorizeFaces();
         createTerritories(maxNTerritories, rand);
         createContinents(maxNContinents);
-        createWaterways();
+        detWaterways();
         createVerticesInfo();
-
-        wasSelectedTerrChange = false;
-        wasHighlightedTerrsChange = false;
     }
 
     public boolean load() {
@@ -95,6 +90,18 @@ public class Terrain {
             Log.e("Terrain", "Failed to load shader");
             return false;
         }
+        shader.setActive();
+        shader.setLowElevation(LOW_ELEVATION);
+        shader.setHighElevation(HIGH_ELEVATION);
+        shader.setMaxCoastDist(maxCoastDist);
+        Vec3[] contColors = new Vec3[world.getContinents().length + 1];
+        contColors[0] = new Vec3();
+        for (int i = 0; i < world.getContinents().length; ++i) {
+            contColors[i + 1] = world.getContinents()[i].getColor();
+        }
+        shader.setContinentColors(contColors);
+        shader.setSelectedTerritory(0);
+        shader.setHighlightedTerritories(null);
 
         // Create VBO
         int[] vboHandleArr = { 0 };
@@ -143,37 +150,27 @@ public class Terrain {
             return false;
         }
 
-        shader.setActive();
-        shader.setLowElevation(LOW_ELEVATION);
-        shader.setHighElevation(HIGH_ELEVATION);
-        shader.setMaxCoastDist(maxCoastDist);
-        shader.setContinentColors(genContinentColors());
-        shader.setHighlightedTerritories(null);
-
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir) {
+    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean highlightChange) {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
         shader.setLightDirection(lightDir);
         shader.setTime((float)glm.fract((double)t * 1.0e-9));
-        if (wasSelectedTerrChange) {
-            int selected = -1;
-            for (Territory terr : world.getTerritories()) {
-                if (terr.isSelected()) {
-                    selected = terr.getID();
-                    break;
-                }
+        if (selectionChange) {
+            if (world.getSelectedTerritory() != null) {
+                shader.setSelectedTerritory(world.getSelectedTerritory().getId());
             }
-            shader.setSelectedTerritory(selected);
+            else {
+                shader.setSelectedTerritory(0);
+            }
         }
-        if (wasHighlightedTerrsChange) {
+        if (highlightChange) {
             boolean[] terrsHighlighted = new boolean[territorySpecs.length];
-            for (Territory terr : world.getTerritories()) terrsHighlighted[terr.getID()] = terr.isHighlighted();
+            for (Territory terr : world.getHighlightedTerritories()) terrsHighlighted[terr.getId()] = true;
             shader.setHighlightedTerritories(terrsHighlighted);
-            wasHighlightedTerrsChange = false;
         }
 
         GLES30.glBindVertexArray(vaoHandle);
@@ -200,8 +197,10 @@ public class Terrain {
         Territory[] territories = new Territory[territorySpecs.length - 1];
         Continent[] continents = new Continent[continentSpecs.length - 1];
 
+        Vec3[] contColors = Util.genDistinctColors(continentSpecs.length - 1);
+
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
-            continents[ci - 1] = new Continent(ci, world, new HashSet<>());
+            continents[ci - 1] = new Continent(ci, world, new HashSet<>(), contColors[ci - 1]);
         }
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             territories[ti - 1] = new Territory(ti, world, continents[territorySpecs[ti].continent - 1], new HashSet<>());
@@ -226,34 +225,42 @@ public class Terrain {
         return new Pair<>(territories, continents);
     }
 
-    void selectedTerritoryChanged() {
-        wasSelectedTerrChange = true;
-    }
+    Waterways createWaterways(int nSegments, float separation) {
+        int nWaterways = 0;
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            nWaterways += territorySpecs[ti].waterwayTerrs.size();
+        }
 
-    void highlightedTerritoriesChanged() {
-        wasHighlightedTerrsChange = true;
-    }
-
-    Pair<Vec3[], Vec3[]> calcWaterwayPoints() {
-        ArrayList<Vec3> p1s = new ArrayList<>();
-        ArrayList<Vec3> p2s = new ArrayList<>();
+        Vec3[] startPoints = new Vec3[nWaterways];
+        Vec3[] endPoints = new Vec3[nWaterways];
+        int[] originTerrs = new int[nWaterways];
+        int[] originConts = new int[nWaterways];
+        int wi = 0;
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
             for (int wti : terr.waterwayTerrs) {
-                if (ti < wti) {
-                    calcWaterwayPointsBetween(ti, wti, p1s, p2s);
-                }
+                Pair<Vec3, Vec3> pair = calcWaterwayPointsBetween(ti, wti);
+                startPoints[wi] = pair.first;
+                endPoints[wi] = pair.second;
+                originTerrs[wi] = ti;
+                originConts[wi] = terr.continent;
+                ++wi;
             }
         }
 
-        Vec3[] starts = new Vec3[p1s.size()];
-        Vec3[] ends = new Vec3[p2s.size()];
-        for (int i = 0; i < p1s.size(); ++i) starts[i] = p1s.get(i);
-        for (int i = 0; i < p2s.size(); ++i) ends[i] = p2s.get(i);
-        return new Pair<>(starts, ends);
+        for (int i = 0; i < nWaterways; ++i) {
+            Vec3 startP = startPoints[i];
+            Vec3 endP = endPoints[i];
+            Vec3 lat = endP.minus(startP).cross(startP).normalizeAssign();
+            lat.timesAssign(separation * 0.5f);
+            startP.plusAssign(lat);
+            endP.plusAssign(lat);
+        }
+
+        return new Waterways(world, nSegments, startPoints, endPoints, originTerrs, originConts);
     }
 
-    private void calcWaterwayPointsBetween(int t1i, int t2i, ArrayList<Vec3> p1s, ArrayList<Vec3> p2s) {
+    private Pair<Vec3, Vec3> calcWaterwayPointsBetween(int t1i, int t2i) {
         SparseArray<Vec3> faces1 = new SparseArray<>();
         SparseArray<Vec3> faces2 = new SparseArray<>();
         for (int cfi : territorySpecs[t1i].coastFaces) {
@@ -294,8 +301,7 @@ public class Terrain {
             }
         }
 
-        p1s.add(faces1.get(minFI1));
-        p2s.add(faces2.get(minFI2));
+        return new Pair<>(faces1.get(minFI1).normalizeAssign(), faces2.get(minFI2).normalizeAssign());
     }
 
     private int distToDifferentLandTerritoryWithin(int origFI, int n) {
@@ -371,21 +377,6 @@ public class Terrain {
 
         vertexData.flip();
         return vertexData;
-    }
-
-    private Vec3[] genContinentColors() {
-        Vec3[] colors = new Vec3[continentSpecs.length];
-        System.arraycopy(genDistinctColors(continentSpecs.length - 1), 0, colors, 1, continentSpecs.length - 1);
-        colors[0] = new Vec3();
-        return colors;
-    }
-
-    private Vec3[] genDistinctColors(int n) {
-        Vec3[] colors = new Vec3[n];
-        for(int i = 0; i < n; ++i) {
-            colors[i] = Util.hsv2rgb((float)i / n, 1.0f, 1.0f);
-        }
-        return colors;
     }
 
     private void genFaceAdjacencies() {
@@ -1091,7 +1082,7 @@ public class Terrain {
         }
     }
 
-    private void createWaterways() {
+    private void detWaterways() {
         // Connect portions of continent separated by ocean
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
             ArrayList<HashSet<Integer>> lands = detContinentLands(ci);
