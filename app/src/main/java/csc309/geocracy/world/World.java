@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import java.util.HashSet;
 
+import csc309.geocracy.Util;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.graphics.MeshMaker;
@@ -44,16 +45,20 @@ public class World {
     public boolean load() {
         unload();
 
+        if (Util.isGLError()) {
+            return false;
+        }
+
         if (!terrain.load()) {
-            Log.e("Game", "Failed to load terrain");
+            Log.e("World", "Failed to load terrain");
             return false;
         }
         if (!oceanRenderer.load()) {
-            Log.e("Game", "Failed to load ocean renderer");
+            Log.e("World", "Failed to load ocean renderer");
             return false;
         }
         if (!waterways.load()) {
-            Log.e("Game", "Failed to load waterway renderer");
+            Log.e("World", "Failed to load waterway renderer");
             return false;
         }
 

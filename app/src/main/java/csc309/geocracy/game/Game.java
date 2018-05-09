@@ -6,7 +6,7 @@ import android.util.Log;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.graphics.OrbitCamera;
-import csc309.geocracy.noise.NoiseTest;
+import csc309.geocracy.graphics.ScreenTextureRenderer;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -20,13 +20,16 @@ public class Game {
     private long startT; // time the game was started
     private long lastT; // time last frame happened
     private World world;
-    private NoiseTest noiseTest;
     private OrbitCamera camera;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
+    private int fbHandle;
+    private int colorTexHandle;
+    private int idTexHandle;
+    private int depthRBHandle;
+    private ScreenTextureRenderer screenRenderer;
 
     public Game() {
         world = new World(0); // TODO: seed should not be predefined
-        //noiseTest = new NoiseTest();
 
         // Setup camera
         camera = new OrbitCamera(glm.radians(60.0f), 0.01f, 6.0f, 1.0f, 1.5f, 5.0f, 3.0f);
@@ -34,6 +37,8 @@ public class Game {
         EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.easeElevation((float)e));
 
         swipeDelta = new Vec2();
+
+        screenRenderer = new ScreenTextureRenderer();
 
         startT = System.nanoTime();
         lastT = 0;
@@ -58,10 +63,11 @@ public class Game {
             Log.e("Game", "Failed to load world");
             return false;
         }
-        //if (!noiseTest.load()) {
-        //    Log.e("Game", "Failed to load noise test");
-        //    return false;
-        //}
+
+        if (!screenRenderer.load()) {
+            Log.e("Game", "Failed to load screen renderer");
+            return false;
+        }
 
         // Check for OpenGL errors
         if (Util.isGLError()) {
@@ -84,6 +90,10 @@ public class Game {
     }
 
     public void screenResized(Vec2i size) {
+        if (!reloadFrameBuffer(size)) {
+            Log.e("Game", "Failed to reload frame buffer");
+        }
+
         GLES30.glViewport(0, 0, size.x, size.y);
         camera.setAspectRatio((float)size.x / (float)size.y);
     }
@@ -112,12 +122,99 @@ public class Game {
 
     // Render the game
     private void render(long t, float dt) {
-        // Redraw background color
+        // First pass
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fbHandle);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
         world.render(t, camera, lightDir);
-        //noiseTest.render();
+
+        // Second pass
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
+        GLES30.glClear(GLES30.GL_DEPTH_BUFFER_BIT);
+        screenRenderer.render(colorTexHandle);
+    }
+
+    private boolean reloadFrameBuffer(Vec2i size) {
+        // Destroy existing frame buffer if any (as in the case of the screen being resized)
+        if (fbHandle != 0) {
+            GLES30.glDeleteFramebuffers(1, new int[]{ fbHandle }, 0);
+            if (colorTexHandle != 0) {
+                GLES30.glDeleteTextures(1, new int[]{ colorTexHandle }, 0);
+            }
+            if (idTexHandle != 0) {
+                GLES30.glDeleteTextures(1, new int[]{ idTexHandle }, 0);
+            }
+            if (depthRBHandle != 0) {
+                GLES30.glDeleteRenderbuffers(1, new int[]{ depthRBHandle }, 0);
+            }
+        }
+
+        // Setup color texture
+        int[] colorTexHandleArr = { 0 };
+        GLES30.glGenTextures(1, colorTexHandleArr, 0);
+        colorTexHandle = colorTexHandleArr[0];
+        if (colorTexHandle == 0) {
+            Log.e("Game", "Failed to generate color texture");
+            return false;
+        }
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, colorTexHandle);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexStorage2D(GLES30.GL_TEXTURE_2D, 1, GLES30.GL_RGBA8, size.x, size.y);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
+        // Setup identity texture
+        int[] idTexHandleArr = { 0 };
+        GLES30.glGenTextures(1, idTexHandleArr, 0);
+        idTexHandle = idTexHandleArr[0];
+        if (idTexHandle == 0) {
+            Log.e("Game", "Failed to generate identity texture");
+            return false;
+        }
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, idTexHandle);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexStorage2D(GLES30.GL_TEXTURE_2D, 1, GLES30.GL_R8UI, size.x, size.y);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
+        // Setup depth render buffer
+        int[] depthRBHandlArr = { 0 };
+        GLES30.glGenRenderbuffers(1, depthRBHandlArr, 0);
+        depthRBHandle = depthRBHandlArr[0];
+        if (depthRBHandle == 0) {
+            Log.e("Game", "Failed to generate depth render buffer");
+            return false;
+        }
+        GLES30.glBindRenderbuffer(GLES30.GL_RENDERBUFFER, depthRBHandle);
+        GLES30.glRenderbufferStorage(GLES30.GL_RENDERBUFFER, GLES30.GL_DEPTH_COMPONENT32F, size.x, size.y);
+        GLES30.glBindRenderbuffer(GLES30.GL_RENDERBUFFER, 0);
+
+        // Setup frame buffer and attachments
+        int[] fbHandleArr = { 0 };
+        GLES30.glGenFramebuffers(1, fbHandleArr, 0);
+        fbHandle = fbHandleArr[0];
+        if (fbHandle == 0) {
+            Log.e("Game", "Failed to generate framebuffer");
+            return false;
+        }
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, fbHandle);
+        GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D, colorTexHandle, 0);
+        GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT1, GLES30.GL_TEXTURE_2D, idTexHandle, 0);
+        GLES30.glFramebufferRenderbuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_DEPTH_ATTACHMENT, GLES30.GL_RENDERBUFFER, depthRBHandle);
+        GLES30.glDrawBuffers(2, new int[]{ GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_COLOR_ATTACHMENT1 }, 0);
+        if (GLES30.glCheckFramebufferStatus(GLES30.GL_FRAMEBUFFER) != GLES30.GL_FRAMEBUFFER_COMPLETE) {
+            Log.e("Game", "Framebuffer is incomplete");
+            return false;
+        }
+        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
+
+        // Check for OpenGL errors
+        if (Util.isGLError()) {
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -1,6 +1,7 @@
 #version 300 es
 
 precision highp float;
+precision highp int;
 
 in vec3 v2f_loc;
 in vec3 v2f_norm;
@@ -9,7 +10,8 @@ in float v2f_selected;
 in vec3 v2f_continentColor;
 in float v2f_angle;
 
-out vec4 out_color;
+layout (location = 0) out vec4 out_color;
+layout (location = 1) out int out_id;
 
 uniform float u_time;
 uniform vec3 u_lightDir;
@@ -25,4 +27,6 @@ void main() {
 
     out_color.rgb = mix(v2f_continentColor * diffuse, vec3(1.0f), v2f_selected);
     out_color.a = float(fract(v2f_pos.x * k_radToDegFactor * v2f_angle * 0.25f + (1.0f - u_time * 0.5f)) < 0.5f);
+
+    out_id = 0;
 }

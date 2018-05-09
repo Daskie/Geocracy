@@ -1,9 +1,9 @@
 #version 300 es
 
-layout(location = 0) in vec2 in_pos;
-layout(location = 1) in int in_info;
-layout(location = 2) in float in_angle;
-layout(location = 3) in mat3 in_basis;
+layout (location = 0) in vec2 in_pos;
+layout (location = 1) in int in_info;
+layout (location = 2) in float in_angle;
+layout (location = 3) in mat3 in_basis;
 
 out vec3 v2f_loc;
 out vec3 v2f_norm;
