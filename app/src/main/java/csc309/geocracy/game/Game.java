@@ -1,9 +1,13 @@
-package csc309.geocracy;
+package csc309.geocracy.game;
 
 import android.opengl.GLES30;
 import android.util.Log;
 
+import csc309.geocracy.EventBus;
+import csc309.geocracy.Util;
+import csc309.geocracy.graphics.OrbitCamera;
 import csc309.geocracy.noise.NoiseTest;
+import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
@@ -13,9 +17,9 @@ import static glm_.Java.glm;
 
 public class Game {
 
-    private long lastT; // timestamp of last frame
+    private long startT; // time the game was started
+    private long lastT; // time last frame happened
     private World world;
-    private Background background;
     private NoiseTest noiseTest;
     private OrbitCamera camera;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
@@ -24,15 +28,15 @@ public class Game {
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
 
-        background = new Background();
-
         // Setup camera
-        camera = new OrbitCamera(glm.radians(90.0f), 0.01f, 10.0f, 1.0f, 2.0f);
-        //camera.setLocation(new Vec3(0.0f, -1.0f, 0.0f));
+        camera = new OrbitCamera(glm.radians(60.0f), 0.01f, 6.0f, 1.0f, 1.5f, 5.0f, 3.0f);
+
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> camera.easeElevation((float)e));
 
         swipeDelta = new Vec2();
 
-        lastT = System.nanoTime();
+        startT = System.nanoTime();
+        lastT = 0;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)
@@ -40,7 +44,6 @@ public class Game {
     public boolean loadOpenGL() {
         GLES30.glClearColor(0.0f, 0.5f, 1.0f, 1.0f); // background color
         GLES30.glEnable(GLES30.GL_DEPTH_TEST); // enable depth testing (close things rendered on top of far things)
-        GLES30.glDepthFunc(GLES30.GL_LEQUAL);
         GLES30.glEnable(GLES30.GL_CULL_FACE); // enable face culling (back faces of triangles aren't rendered)
         GLES30.glEnable(GLES30.GL_BLEND); // enable alpha blending (allows for transparency/translucency)
         GLES30.glBlendFuncSeparate(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA, GLES30.GL_ONE_MINUS_DST_ALPHA, GLES30.GL_ONE);
@@ -53,10 +56,6 @@ public class Game {
 
         if (!world.load()) {
             Log.e("Game", "Failed to load world");
-            return false;
-        }
-        if (!background.load()) {
-            Log.e("Game", "Failed to load background");
             return false;
         }
         //if (!noiseTest.load()) {
@@ -74,12 +73,12 @@ public class Game {
 
     // One iteration of the game loop
     public void step() {
-        long t = System.nanoTime();
+        long t = System.nanoTime() - startT;
         float dt = (t - lastT) * 1e-9f;
         //System.out.println("FPS: " + (1.0f / dt));
 
-        update(dt);
-        render();
+        update(t, dt);
+        render(t, dt);
 
         lastT = t;
     }
@@ -90,7 +89,8 @@ public class Game {
     }
 
     // The core game logic
-    private void update(float dt) {
+    private float accumDT = 10.0f;
+    private void update(long t, float dt) {
         // TODO: replace with proper input system
         synchronized (this) {
             if (!Util.isZero(swipeDelta)) {
@@ -98,16 +98,25 @@ public class Game {
                 swipeDelta.x = 0.0f; swipeDelta.y = 0.0f;
             }
         }
+
+        accumDT += dt;
+        if (accumDT >= 10.0f) {
+            world.deselectTerritory();
+            world.unhighlightTerritories();
+            Territory terr = world.getTerritories()[(int)(Math.random() * world.getTerritories().length)];
+            world.selectTerritory(terr);
+            world.highlightTerritories(terr.getAdjacentTerritories());
+            accumDT = 0.0f;
+        }
     }
 
     // Render the game
-    private void render() {
+    private void render(long t, float dt) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
 
-        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(1.0f, 1.0f, 1.0f)).normalizeAssign());
-        background.render(camera);
-        world.render(camera, lightDir);
+        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
+        world.render(t, camera, lightDir);
         //noiseTest.render();
     }
 
