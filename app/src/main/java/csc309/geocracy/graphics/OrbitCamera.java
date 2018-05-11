@@ -59,10 +59,12 @@ public class OrbitCamera extends Camera {
 
     // Moves the camera in orbit where delta corresponds to the camera's u and v vectors
     public void move(Vec2 delta) {
-        float angle = delta.getLength();
-        Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
-        axis = orientMatrix.times(axis); // convert to world space
-        rotate(glm.angleAxis(angle, axis));
+        if (!Util.isZero(delta)) {
+            float angle = delta.getLength();
+            Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
+            axis = orientMatrix.times(axis); // convert to world space
+            rotate(glm.angleAxis(angle, axis));
+        }
     }
 
     public float getElevation() { return elevation; }

@@ -81,10 +81,6 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     }
 
-    private boolean test(Object o) {
-        return false;
-    }
-
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         EventBus.publish("CAMERA_ZOOM_EVENT", -(detector.getScaleFactor() - 1.0f));
