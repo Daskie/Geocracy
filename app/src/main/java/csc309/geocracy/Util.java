@@ -220,4 +220,10 @@ public abstract class Util {
         }
     }
 
+    // Sinusoidal approximation between 0 and 1
+    public static float smoothstep(float p) {
+        float pp = p * p;
+        return 3 * pp - 2 * pp * p;
+    }
+
 }
