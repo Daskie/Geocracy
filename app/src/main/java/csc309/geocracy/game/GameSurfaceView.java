@@ -6,15 +6,20 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import java.util.concurrent.TimeUnit;
+
 import csc309.geocracy.EventBus;
 import csc309.geocracy.graphics.MainRenderer;
 import glm_.vec2.Vec2i;
+import io.reactivex.disposables.Disposable;
 
 public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetector.OnScaleGestureListener {
 
     private static final String TAG = "MAIN_SURFACE_VIEW";
 
     MainRenderer renderer;
+
+    Disposable touchEventSubscription;
 
     private ScaleGestureDetector scaler;
     private boolean scaleMode;
@@ -36,7 +41,9 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
         scaler = new ScaleGestureDetector(getContext(), this);
-        EventBus.subscribe("TOUCH_EVENT", this, e -> handleTouchEvent((MotionEvent) e));
+        this.touchEventSubscription = EventBus.subscribe("TOUCH_EVENT", this)
+            .debounce(5, TimeUnit.MILLISECONDS)
+            .subscribe(e -> handleTouchEvent((MotionEvent) e));
     }
 
 
@@ -57,7 +64,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                     GameActivity.game.wasTap(new Vec2i(event.getX(), event.getY()));
                 }
                 didPanCamera = false;
-                
+
             case MotionEvent.ACTION_DOWN:
                 if (event.getPointerCount() == 1) didPanCamera = false;
                 return true; // just here so we get the move action

@@ -2,6 +2,8 @@ package csc309.geocracy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -24,10 +26,19 @@ public final class EventBus {
     @NonNull
     private static PublishSubject<Object> getSubject(String subjectKey) {
         PublishSubject<Object> subject = subjectMap.get(subjectKey);
+
         if (subject == null) {
-            subject = PublishSubject.create();
-            subject.subscribeOn(AndroidSchedulers.mainThread());
-            subjectMap.put(subjectKey, subject);
+
+            if (subjectKey == "TOUCH_EVENT") {
+                subject = PublishSubject.create();
+                subject.subscribeOn(AndroidSchedulers.mainThread());
+                subjectMap.put(subjectKey, subject);
+            } else {
+                subject = PublishSubject.create();
+                subject.subscribeOn(AndroidSchedulers.mainThread());
+                subjectMap.put(subjectKey, subject);
+            }
+
         }
 
         return subject;
@@ -56,6 +67,16 @@ public final class EventBus {
     public static void subscribe(String subject, @NonNull Object lifecycle, @NonNull Consumer<Object> action) {
         Disposable disposable = getSubject(subject).subscribe(action);
         getCompositeDisposable(lifecycle).add(disposable);
+    }
+
+    /**
+     * Subscribe to the specified subject and listen for updates on that subject. Pass in an object to associate
+     * your registration with, so that you can unsubscribe later.
+     * <br/><br/>
+     * <b>Note:</b> Make sure to call {@link EventBus#unregister(Object)} to avoid memory leaks.
+     */
+    public static PublishSubject<Object> subscribe(String subject, @NonNull Object lifecycle) {
+        return getSubject(subject);
     }
 
     /**
