@@ -16,7 +16,6 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     MainRenderer renderer;
 
-    private Double zoom = new Double(1.0);
     private ScaleGestureDetector scaler;
     private boolean scaleMode;
 
