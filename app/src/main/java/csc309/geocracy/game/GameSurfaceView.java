@@ -21,7 +21,6 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     Disposable touchEventSubscription;
 
-    private Double zoom = new Double(1.0);
     private ScaleGestureDetector scaler;
     private boolean scaleMode;
 
@@ -86,10 +85,6 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
                 return super.onTouchEvent(event);
         }
 
-    }
-
-    private boolean test(Object o) {
-        return false;
     }
 
     @Override

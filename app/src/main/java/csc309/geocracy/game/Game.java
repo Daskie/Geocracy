@@ -122,6 +122,8 @@ public class Game {
     // The core game logic
     private void update(long t, float dt) {
         handleInput();
+
+        cameraController.update(dt);
     }
 
     private void handleInput() {
@@ -142,6 +144,7 @@ public class Game {
                     world.selectTerritory(terr);
                     world.unhighlightTerritories();
                     world.highlightTerritories(terr.getAdjacentTerritories());
+                    cameraController.setTarget(terr.getCenter().times(cameraController.getCamera().getElevation()));
                 }
                 else {
                     world.unselectTerritory();

@@ -30,6 +30,12 @@ public class OrbitCamera extends Camera {
         viewMatrix = null;
     }
 
+    public void setOrientation(Quat orientation) {
+        this.orientation = new Quat(orientation);
+        orientMatrix = this.orientation.toMat3();
+        viewMatrix = null;
+    }
+
     public void setElevation(float elevation) {
         this.elevation = elevation;
         viewMatrix = null;
@@ -40,25 +46,31 @@ public class OrbitCamera extends Camera {
     }
 
     public void setLocation(Vec3 location) {
+        setElevation(location.getLength());
         Vec3 a = getW();
-        Vec3 b = location.normalize();
-        float angle = (float)Math.acos(a.dot(b));
-        Vec3 axis = a.cross(b);
-        rotate(glm.angleAxis(angle, axis));
+        Vec3 b = location.div(elevation);
+        float dot = a.dot(b);
+        if (!Util.areEqual(dot, 1.0f)) {
+            float angle = (float)Math.acos(a.dot(b));
+            Vec3 axis = a.cross(b).normalizeAssign();
+            rotate(glm.angleAxis(angle, axis));
+        }
     }
 
     // Moves the camera in orbit where delta corresponds to the camera's u and v vectors
     public void move(Vec2 delta) {
-        float angle = delta.getLength();
-        Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
-        axis = orientMatrix.times(axis); // convert to world space
-        rotate(glm.angleAxis(angle, axis));
+        if (!Util.isZero(delta)) {
+            float angle = delta.getLength();
+            Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
+            axis = orientMatrix.times(axis); // convert to world space
+            rotate(glm.angleAxis(angle, axis));
+        }
     }
 
     public float getElevation() { return elevation; }
 
     @Override
-    public Quat getOrientation() { return orientation; }
+    public final Quat getOrientation() { return orientation; }
 
     @Override
     public Mat3 getOrientMatrix() { return orientMatrix; }
