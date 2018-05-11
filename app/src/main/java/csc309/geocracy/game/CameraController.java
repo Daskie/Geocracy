@@ -19,16 +19,22 @@ public class CameraController {
     private OrbitCamera camera;
 
     public CameraController() {
-        camera = new OrbitCamera(FOV, NEAR, FAR, 1.0f, MIN_ELEVATION, MAX_ELEVATION, START_ELEVATION);
+        camera = new OrbitCamera(FOV, NEAR, FAR, 1.0f, START_ELEVATION);
     }
 
+    // Distance decreases linearly nearer to the surface
     public void move(Vec2 delta) {
-        delta.timesAssign(MOVE_SPEED_FACTOR);
+        delta.timesAssign(MOVE_SPEED_FACTOR * glm.clamp((camera.getElevation() - 1.0f) / (START_ELEVATION - 1.0f), 0.0f, 1.0f));
         camera.move(delta);
     }
 
+    // Zooms on a parabola rather than a line. Zoom "slows" closer to surface
     public void zoom(float factor) {
-        camera.easeElevation(factor * ZOOM_SPEED_FACTOR);
+        float actualP = (camera.getElevation() - MIN_ELEVATION) / (MAX_ELEVATION - MIN_ELEVATION);
+        float easeP = (float)Math.sqrt(actualP);
+        easeP += ZOOM_SPEED_FACTOR * factor;
+        actualP = glm.clamp(easeP * easeP, 0.0f, 1.0f);
+        camera.setElevation(actualP * (MAX_ELEVATION - MIN_ELEVATION) + MIN_ELEVATION);
     }
 
     public OrbitCamera getCamera() {
