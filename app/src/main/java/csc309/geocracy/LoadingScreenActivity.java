@@ -25,22 +25,9 @@ public class LoadingScreenActivity extends Activity {
 
         loadingSpinner.setProgress(0);
 
-        new Handler().postDelayed(() -> {
-            loadingSpinner.setProgress(75);
-        }, WAIT_TIME - 600);
-
-        new Handler().postDelayed(() -> {
-            loadingSpinner.setProgress(50);
-        }, WAIT_TIME - 1000);
-
-        new Handler().postDelayed(() -> {
-            loadingSpinner.setProgress(25);
-        }, WAIT_TIME - 1500);
-
-
-        new Handler().postDelayed(() -> {
-            loadingSpinner.setProgress(10);
-        }, WAIT_TIME - 1800);
+        EventBus.subscribe("WORLD_LOAD_EVENT", this, (data) -> {
+            loadingSpinner.setProgress((int)data);
+        });
 
         new Handler().postDelayed(() -> {
             Intent mainIntent = new Intent(LoadingScreenActivity.this, GameActivity.class);

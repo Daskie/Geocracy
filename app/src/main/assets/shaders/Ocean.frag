@@ -6,8 +6,7 @@ precision highp int;
 in vec3 v2f_loc;
 in vec3 v2f_norm;
 
-layout (location = 0) out vec4 out_color;
-layout (location = 1) out int out_id;
+out vec4 out_color;
 
 uniform vec3 u_cameraLoc;
 uniform vec3 u_lightDir;
@@ -31,6 +30,4 @@ void main() {
 
     out_color.rgb = k_waterColor * (diffuse + specular);
     out_color.a = 1.0f - dot(view, norm) * 0.33f;
-
-    out_id = 0;
 }

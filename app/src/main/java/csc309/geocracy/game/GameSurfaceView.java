@@ -3,18 +3,16 @@ package csc309.geocracy.game;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.graphics.MainRenderer;
-import glm_.vec2.Vec2;
+import glm_.vec2.Vec2i;
 
 public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetector.OnScaleGestureListener {
 
     private static final String TAG = "MAIN_SURFACE_VIEW";
-    private static final double ROTATION_DAMPER = 4.0;
 
     MainRenderer renderer;
 
@@ -39,9 +37,8 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
         scaler = new ScaleGestureDetector(getContext(), this);
-        EventBus.subscribe("TEST_EVENT", this, e -> Log.d(TAG, e.toString()));
-        EventBus.subscribe("CAMERA_EVENT", this, e -> handleTouchEvent((MotionEvent) e));
-     }
+        EventBus.subscribe("TOUCH_EVENT", this, e -> handleTouchEvent((MotionEvent) e));
+    }
 
 
     private boolean didPanCamera = false;
@@ -56,7 +53,10 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
             case MotionEvent.ACTION_UP:
 //                Log.d(TAG, "Tap released: " + event.toString());
-                if (!didPanCamera && event.getPointerCount() == 1) Log.d(TAG, "No camera pan, so check for territory selection");
+                if (!didPanCamera && event.getPointerCount() == 1) {
+                    // No camera pan, so check for territory selection
+                    GameActivity.game.wasTap(new Vec2i(event.getX(), event.getY()));
+                }
                 didPanCamera = false;
                 
             case MotionEvent.ACTION_DOWN:
@@ -70,10 +70,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
-                    Vec2 delta = new Vec2(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0)));
-                    synchronized (GameActivity.game) {
-                        GameActivity.game.swipeDelta.plusAssign(delta.div(ROTATION_DAMPER));
-                    }
+                    GameActivity.game.wasSwipe(new Vec2i(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0))));
                 }
                 return true;
             default:
@@ -84,10 +81,13 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     }
 
+    private boolean test(Object o) {
+        return false;
+    }
+
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        float zoom = -(detector.getScaleFactor() - 1.0f) / 1.25f;
-        EventBus.publish("CAMERA_ZOOM_EVENT", zoom);
+        EventBus.publish("CAMERA_ZOOM_EVENT", -(detector.getScaleFactor() - 1.0f));
         return true;
     }
 

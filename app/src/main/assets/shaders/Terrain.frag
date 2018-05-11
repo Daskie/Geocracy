@@ -16,7 +16,6 @@ in vec3 v2f_edges;
 in vec3 v2f_bary;
 
 layout (location = 0) out vec4 out_color;
-layout (location = 1) out int out_id;
 
 uniform vec3 u_lightDir;
 uniform float u_time;
@@ -70,6 +69,4 @@ void main() {
 
     out_color.rgb = mix(albedo * (diffuse + (0.25 + shTime * 0.25f) * selectedOrHighlighted * land), borderColor * mix(diffuse, 1.0f, selectedOrHighlighted), border * land);
     out_color.a = 1.0f;
-
-    out_id = v2f_territory;
 }

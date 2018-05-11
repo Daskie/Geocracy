@@ -1,17 +1,12 @@
 package csc309.geocracy.game;
 
-import android.app.Activity;
 import android.graphics.PixelFormat;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.Window;
@@ -19,10 +14,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.jakewharton.rxbinding2.view.RxView;
+
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.Callable;
+
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import csc309.geocracy.fragments.SettingsFragment;
@@ -30,10 +27,7 @@ import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -72,7 +66,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("TOUCH_EVENT", e)));
 
 //        // Begin the transaction
 //        userInterfaceFT = getSupportFragmentManager().beginTransaction();

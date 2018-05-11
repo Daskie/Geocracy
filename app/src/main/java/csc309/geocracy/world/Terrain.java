@@ -52,6 +52,7 @@ public class Terrain {
 
     private World world;
     private TerrainShader shader;
+    private IdentityShader idShader;
     private float[] locations;
     private int[] indices;
     private int vboHandle;
@@ -68,6 +69,7 @@ public class Terrain {
     public Terrain(World world, Mesh sphereMesh, long seed, int maxNTerritories, int maxNContinents) {
         this.world = world;
         shader = new TerrainShader();
+        idShader = new IdentityShader();
         locations = sphereMesh.getLocations().clone();
         indices = sphereMesh.getIndices().clone();
         faces = new Face[indices.length / 3];
@@ -102,6 +104,11 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
+
+        if (!idShader.load()) {
+            Log.e("Terrain", "Failed to load identity shader");
+            return false;
+        }
 
         // Create VBO
         int[] vboHandleArr = { 0 };
@@ -178,8 +185,20 @@ public class Terrain {
         GLES30.glBindVertexArray(0);
     }
 
+    public void renderId(Camera camera) {
+        idShader.setActive();
+        idShader.setViewMatrix(camera.getViewMatrix());
+        idShader.setProjectionMatrix(camera.getProjectionMatrix());
+
+        GLES30.glBindVertexArray(vaoHandle);
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, indices.length);
+        GLES30.glBindVertexArray(0);
+    }
+
     public void unload() {
         shader.unload();
+
+        idShader.unload();
 
         if (vaoHandle != 0) {
             int[] vaoArr = { vaoHandle };
