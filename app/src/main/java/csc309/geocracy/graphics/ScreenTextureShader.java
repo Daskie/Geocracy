@@ -13,19 +13,14 @@ public class ScreenTextureShader extends Shader {
 
     @Override
     protected boolean setupUniforms() {
-        boolean success = true;
-
         if ((textureUniformHandle = getUniformLocation("u_texture")) == -1) {
             Log.e("ScreenTextureShader", "Failed to get location of u_texture");
-            success = false;
         }
 
-        if (!success) {
-            return false;
+        if (textureUniformHandle != -1) {
+            setActive();
+            uploadUniform(textureUniformHandle, 0);
         }
-
-        setActive();
-        uploadUniform(textureUniformHandle, 0);
 
         return true;
     }

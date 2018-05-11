@@ -83,13 +83,17 @@ public class ScreenTextureRenderer {
         return true;
     }
 
-    public void render(Texture texture) {
+    public void render(int textureHandle) {
         shader.setActive();
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
-        GLES30.glBindTexture(GLES20.GL_TEXTURE_2D, texture.getHandle());
+        GLES30.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
         GLES30.glBindVertexArray(vaoHandle);
         GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, 6);
         GLES30.glBindVertexArray(0);
+    }
+
+    public void render(Texture texture) {
+        render(texture.getHandle());
     }
 
     public void unload() {

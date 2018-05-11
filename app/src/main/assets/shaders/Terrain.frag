@@ -15,7 +15,7 @@ in float v2f_border;
 in vec3 v2f_edges;
 in vec3 v2f_bary;
 
-out vec4 out_color;
+layout (location = 0) out vec4 out_color;
 
 uniform vec3 u_lightDir;
 uniform float u_time;

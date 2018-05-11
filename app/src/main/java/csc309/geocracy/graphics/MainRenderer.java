@@ -5,8 +5,8 @@ import android.opengl.GLSurfaceView;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.Util;
+import csc309.geocracy.game.GameActivity;
 import glm_.vec2.Vec2i;
 
 public class MainRenderer implements GLSurfaceView.Renderer {
@@ -37,4 +37,5 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         size.x = width; size.y = height;
         GameActivity.game.screenResized(size);
     }
+
 }

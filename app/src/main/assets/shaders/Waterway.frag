@@ -16,6 +16,7 @@ uniform vec3 u_lightDir;
 
 const float k_radToDegFactor = 180.0f / 3.14159265f;
 const float k_ambience = 0.15f;
+const float k_outlineWidth = 0.1f;
 
 void main() {
     vec3 norm = normalize(v2f_norm);
@@ -23,6 +24,8 @@ void main() {
     // Diffuse lighting
     float diffuse = (1.0f - k_ambience) * max(dot(norm, -u_lightDir), 0.0f) + k_ambience;
 
+    float dash = float(fract(v2f_pos.x * k_radToDegFactor * v2f_angle * 0.25f + (1.0f - u_time * 0.5f)) < 0.5f);
+
     out_color.rgb = mix(v2f_continentColor * diffuse, vec3(1.0f), v2f_selected);
-    out_color.a = float(fract(v2f_pos.x * k_radToDegFactor * v2f_angle * 0.25f + (1.0f - u_time * 0.5f)) < 0.5f);
+    out_color.a = dash;
 }

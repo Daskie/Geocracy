@@ -5,6 +5,8 @@ import android.util.Pair;
 
 import java.util.HashSet;
 
+import csc309.geocracy.EventBus;
+import csc309.geocracy.Util;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.graphics.MeshMaker;
@@ -29,31 +31,40 @@ public class World {
 
     public World(long seed) {
         this.seed = seed;
+        EventBus.publish("WORLD_LOAD_EVENT", 0);
         Mesh sphereMesh = MeshMaker.makeSphereIndexed("World", TESSELLATION_DEGREE);
+        EventBus.publish("WORLD_LOAD_EVENT", 15);
         territories = new Territory[MAX_N_TERRITORIES];
         continents = new Continent[MAX_N_CONTINENTS];
         terrain = new Terrain(this, sphereMesh, seed, MAX_N_TERRITORIES, MAX_N_CONTINENTS);
+        EventBus.publish("WORLD_LOAD_EVENT", 75);
         Pair<Territory[], Continent[]> pair = terrain.retrieveTerrsConts();
         territories = pair.first;
         continents = pair.second;
         oceanRenderer = new OceanRenderer(sphereMesh);
+        EventBus.publish("WORLD_LOAD_EVENT", 90);
         waterways = terrain.createWaterways(100, 0.025f);
         highlightedTerritories = new HashSet<>();
+        EventBus.publish("WORLD_LOAD_EVENT", 100);
     }
 
     public boolean load() {
         unload();
 
+        if (Util.isGLError()) {
+            return false;
+        }
+
         if (!terrain.load()) {
-            Log.e("Game", "Failed to load terrain");
+            Log.e("World", "Failed to load terrain");
             return false;
         }
         if (!oceanRenderer.load()) {
-            Log.e("Game", "Failed to load ocean renderer");
+            Log.e("World", "Failed to load ocean renderer");
             return false;
         }
         if (!waterways.load()) {
-            Log.e("Game", "Failed to load waterway renderer");
+            Log.e("World", "Failed to load waterway renderer");
             return false;
         }
 
@@ -69,6 +80,10 @@ public class World {
         highlightChange = false;
     }
 
+    public void renderId(Camera camera) {
+        terrain.renderId(camera);
+    }
+
     public void unload() {
         terrain.unload();
         oceanRenderer.unload();
@@ -77,6 +92,11 @@ public class World {
 
     public void selectTerritory(Territory territory) {
         selectedTerritory = territory;
+        selectionChange = true;
+    }
+
+    public void unselectTerritory() {
+        selectedTerritory = null;
         selectionChange = true;
     }
 
@@ -90,11 +110,6 @@ public class World {
         highlightChange = true;
     }
 
-    public void deselectTerritory() {
-        selectedTerritory = null;
-        selectionChange = true;
-    }
-
     public void unhighlightTerritories() {
         highlightedTerritories.clear();
         highlightChange = true;
@@ -102,6 +117,13 @@ public class World {
 
     public Territory[] getTerritories() {
         return territories;
+    }
+
+    public Territory getTerritory(int id) {
+        if (id <= 0 || id >= territories.length) {
+            return null;
+        }
+        return territories[id - 1];
     }
 
     public Continent[] getContinents() {
