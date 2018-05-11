@@ -144,7 +144,7 @@ public class Game {
                     world.selectTerritory(terr);
                     world.unhighlightTerritories();
                     world.highlightTerritories(terr.getAdjacentTerritories());
-                    cameraController.setTarget(terr.getCenter().times(cameraController.getCamera().getElevation()));
+                    cameraController.targetTerritory(terr);
                 }
                 else {
                     world.unselectTerritory();

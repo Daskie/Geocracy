@@ -2,6 +2,7 @@ package csc309.geocracy.game;
 
 import csc309.geocracy.Util;
 import csc309.geocracy.graphics.OrbitCamera;
+import csc309.geocracy.world.Territory;
 import glm_.quat.Quat;
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
@@ -105,6 +106,10 @@ public class CameraController {
         interpT = 0.0f;
         targetting = true;
         rotVelAngle = 0.0f;
+    }
+
+    public void targetTerritory(Territory territory) {
+        setTarget(territory.getCenter().times(camera.getElevation()));
     }
 
     public OrbitCamera getCamera() {
