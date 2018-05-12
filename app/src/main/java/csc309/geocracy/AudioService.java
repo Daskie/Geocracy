@@ -7,14 +7,12 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.jakewharton.rxbinding2.widget.SeekBarChangeEvent;
-
 public class AudioService extends Service {
 
     private static String TAG = "AUDIO_SERVICE";
 
     private MediaPlayer player;
-    private boolean isEnabled = true;
+    private boolean isEnabled = false;
     private float playerVolume = 1.0f;
 
     @Nullable
@@ -30,7 +28,9 @@ public class AudioService extends Service {
         player.setLooping(true);
         player.seekTo(0);
         player.setVolume(1f, 1f);
-        player.start();
+        if (isEnabled) {
+            player.start();
+        }
 
         EventBus.subscribe("SET_MUSIC_ENABLED_EVENT", this, e -> enableMusic());
         EventBus.subscribe("SET_MUSIC_DISABLED_EVENT", this, e -> disableMusic());

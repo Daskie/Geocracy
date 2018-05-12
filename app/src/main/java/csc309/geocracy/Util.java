@@ -1,5 +1,7 @@
 package csc309.geocracy;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.opengl.GLES30;
 import android.os.Process;
@@ -7,6 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Random;
@@ -30,7 +33,6 @@ public abstract class Util {
 
     // Reads text file from assets folder into string
     public static String readTextFile(String filename) {
-
         try {
             InputStream is = Global.getContext().getAssets().open(filename);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -41,7 +43,17 @@ public abstract class Util {
                 lines.append("\n");
             }
             return lines.toString();
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Reads image file from assets folder into Bitmap
+    public static Bitmap readBitmap(String filename) {
+        try {
+            return BitmapFactory.decodeStream(Global.getContext().getAssets().open(filename));
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }

@@ -1,6 +1,5 @@
 package csc309.geocracy.space;
 
-import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
 
@@ -64,7 +63,7 @@ public class SpaceRenderer {
         GLES30.glCullFace(GLES30.GL_FRONT);
 
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
-        GLES30.glBindTexture(GLES20.GL_TEXTURE_CUBE_MAP, cubemapHandle);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_CUBE_MAP, cubemapHandle);
         GLES30.glBindVertexArray(vaoHandle);
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, 36, GLES30.GL_UNSIGNED_INT, 0);
         GLES30.glBindVertexArray(0);
@@ -76,6 +75,10 @@ public class SpaceRenderer {
         if (cubemapHandle != 0) {
             GLES30.glDeleteTextures(1, new int[]{cubemapHandle}, 0);
         }
+    }
+
+    public int getCubemapHandle() {
+        return cubemapHandle;
     }
 
     private boolean loadVertices() {

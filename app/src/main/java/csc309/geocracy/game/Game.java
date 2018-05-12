@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
-import csc309.geocracy.graphics.ScreenTextureRenderer;
+import csc309.geocracy.space.SpaceRenderer;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -20,11 +20,11 @@ public class Game {
     private long startT; // time the game was started
     private long lastT; // time last frame happened
     private World world;
+    private SpaceRenderer spaceRenderer;
     private CameraController cameraController;
     private int idFBHandle;
     private int idValueTexHandle;
     private int idDepthRBHandle;
-    private ScreenTextureRenderer screenRenderer;
     private Vec2i screenSize;
     private Vec2i swipeDelta;
     private Vec2i tappedPoint;
@@ -34,11 +34,12 @@ public class Game {
     public Game() {
         world = new World(0); // TODO: seed should not be predefined
 
+        spaceRenderer = new SpaceRenderer();
+
         cameraController = new CameraController();
 
         EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
 
-        screenRenderer = new ScreenTextureRenderer();
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
         startT = System.nanoTime();
@@ -50,6 +51,7 @@ public class Game {
     public boolean loadOpenGL() {
         GLES30.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // background color
         GLES30.glEnable(GLES30.GL_DEPTH_TEST); // enable depth testing (close things rendered on top of far things)
+        GLES30.glDepthFunc(GLES30.GL_LEQUAL); // set to less than or equal to rather than less than as a cubemap optimization
         GLES30.glEnable(GLES30.GL_CULL_FACE); // enable face culling (back faces of triangles aren't rendered)
         GLES30.glEnable(GLES30.GL_BLEND); // enable alpha blending (allows for transparency/translucency)
         GLES30.glBlendFuncSeparate(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA, GLES30.GL_ONE_MINUS_DST_ALPHA, GLES30.GL_ONE);
@@ -65,8 +67,8 @@ public class Game {
             return false;
         }
 
-        if (!screenRenderer.load()) {
-            Log.e("Game", "Failed to load screen renderer");
+        if (!spaceRenderer.load()) {
+            Log.e("Game", "Failed to load space renderer");
             return false;
         }
 
@@ -168,7 +170,8 @@ public class Game {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         Vec3 lightDir = cameraController.getCamera().getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
-        world.render(t, cameraController.getCamera(), lightDir);
+        world.render(t, cameraController.getCamera(), lightDir, spaceRenderer.getCubemapHandle());
+        spaceRenderer.render(cameraController.getCamera());
     }
 
     private boolean reloadIdFrameBuffer() {
