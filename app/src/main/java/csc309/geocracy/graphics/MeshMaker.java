@@ -4,7 +4,6 @@ import android.util.LongSparseArray;
 
 import csc309.geocracy.Util;
 import csc309.geocracy.VecArrayUtil;
-import csc309.geocracy.graphics.Mesh;
 import glm_.vec3.Vec3;
 
 public abstract class MeshMaker {
@@ -27,10 +26,10 @@ public abstract class MeshMaker {
 
     public static Mesh makeSquare(String name) {
         float[] locations = {
-            0.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f
+            -1.0f, -1.0f, 0.0f,
+             1.0f, -1.0f, 0.0f,
+            -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f,
         };
         float[] normals = {
             0.0f, 0.0f, 1.0f,
@@ -38,7 +37,32 @@ public abstract class MeshMaker {
             0.0f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f
         };
-        int[] indices = { 0, 1, 2, 2, 3, 0 };
+        int[] indices = { 0, 1, 3, 3, 2, 0 };
+
+        return new Mesh(name, locations, normals, indices);
+    }
+
+    public static Mesh makeCube(String name) {
+        float[] locations = {
+            -1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f
+        };
+        float[] normals = locations.clone();
+        for (int i = 0; i < 8; ++i) VecArrayUtil.normalize(normals, i);
+        int[] indices = {
+            0, 2, 3, 3, 1, 0,
+            0, 1, 5, 5, 4, 0,
+            0, 4, 6, 6, 2, 0,
+            7, 6, 4, 4, 5, 7,
+            7, 5, 1, 1, 3, 7,
+            7, 3, 2, 2, 6, 7
+        };
 
         return new Mesh(name, locations, normals, indices);
     }

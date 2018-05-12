@@ -1,5 +1,6 @@
 package csc309.geocracy.world;
 
+import android.opengl.GLES30;
 import android.util.Log;
 
 import csc309.geocracy.graphics.Camera;
@@ -31,12 +32,14 @@ public class OceanRenderer {
         return true;
     }
 
-    public void render(Camera camera, Vec3 lightDir) {
+    public void render(Camera camera, Vec3 lightDir, int cubemapHandle) {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
         shader.setCameraLocation(camera.getLocation());
         shader.setLightDirection(lightDir);
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_CUBE_MAP, cubemapHandle);
         mesh.render();
     }
 

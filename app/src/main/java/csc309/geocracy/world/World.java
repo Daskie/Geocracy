@@ -71,9 +71,9 @@ public class World {
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir) {
+    public void render(long t, Camera camera, Vec3 lightDir, int cubemapHandle) {
         terrain.render(t, camera, lightDir, selectionChange, highlightChange);
-        oceanRenderer.render(camera, lightDir);
+        oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
 
         selectionChange = false;

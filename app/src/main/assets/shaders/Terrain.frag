@@ -44,7 +44,7 @@ void main() {
     vec3 continentColor = u_continentColors[v2f_continent];
     vec3 landColor = continentColor;
     vec3 coastColor = k_beachColor;
-    vec3 oceanColor = vec3(1.0f - v2f_sub);
+    vec3 oceanColor = coastColor * (1.0f - v2f_sub);
 
     vec3 albedo =
         land * landColor +
