@@ -26,8 +26,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import csc309.geocracy.GameStates.GameData;
-import csc309.geocracy.GameStates.GameState;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import csc309.geocracy.fragments.SettingsFragment;
@@ -58,6 +56,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FragmentTransaction userInterfaceFT;
     private boolean settingsVisible = false;
 
+    public static Button rollDice;
+    public static LinearLayout uiLayout;
+    public static CoordinatorLayout frame;
+
+    public GameActivity(){
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +82,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
+
+
         gameSurfaceView.getHolder().addCallback(this);
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
 
@@ -85,11 +92,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 //        userInterfaceFT.replace(R.id.gameLayout, new TerritoryDetailFragment());
 //        userInterfaceFT.commit();
 
-        CoordinatorLayout frame = findViewById(R.id.gameLayout);
 //        frame.addView(gameSurfaceView);
 
-        LinearLayout uiLayout = new LinearLayout(this);
-//
+        this.frame = findViewById(R.id.gameLayout);
+        this.uiLayout = new LinearLayout(this);
+
+
         Button gameDevBtn = new  Button(this);
         gameDevBtn.setText("Geocracy (v0.0.3)");
         disposables.add(RxView.touches(gameDevBtn).subscribe(e -> {
@@ -124,17 +132,17 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
 
-//        Button rollDice = new Button(this);
-//        rollDice.setText("Roll dice!");
-
-
-//        disposables.add(RxView.touches(rollDice).subscribe(e -> {
+//        this.rollDice = new Button(this);
+//        this.rollDice.setText("Roll dice!");
+//
+//
+//        disposables.add(RxView.touches(this.rollDice).subscribe(e -> {
 //            if (e.getAction() != MotionEvent.ACTION_UP) return;
 //            Toasty.warning(GameActivity.this, "Rolling dice...", Toast.LENGTH_SHORT, true).show();
 //            userInterfaceFT = getSupportFragmentManager().beginTransaction();
 //            userInterfaceFT.replace(R.id.gameLayout, new SettingsFragment());
 //            userInterfaceFT.commit();
-//            disposables.add(rollDice()
+//            disposables.add(this.rollDice()
 //                // Run on a background thread
 //                .subscribeOn(Schedulers.computation())
 //                // Be notified on the main thread
@@ -150,15 +158,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 //                }));
 //        }));
 
-        uiLayout.addView(gameDevBtn);
-        uiLayout.addView(settingBtn);
-        uiLayout.addView(selectBtn);
-        uiLayout.addView(attackBtn);
+        this.uiLayout.addView(gameDevBtn);
+        this.uiLayout.addView(settingBtn);
+        this.uiLayout.addView(selectBtn);
+        this.uiLayout.addView(attackBtn);
 
-        frame.addView(uiLayout);
+       this.frame.addView(this.uiLayout);
 
     }
-    void toggleSettingsFragment() {
+    public void toggleSettingsFragment() {
         if (settingsVisible) {
             userInterfaceFT = getSupportFragmentManager().beginTransaction();
             userInterfaceFT.remove(settingsFragment);
@@ -171,7 +179,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingsVisible = !settingsVisible;
     }
 
-    void showBottomPaneFragment(Fragment bottomPaneFragment) {
+    public void showBottomPaneFragment(Fragment bottomPaneFragment) {
         if (activeBottomPaneFragment != null) {
             userInterfaceFT = getSupportFragmentManager().beginTransaction();
             userInterfaceFT.remove(activeBottomPaneFragment);

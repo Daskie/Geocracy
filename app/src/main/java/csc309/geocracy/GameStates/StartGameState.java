@@ -8,18 +8,21 @@ import com.jakewharton.rxbinding2.view.RxView;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.GameInputHandler;
+import csc309.geocracy.game.GameActivity;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class StartGameState implements State{
     public StartGameState(){
-//        EventBus.subscribe();
+
 
     }
 
     @Override
-    public void handleInput(GameState states, GameData game) {
+    public void handleInput(GameState states, GameData game, GameActivity game_act) {
 
-        game.state = states.turns;
+//        GameActivity.uiLayout.addView(game.rollDiceButton);
+//        GameActivity.frame.addView(GameActivity.uiLayout);
+        game.state = states.choosing_num_armies;
     }
 
     @Override
@@ -27,10 +30,13 @@ public class StartGameState implements State{
 
     }
 
-    void enter(Game game, GameInputHandler input){
+
+
+
+    private void enter(Game game, GameInputHandler input){
 
     }
-    void exit(Game game, GameInputHandler input){
+    private void exit(Game game, GameInputHandler input){
 
     }
 

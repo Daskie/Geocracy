@@ -3,6 +3,7 @@ package csc309.geocracy.GameStates;
 import android.widget.LinearLayout;
 
 import csc309.geocracy.game.Game;
+import csc309.geocracy.game.GameActivity;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class SetUpInitTerrState implements State{
@@ -10,7 +11,7 @@ public class SetUpInitTerrState implements State{
 
     }
 
-    public void handleInput(GameState states, GameData game){
+    public void handleInput(GameState states, GameData game, GameActivity game_act){
 
     }
 

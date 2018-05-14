@@ -22,6 +22,7 @@ public class Game {
 
     private long startT; // time the game was started
     private long lastT; // time last frame happened
+    private GameActivity game_act;
     private World world;
     private NoiseTest noiseTest;
     private OrbitCamera camera;
@@ -30,9 +31,9 @@ public class Game {
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
 
     public Game() {
-
+        game_act = new GameActivity();
         gameStates = new GameState();
-        gameData = new GameData(gameStates);
+        gameData = new GameData(gameStates, game_act);
 
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
@@ -86,7 +87,7 @@ public class Game {
         float dt = (t - lastT) * 1e-9f;
         //System.out.println("FPS: " + (1.0f / dt));
 
-        gameData.handleInput(gameStates);
+        gameData.handleInput(gameStates, game_act);
 
 
         update(t, dt);

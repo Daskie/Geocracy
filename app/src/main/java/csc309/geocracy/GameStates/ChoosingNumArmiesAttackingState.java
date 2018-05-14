@@ -11,20 +11,27 @@ package csc309.geocracy.GameStates;
 //2 armies = 2 dice
 //3 armies = 3 dice
 
+import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.GameInputHandler;
+import csc309.geocracy.game.GameActivity;
 
 
-public class ChoosingNumArmiesAttackingState {
+public class ChoosingNumArmiesAttackingState implements State{
+
+
     public ChoosingNumArmiesAttackingState(){
 
     }
 
-    void handleInput(Game game, GameInputHandler input){
+    @Override
+    public void handleInput(GameState states, GameData game, GameActivity game_act){
+//        game_act.showBottomPaneFragment(new TroopSelectionFragment());
 
     }
 
-    void draw(Game game){
+    @Override
+    public void draw(GameData game) {
 
     }
     void enter(Game game, GameInputHandler input){
