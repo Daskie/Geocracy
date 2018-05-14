@@ -26,7 +26,7 @@ public class ChoosingNumArmiesAttackingState implements State{
 
     @Override
     public void handleInput(GameState states, GameData game, GameActivity game_act){
-//        game_act.showBottomPaneFragment(new TroopSelectionFragment());
+        game_act.showBottomPaneFragment(new TroopSelectionFragment());
 
     }
 
