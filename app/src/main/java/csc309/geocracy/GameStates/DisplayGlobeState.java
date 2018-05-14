@@ -1,10 +1,10 @@
 package csc309.geocracy.GameStates;
 
-import csc309.geocracy.Game;
+import csc309.geocracy.game.Game;
 import csc309.geocracy.GameInputHandler;
 
 public class DisplayGlobeState {
-    void constructor(){
+    public DisplayGlobeState(){
 
     }
 

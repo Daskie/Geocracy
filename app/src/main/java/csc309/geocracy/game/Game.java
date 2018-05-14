@@ -4,6 +4,8 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import csc309.geocracy.EventBus;
+import csc309.geocracy.GameStates.GameData;
+import csc309.geocracy.GameStates.GameState;
 import csc309.geocracy.Util;
 import csc309.geocracy.graphics.OrbitCamera;
 import csc309.geocracy.noise.NoiseTest;
@@ -12,6 +14,7 @@ import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
+
 
 import static glm_.Java.glm;
 
@@ -22,9 +25,15 @@ public class Game {
     private World world;
     private NoiseTest noiseTest;
     private OrbitCamera camera;
+    static public GameState gameStates;
+    static public GameData gameData;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
 
     public Game() {
+
+        gameStates = new GameState();
+        gameData = new GameData(gameStates);
+
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
 
@@ -77,8 +86,13 @@ public class Game {
         float dt = (t - lastT) * 1e-9f;
         //System.out.println("FPS: " + (1.0f / dt));
 
+        gameData.handleInput(gameStates);
+
+
         update(t, dt);
         render(t, dt);
+
+
 
         lastT = t;
     }
@@ -108,6 +122,7 @@ public class Game {
             world.highlightTerritories(terr.getAdjacentTerritories());
             accumDT = 0.0f;
         }
+
     }
 
     // Render the game
@@ -118,6 +133,8 @@ public class Game {
         Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
         world.render(t, camera, lightDir);
         //noiseTest.render();
+
+
     }
 
 }

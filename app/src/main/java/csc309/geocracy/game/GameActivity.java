@@ -26,6 +26,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import csc309.geocracy.GameStates.GameData;
+import csc309.geocracy.GameStates.GameState;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import csc309.geocracy.fragments.SettingsFragment;
@@ -73,6 +75,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // Setup game
         game = new Game();
 
+
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
@@ -118,6 +121,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) toggleSettingsFragment();
         }));
+
+
 
 //        Button rollDice = new Button(this);
 //        rollDice.setText("Roll dice!");

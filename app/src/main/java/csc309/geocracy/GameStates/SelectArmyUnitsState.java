@@ -8,11 +8,11 @@ package csc309.geocracy.GameStates;
 // or by getting one cavalry piece and two infantry pieces
 // (which add up to seven).
 
-import csc309.geocracy.Game;
+import csc309.geocracy.game.Game;
 import csc309.geocracy.GameInputHandler;
 
 public class SelectArmyUnitsState {
-    void constructor(){
+    public SelectArmyUnitsState(){
 
     }
 

@@ -10,7 +10,7 @@ package csc309.geocracy.GameStates;
 // at least three armies, although you can choose to colonize it
 // with more if you wish.
 
-public class OccupyingTerrState implements State{
+public class OccupyingTerrState{
     public OccupyingTerrState(){
 
     }

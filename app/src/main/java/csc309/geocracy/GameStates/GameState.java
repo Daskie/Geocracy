@@ -3,31 +3,31 @@ package csc309.geocracy.GameStates;
 public class GameState {
     StartGameState start;
     DisplayGlobeState display_globe;
-    AttackingAdjacentTerritoriesState attack_terr;
+    AttackingAdjTerrState attack_terr;
     ChoosingNumArmiesAttackingState choosing_num_armies;
     EndAttackState end_attack;
-    FortifyTerritoriesState fortify_terr;
+    FortifyTerrState fortify_terr;
     GainArmiesState gain_armies;
-    OccupyingTerritoryState occupy_terr;
+    OccupyingTerrState occupy_terr;
     PlaceArmiesState place_armies;
     RollDiceState roll_dice;
     SelectArmyUnitsState select_army;
-    SetUpInitialTerritoriesState setup_terr;
+    SetUpInitTerrState setup_terr;
     TurnState turns;
 
-    void constructor(){
+    public GameState(){
         this.start = new StartGameState();
         this.display_globe = new DisplayGlobeState();
-        this.attack_terr = new AttackingAdjacentTerritoriesState();
+        this.attack_terr = new AttackingAdjTerrState();
         this.choosing_num_armies = new ChoosingNumArmiesAttackingState();
         this.end_attack = new EndAttackState();
-        this.fortify_terr = new FortifyTerritoriesState();
+        this.fortify_terr = new FortifyTerrState();
         this.gain_armies = new GainArmiesState();
-        this.occupy_terr = new OccupyingTerritoryState();
+        this.occupy_terr = new OccupyingTerrState();
         this.place_armies = new PlaceArmiesState();
         this.roll_dice = new RollDiceState();
         this.select_army = new SelectArmyUnitsState();
-        this.setup_terr = new SetUpInitialTerritoriesState();
+        this.setup_terr = new SetUpInitTerrState();
         this.turns = new TurnState();
     }
 }

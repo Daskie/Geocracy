@@ -14,22 +14,23 @@ package csc309.geocracy.GameStates;
 // A player may decide not to attack at all during a turn,
 // only deploying armies.
 
-public class AttackingAdjTerrState implements State{
+
+public class AttackingAdjTerrState{
     public AttackingAdjTerrState(){
 
     }
 
-    public void handleInput(GameData game, GameInputHandler input){
+    public void handleInput(GameData game){
 
     }
 
     public void draw(GameData game){
 
     }
-    public void enter(GameData game, GameInputHandler input){
+    public void enter(GameData game){
 
     }
-    public void exit(GameData game, GameInputHandler input){
+    public void exit(GameData game){
 
     }
 }

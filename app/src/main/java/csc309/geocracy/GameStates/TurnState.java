@@ -1,24 +1,28 @@
 package csc309.geocracy.GameStates;
 
-import csc309.geocracy.Game;
-import csc309.geocracy.InputHandler;
+import csc309.geocracy.game.Game;
+import csc309.geocracy.GameInputHandler;
 
-public class TurnState {
-    void constructor(){
-
-    }
-
-    void handleInput(Game game, InputHandler input){
+public class TurnState implements State{
+    public TurnState(){
 
     }
 
-    void draw(Game game){
+    @Override
+    public void handleInput(GameState states, GameData game) {
+
 
     }
-    void enter(Game game, InputHandler input){
+
+    @Override
+    public void draw(GameData game) {
 
     }
-    void exit(Game game, InputHandler input){
+
+    void enter(Game game, GameInputHandler input){
+
+    }
+    void exit(Game game, GameInputHandler input){
 
     }
 }

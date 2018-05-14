@@ -14,11 +14,11 @@ package csc309.geocracy.GameStates;
 // Remove one of your opponent’s pieces from the defending
 // territory if the red die is higher to its corresponding white die.
 
-import csc309.geocracy.Game;
+import csc309.geocracy.game.Game;
 import csc309.geocracy.GameInputHandler;
 
 public class RollDiceState {
-    void constructor(){
+    public RollDiceState(){
 
     }
 
