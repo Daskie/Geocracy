@@ -78,7 +78,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         setContentView(R.layout.gameplay);
 
         // Setup game
-        game = new Game();
+        game = new Game(this);
 
 
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);

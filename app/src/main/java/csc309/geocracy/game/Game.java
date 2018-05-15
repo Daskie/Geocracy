@@ -20,9 +20,10 @@ import static glm_.Java.glm;
 
 public class Game {
 
+    private GameActivity game_act;
+
     private long startT; // time the game was started
     private long lastT; // time last frame happened
-    private GameActivity game_act;
     private World world;
     private NoiseTest noiseTest;
     private OrbitCamera camera;
@@ -30,10 +31,10 @@ public class Game {
     static public GameData gameData;
     public Vec2 swipeDelta; // TODO: replace this with proper input handling
 
-    public Game() {
-        game_act = new GameActivity();
+    public Game(GameActivity activity) {
+        game_act = activity;
         gameStates = new GameState();
-        gameData = new GameData(gameStates, game_act);
+        gameData = new GameData(gameStates, activity);
 
         world = new World(0); // TODO: seed should not be predefined
         //noiseTest = new NoiseTest();
