@@ -6,22 +6,17 @@ import glm_.quat.Quat;
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
 
-import static android.support.v4.math.MathUtils.clamp;
 import static glm_.Java.glm;
 
 // Camera that resides at a certain radius from the origin and always looks at the origin
 public class OrbitCamera extends Camera {
 
-    private float minElevation;
-    private float maxElevation;
     private float elevation;
     private Quat orientation;
     private Mat3 orientMatrix;
 
-    public OrbitCamera(float fov, float near, float far, float aspectRatio, float minElevation, float maxElevation, float elevation) {
+    public OrbitCamera(float fov, float near, float far, float aspectRatio, float elevation) {
         super(fov, near, far, aspectRatio);
-        this.minElevation = minElevation;
-        this.maxElevation = maxElevation;
         this.elevation = elevation;
         orientation = new Quat();
         orientMatrix = new Mat3();
@@ -35,8 +30,14 @@ public class OrbitCamera extends Camera {
         viewMatrix = null;
     }
 
+    public void setOrientation(Quat orientation) {
+        this.orientation = new Quat(orientation);
+        orientMatrix = this.orientation.toMat3();
+        viewMatrix = null;
+    }
+
     public void setElevation(float elevation) {
-        this.elevation = clamp(elevation, minElevation, maxElevation);
+        this.elevation = elevation;
         viewMatrix = null;
     }
 
@@ -44,36 +45,32 @@ public class OrbitCamera extends Camera {
         setElevation(elevation + delta);
     }
 
-    // Zooms on a parabola rather than a line. Zoom "slows" closer to surface
-    public void easeElevation(float delta) {
-        float actualP = (elevation - minElevation) / (maxElevation - minElevation);
-        float easeP = (float)Math.sqrt(actualP);
-        easeP += delta;
-        actualP = easeP * easeP;
-        actualP = glm.clamp(actualP, 0.0f, 1.0f);
-        setElevation(actualP * (maxElevation - minElevation) + minElevation);
-    }
-
     public void setLocation(Vec3 location) {
+        setElevation(location.getLength());
         Vec3 a = getW();
-        Vec3 b = location.normalize();
-        float angle = (float)Math.acos(a.dot(b));
-        Vec3 axis = a.cross(b);
-        rotate(glm.angleAxis(angle, axis));
+        Vec3 b = location.div(elevation);
+        float dot = a.dot(b);
+        if (!Util.areEqual(dot, 1.0f)) {
+            float angle = (float)Math.acos(a.dot(b));
+            Vec3 axis = a.cross(b).normalizeAssign();
+            rotate(glm.angleAxis(angle, axis));
+        }
     }
 
     // Moves the camera in orbit where delta corresponds to the camera's u and v vectors
     public void move(Vec2 delta) {
-        float angle = delta.getLength();
-        Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
-        axis = orientMatrix.times(axis); // convert to world space
-        rotate(glm.angleAxis(angle, axis));
+        if (!Util.isZero(delta)) {
+            float angle = delta.getLength();
+            Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
+            axis = orientMatrix.times(axis); // convert to world space
+            rotate(glm.angleAxis(angle, axis));
+        }
     }
 
     public float getElevation() { return elevation; }
 
     @Override
-    public Quat getOrientation() { return orientation; }
+    public final Quat getOrientation() { return orientation; }
 
     @Override
     public Mat3 getOrientMatrix() { return orientMatrix; }

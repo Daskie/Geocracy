@@ -85,12 +85,12 @@ public class Waterways {
         GLES30.glEnableVertexAttribArray(5);
         int positionSize = 8;
         int positionsOffset = 0;
-        int terrOffset = positionsOffset + positions.length * 4;
-        int anglesOffset = terrOffset + 4;
+        int infoOffset = positionsOffset + positions.length * 4;
+        int anglesOffset = infoOffset + 4;
         int basesOffset = anglesOffset + 4;
         int instanceSize = 4 + 4 + 9 * 4;
         GLES30.glVertexAttribPointer(0, 2, GLES30.GL_FLOAT, false, positionSize, positionsOffset);
-        GLES30.glVertexAttribPointer(1, 1, GLES30.GL_INT, false, instanceSize, terrOffset);
+        GLES30.glVertexAttribIPointer(1, 1, GLES30.GL_INT, instanceSize, infoOffset);
         GLES30.glVertexAttribPointer(2, 1, GLES30.GL_FLOAT, false, instanceSize, anglesOffset);
         GLES30.glVertexAttribPointer(3, 4, GLES30.GL_FLOAT, false, instanceSize, basesOffset + 0 * 3 * 4);
         GLES30.glVertexAttribPointer(4, 4, GLES30.GL_FLOAT, false, instanceSize, basesOffset + 1 * 3 * 4);

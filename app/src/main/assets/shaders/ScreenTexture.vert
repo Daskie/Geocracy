@@ -1,6 +1,6 @@
 #version 300 es
 
-layout(location = 0) in vec2 in_pos;
+layout (location = 0) in vec2 in_pos;
 
 out vec2 v2f_texCoord;
 

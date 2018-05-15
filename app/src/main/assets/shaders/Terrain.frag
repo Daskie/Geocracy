@@ -15,7 +15,7 @@ in float v2f_border;
 in vec3 v2f_edges;
 in vec3 v2f_bary;
 
-out vec4 out_color;
+layout (location = 0) out vec4 out_color;
 
 uniform vec3 u_lightDir;
 uniform float u_time;
@@ -44,7 +44,7 @@ void main() {
     vec3 continentColor = u_continentColors[v2f_continent];
     vec3 landColor = continentColor;
     vec3 coastColor = k_beachColor;
-    vec3 oceanColor = vec3(1.0f - v2f_sub);
+    vec3 oceanColor = coastColor * (1.0f - v2f_sub);
 
     vec3 albedo =
         land * landColor +

@@ -1,17 +1,12 @@
 package csc309.geocracy.game;
 
-import android.app.Activity;
 import android.graphics.PixelFormat;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.Window;
@@ -23,7 +18,6 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import csc309.geocracy.EventBus;
@@ -33,10 +27,7 @@ import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -57,8 +48,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private boolean settingsVisible = false;
 
     public static Button rollDice;
-    public static LinearLayout uiLayout;
-    public static CoordinatorLayout frame;
+//    public static LinearLayout uiLayout;
+//    public static CoordinatorLayout frame;
 
     public GameActivity(){
 
@@ -85,7 +76,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
         gameSurfaceView.getHolder().addCallback(this);
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("CAMERA_EVENT", e)));
+//        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("TOUCH_EVENT", e)));
 
 //        // Begin the transaction
 //        userInterfaceFT = getSupportFragmentManager().beginTransaction();
@@ -94,8 +85,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 //        frame.addView(gameSurfaceView);
 
-        this.frame = findViewById(R.id.gameLayout);
-        this.uiLayout = new LinearLayout(this);
+        CoordinatorLayout frame = findViewById(R.id.gameLayout);
+        LinearLayout uiLayout = new LinearLayout(this);
 
 
         Button gameDevBtn = new  Button(this);
@@ -158,12 +149,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 //                }));
 //        }));
 
-        this.uiLayout.addView(gameDevBtn);
-        this.uiLayout.addView(settingBtn);
-        this.uiLayout.addView(selectBtn);
-        this.uiLayout.addView(attackBtn);
+        uiLayout.addView(gameDevBtn);
+        uiLayout.addView(settingBtn);
+        uiLayout.addView(selectBtn);
+        uiLayout.addView(attackBtn);
 
-       this.frame.addView(this.uiLayout);
+       frame.addView(uiLayout);
 
     }
     public void toggleSettingsFragment() {

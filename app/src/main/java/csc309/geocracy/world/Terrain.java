@@ -39,6 +39,7 @@ public class Terrain {
         HashSet<Integer> adjacentOceanTerrs = new HashSet<>();
         HashSet<Integer> waterwayTerrs = new HashSet<>();
         int continent;
+        Vec3 center;
     }
 
     private class ContinentSpec {
@@ -52,6 +53,7 @@ public class Terrain {
 
     private World world;
     private TerrainShader shader;
+    private IdentityShader idShader;
     private float[] locations;
     private int[] indices;
     private int vboHandle;
@@ -68,6 +70,7 @@ public class Terrain {
     public Terrain(World world, Mesh sphereMesh, long seed, int maxNTerritories, int maxNContinents) {
         this.world = world;
         shader = new TerrainShader();
+        idShader = new IdentityShader();
         locations = sphereMesh.getLocations().clone();
         indices = sphereMesh.getIndices().clone();
         faces = new Face[indices.length / 3];
@@ -102,6 +105,11 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
+
+        if (!idShader.load()) {
+            Log.e("Terrain", "Failed to load identity shader");
+            return false;
+        }
 
         // Create VBO
         int[] vboHandleArr = { 0 };
@@ -178,8 +186,20 @@ public class Terrain {
         GLES30.glBindVertexArray(0);
     }
 
+    public void renderId(Camera camera) {
+        idShader.setActive();
+        idShader.setViewMatrix(camera.getViewMatrix());
+        idShader.setProjectionMatrix(camera.getProjectionMatrix());
+
+        GLES30.glBindVertexArray(vaoHandle);
+        GLES30.glDrawArrays(GLES30.GL_TRIANGLES, 0, indices.length);
+        GLES30.glBindVertexArray(0);
+    }
+
     public void unload() {
         shader.unload();
+
+        idShader.unload();
 
         if (vaoHandle != 0) {
             int[] vaoArr = { vaoHandle };
@@ -203,7 +223,8 @@ public class Terrain {
             continents[ci - 1] = new Continent(ci, world, new HashSet<>(), contColors[ci - 1]);
         }
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
-            territories[ti - 1] = new Territory(ti, world, continents[territorySpecs[ti].continent - 1], new HashSet<>());
+            TerritorySpec terr = territorySpecs[ti];
+            territories[ti - 1] = new Territory(ti, world, continents[terr.continent - 1], new HashSet<>(), terr.center);
         }
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
             HashSet<Territory> contTerrs = continents[ci - 1].getTerritories();
@@ -676,6 +697,8 @@ public class Terrain {
         for (int i = 0; i < territorySpecs.length; ++i) territorySpecs[i] = tempTerritorySpecs.get(i);
 
         smoothTerritories();
+
+        detTerritoryCenters();
     }
 
     private void handleExcessTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int maxNTerritories) {
@@ -818,6 +841,28 @@ public class Terrain {
                     }
                 }
             }
+        }
+    }
+
+    private void detTerritoryCenters() {
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            HashSet<Integer> terrVerts = new HashSet<>();
+            for (int fi : territorySpecs[ti].landFaces) {
+                int ii = fi * 3;
+                terrVerts.add(indices[ii + 0]);
+                terrVerts.add(indices[ii + 1]);
+                terrVerts.add(indices[ii + 2]);
+            }
+
+            Vec3 center = new Vec3();
+            for (int vi : terrVerts) {
+                int ci = vi * 3;
+                center.x += locations[ci + 0];
+                center.y += locations[ci + 1];
+                center.z += locations[ci + 2];
+            }
+            center.normalizeAssign();
+            territorySpecs[ti].center = center;
         }
     }
 

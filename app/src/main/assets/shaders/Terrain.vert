@@ -1,8 +1,8 @@
 #version 300 es
 
-layout(location = 0) in vec3 in_loc;
-layout(location = 1) in vec3 in_norm;
-layout(location = 2) in int in_info;
+layout (location = 0) in vec3 in_loc;
+layout (location = 1) in vec3 in_norm;
+layout (location = 2) in int in_info;
 
 out vec3 v2f_loc;
 out vec3 v2f_norm;

@@ -27,9 +27,9 @@ public abstract class MeshMaker {
     public static Mesh makeSquare(String name) {
         float[] locations = {
             -1.0f, -1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f
+             1.0f, -1.0f, 0.0f,
+            -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f,
         };
         float[] normals = {
             0.0f, 0.0f, 1.0f,
@@ -37,29 +37,53 @@ public abstract class MeshMaker {
             0.0f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f
         };
-        int[] indices = { 0, 1, 2, 2, 3, 0 };
+        int[] indices = { 0, 1, 3, 3, 2, 0 };
+
+        return new Mesh(name, locations, normals, indices);
+    }
+
+    public static Mesh makeCube(String name) {
+        float[] locations = {
+            -1.0f, -1.0f, -1.0f,
+             1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+             1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+             1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+             1.0f,  1.0f,  1.0f
+        };
+        float[] normals = locations.clone();
+        for (int i = 0; i < 8; ++i) VecArrayUtil.normalize(normals, i);
+        int[] indices = {
+            0, 2, 3, 3, 1, 0,
+            0, 1, 5, 5, 4, 0,
+            0, 4, 6, 6, 2, 0,
+            7, 6, 4, 4, 5, 7,
+            7, 5, 1, 1, 3, 7,
+            7, 3, 2, 2, 6, 7
+        };
 
         return new Mesh(name, locations, normals, indices);
     }
 
     public static Mesh makeIcosahedron(String name) {
-        float phi = (float)((1.0 + Math.sqrt(5.0)) / 2.0);
         int nVertices = 12;
         float[] locations = {
-             0.0f,  1.0f,   phi,
-             0.0f,  1.0f,  -phi,
-             0.0f, -1.0f,   phi,
-             0.0f, -1.0f,  -phi,
+             0.0f,  1.0f,   Util.PHI,
+             0.0f,  1.0f,  -Util.PHI,
+             0.0f, -1.0f,   Util.PHI,
+             0.0f, -1.0f,  -Util.PHI,
 
-              phi,  0.0f,  1.0f,
-             -phi,  0.0f,  1.0f,
-              phi,  0.0f, -1.0f,
-             -phi,  0.0f, -1.0f,
+              Util.PHI,  0.0f,  1.0f,
+             -Util.PHI,  0.0f,  1.0f,
+              Util.PHI,  0.0f, -1.0f,
+             -Util.PHI,  0.0f, -1.0f,
 
-             1.0f,   phi,  0.0f,
-             1.0f,  -phi,  0.0f,
-            -1.0f,   phi,  0.0f,
-            -1.0f,  -phi,  0.0f
+             1.0f,   Util.PHI,  0.0f,
+             1.0f,  -Util.PHI,  0.0f,
+            -1.0f,   Util.PHI,  0.0f,
+            -1.0f,  -Util.PHI,  0.0f
         };
         for (int i = 0; i < nVertices; ++i) {
             VecArrayUtil.normalize(locations, i);
