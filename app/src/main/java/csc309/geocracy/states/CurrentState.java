@@ -8,6 +8,11 @@ import csc309.geocracy.game.GameData;
 
 public class CurrentState {
 
+    public enum Actions {
+        TOGGLE_SETTINGS_VISIBILITY,
+        TERRITORY_SELECTED
+    }
+
     GameActivity activity;
     GameData data;
 
