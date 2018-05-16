@@ -19,6 +19,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.Random;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
@@ -66,7 +67,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("TOUCH_EVENT", e)));
+
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) EventBus.publish("WORLD_TOUCH_EVENT", e);
+            if (e.getActionMasked() == MotionEvent.ACTION_MOVE) EventBus.publish("WORLD_TOUCH_EVENT", e);
+        }));
+
+//        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
+//        }));
+
 
 //        // Begin the transaction
 //        userInterfaceFT = getSupportFragmentManager().beginTransaction();
