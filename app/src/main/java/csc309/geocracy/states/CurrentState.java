@@ -2,6 +2,7 @@ package csc309.geocracy.states;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.fragments.TerritoryDetailFragment;
+import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.game.GameData;
 
@@ -30,16 +31,18 @@ public class CurrentState {
         switch (newState) {
             case SELECT_TERRITORY:
                 System.out.println("SELECT TERRITORY STATE");
-                GameActivity.toggleSettingsFragment();
+                GameActivity.showBottomPaneFragment(new TerritoryDetailFragment());
                 break;
             case ATTACK_TERRITORY:
                 System.out.println("ATTACK TERRITORY STATE");
+                GameActivity.showBottomPaneFragment(new TroopSelectionFragment());
                 break;
             case DEFEND_TERRITORY:
                 System.out.println("DEFEND TERRITORY STATE");
                 break;
             case DISPLAY_SETTINGS:
                 System.out.println("DISPLAY SETTINGS STATE");
+                GameActivity.toggleSettingsFragment();
                 break;
             default:
                 break;

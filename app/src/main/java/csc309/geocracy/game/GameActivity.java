@@ -105,16 +105,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         selectBtn.setText("SELECT");
 
         disposables.add(RxView.touches(selectBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_UP) return;
-            EventBus.publish("GAME_STATE_CHANGE", GameState.SELECT_TERRITORY);
+            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("GAME_STATE_CHANGE", GameState.SELECT_TERRITORY);
         }));
 
         Button attackBtn = new Button(this);
         attackBtn.setText("ATTACK");
 
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_UP) return;
-            showBottomPaneFragment(new TroopSelectionFragment());
+            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("GAME_STATE_CHANGE", GameState.ATTACK_TERRITORY);
+//            showBottomPaneFragment(new TroopSelectionFragment());
         }));
 
 
@@ -122,7 +121,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingBtn.setText("SETTINGS");
 
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) toggleSettingsFragment();
+            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("GAME_STATE_CHANGE", GameState.DISPLAY_SETTINGS);
+
         }));
 
 
@@ -174,15 +174,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingsVisible = !settingsVisible;
     }
 
-    public void showBottomPaneFragment(Fragment bottomPaneFragment) {
+    static public void showBottomPaneFragment(Fragment bottomPaneFragment) {
         if (activeBottomPaneFragment != null) {
-            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT = fragmentManager.beginTransaction();
             userInterfaceFT.remove(activeBottomPaneFragment);
             userInterfaceFT.commit();
             activeBottomPaneFragment = null;
         }
 
-        userInterfaceFT = getSupportFragmentManager().beginTransaction();
+        userInterfaceFT = fragmentManager.beginTransaction();
         userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
         userInterfaceFT.commit();
 
