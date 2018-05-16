@@ -1,5 +1,6 @@
 package csc309.geocracy.game;
 
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -18,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -89,26 +91,27 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         LinearLayout uiLayout = new LinearLayout(this);
         uiLayout.setOrientation(LinearLayout.VERTICAL);
 
-        Button gameDevBtn = new  Button(this);
-        gameDevBtn.setText("Geocracy (v0.0.3)");
-        disposables.add(RxView.touches(gameDevBtn).subscribe(e -> {
+        TextView geocracyHeader = new TextView(this);
+        geocracyHeader.setTextColor(Color.argb(240, 255, 255, 255));
+        geocracyHeader.setText("Geocracy (v0.0.3)");
+        geocracyHeader.setTextSize(18.0f);
+        geocracyHeader.setPadding(20, 20, 0, 40);
+
+        disposables.add(RxView.touches(geocracyHeader).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("GAME_NAME_TAP_EVENT", e);
         }));
         EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
 
 
-        Button selectBtn = new Button(this);
-        selectBtn.setText("CANCEL ACTION");
-        disposables.add(RxView.touches(selectBtn).subscribe(e -> {
+        FloatingActionButton cancelBtn = findViewById(R.id.cancelBtn);
+        disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
             if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", GameAction.CANCEL_ACTION);
         }));
 
-        Button attackBtn = new Button(this);
-        attackBtn.setText("ATTACK");
+        FloatingActionButton attackBtn = findViewById(R.id.attackBtn);
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
             if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", GameAction.ATTACK_TAPPED);
         }));
-
 
         FloatingActionButton settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
@@ -116,10 +119,9 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", GameAction.TOGGLE_SETTINGS_VISIBILITY);
         }));
 
-        uiLayout.addView(gameDevBtn);
-//        frame.addView(settingBtn);
-        uiLayout.addView(selectBtn);
-        uiLayout.addView(attackBtn);
+        uiLayout.addView(geocracyHeader);
+//        uiLayout.addView(cancelBtn);
+//        uiLayout.addView(attackBtn);
 
         frame.addView(uiLayout);
 

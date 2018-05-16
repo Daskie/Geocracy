@@ -16,6 +16,28 @@
         android:layout_margin="10dp"
         android:src="@drawable/ic_settings_outline_white_48dp"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/attackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp"
+        app:fabSize="auto"
+        android:src="@drawable/ic_chemical_weapon_white_48dp"
+        android:backgroundTint="@color/colorAccent"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cancelBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        app:fabSize="auto"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="140dp"
+        android:src="@drawable/ic_cancel_white_48dp"
+        android:backgroundTint="@color/darkGray"/>
+
     <csc309.geocracy.game.GameSurfaceView
         android:id="@+id/gameplaySurfaceView"
         android:layout_width="match_parent"
