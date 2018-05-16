@@ -23,9 +23,6 @@ public class TerritoryDetailFragment extends Fragment {
 
         // get the bottom sheet view
         LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);
-        llBottomSheet.bringToFront();
-        // init the bottom sheet behavior
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
         return view;
     }
