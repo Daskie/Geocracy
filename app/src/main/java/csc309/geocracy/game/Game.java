@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.space.SpaceRenderer;
+import csc309.geocracy.states.CurrentState;
+import csc309.geocracy.states.GameAction;
+import csc309.geocracy.states.GameState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -31,13 +34,17 @@ public class Game {
     private float zoomFactor;
     private ByteBuffer readbackBuffer;
 
-    public Game() {
+    static public GameData gameData;
+
+    public CurrentState state;
+
+    public Game(GameActivity activity) {
+        state = new CurrentState(activity, new GameData());
+
         world = new World(0); // TODO: seed should not be predefined
 
         spaceRenderer = new SpaceRenderer();
-
         cameraController = new CameraController();
-
         EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
@@ -104,6 +111,7 @@ public class Game {
     }
 
     public void wasTap(Vec2i p) {
+        EventBus.publish("USER_ACTION", GameAction.TERRITORY_SELECTED);
         synchronized (this) {
             tappedPoint = p;
         }
