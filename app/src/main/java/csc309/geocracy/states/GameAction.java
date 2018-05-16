@@ -1,6 +1,8 @@
 package csc309.geocracy.states;
 
-public enum GameActions {
+public enum GameAction {
     TOGGLE_SETTINGS_VISIBILITY,
-    TERRITORY_SELECTED
+    TERRITORY_SELECTED,
+    ATTACK_TAPPED,
+    CANCEL_ACTION
 }
