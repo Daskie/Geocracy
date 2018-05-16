@@ -23,12 +23,6 @@ public class LoadingScreenActivity extends Activity {
 
         Toasty.warning(this, "Your world is being created... hang tight!",  WAIT_TIME - 200).show();
 
-        loadingSpinner.setProgress(0);
-
-        EventBus.subscribe("WORLD_LOAD_EVENT", this, (data) -> {
-            loadingSpinner.setProgress((int)data);
-        });
-
         new Handler().postDelayed(() -> {
             Intent mainIntent = new Intent(LoadingScreenActivity.this, GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

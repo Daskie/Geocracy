@@ -60,10 +60,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // No title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.gameplay);
 
         // Setup game
         game = new Game();
+
+        setContentView(R.layout.gameplay);
 
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
