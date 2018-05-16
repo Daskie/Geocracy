@@ -11,7 +11,6 @@ import csc309.geocracy.GameStates.GameData;
 import csc309.geocracy.GameStates.GameState;
 import csc309.geocracy.Util;
 import csc309.geocracy.space.SpaceRenderer;
-import csc309.geocracy.states.CurrentState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -186,73 +185,10 @@ public class Game {
 
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
-        Vec3 lightDir = cameraController.getCamera().getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
-        world.render(t, cameraController.getCamera(), lightDir, spaceRenderer.getCubemapHandle());
-        spaceRenderer.render(cameraController.getCamera());
-    }
 
-    private boolean reloadIdFrameBuffer() {
-        // Destroy existing frame buffer if any (as in the case of the screen being resized)
-        if (idFBHandle != 0) {
-            GLES30.glDeleteFramebuffers(1, new int[]{idFBHandle}, 0);
-            if (idValueTexHandle != 0) {
-                GLES30.glDeleteTextures(1, new int[]{idValueTexHandle}, 0);
-            }
-            if (idDepthRBHandle != 0) {
-                GLES30.glDeleteRenderbuffers(1, new int[]{ idDepthRBHandle }, 0);
-            }
-        }
-
-        // Setup value texture
-        int[] idValueTexHandleArr = { 0 };
-        GLES30.glGenTextures(1, idValueTexHandleArr, 0);
-        idValueTexHandle = idValueTexHandleArr[0];
-        if (idValueTexHandle == 0) {
-            Log.e("Game", "Failed to generate identity value texture");
-            return false;
-        }
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, idValueTexHandle);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
-        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
-        GLES30.glTexStorage2D(GLES30.GL_TEXTURE_2D, 1, GLES30.GL_R8UI, screenSize.x, screenSize.y);
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
-
-        // Setup depth render buffer
-        int[] depthRBHandlArr = { 0 };
-        GLES30.glGenRenderbuffers(1, depthRBHandlArr, 0);
-        idDepthRBHandle = depthRBHandlArr[0];
-        if (idDepthRBHandle == 0) {
-            Log.e("Game", "Failed to generate identity depth render buffer");
-            return false;
-        }
-        GLES30.glBindRenderbuffer(GLES30.GL_RENDERBUFFER, idDepthRBHandle);
-        GLES30.glRenderbufferStorage(GLES30.GL_RENDERBUFFER, GLES30.GL_DEPTH24_STENCIL8, screenSize.x, screenSize.y);
-        GLES30.glBindRenderbuffer(GLES30.GL_RENDERBUFFER, 0);
-
-        // Setup frame buffer and attachments
-        int[] fbHandleArr = { 0 };
-        GLES30.glGenFramebuffers(1, fbHandleArr, 0);
-        idFBHandle = fbHandleArr[0];
-        if (idFBHandle == 0) {
-            Log.e("Game", "Failed to generate identity frame buffer");
-            return false;
-        }
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, idFBHandle);
-        GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D, idValueTexHandle, 0);
-        GLES30.glFramebufferRenderbuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_DEPTH_STENCIL_ATTACHMENT, GLES30.GL_RENDERBUFFER, idDepthRBHandle);
-        if (GLES30.glCheckFramebufferStatus(GLES30.GL_FRAMEBUFFER) != GLES30.GL_FRAMEBUFFER_COMPLETE) {
-            Log.e("Game", "Identity frame buffer is incomplete");
-            return false;
-        }
-        GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
-
-        // Check for OpenGL errors
-        if (Util.isGLError()) {
-            return false;
-        }
-
-        return true;
-
+        Vec3 lightDir = camera.getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
+        world.render(t, camera, lightDir);
+        //noiseTest.render();
     }
 
 }
