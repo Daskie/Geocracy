@@ -11,6 +11,7 @@ import csc309.geocracy.GameStates.GameData;
 import csc309.geocracy.GameStates.GameState;
 import csc309.geocracy.Util;
 import csc309.geocracy.space.SpaceRenderer;
+import csc309.geocracy.states.CurrentState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -37,10 +38,11 @@ public class Game {
     static public GameState gameStates;
     static public GameData gameData;
 
+    public CurrentState state;
+
     public Game(GameActivity activity) {
-        game_act = activity;
-        gameStates = new GameState();
-        gameData = new GameData(gameStates, activity);
+
+        state = new CurrentState(activity, new csc309.geocracy.game.GameData());
 
         world = new World(0); // TODO: seed should not be predefined
 

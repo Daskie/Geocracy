@@ -1,6 +1,9 @@
 package csc309.geocracy.GameStates;
 
 public class GameState {
+
+
+
     StartGameState start;
     DisplayGlobeState display_globe;
     AttackingAdjTerrState attack_terr;

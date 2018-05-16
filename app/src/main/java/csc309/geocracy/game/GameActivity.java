@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ import csc309.geocracy.R;
 import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
+import csc309.geocracy.states.GameState;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
@@ -39,13 +41,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private final CompositeDisposable disposables = new CompositeDisposable();
     private static final Random random = new Random();
 
-    private Fragment activeBottomPaneFragment = null;
-    private TerritoryDetailFragment territoryDetailFragment = new TerritoryDetailFragment();
-    private TroopSelectionFragment troopSelectionFragment = new TroopSelectionFragment();
+    static private Fragment activeBottomPaneFragment = null;
+    static private TerritoryDetailFragment territoryDetailFragment = new TerritoryDetailFragment();
+    static private TroopSelectionFragment troopSelectionFragment = new TroopSelectionFragment();
 
-    private SettingsFragment settingsFragment = new SettingsFragment();
-    private FragmentTransaction userInterfaceFT;
-    private boolean settingsVisible = false;
+    static public SettingsFragment settingsFragment = new SettingsFragment();
+    static private FragmentTransaction userInterfaceFT;
+    static private FragmentManager fragmentManager;
+    static private boolean settingsVisible = false;
 
     public static Button rollDice;
 //    public static LinearLayout uiLayout;
@@ -67,6 +70,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.gameplay);
+        fragmentManager = getSupportFragmentManager();
 
         // Setup game
         game = new Game(this);
@@ -102,7 +106,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         disposables.add(RxView.touches(selectBtn).subscribe(e -> {
             if (e.getAction() != MotionEvent.ACTION_UP) return;
-            showBottomPaneFragment(new TerritoryDetailFragment());
+            EventBus.publish("GAME_STATE_CHANGE", GameState.SELECT_TERRITORY);
         }));
 
         Button attackBtn = new Button(this);
@@ -157,13 +161,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
        frame.addView(uiLayout);
 
     }
-    public void toggleSettingsFragment() {
+    static public void toggleSettingsFragment() {
         if (settingsVisible) {
-            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT = fragmentManager.beginTransaction();
             userInterfaceFT.remove(settingsFragment);
             userInterfaceFT.commit();
         } else {
-            userInterfaceFT = getSupportFragmentManager().beginTransaction();
+            userInterfaceFT = fragmentManager.beginTransaction();
             userInterfaceFT.add(R.id.gameLayout, settingsFragment);
             userInterfaceFT.commit();
         }
