@@ -6,4 +6,5 @@
     <color name="troopSelectionColor">#EFFED00A</color>
     <color name="territoryDetailColor">#EF98948E</color>
     <color name="whiteTransparent">#EFFFFFFF</color>
+    <color name="darkGray">#FFA9A9A9</color>
 </resources>

@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gameLayout"
     tools:context=".game.GameActivity">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/inGameSettingsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        app:fabSize="auto"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_settings_outline_white_48dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/attackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp"
+        app:fabSize="auto"
+        android:src="@drawable/ic_chemical_weapon_white_48dp"
+        app:backgroundTint="@color/colorAccent"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cancelBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        app:fabSize="auto"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="130dp"
+        android:src="@drawable/ic_cancel_white_48dp"
+        app:backgroundTint="@color/darkGray"/>
 
     <csc309.geocracy.game.GameSurfaceView
         android:id="@+id/gameplaySurfaceView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
     <!--<LinearLayout android:id="@+id/gameplayUI" android:layout_width="wrap_content" android:layout_height="wrap_content">-->
         <!--<Button android:text="Button" android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>-->

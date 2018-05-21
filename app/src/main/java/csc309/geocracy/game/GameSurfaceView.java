@@ -41,13 +41,11 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
         scaler = new ScaleGestureDetector(getContext(), this);
-        this.touchEventSubscription = EventBus.subscribe("TOUCH_EVENT", this)
-            .debounce(5, TimeUnit.MILLISECONDS)
+        this.touchEventSubscription = EventBus.subscribe("WORLD_TOUCH_EVENT", this)
             .subscribe(e -> handleTouchEvent((MotionEvent) e));
+
     }
 
-
-    private boolean didPanCamera = false;
 
     // TODO: implement a proper input system that works between threads
     public boolean handleTouchEvent(MotionEvent event) {
@@ -57,30 +55,18 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         int action = event.getActionMasked();
         switch (action) {
 
-            case MotionEvent.ACTION_UP:
-//                Log.d(TAG, "Tap released: " + event.toString());
-                if (!didPanCamera && event.getPointerCount() == 1) {
-                    // No camera pan, so check for territory selection
-                    GameActivity.game.wasTap(new Vec2i(event.getX(), event.getY()));
-                }
-                didPanCamera = false;
-
             case MotionEvent.ACTION_DOWN:
-                if (event.getPointerCount() == 1) didPanCamera = false;
+                if (event.getPointerCount() == 1) GameActivity.game.wasTap(new Vec2i(event.getX(), event.getY()));
                 return true; // just here so we get the move action
 
             case MotionEvent.ACTION_MOVE:
-                if (event.getPointerCount() == 2) return true;
-                didPanCamera = true;
-//                Log.d(TAG, "Touch moved: " + event.toString());
-
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
                     GameActivity.game.wasSwipe(new Vec2i(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0))));
                 }
                 return true;
+
             default:
-//                Log.d(TAG, "event default: " + event.toString());
 
                 return super.onTouchEvent(event);
         }
