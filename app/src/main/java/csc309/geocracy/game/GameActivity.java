@@ -32,6 +32,7 @@ import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.states.GameAction;
+import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
@@ -81,8 +82,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) EventBus.publish("WORLD_TOUCH_EVENT", e);
-            if (e.getActionMasked() == MotionEvent.ACTION_MOVE) EventBus.publish("WORLD_TOUCH_EVENT", e);
+            EventBus.publish("WORLD_TOUCH_EVENT", e);
         }));
 
 
@@ -105,24 +105,21 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         FloatingActionButton cancelBtn = findViewById(R.id.cancelBtn);
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", GameAction.CANCEL_ACTION);
+            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
         }));
 
         FloatingActionButton attackBtn = findViewById(R.id.attackBtn);
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", GameAction.ATTACK_TAPPED);
+            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
         }));
 
         FloatingActionButton settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", GameAction.TOGGLE_SETTINGS_VISIBILITY);
+            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
         }));
 
         uiLayout.addView(geocracyHeader);
-//        uiLayout.addView(cancelBtn);
-//        uiLayout.addView(attackBtn);
-
         frame.addView(uiLayout);
 
     }

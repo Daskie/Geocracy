@@ -10,21 +10,22 @@ import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.space.SpaceRenderer;
 import csc309.geocracy.states.CurrentState;
-import csc309.geocracy.states.GameAction;
-import csc309.geocracy.states.GameState;
+import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
+import static csc309.geocracy.states.GameAction.*;
+
 public class Game {
 
     private long startT; // time the game was started
     private long lastT; // time last frame happened
-    private World world;
+    public World world;
     private SpaceRenderer spaceRenderer;
-    private CameraController cameraController;
+    public CameraController cameraController;
     private int idFBHandle;
     private int idValueTexHandle;
     private int idDepthRBHandle;
@@ -111,7 +112,6 @@ public class Game {
     }
 
     public void wasTap(Vec2i p) {
-        EventBus.publish("USER_ACTION", GameAction.TERRITORY_SELECTED);
         synchronized (this) {
             tappedPoint = p;
         }
@@ -151,14 +151,10 @@ public class Game {
                 byte terrId = readbackBuffer.get(0);
                 if (terrId > 0) {
                     Territory terr = world.getTerritory(terrId);
-                    world.selectTerritory(terr);
-                    world.unhighlightTerritories();
-                    world.highlightTerritories(terr.getAdjacentTerritories());
-                    cameraController.targetTerritory(terr);
+                    EventBus.publish("USER_ACTION", new GameEvent(TERRITORY_SELECTED, terr));
                 }
                 else {
-                    world.unselectTerritory();
-                    world.unhighlightTerritories();
+                    EventBus.publish("USER_ACTION", new GameEvent(CANCEL_ACTION, null));
                 }
                 tappedPoint = null;
             }
