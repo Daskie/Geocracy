@@ -29,6 +29,7 @@ const float k_pi = 3.14159265f;
 const float k_ambience = 0.15f;
 const float k_borderThreshold = 0.9f;
 const vec3 k_beachColor = vec3(1.0f, 0.9f, 0.8f);
+const vec3 k_rockColor = vec3(0.5f);
 
 void main() {
     vec3 norm = normalize(v2f_norm);
@@ -42,8 +43,11 @@ void main() {
     // Diffuse lighting
     float diffuse = (1.0f - k_ambience) * max(dot(norm, -u_lightDir), 0.0f) + k_ambience;
 
+    float rockiness = min((1.0f - dot(norm, up)) * (2.0f + sqrt(2.0f)), 1.0f);
+
     vec3 continentColor = u_continentColors[v2f_continent];
-    vec3 landColor = continentColor;
+    //vec3 landColor = mix(continentColor, k_rockColor, rockiness);
+    vec3 landColor = mix(continentColor, vec3(1.0f), v2f_super);
     vec3 coastColor = k_beachColor;
     vec3 oceanColor = coastColor * (1.0f - v2f_sub);
 
@@ -51,7 +55,7 @@ void main() {
         land * landColor +
         coast * coastColor +
         ocean * oceanColor;
-    albedo = dot(norm, up);
+    albedo = mix(vec3(0.5f), albedo, dot(norm, up));
 
     float selected = float(v2f_territory == u_selectedTerritory);
 
@@ -69,6 +73,7 @@ void main() {
     float border = step(borderThreshold, v2f_border) * (max(corner, edge));
     vec3 borderColor = mix(continentColor * 0.5f, continentColor + shTime, selectedOrHighlighted);
 
-    out_color.rgb = mix(albedo * (diffuse + (0.25 + shTime * 0.25f) * selectedOrHighlighted * land), borderColor * mix(diffuse, 1.0f, selectedOrHighlighted), border * land);
+    //out_color.rgb = mix(albedo * (diffuse + (0.25 + shTime * 0.25f) * selectedOrHighlighted * land), borderColor * mix(diffuse, 1.0f, selectedOrHighlighted), border * land);
+    out_color.rgb = mix(albedo * (1.0f + (0.25 + shTime * 0.25f) * selectedOrHighlighted * land), borderColor * mix(1.0f, 1.0f, selectedOrHighlighted), border * land);
     out_color.a = 1.0f;
 }

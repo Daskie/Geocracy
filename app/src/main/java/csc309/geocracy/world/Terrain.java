@@ -363,36 +363,47 @@ public class Terrain {
         vertexData.order(ByteOrder.nativeOrder());
 
         // Interlace vertex data
+        Vec3 faceNorm = new Vec3();
+        Vec3 v1 = new Vec3();
+        Vec3 v12 = new Vec3(), v13 = new Vec3();
         for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
             int vi1 = indices[ii + 0];
             int vi2 = indices[ii + 1];
             int vi3 = indices[ii + 2];
-            Vec3 v1 = VecArrayUtil.get(locations, vi1);
-            Vec3 v2 = VecArrayUtil.get(locations, vi2);
-            Vec3 v3 = VecArrayUtil.get(locations, vi3);
-            Vec3 n = (v2.minus(v1)).crossAssign(v3.minus(v1)).normalizeAssign();
+            int ci1 = vi1 * 3;
+            int ci2 = vi2 * 3;
+            int ci3 = vi3 * 3;
 
-            vertexData.putFloat(v1.x);
-            vertexData.putFloat(v1.y);
-            vertexData.putFloat(v1.z);
-            vertexData.putFloat(n.x);
-            vertexData.putFloat(n.y);
-            vertexData.putFloat(n.z);
+            VecArrayUtil.get(locations, vi1, v1);
+            VecArrayUtil.get(locations, vi2, v12);
+            VecArrayUtil.get(locations, vi3, v13);
+            v12.minusAssign(v1);
+            v13.minusAssign(v1);
+            faceNorm.put(v12);
+            faceNorm.crossAssign(v13);
+            faceNorm.normalizeAssign();
+
+            vertexData.putFloat(locations[ci1 + 0]);
+            vertexData.putFloat(locations[ci1 + 1]);
+            vertexData.putFloat(locations[ci1 + 2]);
+            vertexData.putFloat(faceNorm.x);
+            vertexData.putFloat(faceNorm.y);
+            vertexData.putFloat(faceNorm.z);
             vertexData.putInt(verticesInfo[ii + 0]);
-            vertexData.putFloat(v2.x);
-            vertexData.putFloat(v2.y);
-            vertexData.putFloat(v2.z);
-            vertexData.putFloat(n.x);
-            vertexData.putFloat(n.y);
-            vertexData.putFloat(n.z);
+            vertexData.putFloat(locations[ci2 + 0]);
+            vertexData.putFloat(locations[ci2 + 1]);
+            vertexData.putFloat(locations[ci2 + 2]);
+            vertexData.putFloat(faceNorm.x);
+            vertexData.putFloat(faceNorm.y);
+            vertexData.putFloat(faceNorm.z);
             vertexData.putInt(verticesInfo[ii + 1]);
-            vertexData.putFloat(v3.x);
-            vertexData.putFloat(v3.y);
-            vertexData.putFloat(v3.z);
-            vertexData.putFloat(n.x);
-            vertexData.putFloat(n.y);
-            vertexData.putFloat(n.z);
+            vertexData.putFloat(locations[ci3 + 0]);
+            vertexData.putFloat(locations[ci3 + 1]);
+            vertexData.putFloat(locations[ci3 + 2]);
+            vertexData.putFloat(faceNorm.x);
+            vertexData.putFloat(faceNorm.y);
+            vertexData.putFloat(faceNorm.z);
             vertexData.putInt(verticesInfo[ii + 2]);
         }
 
