@@ -32,6 +32,7 @@ const vec3 k_beachColor = vec3(1.0f, 0.9f, 0.8f);
 
 void main() {
     vec3 norm = normalize(v2f_norm);
+    vec3 up = normalize(v2f_loc);
     float t = cos(u_time * 2.0f * k_pi) * -0.5f + 0.5f;
 
     float land = float(v2f_coastDist > 0);
@@ -50,6 +51,7 @@ void main() {
         land * landColor +
         coast * coastColor +
         ocean * oceanColor;
+    albedo = dot(norm, up);
 
     float selected = float(v2f_territory == u_selectedTerritory);
 
