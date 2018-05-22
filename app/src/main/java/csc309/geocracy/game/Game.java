@@ -2,15 +2,22 @@ package csc309.geocracy.game;
 
 import android.opengl.GLES20;
 import android.opengl.GLES30;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
+import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.space.SpaceRenderer;
-import csc309.geocracy.states.CurrentState;
+//import csc309.geocracy.states.CurrentState;
+import csc309.geocracy.states.DefaultState;
 import csc309.geocracy.states.GameEvent;
+import csc309.geocracy.states.GameState;
+import csc309.geocracy.states.IntentToAttackState;
+import csc309.geocracy.states.SelectedAttackTargetTerritoryState;
+import csc309.geocracy.states.SelectedTerritoryState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -36,13 +43,28 @@ public class Game {
     private ByteBuffer readbackBuffer;
 
     static public GameData gameData;
+    private GameActivity activity;
 
-    public CurrentState state;
+//    public CurrentState state;
+
+    GameState State;
+
+    public GameState DefaultState;
+    public GameState SelectedTerritoryState;
+    public GameState IntentToAttackState;
+    public GameState SelectedAttackTargetTerritoryState;
 
     public Game(GameActivity activity) {
-        state = new CurrentState(activity, new GameData());
+        this.activity = activity;
 
         world = new World(0); // TODO: seed should not be predefined
+
+        DefaultState = new DefaultState(this);
+        SelectedTerritoryState = new SelectedTerritoryState(this);
+        IntentToAttackState = new IntentToAttackState(this);
+        SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
+
+        setState(DefaultState);
 
         spaceRenderer = new SpaceRenderer();
         cameraController = new CameraController();
@@ -52,6 +74,95 @@ public class Game {
 
         startT = System.nanoTime();
         lastT = 0;
+
+        EventBus.subscribe("USER_ACTION", this, event -> {
+            handleUserAction((GameEvent) event);
+        });
+    }
+
+    private void handleUserAction(GameEvent event) {
+
+        switch (event.action) {
+
+            case TOGGLE_SETTINGS_VISIBILITY:
+                System.out.println("TOGGLE SETTINGS VISIBILITY ACTION");
+                GameActivity.toggleSettingsFragment();
+                break;
+
+            case TERRITORY_SELECTED:
+
+                System.out.println("USER SELECTED TERRITORY");
+                Territory selectedTerritory = (Territory) event.payload;
+                System.out.println(selectedTerritory);
+
+
+                if (getState() == this.IntentToAttackState) {
+                    getState().selectTargetTerritory(selectedTerritory);
+                } else {
+                    getState().selectOriginTerritory(selectedTerritory);
+                }
+
+                getState().initState();
+
+
+//                if (attackSelection == false) {
+//                    state.setCurrentState(new SelectedTerritoryState(selectedTerritory));
+
+//                } else {
+//                    System.out.println("ATTACK MODE ACTIVE, TERRITORY SELECTED, CHECK FOR ADJACENCY TO ORIGIN TERRITORY");
+//                    if (currentTerritorySelection.getAdjacentTerritories().contains(selectedTerritory)) {
+//                        System.out.println("SHOW ATTACK OPTIONS FOR ADJACENT TERRITORY ");
+//                        Bundle args = new Bundle();
+//                        args.putSerializable("territory", selectedTerritory);
+//                        System.out.println(selectedTerritory);
+//                        GameActivity.showBottomPaneFragment(TroopSelectionFragment.newInstance(selectedTerritory));
+//                        currentTerritorySelection = selectedTerritory;
+//                        GameActivity.game.world.selectTerritory(selectedTerritory);
+//                        GameActivity.game.world.unhighlightTerritories();
+//                        GameActivity.game.cameraController.targetTerritory(selectedTerritory);
+//                    } else {
+//                        state.setCurrentState(new DefaultState());
+////                        cancelAction();
+//                    }
+//
+//                }
+
+                break;
+
+            case ATTACK_TAPPED:
+                System.out.println("USER TAPPED ATTACK");
+                getState().enableAttackMode();
+                getState().initState();
+
+//                if (previousAction == event.action.TERRITORY_SELECTED && currentTerritorySelection != null) {
+//                    System.out.println("TERRITORY SELECTED -> ATTACK");
+//                    GameActivity.game.world.highlightTerritories(currentTerritorySelection.getAdjacentTerritories());
+//                    attackSelection = true;
+//                } else {
+//                    System.out.println("TERRITORY NOT SELECTED -> UNABLE TO DO ANYTHING");
+//                }
+
+                break;
+
+            case CANCEL_ACTION:
+                getState().cancelAction();
+                getState().initState();
+                break;
+
+            default:
+                break;
+
+        }
+
+//        previousAction = event.action;
+    }
+
+    public void setState(GameState state) {
+        this.State = state;
+    }
+
+    public GameState getState() {
+        return this.State;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)

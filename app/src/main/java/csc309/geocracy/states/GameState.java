@@ -1,8 +1,16 @@
 package csc309.geocracy.states;
 
-public enum GameState {
-    SELECT_TERRITORY,
-    ATTACK_TERRITORY,
-    DEFEND_TERRITORY,
-    DISPLAY_SETTINGS
+import java.util.HashSet;
+
+import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.game.GameData;
+import csc309.geocracy.world.Territory;
+
+public interface GameState {
+    // ALL AVAILABLE ACTIONS
+    void cancelAction();
+    void selectOriginTerritory(Territory territory);
+    void selectTargetTerritory(Territory territory);
+    void enableAttackMode();
+    void initState();
 }
