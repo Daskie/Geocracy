@@ -13,8 +13,8 @@ public class TerrainShader extends Shader {
     private int projMatUniformHandle;
     private int lightDirUniformHandle;
     private int timeUniformHandle;
-    private int lowElevationUniformHandle;
-    private int highElevationUniformHandle;
+    private int lowElevationFactorUniformHandle;
+    private int highElevationFactorUniformHandle;
     private int continentColorsUniformHandle;
     private int selectedTerritoryHandle;
     private int highlightedTerritoriesLowerHandle;
@@ -43,12 +43,12 @@ public class TerrainShader extends Shader {
         uploadUniform(timeUniformHandle, time);
     }
 
-    public void setLowElevation(float elevation) {
-        uploadUniform(lowElevationUniformHandle, elevation);
+    public void setLowElevationFactor(float factor) {
+        uploadUniform(lowElevationFactorUniformHandle, factor);
     }
 
-    public void setHighElevation(float elevation) {
-        uploadUniform(highElevationUniformHandle, elevation);
+    public void setHighElevationFactor(float factor) {
+        uploadUniform(highElevationFactorUniformHandle, factor);
     }
     public void setContinentColors(Vec3[] colors) {
         uploadUniform(continentColorsUniformHandle, colors);
@@ -103,11 +103,11 @@ public class TerrainShader extends Shader {
         if ((timeUniformHandle = getUniformLocation("u_time")) == -1) {
             Log.e("TerrainShader", "Failed to get location of u_time");
         }
-        if ((lowElevationUniformHandle = getUniformLocation("u_lowElevation")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_lowElevation");
+        if ((lowElevationFactorUniformHandle = getUniformLocation("u_lowElevationFactor")) == -1) {
+            Log.e("TerrainShader", "Failed to get location of u_lowElevationFactor");
         }
-        if ((highElevationUniformHandle = getUniformLocation("u_highElevation")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_highElevation");
+        if ((highElevationFactorUniformHandle = getUniformLocation("u_highElevationFactor")) == -1) {
+            Log.e("TerrainShader", "Failed to get location of u_highElevationFactor");
         }
         if ((continentColorsUniformHandle = getUniformLocation("u_continentColors")) == -1) {
             Log.e("TerrainShader", "Failed to get location of u_continentColors");

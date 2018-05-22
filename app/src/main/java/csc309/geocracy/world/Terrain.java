@@ -98,8 +98,8 @@ public class Terrain {
             return false;
         }
         shader.setActive();
-        shader.setLowElevation(LOW_ELEVATION);
-        shader.setHighElevation(HIGH_ELEVATION);
+        shader.setLowElevationFactor(1.0f / (LOW_ELEVATION - 1.0f));
+        shader.setHighElevationFactor(1.0f / (HIGH_ELEVATION - 1.0f));
         Vec3[] contColors = new Vec3[world.getContinents().length + 1];
         contColors[0] = new Vec3();
         for (int i = 0; i < world.getContinents().length; ++i) {

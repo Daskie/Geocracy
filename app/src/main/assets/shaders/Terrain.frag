@@ -21,6 +21,7 @@ layout (location = 0) out vec4 out_color;
 
 uniform vec3 u_lightDir;
 uniform float u_time;
+uniform float u_lowElevationFactor, u_highElevationFactor;
 
 const float k_pi = 3.14159265f;
 const float k_ambience = 0.15f;
@@ -43,6 +44,9 @@ void main() {
     vec3 up = normalize(v2f_loc);
     float t = cos(u_time * 2.0f * k_pi) * -0.5f + 0.5f;
 
+    float super = clamp((v2f_elevation - 1.0f) * u_highElevationFactor, 0.0f, 1.0f);
+    float sub = clamp((v2f_elevation - 1.0f) * u_lowElevationFactor, 0.0f, 1.0f);
+
     float land = float(v2f_coastDist > 0);
     float coast = float(v2f_coastDist == 0);
     float ocean = float(v2f_coastDist < 0);
@@ -51,8 +55,8 @@ void main() {
     float diffuse = (1.0f - k_ambience) * max(dot(v2f_norm, -u_lightDir), 0.0f) + k_ambience;
 
     vec3 landColor = desaturate(v2f_continentColor, 0.25f);
-    vec3 coastColor = mix(k_sandColor, v2f_continentColor, step(0.0f, v2f_super));
-    vec3 oceanColor = k_sandColor * (1.0f - v2f_sub);
+    vec3 coastColor = mix(k_sandColor, v2f_continentColor, sign(super));
+    vec3 oceanColor = k_sandColor * (1.0f - sub);
 
     vec3 albedo =
         land * landColor +

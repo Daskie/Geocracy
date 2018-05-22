@@ -7,8 +7,6 @@ layout (location = 2) in int in_info;
 out vec3 v2f_loc;
 flat out vec3 v2f_norm;
 out float v2f_elevation;
-out float v2f_super;
-out float v2f_sub;
 flat out int v2f_coastDist;
 out float v2f_border;
 out vec3 v2f_edges;
@@ -20,7 +18,6 @@ flat out vec3 v2f_playerColor;
 
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform float u_lowElevation, u_highElevation;
 uniform vec3 u_continentColors[16];
 uniform int u_selectedTerritory;
 uniform int u_highlightedTerritoriesLower;
@@ -33,9 +30,6 @@ void main() {
     v2f_norm = in_norm;
 
     v2f_elevation = length(in_loc);
-
-    v2f_super = clamp((v2f_elevation - 1.0f) / (u_highElevation - 1.0f), 0.0f, 1.0f);
-    v2f_sub = clamp((v2f_elevation - 1.0f) / (u_lowElevation - 1.0f), 0.0f, 1.0f);
 
     v2f_coastDist = in_info & 0xFF;
     if (v2f_coastDist >= 128) v2f_coastDist -= 256; // sign extend
