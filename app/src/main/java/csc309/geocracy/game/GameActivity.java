@@ -110,13 +110,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         FloatingActionButton attackBtn = findViewById(R.id.attackBtn);
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
+            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
         }));
 
         FloatingActionButton settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
+            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
         }));
 
         uiLayout.addView(geocracyHeader);
