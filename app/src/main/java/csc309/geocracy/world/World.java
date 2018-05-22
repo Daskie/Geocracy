@@ -15,9 +15,9 @@ import glm_.vec3.Vec3;
 
 public class World {
 
-    private final int TESSELLATION_DEGREE = 5; // Should really not change
-    private final int MAX_N_TERRITORIES = 40; // Cannot be greater than 63
-    private final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
+    public static final int TESSELLATION_DEGREE = 5; // Should really not change
+    private static final int MAX_N_TERRITORIES = 40; // Cannot be greater than 63
+    private static final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
 
     Game game;
     private long seed;

@@ -49,7 +49,8 @@ public class Terrain {
         HashSet<Integer> waterwayConts = new HashSet<>();
     }
 
-    public static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
+    private static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
+    private static final int MIN_TERRITORY_LAND_FACES = World.TESSELLATION_DEGREE <= 4 ? 6 : 6 * (1 << (1 << (World.TESSELLATION_DEGREE - 4)));
 
     private World world;
     private TerrainShader shader;
@@ -97,25 +98,17 @@ public class Terrain {
             return false;
         }
         shader.setActive();
-        Util.isGLError();
         shader.setLowElevation(LOW_ELEVATION);
-        Util.isGLError();
         shader.setHighElevation(HIGH_ELEVATION);
-        Util.isGLError();
         Vec3[] contColors = new Vec3[world.getContinents().length + 1];
         contColors[0] = new Vec3();
         for (int i = 0; i < world.getContinents().length; ++i) {
             contColors[i + 1] = world.getContinents()[i].getColor();
         }
-        Util.isGLError();
         shader.setContinentColors(contColors);
-        Util.isGLError();
         shader.setSelectedTerritory(0);
-        Util.isGLError();
         shader.setHighlightedTerritories(null);
-        Util.isGLError();
         shader.setPlayerColors(world.game.getPlayers());
-        Util.isGLError();
         shader.setTerritoryPlayers(world.getTerritories());
         if (Util.isGLError()) {
             Log.e("Terrain", "Failed to initialize shader uniforms");
@@ -718,7 +711,7 @@ public class Terrain {
             subFringes.remove(origFI);
         }
 
-        handleExcessTerritories(tempTerritorySpecs, maxNTerritories);
+        handleSmallAndExcessTerritories(tempTerritorySpecs, maxNTerritories);
 
         territorySpecs = new TerritorySpec[tempTerritorySpecs.size()];
         for (int i = 0; i < territorySpecs.length; ++i) territorySpecs[i] = tempTerritorySpecs.get(i);
@@ -728,7 +721,7 @@ public class Terrain {
         detTerritoryCenters();
     }
 
-    private void handleExcessTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int maxNTerritories) {
+    private void handleSmallAndExcessTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int maxNTerritories) {
         int nTerritories = tempTerritorySpecs.size() - 1;
         while (nTerritories > maxNTerritories) {
             // Find which two adjacent territories combined is the smallest
@@ -736,13 +729,13 @@ public class Terrain {
             int minT1I = -1, minT2I = -1;
             boolean doingLand = true;
             for (int t1i = 1; t1i < tempTerritorySpecs.size(); ++t1i) {
-                TerritorySpec terr = tempTerritorySpecs.get(t1i);
-                if (terr == null) {
+                TerritorySpec terr1 = tempTerritorySpecs.get(t1i);
+                if (terr1 == null) {
                     continue;
                 }
-                for (int t2i : doingLand ? terr.adjacentLandTerrs : terr.adjacentOceanTerrs) {
-                    TerritorySpec adjTerr = tempTerritorySpecs.get(t2i);
-                    int potN = terr.landFaces.size() + adjTerr.landFaces.size();
+                for (int t2i : doingLand ? terr1.adjacentLandTerrs : terr1.adjacentOceanTerrs) {
+                    TerritorySpec terr2 = tempTerritorySpecs.get(t2i);
+                    int potN = terr1.landFaces.size() + terr2.landFaces.size();
                     if (potN < minN) {
                         minN = potN;
                         minT1I = t1i;
@@ -755,6 +748,43 @@ public class Terrain {
             }
             mergeTerritories(tempTerritorySpecs, minT1I, minT2I);
             --nTerritories;
+        }
+
+        while (true) {
+            boolean wasMerger = false;
+            for (int t1i = 1; t1i < tempTerritorySpecs.size(); ++t1i) {
+                TerritorySpec terr1 = tempTerritorySpecs.get(t1i);
+                if (terr1 == null) {
+                    continue;
+                }
+                if (terr1.landFaces.size() >= MIN_TERRITORY_LAND_FACES) {
+                    continue;
+                }
+                int minN = Integer.MAX_VALUE;
+                int minT2I = -1;
+                for (int t2i : terr1.adjacentLandTerrs) {
+                    if (tempTerritorySpecs.get(t2i).landFaces.size() < minN) {
+                        minT2I = t2i;
+                    }
+                }
+                if (minT2I == -1){
+                    for (int t2i : terr1.adjacentOceanTerrs) {
+                        if (tempTerritorySpecs.get(t2i).landFaces.size() < minN) {
+                            minT2I = t2i;
+                        }
+                    }
+                }
+                if (minT2I == -1) {
+                    break;
+                }
+                mergeTerritories(tempTerritorySpecs, t1i, minT2I);
+                --nTerritories;
+                wasMerger = true;
+                break;
+            }
+            if (!wasMerger) {
+                break;
+            }
         }
 
         // Remove gaps
