@@ -28,11 +28,15 @@ const float k_borderEdgeWidth = 0.125f;
 const float k_borderThreshold = 1.0f - k_borderEdgeWidth;
 const float k_highlightBorderHighThreshold = 0.75f;
 const float k_highlightBorderLowThreshold = 0.5f;
-const vec3 k_beachColor = vec3(1.0f, 0.9f, 0.8f);
+const vec3 k_sandColor = vec3(1.0f, 0.9f, 0.8f);
 const vec3 k_rockColor = vec3(0.5f);
 
 float between(float v, float low, float high) {
     return float(v >= low && v <= high);
+}
+
+vec3 desaturate(vec3 v, float s) {
+    return 1.0f - (1.0f - v) * s;
 }
 
 void main() {
@@ -46,9 +50,9 @@ void main() {
     // Diffuse lighting
     float diffuse = (1.0f - k_ambience) * max(dot(v2f_norm, -u_lightDir), 0.0f) + k_ambience;
 
-    vec3 landColor = v2f_continentColor;
-    vec3 coastColor = k_beachColor;
-    vec3 oceanColor = coastColor * (1.0f - v2f_sub);
+    vec3 landColor = desaturate(v2f_continentColor, 0.25f);
+    vec3 coastColor = mix(k_sandColor, v2f_continentColor, step(0.0f, v2f_super));
+    vec3 oceanColor = k_sandColor * (1.0f - v2f_sub);
 
     vec3 albedo =
         land * landColor +
@@ -59,21 +63,22 @@ void main() {
     float selectedOrHighlighted = max(v2f_selected, v2f_highlighted);
     float shTime = mix(t, 1.0f, v2f_selected);
 
-    float borderThreshold = mix(k_borderThreshold, mix(k_highlightBorderHighThreshold, k_highlightBorderLowThreshold, shTime), selectedOrHighlighted);
     float maxBary = max(max(v2f_bary.x, v2f_bary.y), v2f_bary.z);
     float maxEdge = max(max(v2f_edges.x, v2f_edges.y), v2f_edges.z);
-    float corner = step(borderThreshold, maxBary);
-    float edge = step(borderThreshold, maxEdge);
-    float border = step(borderThreshold, v2f_border) * (max(corner, edge));
-    vec3 borderColor = mix(v2f_continentColor * 0.5f, vec3(1.0f), selectedOrHighlighted);
-
-    float band = between(v2f_border, borderThreshold + k_borderEdgeWidth, k_borderThreshold) * selectedOrHighlighted;
-    borderColor = mix(borderColor, v2f_playerColor, band);
+    float innerBorderThreshold = mix(k_borderThreshold, mix(k_highlightBorderHighThreshold, k_highlightBorderLowThreshold, shTime), selectedOrHighlighted);
+    float innerCorner = step(innerBorderThreshold, maxBary);
+    float innerEdge = step(innerBorderThreshold, maxEdge);
+    float innerBorder = step(innerBorderThreshold, v2f_border) * (max(innerCorner, innerEdge));
+    float outerBorderThreshold = innerBorderThreshold * 0.5f + 0.5f;
+    float outerCorner = step(outerBorderThreshold, maxBary);
+    float outerEdge = step(outerBorderThreshold, maxEdge);
+    float outerBorder = step(outerBorderThreshold, v2f_border) * (max(outerCorner, outerEdge));
+    vec3 borderColor = mix(v2f_continentColor * 0.75f, v2f_playerColor + outerBorder, selectedOrHighlighted);
 
     out_color.rgb = mix(
         albedo * (diffuse + (0.125 + shTime * 0.125f) * selectedOrHighlighted * land),
         borderColor * mix(diffuse, 1.0f, selectedOrHighlighted),
-        border * land
+        innerBorder * land
     );
     out_color.a = 1.0f;
 }
