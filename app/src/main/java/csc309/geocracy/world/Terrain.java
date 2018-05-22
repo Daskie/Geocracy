@@ -96,7 +96,6 @@ public class Terrain {
         shader.setActive();
         shader.setLowElevation(LOW_ELEVATION);
         shader.setHighElevation(HIGH_ELEVATION);
-        shader.setMaxCoastDist(maxCoastDist);
         Vec3[] contColors = new Vec3[world.getContinents().length + 1];
         contColors[0] = new Vec3();
         for (int i = 0; i < world.getContinents().length; ++i) {
