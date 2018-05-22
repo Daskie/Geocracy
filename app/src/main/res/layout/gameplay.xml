@@ -36,7 +36,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="130dp"
         android:src="@drawable/ic_cancel_white_48dp"
-        android:backgroundTint="@color/darkGray"/>
+        app:backgroundTint="@color/darkGray"/>
 
     <csc309.geocracy.game.GameSurfaceView
         android:id="@+id/gameplaySurfaceView"
