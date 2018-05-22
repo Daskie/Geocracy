@@ -19,6 +19,10 @@ public class DefaultState implements GameState {
         game.getState().initState();
     }
 
+    public void enableAttackMode() {
+        System.out.println("DEFAULT STATE: CANNOT ENABLE ATTACK MODE");
+    }
+
     public void cancelAction() {
         System.out.println("DEFAULT STATE: USER CANCELED ACTION -> NULL ACTION");
     }

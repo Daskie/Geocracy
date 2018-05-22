@@ -7,24 +7,22 @@ import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.world.Territory;
 
-public class SelectedTerritoryState implements  GameState {
+public class IntentToAttackState implements  GameState {
 
     private Game game;
-    private Territory territory;
+    private Territory originTerritory;
 
-    public SelectedTerritoryState(Game game) {
+    public IntentToAttackState(Game game) {
         this.game = game;
     }
 
     public void selectTerritory(Territory territory) {
         System.out.println("SELECTED TERRITORY STATE: ANOTHER TERRITORY SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
-        this.territory = territory;
+        this.originTerritory = territory;
     }
 
     public void enableAttackMode() {
-        game.setState(game.IntentToAttackState);
-        game.getState().selectTerritory(territory);
-        game.getState().initState();
+        System.out.println("ATTACK MODE ALREADY ENABLED");
     }
 
     public void cancelAction() {
@@ -35,12 +33,8 @@ public class SelectedTerritoryState implements  GameState {
 
     public void initState() {
         System.out.println("INIT SELECT TERRITORY STATE");
-        Bundle args = new Bundle();
-        args.putSerializable("territory", this.territory);
-        GameActivity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
-        this.game.world.selectTerritory(this.territory);
-        this.game.world.unhighlightTerritories();
-        this.game.cameraController.targetTerritory(this.territory);
+        System.out.println("TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
+        game.world.highlightTerritories(originTerritory.getAdjacentTerritories());
     }
 
 }

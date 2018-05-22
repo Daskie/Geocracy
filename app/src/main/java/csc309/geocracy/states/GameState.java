@@ -17,6 +17,7 @@ public interface GameState {
     // ALL AVAILABLE ACTIONS
     void cancelAction();
     void selectTerritory(Territory territory);
+    void enableAttackMode();
     void initState();
 }
 

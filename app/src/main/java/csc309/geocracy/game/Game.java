@@ -15,6 +15,7 @@ import csc309.geocracy.space.SpaceRenderer;
 import csc309.geocracy.states.DefaultState;
 import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
+import csc309.geocracy.states.IntentToAttackState;
 import csc309.geocracy.states.SelectedTerritoryState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
@@ -49,6 +50,7 @@ public class Game {
 
     public GameState DefaultState;
     public GameState SelectedTerritoryState;
+    public GameState IntentToAttackState;
 
     public Game(GameActivity activity) {
         this.activity = activity;
@@ -57,6 +59,7 @@ public class Game {
 
         DefaultState = new DefaultState(this);
         SelectedTerritoryState = new SelectedTerritoryState(this);
+        IntentToAttackState = new IntentToAttackState(this);
 
         setState(DefaultState);
 
@@ -118,6 +121,8 @@ public class Game {
 
             case ATTACK_TAPPED:
                 System.out.println("USER TAPPED ATTACK");
+                getState().enableAttackMode();
+                getState().initState();
 
 //                if (previousAction == event.action.TERRITORY_SELECTED && currentTerritorySelection != null) {
 //                    System.out.println("TERRITORY SELECTED -> ATTACK");
