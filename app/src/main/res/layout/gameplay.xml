@@ -25,7 +25,7 @@
         android:layout_marginTop="60dp"
         app:fabSize="auto"
         android:src="@drawable/ic_chemical_weapon_white_48dp"
-        android:backgroundTint="@color/colorAccent"/>
+        app:backgroundTint="@color/colorAccent"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/cancelBtn"

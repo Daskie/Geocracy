@@ -81,8 +81,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) EventBus.publish("WORLD_TOUCH_EVENT", e);
-            if (e.getActionMasked() == MotionEvent.ACTION_MOVE) EventBus.publish("WORLD_TOUCH_EVENT", e);
+            EventBus.publish("WORLD_TOUCH_EVENT", e);
         }));
 
 

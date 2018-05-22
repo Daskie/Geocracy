@@ -53,9 +53,12 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         scaler.onTouchEvent(event);
 
         int action = event.getActionMasked();
+
+        System.out.println(action);
         switch (action) {
 
-            case MotionEvent.ACTION_DOWN:
+
+            case MotionEvent.ACTION_UP:
                 if (event.getPointerCount() == 1) GameActivity.game.wasTap(new Vec2i(event.getX(), event.getY()));
                 return true; // just here so we get the move action
 

@@ -111,7 +111,6 @@ public class Game {
     }
 
     public void wasTap(Vec2i p) {
-        EventBus.publish("USER_ACTION", GameAction.TERRITORY_SELECTED);
         synchronized (this) {
             tappedPoint = p;
         }
@@ -151,12 +150,14 @@ public class Game {
                 byte terrId = readbackBuffer.get(0);
                 if (terrId > 0) {
                     Territory terr = world.getTerritory(terrId);
+                    EventBus.publish("USER_ACTION", GameAction.TERRITORY_SELECTED);
                     world.selectTerritory(terr);
                     world.unhighlightTerritories();
                     world.highlightTerritories(terr.getAdjacentTerritories());
                     cameraController.targetTerritory(terr);
                 }
                 else {
+                    EventBus.publish("USER_ACTION", GameAction.CANCEL_ACTION);
                     world.unselectTerritory();
                     world.unhighlightTerritories();
                 }
