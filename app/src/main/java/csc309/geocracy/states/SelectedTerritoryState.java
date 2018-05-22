@@ -16,15 +16,18 @@ public class SelectedTerritoryState implements  GameState {
         this.game = game;
     }
 
-    public void selectTerritory(Territory territory) {
+    public void selectOriginTerritory(Territory territory) {
         System.out.println("SELECTED TERRITORY STATE: ANOTHER TERRITORY SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
         this.territory = territory;
     }
 
+    public void selectTargetTerritory(Territory territory) {
+        System.out.println("SELECTED TERRITORY STATE: TARGET TERRITORY ACTION UNAVAILABLE");
+    }
+
     public void enableAttackMode() {
         game.setState(game.IntentToAttackState);
-        game.getState().selectTerritory(territory);
-        game.getState().initState();
+        game.getState().selectOriginTerritory(territory);
     }
 
     public void cancelAction() {

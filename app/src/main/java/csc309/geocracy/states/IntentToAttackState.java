@@ -16,9 +16,18 @@ public class IntentToAttackState implements  GameState {
         this.game = game;
     }
 
-    public void selectTerritory(Territory territory) {
-        System.out.println("SELECTED TERRITORY STATE: ANOTHER TERRITORY SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
+    public void selectOriginTerritory(Territory territory) {
+        System.out.println("INTENT TO ATTACK STATE: -> ALREADY CURRENT STATE");
         this.originTerritory = territory;
+        initState();
+    }
+
+    public void selectTargetTerritory(Territory targetTerritory) {
+        System.out.println("INTENT TO ATTACK STATE: ANOTHER TERRITORY SELECTED -> GO TO SELECTED ATTACK TARGET STATE");
+        game.setState(game.SelectedAttackTargetTerritoryState);
+        game.getState().selectOriginTerritory(this.originTerritory);
+        game.getState().selectTargetTerritory(targetTerritory);
+        game.getState().initState();
     }
 
     public void enableAttackMode() {

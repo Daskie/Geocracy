@@ -12,11 +12,15 @@ public class DefaultState implements GameState {
         this.game = game;
     }
 
-    public void selectTerritory(Territory territory) {
+    public void selectOriginTerritory(Territory territory) {
         System.out.println("DEFAULT STATE: TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
         game.setState(game.SelectedTerritoryState);
-        game.getState().selectTerritory(territory);
+        game.getState().selectOriginTerritory(territory);
         game.getState().initState();
+    }
+
+    public void selectTargetTerritory(Territory territory) {
+        System.out.println("DEFAULT STATE: CANNOT SELECT TARGET TERRITORY, NO ORIGIN TERRITORY");
     }
 
     public void enableAttackMode() {
