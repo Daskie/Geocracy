@@ -36,11 +36,25 @@ public class VecArrayUtil {
         arr[ci + 2] += v;
     }
 
+    public static void add(float[] arr, int vertexI, Vec3 v) {
+        int ci = vertexI * 3;
+        arr[ci + 0] += v.x;
+        arr[ci + 1] += v.y;
+        arr[ci + 2] += v.z;
+    }
+
     public static void multiply(float[] arr, int vertexI, float v) {
         int ci = vertexI * 3;
         arr[ci + 0] *= v;
         arr[ci + 1] *= v;
         arr[ci + 2] *= v;
+    }
+
+    public static void multiply(float[] arr, int vertexI, Vec3 v) {
+        int ci = vertexI * 3;
+        arr[ci + 0] *= v.x;
+        arr[ci + 1] *= v.y;
+        arr[ci + 2] *= v.z;
     }
 
     // Normalizes the xyz at the given vertex index in arr

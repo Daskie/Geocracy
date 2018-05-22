@@ -19,7 +19,7 @@ public class ScreenTextureShader extends Shader {
 
         if (textureUniformHandle != -1) {
             setActive();
-            uploadUniform(textureUniformHandle, 0);
+            uploadUniform(textureUniformHandle, 0, true);
         }
 
         return true;

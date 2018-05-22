@@ -2,7 +2,6 @@ package csc309.geocracy.states;
 
 import android.os.Bundle;
 
-import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
@@ -42,8 +41,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         Bundle args = new Bundle();
         args.putSerializable("territory", this.targetTerritory);
         GameActivity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.targetTerritory));
-        this.game.world.selectTerritory(this.targetTerritory);
-        this.game.world.unhighlightTerritories();
+        this.game.getWorld().selectTerritory(this.targetTerritory);
+        this.game.getWorld().unhighlightTerritories();
         this.game.cameraController.targetTerritory(this.targetTerritory);
     }
 

@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
+import csc309.geocracy.game.Game;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.graphics.MeshMaker;
@@ -14,10 +15,11 @@ import glm_.vec3.Vec3;
 
 public class World {
 
-    private final int TESSELLATION_DEGREE = 5; // Should really not change
-    private final int MAX_N_TERRITORIES = 40; // Cannot be greater than 63
-    private final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
+    public static final int TESSELLATION_DEGREE = 5; // Should really not change
+    private static final int MAX_N_TERRITORIES = 40; // Cannot be greater than 63
+    private static final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
 
+    Game game;
     private long seed;
     private Terrain terrain;
     private Territory[] territories;
@@ -29,7 +31,8 @@ public class World {
     private boolean selectionChange;
     private boolean highlightChange;
 
-    public World(long seed) {
+    public World(Game game, long seed) {
+        this.game = game;
         this.seed = seed;
         EventBus.publish("WORLD_LOAD_EVENT", 0);
         Mesh sphereMesh = MeshMaker.makeSphereIndexed("World", TESSELLATION_DEGREE);
@@ -120,7 +123,7 @@ public class World {
     }
 
     public Territory getTerritory(int id) {
-        if (id <= 0 || id >= territories.length) {
+        if (id <= 0 || id > territories.length) {
             return null;
         }
         return territories[id - 1];

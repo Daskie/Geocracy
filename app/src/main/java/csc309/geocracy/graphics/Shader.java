@@ -128,24 +128,17 @@ public abstract class Shader {
         GLES30.glUniform3f(handle, v.x, v.y, v.z);
     }
 
-    protected void uploadUniform(int handle, Vec3[] vs) {
-        ByteBuffer bb = ByteBuffer.allocateDirect(vs.length * 3 * 4);
-        bb.order(ByteOrder.nativeOrder());
-        FloatBuffer fb = bb.asFloatBuffer();
-        for (Vec3 v : vs) { fb.put(v.x); fb.put(v.y); fb.put(v.z); }
-        fb.flip();
-        GLES30.glUniform3fv(handle, vs.length, fb);
-    }
-
     protected void uploadUniform(int handle, Vec4 v) {
         GLES30.glUniform4f(handle, v.x, v.y, v.z, v.w);
     }
 
-    protected void uploadUniform(int handle, int v) {
-        GLES30.glUniform1i(handle, v);
-    }
-    protected void uploadUniformUnsigned(int handle, int v) {
-        GLES30.glUniform1ui(handle, v);
+    protected void uploadUniform(int handle, int v, boolean signed) {
+        if (signed) {
+            GLES30.glUniform1i(handle, v);
+        }
+        else {
+            GLES30.glUniform1ui(handle, v);
+        }
     }
 
     protected void uploadUniform(int handle, Vec2i v) {
@@ -182,6 +175,24 @@ public abstract class Shader {
         FloatBuffer fb = bb.asFloatBuffer();
         v.to(fb);
         GLES30.glUniformMatrix4fv(handle, 1, false, fb);
+    }
+
+    protected void uploadUniform(int handle, Vec3[] vs) {
+        ByteBuffer bb = ByteBuffer.allocateDirect(vs.length * 3 * 4);
+        bb.order(ByteOrder.nativeOrder());
+        FloatBuffer fb = bb.asFloatBuffer();
+        for (Vec3 v : vs) { fb.put(v.x); fb.put(v.y); fb.put(v.z); }
+        fb.flip();
+        GLES30.glUniform3fv(handle, vs.length, fb);
+    }
+
+    protected void uploadUniform(int handle, int[] vs, boolean signed) {
+        if (signed) {
+            GLES30.glUniform1iv(handle, vs.length, vs, 0);
+        }
+        else {
+            GLES30.glUniform1uiv(handle, vs.length, vs, 0);
+        }
     }
 
     private static int createShader(String src, Type type) {

@@ -41,7 +41,7 @@ public class WaterwayShader extends Shader {
     }
 
     public void setSelectedTerritory(int ti) {
-        uploadUniform(selectedTerritoryHandle, ti);
+        uploadUniform(selectedTerritoryHandle, ti, true);
     }
 
     @Override
