@@ -1,7 +1,9 @@
 package csc309.geocracy.game;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
@@ -11,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -152,6 +155,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                                 case SHOW_ATTACK_MODE_BUTTON:
                                     this.attackBtn.show();
+                                    break;
+
+                                case SET_ATTACK_MODE_ACTIVE:
+                                    this.attackBtn.setAlpha(1.0f);
+                                    break;
+
+                                case SET_ATTACK_MODE_INACTIVE:
+                                    this.attackBtn.setAlpha(0.3f);
                                     break;
 
                                 default:
