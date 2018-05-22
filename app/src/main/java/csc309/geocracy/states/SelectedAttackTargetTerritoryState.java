@@ -2,9 +2,11 @@ package csc309.geocracy.states;
 
 import android.os.Bundle;
 
+import csc309.geocracy.EventBus;
 import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 
 public class SelectedAttackTargetTerritoryState implements  GameState {
@@ -40,10 +42,12 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         System.out.println("INIT SELECTED ATTACK TARGET TERRITORY STATE:");
         Bundle args = new Bundle();
         args.putSerializable("territory", this.targetTerritory);
-        GameActivity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.targetTerritory));
-        this.game.getWorld().selectTerritory(this.targetTerritory);
-        this.game.getWorld().unhighlightTerritories();
-        this.game.cameraController.targetTerritory(this.targetTerritory);
+        game.activity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.targetTerritory));
+        game.getWorld().selectTerritory(this.targetTerritory);
+        game.getWorld().unhighlightTerritories();
+        game.cameraController.targetTerritory(this.targetTerritory);
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
     }
 
 }

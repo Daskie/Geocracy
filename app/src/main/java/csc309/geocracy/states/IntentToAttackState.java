@@ -1,6 +1,8 @@
 package csc309.geocracy.states;
 
+import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
+import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 
 public class IntentToAttackState implements  GameState {
@@ -40,6 +42,8 @@ public class IntentToAttackState implements  GameState {
         System.out.println("INIT SELECT TERRITORY STATE");
         System.out.println("TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
         game.getWorld().highlightTerritories(originTerritory.getAdjacentTerritories());
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
     }
 
 }
