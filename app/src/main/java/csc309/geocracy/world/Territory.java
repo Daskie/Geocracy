@@ -1,11 +1,12 @@
 package csc309.geocracy.world;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 import csc309.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
-public class Territory {
+public class Territory implements Serializable {
 
     private int id; // starts at 1. 0 indicates no territory
     private World world;

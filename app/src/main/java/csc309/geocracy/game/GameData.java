@@ -1,6 +1,8 @@
 package csc309.geocracy.game;
 
-public class GameData {
+import java.io.Serializable;
+
+public class GameData implements Serializable {
 
     public int gameTurn;
 
