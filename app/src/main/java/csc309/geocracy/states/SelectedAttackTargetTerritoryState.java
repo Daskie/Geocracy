@@ -46,8 +46,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.getWorld().selectTerritory(this.targetTerritory);
         game.getWorld().unhighlightTerritories();
         game.cameraController.targetTerritory(this.targetTerritory);
-        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
     }
 

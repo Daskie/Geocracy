@@ -137,7 +137,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(e -> {
                     UIEvent event = (UIEvent) e;
-                    System.out.println(event);
+                    System.out.println("UI EVENT: " + event);
 
                             switch (event) {
 

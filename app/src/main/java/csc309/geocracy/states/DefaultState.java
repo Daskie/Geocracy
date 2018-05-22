@@ -37,6 +37,7 @@ public class DefaultState implements GameState {
         game.activity.removeActiveBottomPaneFragment();
         game.getWorld().unselectTerritory();
         game.getWorld().unhighlightTerritories();
+        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
     }
