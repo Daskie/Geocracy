@@ -41,8 +41,8 @@ public class SelectedTerritoryState implements  GameState {
         Bundle args = new Bundle();
         args.putSerializable("territory", this.territory);
         GameActivity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
-        this.game.world.selectTerritory(this.territory);
-        this.game.world.unhighlightTerritories();
+        this.game.getWorld().selectTerritory(this.territory);
+        this.game.getWorld().unhighlightTerritories();
         this.game.cameraController.targetTerritory(this.territory);
     }
 

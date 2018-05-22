@@ -33,7 +33,7 @@ public class DefaultState implements GameState {
 
     public void initState() {
         GameActivity.removeActiveBottomPaneFragment();
-        this.game.world.unselectTerritory();
-        this.game.world.unhighlightTerritories();
+        this.game.getWorld().unselectTerritory();
+        this.game.getWorld().unhighlightTerritories();
     }
 }

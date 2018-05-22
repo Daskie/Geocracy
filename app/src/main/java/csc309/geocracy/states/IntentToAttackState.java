@@ -1,10 +1,6 @@
 package csc309.geocracy.states;
 
-import android.os.Bundle;
-
-import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.game.Game;
-import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.world.Territory;
 
 public class IntentToAttackState implements  GameState {
@@ -43,7 +39,7 @@ public class IntentToAttackState implements  GameState {
     public void initState() {
         System.out.println("INIT SELECT TERRITORY STATE");
         System.out.println("TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
-        game.world.highlightTerritories(originTerritory.getAdjacentTerritories());
+        game.getWorld().highlightTerritories(originTerritory.getAdjacentTerritories());
     }
 
 }
