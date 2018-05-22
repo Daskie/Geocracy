@@ -1,10 +1,11 @@
 package csc309.geocracy.world;
 
+import java.io.Serializable;
 import java.util.HashSet;
 
 import glm_.vec3.Vec3;
 
-public class Territory {
+public class Territory implements Serializable {
 
     private int id;
     private World world;

@@ -52,8 +52,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     static private Fragment activeBottomPaneFragment = null;
 
-    static public TerritoryDetailFragment territoryDetailFragment = new TerritoryDetailFragment();
-    static public TroopSelectionFragment troopSelectionFragment = new TroopSelectionFragment();
     static public SettingsFragment settingsFragment = new SettingsFragment();
 
     static private boolean settingsVisible = false;

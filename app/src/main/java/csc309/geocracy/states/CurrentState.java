@@ -1,5 +1,7 @@
 package csc309.geocracy.states;
 
+import android.os.Bundle;
+
 import csc309.geocracy.EventBus;
 import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
@@ -44,8 +46,10 @@ public class CurrentState {
 
             case TERRITORY_SELECTED:
                 System.out.println("USER SELECTED TERRITORY");
-                GameActivity.showBottomPaneFragment(new TerritoryDetailFragment());
                 Territory selectedTerritory = (Territory) event.payload;
+                Bundle args = new Bundle();
+                args.putSerializable("territory", selectedTerritory);
+                GameActivity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
                 currentTerritorySelection = selectedTerritory;
                 GameActivity.game.world.selectTerritory(selectedTerritory);
                 GameActivity.game.world.unhighlightTerritories();
