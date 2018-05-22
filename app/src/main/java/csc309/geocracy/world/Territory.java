@@ -7,7 +7,7 @@ import glm_.vec3.Vec3;
 
 public class Territory {
 
-    private int id;
+    private int id; // starts at 1. 0 indicates no territory
     private World world;
     private Continent continent;
     private HashSet<Territory> adjacentTerritories;

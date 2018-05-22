@@ -55,7 +55,7 @@ public class OceanShader extends Shader {
 
         if (cubemapUniformHandle != -1) {
             setActive();
-            uploadUniform(cubemapUniformHandle, 0);
+            uploadUniform(cubemapUniformHandle, 0, true);
         }
 
         return true;

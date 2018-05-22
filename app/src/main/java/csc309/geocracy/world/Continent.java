@@ -8,7 +8,7 @@ import glm_.vec3.Vec3;
 
 public class Continent {
 
-    private int id;
+    private int id; // starts at 1. 0 indicates no continent
     private World world;
     private HashSet<Territory> territories;
     private Vec3 color;

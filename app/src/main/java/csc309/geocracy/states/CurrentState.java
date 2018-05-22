@@ -47,8 +47,8 @@ public class CurrentState {
                 GameActivity.showBottomPaneFragment(new TerritoryDetailFragment());
                 Territory selectedTerritory = (Territory) event.payload;
                 currentTerritorySelection = selectedTerritory;
-                GameActivity.game.world.selectTerritory(selectedTerritory);
-                GameActivity.game.world.unhighlightTerritories();
+                GameActivity.game.getWorld().selectTerritory(selectedTerritory);
+                GameActivity.game.getWorld().unhighlightTerritories();
                 GameActivity.game.cameraController.targetTerritory(selectedTerritory);
                 break;
 
@@ -57,7 +57,7 @@ public class CurrentState {
 
                 if (previousAction == event.action.TERRITORY_SELECTED && currentTerritorySelection != null) {
                     System.out.println("TERRITORY SELECTED -> ATTACK");
-                    GameActivity.game.world.highlightTerritories(currentTerritorySelection.getAdjacentTerritories());
+                    GameActivity.game.getWorld().highlightTerritories(currentTerritorySelection.getAdjacentTerritories());
                     GameActivity.showBottomPaneFragment(new TroopSelectionFragment());
                 } else {
                     System.out.println("TERRITORY NOT SELECTED -> UNABLE TO DO ANYTHING");
@@ -69,8 +69,8 @@ public class CurrentState {
                 System.out.println("USER CANCELED ACTION");
                 currentTerritorySelection = null;
                 GameActivity.removeActiveBottomPaneFragment();
-                GameActivity.game.world.unselectTerritory();
-                GameActivity.game.world.unhighlightTerritories();
+                GameActivity.game.getWorld().unselectTerritory();
+                GameActivity.game.getWorld().unhighlightTerritories();
                 break;
 
             default:

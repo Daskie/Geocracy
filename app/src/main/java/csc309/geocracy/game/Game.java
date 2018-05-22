@@ -5,6 +5,7 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
@@ -17,13 +18,15 @@ import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc309.geocracy.states.GameAction.*;
+import static csc309.geocracy.states.GameAction.CANCEL_ACTION;
+import static csc309.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game {
 
     private long startT; // time the game was started
     private long lastT; // time last frame happened
-    public World world;
+    private World world;
+    private Player[] players;
     private SpaceRenderer spaceRenderer;
     public CameraController cameraController;
     private int idFBHandle;
@@ -42,7 +45,20 @@ public class Game {
     public Game(GameActivity activity) {
         state = new CurrentState(activity, new GameData());
 
-        world = new World(0); // TODO: seed should not be predefined
+        world = new World(this, 0); // TODO: seed should not be predefined
+
+        // TODO: the following is just for testing and should be temporary
+        // Create players
+        players = new Player[8];
+        Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
+        for (int i = 0; i < players.length; ++i) {
+            players[i] = new Player(i + 1, playerColors[i]);
+        }
+        // Randomly assign territories players
+        Random rand = new Random();
+        for (Territory terr : world.getTerritories()) {
+            terr.setOwner(players[rand.nextInt(players.length)]);
+        }
 
         spaceRenderer = new SpaceRenderer();
         cameraController = new CameraController();
@@ -239,6 +255,14 @@ public class Game {
         }
 
         return true;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Player[] getPlayers() {
+        return players;
     }
 
 }

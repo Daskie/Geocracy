@@ -2,6 +2,7 @@ package csc309.geocracy.world;
 
 import android.util.Log;
 
+import csc309.geocracy.game.Player;
 import csc309.geocracy.graphics.Shader;
 import glm_.mat4x4.Mat4;
 import glm_.vec3.Vec3;
@@ -18,6 +19,8 @@ public class TerrainShader extends Shader {
     private int selectedTerritoryHandle;
     private int highlightedTerritoriesLowerHandle;
     private int highlightedTerritoriesUpperHandle;
+    private int playerColorsHandle;
+    private int territoryPlayersHandle;
 
     public TerrainShader() {
         super("Terrain", "shaders/Terrain.vert", "shaders/Terrain.frag");
@@ -52,7 +55,7 @@ public class TerrainShader extends Shader {
     }
 
     public void setSelectedTerritory(int selected) {
-        uploadUniform(selectedTerritoryHandle, selected);
+        uploadUniform(selectedTerritoryHandle, selected, true);
     }
 
     public void setHighlightedTerritories(boolean[] highlighted) {
@@ -65,8 +68,25 @@ public class TerrainShader extends Shader {
                 highlightedUpper |= (highlighted[i + 32] ? 1 : 0) << i;
             }
         }
-        uploadUniform(highlightedTerritoriesLowerHandle, highlightedLower);
-        uploadUniform(highlightedTerritoriesUpperHandle, highlightedUpper);
+        uploadUniform(highlightedTerritoriesLowerHandle, highlightedLower, true);
+        uploadUniform(highlightedTerritoriesUpperHandle, highlightedUpper, true);
+    }
+
+    public void setPlayerColors(Player[] players) {
+        Vec3[] colors = new Vec3[players.length + 1];
+        colors[0] = new Vec3();
+        for (int i = 0; i < players.length; ++i) {
+            colors[i + 1] = players[i].getColor();
+        }
+        uploadUniform(playerColorsHandle, colors);
+    }
+
+    public void setTerritoryPlayers(Territory[] territories) {
+        int[] terrPlayers = new int[territories.length + 1];
+        for (int i = 0; i < territories.length; ++i) {
+            terrPlayers[i + 1] = territories[i].getOwner().getId();
+        }
+        uploadUniform(territoryPlayersHandle, terrPlayers, true);
     }
 
     @Override
@@ -100,6 +120,12 @@ public class TerrainShader extends Shader {
         }
         if ((highlightedTerritoriesUpperHandle = getUniformLocation("u_highlightedTerritoriesUpper")) == -1) {
             Log.e("TerrainShader", "Failed to get location of u_highlightedTerritoriesUpper");
+        }
+        if ((playerColorsHandle = getUniformLocation("u_playerColors")) == -1) {
+            Log.e("TerrainShader", "Failed to get location of u_playerColors");
+        }
+        if ((territoryPlayersHandle = getUniformLocation("u_territoryPlayers")) == -1) {
+            Log.e("TerrainShader", "Failed to get location of u_territoryPlayers");
         }
 
         return true;

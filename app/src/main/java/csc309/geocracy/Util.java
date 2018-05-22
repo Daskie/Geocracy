@@ -206,10 +206,10 @@ public abstract class Util {
         );
     }
 
-    public static Vec3[] genDistinctColors(int n) {
+    public static Vec3[] genDistinctColors(int n, float hueOffset) {
         Vec3[] colors = new Vec3[n];
         for(int i = 0; i < n; ++i) {
-            colors[i] = hsv2rgb((float)i / n, 1.0f, 1.0f);
+            colors[i] = hsv2rgb(glm.fract((float)i / n + hueOffset), 1.0f, 1.0f);
         }
         return colors;
     }

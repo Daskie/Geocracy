@@ -66,6 +66,7 @@ public class Terrain {
     private TerritorySpec[] territorySpecs;
     private ContinentSpec[] continentSpecs;
     private int[] verticesInfo;
+    private float continentHueOffset;
 
     public Terrain(World world, Mesh sphereMesh, long seed, int maxNTerritories, int maxNContinents) {
         this.world = world;
@@ -84,6 +85,8 @@ public class Terrain {
         createContinents(maxNContinents);
         detWaterways();
         createVerticesInfo();
+
+        continentHueOffset = rand.nextFloat();
     }
 
     public boolean load() {
@@ -94,16 +97,30 @@ public class Terrain {
             return false;
         }
         shader.setActive();
+        Util.isGLError();
         shader.setLowElevation(LOW_ELEVATION);
+        Util.isGLError();
         shader.setHighElevation(HIGH_ELEVATION);
+        Util.isGLError();
         Vec3[] contColors = new Vec3[world.getContinents().length + 1];
         contColors[0] = new Vec3();
         for (int i = 0; i < world.getContinents().length; ++i) {
             contColors[i + 1] = world.getContinents()[i].getColor();
         }
+        Util.isGLError();
         shader.setContinentColors(contColors);
+        Util.isGLError();
         shader.setSelectedTerritory(0);
+        Util.isGLError();
         shader.setHighlightedTerritories(null);
+        Util.isGLError();
+        shader.setPlayerColors(world.game.getPlayers());
+        Util.isGLError();
+        shader.setTerritoryPlayers(world.getTerritories());
+        if (Util.isGLError()) {
+            Log.e("Terrain", "Failed to initialize shader uniforms");
+            return false;
+        }
 
         if (!idShader.load()) {
             Log.e("Terrain", "Failed to load identity shader");
@@ -216,7 +233,7 @@ public class Terrain {
         Territory[] territories = new Territory[territorySpecs.length - 1];
         Continent[] continents = new Continent[continentSpecs.length - 1];
 
-        Vec3[] contColors = Util.genDistinctColors(continentSpecs.length - 1);
+        Vec3[] contColors = Util.genDistinctColors(continentSpecs.length - 1, continentHueOffset);
 
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
             continents[ci - 1] = new Continent(ci, world, new HashSet<>(), contColors[ci - 1]);

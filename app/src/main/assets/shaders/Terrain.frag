@@ -15,6 +15,7 @@ in vec3 v2f_bary;
 flat in vec3 v2f_continentColor;
 flat in float v2f_selected;
 flat in float v2f_highlighted;
+flat in vec3 v2f_playerColor;
 
 layout (location = 0) out vec4 out_color;
 
@@ -23,7 +24,8 @@ uniform float u_time;
 
 const float k_pi = 3.14159265f;
 const float k_ambience = 0.15f;
-const float k_borderThreshold = 0.875f;
+const float k_borderEdgeWidth = 0.125f;
+const float k_borderThreshold = 1.0f - k_borderEdgeWidth;
 const float k_highlightBorderHighThreshold = 0.75f;
 const float k_highlightBorderLowThreshold = 0.5f;
 const vec3 k_beachColor = vec3(1.0f, 0.9f, 0.8f);
@@ -65,8 +67,8 @@ void main() {
     float border = step(borderThreshold, v2f_border) * (max(corner, edge));
     vec3 borderColor = mix(v2f_continentColor * 0.5f, vec3(1.0f), selectedOrHighlighted);
 
-    float band = between(v2f_border, borderThreshold + (1.0f - k_borderThreshold), k_borderThreshold) * selectedOrHighlighted;
-    borderColor = mix(borderColor, vec3(1.0f, 0.0f, 0.0f), band);
+    float band = between(v2f_border, borderThreshold + k_borderEdgeWidth, k_borderThreshold) * selectedOrHighlighted;
+    borderColor = mix(borderColor, v2f_playerColor, band);
 
     out_color.rgb = mix(
         albedo * (diffuse + (0.125 + shTime * 0.125f) * selectedOrHighlighted * land),
