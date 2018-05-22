@@ -35,7 +35,6 @@ public class TerritoryDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.territory_detail, container, false);
 
         this.territory = (Territory) getArguments().get("territory");
-        System.out.println("HELLO? " + this.territory);
 
         TextView territoryID = view.findViewById(R.id.territoryID);
         territoryID.setText("Territory ID: " + territory.getId());
