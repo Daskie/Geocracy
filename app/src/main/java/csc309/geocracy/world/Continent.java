@@ -1,7 +1,9 @@
 package csc309.geocracy.world;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
+import csc309.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
 public class Continent {
@@ -16,6 +18,18 @@ public class Continent {
         this.world = world;
         this.territories = territories;
         this.color = color;
+    }
+
+    // Returns the player that possesses all the continent's territories, or null if no such player exists
+    public Player getOwner() {
+        Iterator<Territory> it = territories.iterator();
+        Player owner = it.next().getOwner();
+        while (it.hasNext()) {
+            if (it.next().getOwner() != owner) {
+                return null;
+            }
+        }
+        return owner;
     }
 
     public int getId() {
