@@ -41,8 +41,6 @@ public class SelectedTerritoryState implements  GameState {
 
     public void initState() {
         System.out.println("INIT SELECT TERRITORY STATE");
-        Bundle args = new Bundle();
-        args.putSerializable("territory", this.territory);
         game.activity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
         game.getWorld().selectTerritory(this.territory);
         game.getWorld().unhighlightTerritories();

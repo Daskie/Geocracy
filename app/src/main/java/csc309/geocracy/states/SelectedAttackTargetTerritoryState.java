@@ -40,11 +40,10 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void initState() {
         System.out.println("INIT SELECTED ATTACK TARGET TERRITORY STATE:");
-        Bundle args = new Bundle();
-        args.putSerializable("territory", this.targetTerritory);
-        game.activity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.targetTerritory));
-        game.getWorld().selectTerritory(this.targetTerritory);
+        game.activity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
+        game.getWorld().selectTerritory(this.originTerritory);
+        game.getWorld().highlightTerritory(this.targetTerritory);
         game.cameraController.targetTerritory(this.targetTerritory);
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
