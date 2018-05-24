@@ -19,6 +19,7 @@
 
 
     <TextView
+        android:id="@+id/territoryOwner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -27,6 +28,7 @@
         android:text="Territory Owned By:"/>
 
     <TextView
+        android:id="@+id/numberOfUnits"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
