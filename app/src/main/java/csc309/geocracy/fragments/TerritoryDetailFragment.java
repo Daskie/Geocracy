@@ -37,10 +37,10 @@ public class TerritoryDetailFragment extends Fragment {
         this.territory = (Territory) getArguments().get("territory");
 
         TextView territoryID = view.findViewById(R.id.territoryID);
-        territoryID.setText("Territory ID: " + territory.getId());
+        territoryID.setText("Territory: " + territory.getTerritoryName());
 
         TextView territoryOwner = view.findViewById(R.id.territoryOwner);
-        territoryOwner.setText("Territory Owned by Player: " + territory.getOwner().getId());
+        territoryOwner.setText("Territory Owned by Player: " + territory.getOwner().getName() + " (" + territory.getOwner().getId() + ")");
 
         TextView numberOfUnits = view.findViewById(R.id.numberOfUnits);
         numberOfUnits.setText("Number of Units in Territory: " + territory.getNArmies());

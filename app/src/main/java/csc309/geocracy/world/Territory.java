@@ -1,5 +1,7 @@
 package csc309.geocracy.world;
 
+import com.github.javafaker.Faker;
+
 import java.io.Serializable;
 import java.util.HashSet;
 
@@ -9,6 +11,7 @@ import glm_.vec3.Vec3;
 public class Territory implements Serializable {
 
     private int id; // starts at 1. 0 indicates no territory
+    private String territoryName;
     private World world;
     private Continent continent;
     private HashSet<Territory> adjacentTerritories;
@@ -18,6 +21,7 @@ public class Territory implements Serializable {
 
     public Territory(int id, World world, Continent continent, HashSet<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;
+        this.territoryName = Faker.instance().address().country();
         this.world = world;
         this.continent = continent;
         this.adjacentTerritories = adjacentTerritories;
@@ -31,6 +35,7 @@ public class Territory implements Serializable {
 
     public void setNArmies(int n) {
         nArmies = n;
+
         world.setArmyChange();
     }
 
@@ -45,6 +50,11 @@ public class Territory implements Serializable {
     public int getId() {
         return id;
     }
+
+    public String getTerritoryName() {
+        return territoryName;
+    }
+
 
     public Continent getContinent() {
         return continent;
