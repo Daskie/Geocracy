@@ -26,10 +26,12 @@ public class World {
     private Continent[] continents;
     private OceanRenderer oceanRenderer;
     private Waterways waterways;
+    private ArmyRenderer armyRenderer;
     private Territory selectedTerritory;
     private HashSet<Territory> highlightedTerritories;
     private boolean selectionChange;
     private boolean highlightChange;
+    private boolean armyChange;
 
     public World(Game game, long seed) {
         this.game = game;
@@ -47,6 +49,7 @@ public class World {
         oceanRenderer = new OceanRenderer(sphereMesh);
         EventBus.publish("WORLD_LOAD_EVENT", 90);
         waterways = terrain.createWaterways(100, 0.025f);
+        armyRenderer = new ArmyRenderer(this);
         highlightedTerritories = new HashSet<>();
         EventBus.publish("WORLD_LOAD_EVENT", 100);
     }
@@ -70,6 +73,10 @@ public class World {
             Log.e("World", "Failed to load waterway renderer");
             return false;
         }
+        if (!armyRenderer.load()) {
+            Log.e("World", "Failed to load army renderer");
+            return false;
+        }
 
         return true;
     }
@@ -78,9 +85,11 @@ public class World {
         terrain.render(t, camera, lightDir, selectionChange, highlightChange);
         oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
+        armyRenderer.render(camera, lightDir, armyChange);
 
         selectionChange = false;
         highlightChange = false;
+        armyChange = false;
     }
 
     public void renderId(Camera camera) {
@@ -91,6 +100,7 @@ public class World {
         terrain.unload();
         oceanRenderer.unload();
         waterways.unload();
+        armyRenderer.unload();
     }
 
     public void selectTerritory(Territory territory) {
@@ -129,12 +139,16 @@ public class World {
         return territories[id - 1];
     }
 
+    public int getNTerritories() {
+        return territories.length;
+    }
+
     public Continent[] getContinents() {
         return continents;
     }
 
-    Terrain getTerrain() {
-        return terrain;
+    public int getNContinents() {
+        return continents.length;
     }
 
     public Territory getSelectedTerritory() {
@@ -143,6 +157,20 @@ public class World {
 
     public HashSet<Territory> getHighlightedTerritories() {
         return highlightedTerritories;
+    }
+
+    public int getTotalNArmies() {
+        int nArmies = 0;
+        for (Territory terr : territories) nArmies += terr.getNArmies();
+        return nArmies;
+    }
+
+    Terrain getTerrain() {
+        return terrain;
+    }
+
+    void setArmyChange() {
+        armyChange = true;
     }
 
 }

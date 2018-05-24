@@ -14,6 +14,7 @@ public class Territory implements Serializable {
     private HashSet<Territory> adjacentTerritories;
     private Vec3 center;
     private Player owner;
+    private int nArmies;
 
     public Territory(int id, World world, Continent continent, HashSet<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;
@@ -21,10 +22,16 @@ public class Territory implements Serializable {
         this.continent = continent;
         this.adjacentTerritories = adjacentTerritories;
         this.center = center;
+        nArmies = 0;
     }
 
     public void setOwner(Player player) {
         owner = player;
+    }
+
+    public void setNArmies(int n) {
+        nArmies = n;
+        world.setArmyChange();
     }
 
     public boolean isSelected() {
@@ -75,6 +82,10 @@ public class Territory implements Serializable {
 
     public Player getOwner() {
         return owner;
+    }
+
+    public int getNArmies() {
+        return nArmies;
     }
 
 }

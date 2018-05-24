@@ -2,7 +2,6 @@ package csc309.geocracy.game;
 
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.os.Bundle;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -10,9 +9,7 @@ import java.util.Random;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
-import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.space.SpaceRenderer;
-//import csc309.geocracy.states.CurrentState;
 import csc309.geocracy.states.DefaultState;
 import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
@@ -28,7 +25,11 @@ import glm_.vec3.Vec3;
 import static csc309.geocracy.states.GameAction.CANCEL_ACTION;
 import static csc309.geocracy.states.GameAction.TERRITORY_SELECTED;
 
+//import csc309.geocracy.states.CurrentState;
+
 public class Game {
+
+    public static final int MAX_ARMIES_PER_TERRITORY = 20;
 
     private long startT; // time the game was started
     private long lastT; // time last frame happened
@@ -71,6 +72,7 @@ public class Game {
         Random rand = new Random();
         for (Territory terr : world.getTerritories()) {
             terr.setOwner(players[rand.nextInt(players.length)]);
+            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
         }
 
         DefaultState = new DefaultState(this);
@@ -264,7 +266,7 @@ public class Game {
 
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
-        Vec3 lightDir = cameraController.getCamera().getOrientMatrix().times((new Vec3(-1.0f, -1.0f, -1.0f)).normalizeAssign());
+        Vec3 lightDir = cameraController.getCamera().getOrientMatrix().times((new Vec3(-0.75f, -0.75f, -1.0f)).normalizeAssign());
         world.render(t, cameraController.getCamera(), lightDir, spaceRenderer.getCubemapHandle());
         spaceRenderer.render(cameraController.getCamera());
     }

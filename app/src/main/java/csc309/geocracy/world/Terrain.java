@@ -16,6 +16,7 @@ import java.util.Random;
 
 import csc309.geocracy.Util;
 import csc309.geocracy.VecArrayUtil;
+import csc309.geocracy.game.Game;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.noise.SimplexNoise;
@@ -29,17 +30,20 @@ public class Terrain {
         int[] adjacencies = new int[3];
         int coastDist;
         int territory;
+        int inlandDist;
     }
 
     private class TerritorySpec {
         HashSet<Integer> landFaces = new HashSet<>();
         HashSet<Integer> oceanFaces = new HashSet<>();
         HashSet<Integer> coastFaces = new HashSet<>();
+        SparseArray<HashSet<Integer>> inlandFaces = new SparseArray<>();
         HashSet<Integer> adjacentLandTerrs = new HashSet<>();
         HashSet<Integer> adjacentOceanTerrs = new HashSet<>();
         HashSet<Integer> waterwayTerrs = new HashSet<>();
         int continent;
         Vec3 center;
+        Vec3[] armyLocations;
     }
 
     private class ContinentSpec {
@@ -67,6 +71,7 @@ public class Terrain {
     private TerritorySpec[] territorySpecs;
     private ContinentSpec[] continentSpecs;
     private int[] verticesInfo;
+    private float[] vertInlandDists;
     private float continentHueOffset;
 
     public Terrain(World world, Mesh sphereMesh, long seed, int maxNTerritories, int maxNContinents) {
@@ -152,15 +157,18 @@ public class Terrain {
         GLES30.glEnableVertexAttribArray(0);
         GLES30.glEnableVertexAttribArray(1);
         GLES30.glEnableVertexAttribArray(2);
-        int vertexSize = 3 * 4 + 3 * 4 + 4;
+        GLES30.glEnableVertexAttribArray(3);
+        int vertexSize = 3 * 4 + 3 * 4 + 4 + 4;
         GLES30.glVertexAttribPointer(0, 3, GLES30.GL_FLOAT, false, vertexSize, 0); // locations
         GLES30.glVertexAttribPointer(1, 3, GLES30.GL_FLOAT, false, vertexSize, 3 * 4); // normals
         GLES30.glVertexAttribIPointer(2, 1, GLES30.GL_INT, vertexSize, 3 * 4 + 3 * 4); // info
+        GLES30.glVertexAttribPointer(3, 1, GLES30.GL_FLOAT, false, vertexSize, 3 * 4 + 3 * 4 + 4); // inland distance
         GLES30.glBindVertexArray(0);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         GLES30.glDisableVertexAttribArray(0);
         GLES30.glDisableVertexAttribArray(1);
         GLES30.glDisableVertexAttribArray(2);
+        GLES30.glDisableVertexAttribArray(3);
         // Check for OpenGL errors
         if (Util.isGLError()) {
             Log.e("Terrain", "Failed to setup vao");
@@ -290,6 +298,10 @@ public class Terrain {
         return new Waterways(world, nSegments, startPoints, endPoints, originTerrs, originConts);
     }
 
+    Vec3[] getTerritoryArmyLocations(int ti) {
+        return territorySpecs[ti].armyLocations;
+    }
+
     private Pair<Vec3, Vec3> calcWaterwayPointsBetween(int t1i, int t2i) {
         SparseArray<Vec3> faces1 = new SparseArray<>();
         SparseArray<Vec3> faces2 = new SparseArray<>();
@@ -367,7 +379,7 @@ public class Terrain {
     }
 
     private ByteBuffer genVertexBufferData() {
-        int vertexSize = 3 * 4 + 3 * 4 + 4;
+        int vertexSize = 3 * 4 + 3 * 4 + 4 + 4;
         ByteBuffer vertexData = ByteBuffer.allocateDirect(indices.length * vertexSize);
         vertexData.order(ByteOrder.nativeOrder());
 
@@ -400,6 +412,7 @@ public class Terrain {
             vertexData.putFloat(faceNorm.y);
             vertexData.putFloat(faceNorm.z);
             vertexData.putInt(verticesInfo[ii + 0]);
+            vertexData.putFloat(vertInlandDists[vi1]);
             vertexData.putFloat(locations[ci2 + 0]);
             vertexData.putFloat(locations[ci2 + 1]);
             vertexData.putFloat(locations[ci2 + 2]);
@@ -407,6 +420,7 @@ public class Terrain {
             vertexData.putFloat(faceNorm.y);
             vertexData.putFloat(faceNorm.z);
             vertexData.putInt(verticesInfo[ii + 1]);
+            vertexData.putFloat(vertInlandDists[vi2]);
             vertexData.putFloat(locations[ci3 + 0]);
             vertexData.putFloat(locations[ci3 + 1]);
             vertexData.putFloat(locations[ci3 + 2]);
@@ -414,6 +428,7 @@ public class Terrain {
             vertexData.putFloat(faceNorm.y);
             vertexData.putFloat(faceNorm.z);
             vertexData.putInt(verticesInfo[ii + 2]);
+            vertexData.putFloat(vertInlandDists[vi3]);
         }
 
         vertexData.flip();
@@ -718,7 +733,9 @@ public class Terrain {
 
         smoothTerritories();
 
+        detInlandDists();
         detTerritoryCenters();
+        detArmyLocations();
     }
 
     private void handleSmallAndExcessTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int maxNTerritories) {
@@ -901,25 +918,87 @@ public class Terrain {
         }
     }
 
+    private void detInlandDists() {
+        HashSet<Integer> checked = new HashSet<>();
+        HashSet<Integer> fringe = new HashSet<>();
+        HashSet<Integer> nextFringe = new HashSet<>();
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            TerritorySpec terr = territorySpecs[ti];
+            checked.clear();
+            fringe.clear();
+            nextFringe.clear();
+            for (int fi : terr.landFaces) {
+                Face face = faces[fi];
+                for (int ai = 0; ai < 3; ++ai) {
+                    int afi = face.adjacencies[ai];
+                    if (!terr.landFaces.contains(afi)) {
+                        fringe.add(fi);
+                        checked.add(fi);
+                        break;
+                    }
+                }
+            }
+            int dist = 0;
+            while (true) {
+                terr.inlandFaces.put(dist, new HashSet<>(fringe));
+                for (int fi : fringe) {
+                    Face face = faces[fi];
+                    for (int ai = 0; ai < 3; ++ai) {
+                        int afi = face.adjacencies[ai];
+                        if (!checked.contains(afi) && terr.landFaces.contains(afi)) {
+                            faces[afi].inlandDist = dist + 1;
+                            nextFringe.add(afi);
+                            checked.add(afi);
+                        }
+                    }
+                }
+                if (nextFringe.isEmpty()) {
+                    break;
+                }
+                HashSet<Integer> temp = fringe;
+                fringe = nextFringe;
+                nextFringe = temp;
+                nextFringe.clear();
+                ++dist;
+            }
+        }
+    }
+
     private void detTerritoryCenters() {
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
-            HashSet<Integer> terrVerts = new HashSet<>();
-            for (int fi : territorySpecs[ti].landFaces) {
-                int ii = fi * 3;
-                terrVerts.add(indices[ii + 0]);
-                terrVerts.add(indices[ii + 1]);
-                terrVerts.add(indices[ii + 2]);
+            TerritorySpec terr = territorySpecs[ti];
+            terr.center = new Vec3();
+            for (int fi : terr.inlandFaces.valueAt(terr.inlandFaces.size() - 1)) {
+                terr.center.plusAssign(getFaceCenter(fi));
+            }
+            terr.center.normalizeAssign();
+        }
+    }
+
+    private void detArmyLocations() {
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            TerritorySpec terr = territorySpecs[ti];
+            terr.armyLocations = new Vec3[Game.MAX_ARMIES_PER_TERRITORY];
+            int armyI = 0;
+            int dist = terr.inlandFaces.size() - 1;
+            while (dist >= 0) {
+                for (int fi : terr.inlandFaces.valueAt(dist)) {
+                    if (armyI >= terr.armyLocations.length) {
+                        break;
+                    }
+                    terr.armyLocations[armyI] = getFaceCenter(fi);
+                    ++armyI;
+                }
+                if (armyI >= terr.armyLocations.length) {
+                    break;
+                }
+                --dist;
             }
 
-            Vec3 center = new Vec3();
-            for (int vi : terrVerts) {
-                int ci = vi * 3;
-                center.x += locations[ci + 0];
-                center.y += locations[ci + 1];
-                center.z += locations[ci + 2];
+            // Not enough faces for armies
+            if (armyI < terr.armyLocations.length) {
+                Log.e("Terrain", "Not enough faces in territory for armies");
             }
-            center.normalizeAssign();
-            territorySpecs[ti].center = center;
         }
     }
 
@@ -929,7 +1008,7 @@ public class Terrain {
             TerritorySpec terr = territorySpecs[ti];
             int nInterconnections = terr.adjacentLandTerrs.size();
             while (terrsByInterconnections.size() < nInterconnections + 1) {
-                terrsByInterconnections.add(new ArrayList<Integer>());
+                terrsByInterconnections.add(new ArrayList<>());
             }
             terrsByInterconnections.get(nInterconnections).add(ti);
         }
@@ -1350,7 +1429,31 @@ public class Terrain {
 
     private void createVerticesInfo() {
         verticesInfo = new int[indices.length];
-        boolean[] vertBorders = detVertBorders();
+        int nVerts = locations.length;
+        boolean[] vertBorders = new boolean[nVerts];
+        byte[] vertTerrs = new byte[nVerts];
+        byte[] vertSigns = new byte[nVerts];
+        vertInlandDists = new float[nVerts];
+        int[] vertCounts = new int[nVerts];
+        for (int fi = 0; fi < faces.length; ++fi) {
+            int ii = fi * 3;
+            Face face = faces[fi];
+            for (int i = 0; i < 3; ++i) {
+                int vi = indices[ii + i];
+                ++vertCounts[vi];
+                vertInlandDists[vi] += face.inlandDist;
+                if (vertTerrs[vi] == 0) {
+                    vertTerrs[vi] = (byte)face.territory;
+                    vertSigns[vi] = (byte)glm.sign(face.coastDist);
+                }
+                else if (vertTerrs[vi] != face.territory || vertSigns[vi] != glm.sign(face.coastDist)) {
+                    vertBorders[vi] = true;
+                }
+            }
+        }
+        for (int vi = 0; vi < nVerts; ++vi) {
+            vertInlandDists[vi] /= vertCounts[vi];
+        }
 
         for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
@@ -1363,32 +1466,11 @@ public class Terrain {
             boolean e23 = (face.territory != af2.territory || glm.sign(af2.coastDist) != sign);
             boolean e31 = (face.territory != af3.territory || glm.sign(af3.coastDist) != sign);
 
-            int info = Util.toInt((byte)face.coastDist, (byte)face.territory, (byte)(territorySpecs[face.territory].continent >= 16 ? 0 : territorySpecs[face.territory].continent & 0xF), (byte)0);
+            int info = Util.toInt((byte)face.coastDist, (byte)face.territory, (byte)(territorySpecs[face.territory].continent >= 16 ? 0 : territorySpecs[face.territory].continent & 0xF), (byte)face.inlandDist);
             verticesInfo[ii + 0] = info | (((vertBorders[indices[ii + 0]] ? 1 : 0) | (e12 ? 2 : 0)                 | (e31 ? 8 : 0)) << 20);
             verticesInfo[ii + 1] = info | (((vertBorders[indices[ii + 1]] ? 1 : 0) | (e12 ? 2 : 0) | (e23 ? 4 : 0)                ) << 20);
             verticesInfo[ii + 2] = info | (((vertBorders[indices[ii + 2]] ? 1 : 0)                 | (e23 ? 4 : 0) | (e31 ? 8 : 0)) << 20);
         }
-    }
-
-    private boolean[] detVertBorders() {
-        boolean[] vertBorders = new boolean[locations.length];
-        byte[] vertTerrs = new byte[locations.length];
-        byte[] vertSigns = new byte[locations.length];
-        for (int fi = 0; fi < faces.length; ++fi) {
-            int ii = fi * 3;
-            Face face = faces[fi];
-            for (int i = 0; i < 3; ++i) {
-                int vi = indices[ii + i];
-                if (vertTerrs[vi] == 0) {
-                    vertTerrs[vi] = (byte)face.territory;
-                    vertSigns[vi] = (byte)glm.sign(face.coastDist);
-                }
-                else if (vertTerrs[vi] != face.territory || vertSigns[vi] != glm.sign(face.coastDist)) {
-                    vertBorders[vi] = true;
-                }
-            }
-        }
-        return vertBorders;
     }
 
     private Vec3 getFaceCenter(int fi) {
