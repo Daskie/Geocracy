@@ -3,11 +3,15 @@ package csc309.geocracy.game;
 import com.github.javafaker.Faker;
 
 import java.util.HashSet;
+import java.util.Random;
 
 import csc309.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
 public class Player {
+
+    private static int fakerSeed = 1;
+    private static Faker faker = new Faker(new Random(fakerSeed));
 
     private int id; // starts at 1. 0 indicates no player
     private String name;
@@ -16,7 +20,7 @@ public class Player {
 
     public Player(int id, Vec3 color) {
         this.id = id;
-        this.name = Faker.instance().name().fullName();
+        this.name = faker.name().fullName();
         this.color = new Vec3(color);
     }
 

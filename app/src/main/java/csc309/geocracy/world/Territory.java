@@ -4,11 +4,15 @@ import com.github.javafaker.Faker;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Random;
 
 import csc309.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
 public class Territory implements Serializable {
+
+    private static int fakerSeed = 1;
+    private static Faker faker = new Faker(new Random(fakerSeed));
 
     private int id; // starts at 1. 0 indicates no territory
     private String territoryName;
@@ -21,7 +25,7 @@ public class Territory implements Serializable {
 
     public Territory(int id, World world, Continent continent, HashSet<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;
-        this.territoryName = Faker.instance().address().country();
+        this.territoryName = faker.address().country();
         this.world = world;
         this.continent = continent;
         this.adjacentTerritories = adjacentTerritories;
