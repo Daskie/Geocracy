@@ -1,14 +1,19 @@
 package csc309.geocracy.game;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -36,7 +41,10 @@ import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -56,6 +64,9 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     static private boolean settingsVisible = false;
 
+
+    private FloatingActionButton attackBtn;
+    private FloatingActionButton cancelBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,13 +111,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }));
         EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
 
-
-        FloatingActionButton cancelBtn = findViewById(R.id.cancelBtn);
+        cancelBtn = findViewById(R.id.cancelBtn);
+        cancelBtn.hide();
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
             if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
         }));
 
-        FloatingActionButton attackBtn = findViewById(R.id.attackBtn);
+        attackBtn = findViewById(R.id.attackBtn);
+        attackBtn.hide();
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
             if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
         }));
@@ -120,8 +132,49 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
 
+        disposables.add(EventBus.subscribe("UI_EVENT", this)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(e -> {
+                    UIEvent event = (UIEvent) e;
+                    System.out.println("UI EVENT: " + event);
+
+                            switch (event) {
+
+                                case HIDE_CANCEL_BUTTON:
+                                    this.cancelBtn.hide();
+                                    break;
+
+                                case SHOW_CANCEL_BUTTON:
+                                    this.cancelBtn.show();
+                                    break;
+
+                                case HIDE_ATTACK_MODE_BUTTON:
+                                    this.attackBtn.hide();
+                                    break;
+
+                                case SHOW_ATTACK_MODE_BUTTON:
+                                    this.attackBtn.show();
+                                    break;
+
+                                case SET_ATTACK_MODE_ACTIVE:
+                                    this.attackBtn.setAlpha(1.0f);
+                                    break;
+
+                                case SET_ATTACK_MODE_INACTIVE:
+                                    this.attackBtn.setAlpha(0.3f);
+                                    break;
+
+                                default:
+                                    break;
+
+                            }
+                })
+        );
+
     }
-    static public void toggleSettingsFragment() {
+
+     public void toggleSettingsFragment() {
         if (settingsVisible) {
             userInterfaceFT = fragmentManager.beginTransaction();
             userInterfaceFT.remove(settingsFragment);
@@ -134,7 +187,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingsVisible = !settingsVisible;
     }
 
-    static public void showBottomPaneFragment(Fragment bottomPaneFragment) {
+     public void showBottomPaneFragment(Fragment bottomPaneFragment) {
         removeActiveBottomPaneFragment();
 
         userInterfaceFT = fragmentManager.beginTransaction();
@@ -144,7 +197,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         activeBottomPaneFragment = bottomPaneFragment;
     }
 
-    static public void removeActiveBottomPaneFragment() {
+     public void removeActiveBottomPaneFragment() {
         if (activeBottomPaneFragment != null) {
             userInterfaceFT = fragmentManager.beginTransaction();
             userInterfaceFT.remove(activeBottomPaneFragment);

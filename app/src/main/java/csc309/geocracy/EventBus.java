@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 
@@ -29,15 +31,8 @@ public final class EventBus {
 
         if (subject == null) {
 
-            if (subjectKey == "TOUCH_EVENT") {
-                subject = PublishSubject.create();
-                subject.subscribeOn(AndroidSchedulers.mainThread());
-                subjectMap.put(subjectKey, subject);
-            } else {
-                subject = PublishSubject.create();
-                subject.subscribeOn(AndroidSchedulers.mainThread());
-                subjectMap.put(subjectKey, subject);
-            }
+            subject = PublishSubject.create();
+            subjectMap.put(subjectKey, subject);
 
         }
 

@@ -18,14 +18,17 @@ public class TroopSelectionFragment extends Fragment {
 
     private static final String TAG = "TROOP_SELECTION_FRAGMENT";
 
-    private Territory territory;
+
+    private Territory targetTerritory;
+    private Territory originTerritory;
 
 
-    public static TroopSelectionFragment newInstance(Territory territory) {
+    public static TroopSelectionFragment newInstance(Territory originTerritory, Territory targetTerritory) {
         TroopSelectionFragment newFragment = new TroopSelectionFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("territory", territory);
+        args.putSerializable("originTerritory", originTerritory);
+        args.putSerializable("targetTerritory", targetTerritory);
         newFragment.setArguments(args);
 
         return newFragment;
@@ -36,10 +39,14 @@ public class TroopSelectionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.troop_selection, container, false);
 
-        this.territory = (Territory) getArguments().get("territory");
+        this.originTerritory = (Territory) getArguments().get("originTerritory");
+        this.targetTerritory = (Territory) getArguments().get("targetTerritory");
 
-        TextView territoryID = view.findViewById(R.id.territoryID);
-        territoryID.setText("Attack Territory ID: " + territory.getId());
+        TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
+        originTerritoryID.setText("Select Number of Units From: " + originTerritory.getId());
+
+        TextView targetTerritoryID = view.findViewById(R.id.targetTerritoryID);
+        targetTerritoryID.setText("To Attack Territory: " + targetTerritory.getId());
 
         // get the bottom sheet view
         LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);

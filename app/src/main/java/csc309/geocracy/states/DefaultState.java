@@ -1,7 +1,9 @@
 package csc309.geocracy.states;
 
+import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 
 public class DefaultState implements GameState {
@@ -32,8 +34,11 @@ public class DefaultState implements GameState {
     }
 
     public void initState() {
-        GameActivity.removeActiveBottomPaneFragment();
-        this.game.getWorld().unselectTerritory();
-        this.game.getWorld().unhighlightTerritories();
+        game.activity.removeActiveBottomPaneFragment();
+        game.getWorld().unselectTerritory();
+        game.getWorld().unhighlightTerritories();
+        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
     }
 }

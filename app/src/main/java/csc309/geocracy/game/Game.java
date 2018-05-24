@@ -46,10 +46,8 @@ public class Game {
     private float zoomFactor;
     private ByteBuffer readbackBuffer;
 
-    static public GameData gameData;
-    private GameActivity activity;
-
-//    public CurrentState state;
+    public GameData gameData;
+    public GameActivity activity;
 
     GameState State;
 
@@ -104,7 +102,7 @@ public class Game {
 
             case TOGGLE_SETTINGS_VISIBILITY:
                 System.out.println("TOGGLE SETTINGS VISIBILITY ACTION");
-                GameActivity.toggleSettingsFragment();
+                activity.toggleSettingsFragment();
                 break;
 
             case TERRITORY_SELECTED:
@@ -122,44 +120,12 @@ public class Game {
 
                 getState().initState();
 
-
-//                if (attackSelection == false) {
-//                    state.setCurrentState(new SelectedTerritoryState(selectedTerritory));
-
-//                } else {
-//                    System.out.println("ATTACK MODE ACTIVE, TERRITORY SELECTED, CHECK FOR ADJACENCY TO ORIGIN TERRITORY");
-//                    if (currentTerritorySelection.getAdjacentTerritories().contains(selectedTerritory)) {
-//                        System.out.println("SHOW ATTACK OPTIONS FOR ADJACENT TERRITORY ");
-//                        Bundle args = new Bundle();
-//                        args.putSerializable("territory", selectedTerritory);
-//                        System.out.println(selectedTerritory);
-//                        GameActivity.showBottomPaneFragment(TroopSelectionFragment.newInstance(selectedTerritory));
-//                        currentTerritorySelection = selectedTerritory;
-//                        GameActivity.game.world.selectTerritory(selectedTerritory);
-//                        GameActivity.game.world.unhighlightTerritories();
-//                        GameActivity.game.cameraController.targetTerritory(selectedTerritory);
-//                    } else {
-//                        state.setCurrentState(new DefaultState());
-////                        cancelAction();
-//                    }
-//
-//                }
-
                 break;
 
             case ATTACK_TAPPED:
                 System.out.println("USER TAPPED ATTACK");
                 getState().enableAttackMode();
                 getState().initState();
-
-//                if (previousAction == event.action.TERRITORY_SELECTED && currentTerritorySelection != null) {
-//                    System.out.println("TERRITORY SELECTED -> ATTACK");
-//                    GameActivity.game.world.highlightTerritories(currentTerritorySelection.getAdjacentTerritories());
-//                    attackSelection = true;
-//                } else {
-//                    System.out.println("TERRITORY NOT SELECTED -> UNABLE TO DO ANYTHING");
-//                }
-
                 break;
 
             case CANCEL_ACTION:
@@ -172,13 +138,11 @@ public class Game {
 
         }
 
-//        previousAction = event.action;
     }
 
     public void setState(GameState state) {
         this.State = state;
     }
-
     public GameState getState() {
         return this.State;
     }

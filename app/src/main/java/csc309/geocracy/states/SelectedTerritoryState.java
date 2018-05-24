@@ -2,9 +2,11 @@ package csc309.geocracy.states;
 
 import android.os.Bundle;
 
+import csc309.geocracy.EventBus;
 import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 
 public class SelectedTerritoryState implements  GameState {
@@ -28,6 +30,7 @@ public class SelectedTerritoryState implements  GameState {
     public void enableAttackMode() {
         game.setState(game.IntentToAttackState);
         game.getState().selectOriginTerritory(territory);
+        game.getState().initState();
     }
 
     public void cancelAction() {
@@ -38,12 +41,13 @@ public class SelectedTerritoryState implements  GameState {
 
     public void initState() {
         System.out.println("INIT SELECT TERRITORY STATE");
-        Bundle args = new Bundle();
-        args.putSerializable("territory", this.territory);
-        GameActivity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
-        this.game.getWorld().selectTerritory(this.territory);
-        this.game.getWorld().unhighlightTerritories();
-        this.game.cameraController.targetTerritory(this.territory);
+        game.activity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
+        game.getWorld().selectTerritory(this.territory);
+        game.getWorld().unhighlightTerritories();
+        game.cameraController.targetTerritory(this.territory);
+        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
     }
 
 }
