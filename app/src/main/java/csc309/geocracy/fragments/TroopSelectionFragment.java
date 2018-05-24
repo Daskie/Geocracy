@@ -43,10 +43,10 @@ public class TroopSelectionFragment extends Fragment {
         this.targetTerritory = (Territory) getArguments().get("targetTerritory");
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
-        originTerritoryID.setText("Select Number of Units From: " + originTerritory.getId());
+        originTerritoryID.setText("Select Number of Units From: " + originTerritory.getTerritoryName());
 
         TextView targetTerritoryID = view.findViewById(R.id.targetTerritoryID);
-        targetTerritoryID.setText("To Attack Territory: " + targetTerritory.getId());
+        targetTerritoryID.setText("To Attack Territory: " + targetTerritory.getTerritoryName());
 
         // get the bottom sheet view
         LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);
