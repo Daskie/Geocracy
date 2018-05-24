@@ -120,18 +120,15 @@ public class Mesh {
 
     public void unload() {
         if (vaoHandle != 0) {
-            int[] vaoArr = { vaoHandle };
-            GLES30.glDeleteVertexArrays(1, vaoArr, 0);
+            GLES30.glDeleteVertexArrays(1, new int[]{ vaoHandle }, 0);
             vaoHandle = 0;
         }
         if (vboHandle != 0) {
-            int[] vboArr = { vboHandle };
-            GLES30.glDeleteBuffers(1, vboArr, 0);
+            GLES30.glDeleteBuffers(1, new int[]{ vboHandle }, 0);
             vboHandle = 0;
         }
         if (iboHandle != 0) {
-            int[] iboArr = { iboHandle };
-            GLES30.glDeleteBuffers(1, iboArr, 0);
+            GLES30.glDeleteBuffers(1, new int[]{ iboHandle }, 0);
             iboHandle = 0;
         }
     }
@@ -189,6 +186,12 @@ public class Mesh {
     public int getNumVertices() { return nVertices; }
 
     public int getNumIndices() { return indices == null ? 0 : indices.length; }
+
+    public int getVBOHandle() { return vboHandle; }
+
+    public int getIBOHandle() { return iboHandle; }
+
+    public int getVAOHandle() { return vaoHandle; }
 
     private ByteBuffer genVertexBufferData() {
         ByteBuffer vertexData = ByteBuffer.allocateDirect(nVertices * VERTEX_SIZE);

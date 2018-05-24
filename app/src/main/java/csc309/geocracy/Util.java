@@ -12,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 
 import glm_.vec2.Vec2;
@@ -236,6 +238,14 @@ public abstract class Util {
     public static float smoothstep(float p) {
         float pp = p * p;
         return 3 * pp - 2 * pp * p;
+    }
+
+    // Returns a random element of the set. Since HashSets do not offer random access, this is O(n/2)
+    public static <T> T pickRandom(HashSet<T> set, Random rand) {
+        int i = rand.nextInt(set.size());
+        Iterator<T> it = set.iterator();
+        while (i > 0) { it.next(); --i; }
+        return it.next();
     }
 
 }

@@ -3,11 +3,14 @@
 layout (location = 0) in vec3 in_loc;
 layout (location = 1) in vec3 in_norm;
 layout (location = 2) in int in_info;
+layout (location = 3) in float in_vertInlandDist;
 
 out vec3 v2f_loc;
 flat out vec3 v2f_norm;
 out float v2f_elevation;
 flat out int v2f_coastDist;
+flat out int v2f_faceInlandDist;
+out float v2f_vertInlandDist;
 out float v2f_border;
 out vec3 v2f_edges;
 out vec3 v2f_bary;
@@ -37,6 +40,8 @@ void main() {
     int continent = (in_info >> 16) & 0xF;
     v2f_border = float((in_info >> 20) & 1);
     v2f_edges = vec3(float((in_info >> 21) & 1), float((in_info >> 22) & 1), float((in_info >> 23) & 1));
+    v2f_faceInlandDist = (in_info >> 24) & 0xFF;
+    v2f_vertInlandDist = in_vertInlandDist;
 
     int mod3 = gl_VertexID % 3;
     v2f_bary = vec3(mod3 == 0, mod3 == 1, mod3 == 2);
