@@ -10,7 +10,9 @@ import java.util.Random;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.space.SpaceRenderer;
+import csc309.geocracy.states.BattleResultsState;
 import csc309.geocracy.states.DefaultState;
+import csc309.geocracy.states.DiceRollState;
 import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
 import csc309.geocracy.states.IntentToAttackState;
@@ -55,6 +57,9 @@ public class Game {
     public GameState SelectedTerritoryState;
     public GameState IntentToAttackState;
     public GameState SelectedAttackTargetTerritoryState;
+    public GameState DiceRollState;
+    public GameState BattleResultsState;
+
 
     public Game(GameActivity activity) {
         this.activity = activity;
@@ -79,6 +84,10 @@ public class Game {
         SelectedTerritoryState = new SelectedTerritoryState(this);
         IntentToAttackState = new IntentToAttackState(this);
         SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
+        DiceRollState = new DiceRollState(this);
+        BattleResultsState = new BattleResultsState(this);
+
+
 
         setState(DefaultState);
 
@@ -125,6 +134,12 @@ public class Game {
             case ATTACK_TAPPED:
                 System.out.println("USER TAPPED ATTACK");
                 getState().enableAttackMode();
+                getState().initState();
+                break;
+
+            case CONFIRM_UNITS_TAPPED:
+                System.out.println("CONFIRM UNITS TAPPED");
+                getState().performDiceRoll(null, null);
                 getState().initState();
                 break;
 

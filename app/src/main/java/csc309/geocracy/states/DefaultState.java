@@ -29,6 +29,14 @@ public class DefaultState implements GameState {
         System.out.println("DEFAULT STATE: CANNOT ENABLE ATTACK MODE");
     }
 
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
+        System.out.println("DEFAULT STATE: CANNOT PERFORM DICE ROLL");
+    }
+
+    public void battleCompleted(BattleResultDetails battleResultDetails) {
+        System.out.println("DEFAULT STATE: INVALID STATE ACCESSED");
+    }
+
     public void cancelAction() {
         System.out.println("DEFAULT STATE: USER CANCELED ACTION -> NULL ACTION");
     }
