@@ -33,7 +33,10 @@ public class IntentToAttackState implements  GameState {
     }
 
     public void enableAttackMode() {
-        System.out.println("INTENT TO ATTACK STATE: ATTACK MODE ALREADY ENABLED!");
+        System.out.println("INTENT TO ATTACK STATE: -> Disable Attack Mode");
+        game.setState(game.SelectedTerritoryState);
+        game.getState().selectOriginTerritory(this.originTerritory);
+        game.getState().initState();
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {

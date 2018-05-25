@@ -107,30 +107,34 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         geocracyHeader.setPadding(20, 20, 0, 40);
 
         disposables.add(RxView.touches(geocracyHeader).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN)
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish("GAME_NAME_TAP_EVENT", e);
+            }
         }));
         EventBus.subscribe("GAME_NAME_TAP_EVENT", this, e -> showGameDevelopers());
 
         cancelBtn = findViewById(R.id.cancelBtn);
         cancelBtn.hide();
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN)
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
+            }
         }));
 
         attackBtn = findViewById(R.id.attackBtn);
         attackBtn.hide();
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN)
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
+            }
         }));
 
         FloatingActionButton settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN)
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
+            }
         }));
 
         uiLayout.addView(geocracyHeader);
@@ -166,7 +170,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             break;
 
                         case SET_ATTACK_MODE_INACTIVE:
-                            this.attackBtn.setAlpha(0.3f);
+                            this.attackBtn.setAlpha(0.4f);
                             break;
 
                         default:
