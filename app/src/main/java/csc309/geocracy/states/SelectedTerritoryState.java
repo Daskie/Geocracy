@@ -33,6 +33,14 @@ public class SelectedTerritoryState implements  GameState {
         game.getState().initState();
     }
 
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
+        System.out.println("SELECTED TERRITORY STATE: CANNOT PERFORM DICE ROLL");
+    }
+
+    public void battleCompleted(BattleResultDetails battleResultDetails) {
+        System.out.println("SELECTED TERRITORY STATE: INVALID STATE ACCESSED");
+    }
+
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.DefaultState);

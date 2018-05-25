@@ -7,6 +7,9 @@ public interface GameState {
     void cancelAction();
     void selectOriginTerritory(Territory territory);
     void selectTargetTerritory(Territory territory);
+    void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails);
+    void battleCompleted(BattleResultDetails battleResultDetails);
+
     void enableAttackMode();
     void initState();
 }

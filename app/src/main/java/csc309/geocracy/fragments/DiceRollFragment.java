@@ -25,8 +25,8 @@ public class DiceRollFragment extends Fragment {
     private Territory originTerritory;
 
 
-    public static TroopSelectionFragment newInstance(Territory originTerritory, Territory targetTerritory) {
-        TroopSelectionFragment newFragment = new TroopSelectionFragment();
+    public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory) {
+        DiceRollFragment newFragment = new DiceRollFragment();
 
         Bundle args = new Bundle();
         args.putSerializable("originTerritory", originTerritory);
@@ -39,7 +39,7 @@ public class DiceRollFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.troop_selection, container, false);
+        View view = inflater.inflate(R.layout.dice_roll, container, false);
 
         this.originTerritory = (Territory) getArguments().get("originTerritory");
         this.targetTerritory = (Territory) getArguments().get("targetTerritory");
