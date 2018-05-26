@@ -29,6 +29,14 @@ public class DefaultState implements GameState {
         System.out.println("DEFAULT STATE: CANNOT ENABLE ATTACK MODE");
     }
 
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
+        System.out.println("DEFAULT STATE: CANNOT PERFORM DICE ROLL");
+    }
+
+    public void battleCompleted(BattleResultDetails battleResultDetails) {
+        System.out.println("DEFAULT STATE: INVALID STATE ACCESSED");
+    }
+
     public void cancelAction() {
         System.out.println("DEFAULT STATE: USER CANCELED ACTION -> NULL ACTION");
     }
@@ -37,8 +45,8 @@ public class DefaultState implements GameState {
         game.activity.removeActiveBottomPaneFragment();
         game.getWorld().unselectTerritory();
         game.getWorld().unhighlightTerritories();
-        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
     }
 }

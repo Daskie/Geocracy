@@ -33,6 +33,14 @@ public class SelectedTerritoryState implements  GameState {
         game.getState().initState();
     }
 
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
+        System.out.println("SELECTED TERRITORY STATE: CANNOT PERFORM DICE ROLL");
+    }
+
+    public void battleCompleted(BattleResultDetails battleResultDetails) {
+        System.out.println("SELECTED TERRITORY STATE: INVALID STATE ACCESSED");
+    }
+
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.DefaultState);
@@ -45,8 +53,8 @@ public class SelectedTerritoryState implements  GameState {
         game.getWorld().selectTerritory(this.territory);
         game.getWorld().unhighlightTerritories();
         game.cameraController.targetTerritory(this.territory);
-        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
     }
 

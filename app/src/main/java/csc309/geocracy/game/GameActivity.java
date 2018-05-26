@@ -65,8 +65,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     static private boolean settingsVisible = false;
 
 
-    private FloatingActionButton attackBtn;
-    private FloatingActionButton cancelBtn;
+    public FloatingActionButton attackBtn;
+    public FloatingActionButton cancelBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,26 +107,34 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         geocracyHeader.setPadding(20, 20, 0, 40);
 
         disposables.add(RxView.touches(geocracyHeader).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("GAME_NAME_TAP_EVENT", e);
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("GAME_NAME_TAP_EVENT", e);
+            }
         }));
-        EventBus.subscribe("GAME_NAME_TAP_EVENT", this,  e -> showGameDevelopers());
+        EventBus.subscribe("GAME_NAME_TAP_EVENT", this, e -> showGameDevelopers());
 
         cancelBtn = findViewById(R.id.cancelBtn);
         cancelBtn.hide();
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
+            }
         }));
 
         attackBtn = findViewById(R.id.attackBtn);
         attackBtn.hide();
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
-            if (e.getAction() != MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
+            }
         }));
 
         FloatingActionButton settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
+            }
         }));
 
         uiLayout.addView(geocracyHeader);
@@ -139,36 +147,36 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     UIEvent event = (UIEvent) e;
                     System.out.println("UI EVENT: " + event);
 
-                            switch (event) {
+                    switch (event) {
 
-                                case HIDE_CANCEL_BUTTON:
-                                    this.cancelBtn.hide();
-                                    break;
+                        case HIDE_CANCEL_BUTTON:
+                            this.cancelBtn.hide();
+                            break;
 
-                                case SHOW_CANCEL_BUTTON:
-                                    this.cancelBtn.show();
-                                    break;
+                        case SHOW_CANCEL_BUTTON:
+                            this.cancelBtn.show();
+                            break;
 
-                                case HIDE_ATTACK_MODE_BUTTON:
-                                    this.attackBtn.hide();
-                                    break;
+                        case HIDE_ATTACK_MODE_BUTTON:
+                            this.attackBtn.hide();
+                            break;
 
-                                case SHOW_ATTACK_MODE_BUTTON:
-                                    this.attackBtn.show();
-                                    break;
+                        case SHOW_ATTACK_MODE_BUTTON:
+                            this.attackBtn.show();
+                            break;
 
-                                case SET_ATTACK_MODE_ACTIVE:
-                                    this.attackBtn.setAlpha(1.0f);
-                                    break;
+                        case SET_ATTACK_MODE_ACTIVE:
+                            this.attackBtn.setAlpha(1.0f);
+                            break;
 
-                                case SET_ATTACK_MODE_INACTIVE:
-                                    this.attackBtn.setAlpha(0.3f);
-                                    break;
+                        case SET_ATTACK_MODE_INACTIVE:
+                            this.attackBtn.setAlpha(0.4f);
+                            break;
 
-                                default:
-                                    break;
+                        default:
+                            break;
 
-                            }
+                    }
                 })
         );
 

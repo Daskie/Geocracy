@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:layout_gravity="bottom"
+    android:background="@color/whiteTransparent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/diceRollHeader"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/territoryDetailColor"
+        android:gravity="center"
+        android:text="Dice Roll"
+        android:textColor="@android:color/white" />
+
+
+    <TextView
+        android:id="@+id/attackingPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:text="Attacker Rolls a:"/>
+
+    <TextView
+        android:id="@+id/defendingPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:text="Defender Rolls a:"/>
+
+    <TextView
+        android:id="@+id/battleResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:text="Result:"/>
+
+
+</LinearLayout>

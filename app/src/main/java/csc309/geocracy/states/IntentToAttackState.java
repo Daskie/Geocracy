@@ -33,7 +33,18 @@ public class IntentToAttackState implements  GameState {
     }
 
     public void enableAttackMode() {
-        System.out.println("ATTACK MODE ALREADY ENABLED");
+        System.out.println("INTENT TO ATTACK STATE: -> Disable Attack Mode");
+        game.setState(game.SelectedTerritoryState);
+        game.getState().selectOriginTerritory(this.originTerritory);
+        game.getState().initState();
+    }
+
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
+        System.out.println("INTENT TO ATTACK STATE: CANNOT PERFORM DICE ROLL");
+    }
+
+    public void battleCompleted(BattleResultDetails battleResultDetails) {
+        System.out.println("INTENT TO ATTACK STATE: INVALID STATE ACCESSED");
     }
 
     public void cancelAction() {
