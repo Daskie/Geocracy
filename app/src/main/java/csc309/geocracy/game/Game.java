@@ -16,6 +16,7 @@ import csc309.geocracy.states.GameState;
 import csc309.geocracy.states.IntentToAttackState;
 import csc309.geocracy.states.SelectedAttackTargetTerritoryState;
 import csc309.geocracy.states.SelectedTerritoryState;
+import csc309.geocracy.states.SetUpInitTerritories;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;
@@ -34,7 +35,7 @@ public class Game {
     private long startT; // time the game was started
     private long lastT; // time last frame happened
     private World world;
-    private Player[] players;
+    public Player[] players;
     private SpaceRenderer spaceRenderer;
     public CameraController cameraController;
     private int idFBHandle;
@@ -55,6 +56,9 @@ public class Game {
     public GameState SelectedTerritoryState;
     public GameState IntentToAttackState;
     public GameState SelectedAttackTargetTerritoryState;
+    public GameState SetUpInitTerritories;
+
+    public int currentPlayer;
 
     public Game(GameActivity activity) {
         this.activity = activity;
@@ -68,17 +72,20 @@ public class Game {
         for (int i = 0; i < players.length; ++i) {
             players[i] = new Player(i + 1, playerColors[i]);
         }
+
+        currentPlayer = 0;
         // Randomly assign territories players
-        Random rand = new Random();
-        for (Territory terr : world.getTerritories()) {
-            terr.setOwner(players[rand.nextInt(players.length)]);
-            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
-        }
+//        Random rand = new Random();
+//        for (Territory terr : world.getTerritories()) {
+//            terr.setOwner(players[rand.nextInt(players.length)]);
+//            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
+//        }
 
         DefaultState = new DefaultState(this);
         SelectedTerritoryState = new SelectedTerritoryState(this);
         IntentToAttackState = new IntentToAttackState(this);
         SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
+        SetUpInitTerritories = new SetUpInitTerritories(this);
 
         setState(DefaultState);
 

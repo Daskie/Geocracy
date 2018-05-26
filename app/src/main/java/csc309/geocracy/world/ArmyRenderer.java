@@ -119,13 +119,15 @@ public class ArmyRenderer {
 
         for (Territory terr : world.getTerritories()) {
             Vec3[] armyLocations = world.getTerrain().getTerritoryArmyLocations(terr.getId());
-            int playerID = terr.getOwner().getId();
-            for (int li = 0; li < terr.getNArmies(); ++li) {
-                Vec3 location = armyLocations[li];
-                bb.putFloat(location.x);
-                bb.putFloat(location.y);
-                bb.putFloat(location.z);
-                bb.putInt(playerID);
+            if(terr.getOwner()!=null) {
+                int playerID = terr.getOwner().getId();
+                for (int li = 0; li < terr.getNArmies(); ++li) {
+                    Vec3 location = armyLocations[li];
+                    bb.putFloat(location.x);
+                    bb.putFloat(location.y);
+                    bb.putFloat(location.z);
+                    bb.putInt(playerID);
+                }
             }
 
         }

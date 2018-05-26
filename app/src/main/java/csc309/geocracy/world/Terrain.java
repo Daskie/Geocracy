@@ -113,8 +113,8 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
-        shader.setPlayerColors(world.game.getPlayers());
-        shader.setTerritoryPlayers(world.getTerritories());
+//        shader.setPlayerColors(world.game.getPlayers());
+//        shader.setTerritoryPlayers(world.getTerritories());
         if (Util.isGLError()) {
             Log.e("Terrain", "Failed to initialize shader uniforms");
             return false;

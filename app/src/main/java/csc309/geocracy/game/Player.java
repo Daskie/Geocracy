@@ -22,10 +22,11 @@ public class Player {
         this.id = id;
         this.name = faker.name().fullName();
         this.color = new Vec3(color);
+        this.territories = new HashSet<Territory>();
     }
 
     public void addTerritory(Territory territory) {
-        territories.add(territory);
+        this.territories.add(territory);
     }
 
     public void removeTerritory(Territory territory) {

@@ -16,7 +16,7 @@ public class DefaultState implements GameState {
 
     public void selectOriginTerritory(Territory territory) {
         System.out.println("DEFAULT STATE: TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
-        game.setState(game.SelectedTerritoryState);
+        game.setState(game.SetUpInitTerritories);
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
