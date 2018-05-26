@@ -35,6 +35,13 @@ public class SetUpInitTerritories implements GameState {
         System.out.println("SETUP TERRITORY STATE: CANNOT SELECT TARGET TERRITORY");
     }
 
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
+
+    }
+    public void battleCompleted(BattleResultDetails battleResultDetails){
+        
+    }
+
     public void enableAttackMode() {
         System.out.println("SETUP TERRITORY STATE: CANNOT ENABLE ATTACK MODE");
     }
@@ -42,6 +49,7 @@ public class SetUpInitTerritories implements GameState {
     public void cancelAction() {
         System.out.println("SETUP STATE: USER CANCELED ACTION -> NULL ACTION");
     }
+
 
     public void initState() {
         game.activity.removeActiveBottomPaneFragment();
