@@ -218,6 +218,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         Toasty.info(this, "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
     }
 
+    void invalidTerritorySelection(){
+        Toasty.info(this, "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show();
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

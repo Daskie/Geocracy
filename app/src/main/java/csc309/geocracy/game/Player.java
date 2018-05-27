@@ -8,19 +8,14 @@ import java.util.Random;
 import csc309.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
-public class Player {
-
-    private static int fakerSeed = 1;
-    private static Faker faker = new Faker(new Random(fakerSeed));
-
+public abstract class Player {
     private int id; // starts at 1. 0 indicates no player
-    private String name;
+    public String name;
     private HashSet<Territory> territories;
     private Vec3 color;
 
     public Player(int id, Vec3 color) {
         this.id = id;
-        this.name = faker.name().fullName();
         this.color = new Vec3(color);
         this.territories = new HashSet<Territory>();
     }
@@ -48,5 +43,4 @@ public class Player {
     public Vec3 getColor() {
         return color;
     }
-
 }

@@ -3,6 +3,7 @@ package csc309.geocracy.game;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
@@ -18,9 +19,10 @@ import csc309.geocracy.states.GameState;
 import csc309.geocracy.states.IntentToAttackState;
 import csc309.geocracy.states.SelectedAttackTargetTerritoryState;
 import csc309.geocracy.states.SelectedTerritoryState;
-import csc309.geocracy.states.SetUpInitTerritories;
+import csc309.geocracy.states.SetUpInitTerritoriesState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
+import es.dmoral.toasty.Toasty;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
@@ -58,7 +60,7 @@ public class Game {
     public GameState SelectedTerritoryState;
     public GameState IntentToAttackState;
     public GameState SelectedAttackTargetTerritoryState;
-    public GameState SetUpInitTerritories;
+    public GameState SetUpInitTerritoriesState;
 
     public int currentPlayer;
     public GameState DiceRollState;
@@ -74,11 +76,15 @@ public class Game {
         // Create players
         players = new Player[8];
         Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
-        for (int i = 0; i < players.length; ++i) {
-            players[i] = new Player(i + 1, playerColors[i]);
+
+        players[0] = new HumanPlayer(1, playerColors[0]);
+
+        for (int i = 1; i < players.length; ++i) {
+            players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
 
         currentPlayer = 0;
+
         // Randomly assign territories players
 //        Random rand = new Random();
 //        for (Territory terr : world.getTerritories()) {
@@ -92,9 +98,7 @@ public class Game {
         SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
         DiceRollState = new DiceRollState(this);
         BattleResultsState = new BattleResultsState(this);
-
-
-        SetUpInitTerritories = new SetUpInitTerritories(this);
+        SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this);
 
         setState(DefaultState);
 
@@ -131,6 +135,11 @@ public class Game {
                 if (getState() == this.IntentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);
                 } else {
+//                    if(selectedTerritory.getOwner()!=null){
+//                        //add notification that territory is owned and cannot be chosen
+//                        this.activity.invalidTerritorySelection();
+//                        return;
+//                    }
                     getState().selectOriginTerritory(selectedTerritory);
                 }
 

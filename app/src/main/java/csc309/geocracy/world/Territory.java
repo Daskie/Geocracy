@@ -1,12 +1,13 @@
 package csc309.geocracy.world;
 
+import csc309.geocracy.game.Player;
+
 import com.github.javafaker.Faker;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Random;
 
-import csc309.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
 public class Territory implements Serializable {

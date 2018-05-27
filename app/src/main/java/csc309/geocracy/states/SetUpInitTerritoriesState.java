@@ -1,16 +1,19 @@
 package csc309.geocracy.states;
 
+import android.widget.Toast;
+
 import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
+import es.dmoral.toasty.Toasty;
 
-public class SetUpInitTerritories implements GameState {
+public class SetUpInitTerritoriesState implements GameState {
 
     private Game game;
     private Territory territory;
 
-    public SetUpInitTerritories(Game game) {
+    public SetUpInitTerritoriesState(Game game) {
         this.game = game;
     }
 
@@ -39,7 +42,7 @@ public class SetUpInitTerritories implements GameState {
 
     }
     public void battleCompleted(BattleResultDetails battleResultDetails){
-        
+
     }
 
     public void enableAttackMode() {
@@ -52,6 +55,8 @@ public class SetUpInitTerritories implements GameState {
 
 
     public void initState() {
+        System.out.println("INIT DICE ROLL STATE:");
+
         game.activity.removeActiveBottomPaneFragment();
         game.getWorld().selectTerritory(this.territory);
         game.getWorld().unhighlightTerritories();
