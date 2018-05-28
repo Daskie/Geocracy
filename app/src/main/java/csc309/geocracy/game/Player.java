@@ -25,7 +25,7 @@ public abstract class Player {
     }
 
     public void removeTerritory(Territory territory) {
-        territories.remove(territory);
+        this.territories.remove(territory);
     }
 
     public int getId() {

@@ -50,6 +50,8 @@ public class Game {
     private Vec2i tappedPoint;
     private float zoomFactor;
     private ByteBuffer readbackBuffer;
+    private Random rand;
+    private int randTerr;
 
     public GameData gameData;
     public GameActivity activity;
@@ -98,7 +100,10 @@ public class Game {
         SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
         DiceRollState = new DiceRollState(this);
         BattleResultsState = new BattleResultsState(this);
-        SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this);
+        SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
+
+        rand = new Random();
+
 
         setState(DefaultState);
 
@@ -135,12 +140,16 @@ public class Game {
                 if (getState() == this.IntentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);
                 } else {
-//                    if(selectedTerritory.getOwner()!=null){
-//                        //add notification that territory is owned and cannot be chosen
-//                        this.activity.invalidTerritorySelection();
-//                        return;
-//                    }
                     getState().selectOriginTerritory(selectedTerritory);
+
+//                    if(players[currentPlayer] instanceof HumanPlayer)
+//                        getState().selectOriginTerritory(selectedTerritory);
+//
+//                    else{
+//                        randTerr = rand.nextInt(world.getNTerritories());
+//                        getState().selectOriginTerritory(world.getTerritory(randTerr));
+//
+//                    }
                 }
 
                 getState().initState();
