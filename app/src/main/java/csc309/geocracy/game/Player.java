@@ -13,11 +13,13 @@ public abstract class Player {
     public String name;
     private HashSet<Territory> territories;
     private Vec3 color;
+    private int armies;
 
     public Player(int id, Vec3 color) {
         this.id = id;
         this.color = new Vec3(color);
         this.territories = new HashSet<Territory>();
+        this.armies = 0;
     }
 
     public void addTerritory(Territory territory) {
@@ -42,5 +44,17 @@ public abstract class Player {
 
     public Vec3 getColor() {
         return color;
+    }
+
+    public void addNArmies(int numArmies){
+        this.armies += numArmies;
+    }
+
+    public void removeNArmies(int numArmies){
+        this.armies -= numArmies;
+    }
+
+    public int getNArmies(){
+        return this.armies;
     }
 }

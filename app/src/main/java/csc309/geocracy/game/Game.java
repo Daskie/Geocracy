@@ -20,6 +20,7 @@ import csc309.geocracy.states.IntentToAttackState;
 import csc309.geocracy.states.SelectedAttackTargetTerritoryState;
 import csc309.geocracy.states.SelectedTerritoryState;
 import csc309.geocracy.states.SetUpInitTerritoriesState;
+import csc309.geocracy.states.GainArmyUnitsState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import es.dmoral.toasty.Toasty;
@@ -63,6 +64,8 @@ public class Game {
     public GameState IntentToAttackState;
     public GameState SelectedAttackTargetTerritoryState;
     public GameState SetUpInitTerritoriesState;
+    public GameState GainArmyUnitsState;
+
 
     public int currentPlayer;
     public GameState DiceRollState;
@@ -101,6 +104,7 @@ public class Game {
         DiceRollState = new DiceRollState(this);
         BattleResultsState = new BattleResultsState(this);
         SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
+        GainArmyUnitsState = new GainArmyUnitsState(this);
 
         rand = new Random();
 

@@ -5,6 +5,7 @@ import android.widget.Toast;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
+import csc309.geocracy.game.Player;
 import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
@@ -25,6 +26,7 @@ public class SetUpInitTerritoriesState implements GameState {
         System.out.println("SETUP TERRITORY STATE: ANOTHER TERRITORY SELECTED");
         this.territory = territory;
 
+        //illegal territory selection for setting up territories
         if(this.territory.getOwner()!=null){
             this.parent.runOnUiThread(new Runnable() {
                 public void run() {
@@ -62,7 +64,9 @@ public class SetUpInitTerritoriesState implements GameState {
     }
 
     public void cancelAction() {
-        System.out.println("SETUP STATE: USER CANCELED ACTION -> NULL ACTION");
+        System.out.println("SETUP TERRITORY STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        game.setState(game.DefaultState);
+        game.getState().initState();
     }
 
 
@@ -76,5 +80,10 @@ public class SetUpInitTerritoriesState implements GameState {
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
+
+        if(game.getWorld().allTerritoriesOccupied())
+            game.setState(game.GainArmyUnitsState);
+
     }
+
 }
