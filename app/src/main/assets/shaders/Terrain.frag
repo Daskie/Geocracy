@@ -63,7 +63,7 @@ void main() {
     // Diffuse lighting
     float diffuse = (1.0f - k_ambience) * max(dot(v2f_norm, -u_lightDir), 0.0f) + k_ambience;
 
-    vec3 landColor = desaturate(v2f_continentColor, 0.25f);
+    vec3 landColor = desaturate(v2f_continentColor, 0.33f);
     vec3 coastColor = mix(k_sandColor, v2f_continentColor, sign(super));
     vec3 oceanColor = k_sandColor * (1.0f - sub);
 
