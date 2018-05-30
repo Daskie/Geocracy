@@ -5,7 +5,6 @@ import android.widget.Toast;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
-import csc309.geocracy.game.Player;
 import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
@@ -37,7 +36,6 @@ public class SetUpInitTerritoriesState implements GameState {
         }
 
         territory.setOwner(game.players[game.currentPlayer]);
-        game.players[game.currentPlayer].addTerritory(territory);
         territory.setNArmies(1);
 
         System.out.println("PLAYER" + game.currentPlayer + " ADDED " + territory.getTerritoryName());

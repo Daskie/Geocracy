@@ -1,9 +1,8 @@
 package csc309.geocracy.world;
 
-import csc309.geocracy.game.Player;
-
 import android.util.Log;
 
+import csc309.geocracy.game.Player;
 import csc309.geocracy.graphics.Shader;
 import glm_.mat4x4.Mat4;
 import glm_.vec3.Vec3;
@@ -85,7 +84,7 @@ public class TerrainShader extends Shader {
     public void setTerritoryPlayers(Territory[] territories) {
         int[] terrPlayers = new int[territories.length + 1];
         for (int i = 0; i < territories.length; ++i) {
-            terrPlayers[i + 1] = territories[i].getOwner().getId();
+            terrPlayers[i + 1] = territories[i].hasOwner() ? territories[i].getOwner().getId() : 0;
         }
         uploadUniform(territoryPlayersHandle, terrPlayers, true);
     }

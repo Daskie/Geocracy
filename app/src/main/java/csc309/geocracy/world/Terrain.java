@@ -20,6 +20,7 @@ import csc309.geocracy.game.Game;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.noise.SimplexNoise;
+import glm_.mat3x3.Mat3;
 import glm_.vec3.Vec3;
 
 import static glm_.Java.glm;
@@ -43,7 +44,9 @@ public class Terrain {
         HashSet<Integer> waterwayTerrs = new HashSet<>();
         int continent;
         Vec3 center;
+        int[] armyFaces;
         Vec3[] armyLocations;
+        Mat3[] armyOrientations;
     }
 
     private class ContinentSpec {
@@ -54,7 +57,7 @@ public class Terrain {
     }
 
     private static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
-    private static final int MIN_TERRITORY_LAND_FACES = World.TESSELLATION_DEGREE <= 4 ? 6 : 6 * (1 << (1 << (World.TESSELLATION_DEGREE - 4)));
+    private static final int MIN_TERRITORY_LAND_FACES = Game.MAX_ARMIES_PER_TERRITORY * 2;
 
     private World world;
     private TerrainShader shader;
@@ -64,6 +67,7 @@ public class Terrain {
     private int vboHandle;
     private int vaoHandle;
     private Face[] faces;
+    private float[] faceNormals;
     private int[] landFaces;
     private int[] oceanFaces;
     private int[] coastFaces;
@@ -85,6 +89,7 @@ public class Terrain {
 
         Random rand = new Random(seed);
         terraform(rand);
+        detFaceNormals();
         genFaceAdjacencies();
         categorizeFaces();
         createTerritories(maxNTerritories, rand);
@@ -113,8 +118,8 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
-//        shader.setPlayerColors(world.game.getPlayers());
-//        shader.setTerritoryPlayers(world.getTerritories());
+        shader.setPlayerColors(world.game.getPlayers());
+        shader.setTerritoryPlayers(world.getTerritories());
         if (Util.isGLError()) {
             Log.e("Terrain", "Failed to initialize shader uniforms");
             return false;
@@ -178,7 +183,7 @@ public class Terrain {
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean highlightChange) {
+    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean highlightChange, boolean ownershipChange) {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
@@ -196,6 +201,9 @@ public class Terrain {
             boolean[] terrsHighlighted = new boolean[territorySpecs.length];
             for (Territory terr : world.getHighlightedTerritories()) terrsHighlighted[terr.getId()] = true;
             shader.setHighlightedTerritories(terrsHighlighted);
+        }
+        if (ownershipChange) {
+            shader.setTerritoryPlayers(world.getTerritories());
         }
 
         GLES30.glBindVertexArray(vaoHandle);
@@ -302,6 +310,10 @@ public class Terrain {
         return territorySpecs[ti].armyLocations;
     }
 
+    Mat3[] getTerritoryArmyOrientations(int ti) {
+        return territorySpecs[ti].armyOrientations;
+    }
+
     private Pair<Vec3, Vec3> calcWaterwayPointsBetween(int t1i, int t2i) {
         SparseArray<Vec3> faces1 = new SparseArray<>();
         SparseArray<Vec3> faces2 = new SparseArray<>();
@@ -384,9 +396,6 @@ public class Terrain {
         vertexData.order(ByteOrder.nativeOrder());
 
         // Interlace vertex data
-        Vec3 faceNorm = new Vec3();
-        Vec3 v1 = new Vec3();
-        Vec3 v12 = new Vec3(), v13 = new Vec3();
         for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
             int vi1 = indices[ii + 0];
@@ -396,37 +405,32 @@ public class Terrain {
             int ci2 = vi2 * 3;
             int ci3 = vi3 * 3;
 
-            VecArrayUtil.get(locations, vi1, v1);
-            VecArrayUtil.get(locations, vi2, v12);
-            VecArrayUtil.get(locations, vi3, v13);
-            v12.minusAssign(v1);
-            v13.minusAssign(v1);
-            faceNorm.put(v12);
-            faceNorm.crossAssign(v13);
-            faceNorm.normalizeAssign();
+            float nx = faceNormals[ii + 0];
+            float ny = faceNormals[ii + 1];
+            float nz = faceNormals[ii + 2];
 
             vertexData.putFloat(locations[ci1 + 0]);
             vertexData.putFloat(locations[ci1 + 1]);
             vertexData.putFloat(locations[ci1 + 2]);
-            vertexData.putFloat(faceNorm.x);
-            vertexData.putFloat(faceNorm.y);
-            vertexData.putFloat(faceNorm.z);
+            vertexData.putFloat(nx);
+            vertexData.putFloat(ny);
+            vertexData.putFloat(nz);
             vertexData.putInt(verticesInfo[ii + 0]);
             vertexData.putFloat(vertInlandDists[vi1]);
             vertexData.putFloat(locations[ci2 + 0]);
             vertexData.putFloat(locations[ci2 + 1]);
             vertexData.putFloat(locations[ci2 + 2]);
-            vertexData.putFloat(faceNorm.x);
-            vertexData.putFloat(faceNorm.y);
-            vertexData.putFloat(faceNorm.z);
+            vertexData.putFloat(nx);
+            vertexData.putFloat(ny);
+            vertexData.putFloat(nz);
             vertexData.putInt(verticesInfo[ii + 1]);
             vertexData.putFloat(vertInlandDists[vi2]);
             vertexData.putFloat(locations[ci3 + 0]);
             vertexData.putFloat(locations[ci3 + 1]);
             vertexData.putFloat(locations[ci3 + 2]);
-            vertexData.putFloat(faceNorm.x);
-            vertexData.putFloat(faceNorm.y);
-            vertexData.putFloat(faceNorm.z);
+            vertexData.putFloat(nx);
+            vertexData.putFloat(ny);
+            vertexData.putFloat(nz);
             vertexData.putInt(verticesInfo[ii + 2]);
             vertexData.putFloat(vertInlandDists[vi3]);
         }
@@ -553,6 +557,30 @@ public class Terrain {
             locations[ci + 0] *= v;
             locations[ci + 1] *= v;
             locations[ci + 2] *= v;
+        }
+    }
+
+    private void detFaceNormals() {
+        faceNormals = new float[faces.length * 3];
+
+        Vec3 faceNorm = new Vec3();
+        Vec3 v1 = new Vec3();
+        Vec3 v12 = new Vec3(), v13 = new Vec3();
+        for (int fi = 0; fi < faces.length; ++fi) {
+            int ii = fi * 3;
+            int vi1 = indices[ii + 0];
+            int vi2 = indices[ii + 1];
+            int vi3 = indices[ii + 2];
+
+            VecArrayUtil.get(locations, vi1, v1);
+            VecArrayUtil.get(locations, vi2, v12);
+            VecArrayUtil.get(locations, vi3, v13);
+            v12.minusAssign(v1);
+            v13.minusAssign(v1);
+            faceNorm.put(v12);
+            faceNorm.crossAssign(v13);
+            faceNorm.normalizeAssign();
+            VecArrayUtil.set(faceNormals, fi, faceNorm);
         }
     }
 
@@ -735,7 +763,8 @@ public class Terrain {
 
         detInlandDists();
         detTerritoryCenters();
-        detArmyLocations();
+        detArmyFaces();
+        detArmyLocationsAndOrientations();
     }
 
     private void handleSmallAndExcessTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int maxNTerritories) {
@@ -975,29 +1004,62 @@ public class Terrain {
         }
     }
 
-    private void detArmyLocations() {
+    private void detArmyFaces() {
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
-            terr.armyLocations = new Vec3[Game.MAX_ARMIES_PER_TERRITORY];
+            terr.armyFaces = new int[Game.MAX_ARMIES_PER_TERRITORY];
+
             int armyI = 0;
             int dist = terr.inlandFaces.size() - 1;
+            HashSet<Integer> checked = new HashSet<>();
             while (dist >= 0) {
                 for (int fi : terr.inlandFaces.valueAt(dist)) {
-                    if (armyI >= terr.armyLocations.length) {
+                    if (armyI >= terr.armyFaces.length) {
                         break;
                     }
-                    terr.armyLocations[armyI] = getFaceCenter(fi);
+
+                    if (checked.contains(fi)) {
+                        continue;
+                    }
+
+                    terr.armyFaces[armyI] = fi;
+                    checked.add(fi);
+                    checked.add(faces[fi].adjacencies[0]);
+                    checked.add(faces[fi].adjacencies[1]);
+                    checked.add(faces[fi].adjacencies[2]);
                     ++armyI;
                 }
-                if (armyI >= terr.armyLocations.length) {
+                if (armyI >= terr.armyFaces.length) {
                     break;
                 }
+
                 --dist;
             }
 
             // Not enough faces for armies
-            if (armyI < terr.armyLocations.length) {
+            if (armyI < terr.armyFaces.length) {
                 Log.e("Terrain", "Not enough faces in territory for armies");
+            }
+        }
+    }
+
+    private void detArmyLocationsAndOrientations() {
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            TerritorySpec terr = territorySpecs[ti];
+            int nArmies = terr.armyFaces.length;
+            terr.armyLocations = new Vec3[nArmies];
+            terr.armyOrientations = new Mat3[nArmies];
+
+            for (int ai = 0; ai < nArmies; ++ai) {
+                terr.armyLocations[ai] = getFaceCenter(terr.armyFaces[ai]);
+
+                Vec3 w = VecArrayUtil.get(faceNormals, terr.armyFaces[ai]);
+                Vec3 u = terr.armyLocations[ai].minus(terr.center);
+                Vec3 v = w.cross(u);
+                if (Util.isZero(v)) v = Util.ortho(w);
+                v.normalizeAssign();
+                u = v.cross(w);
+                terr.armyOrientations[ai] = new Mat3(u, v, w);
             }
         }
     }
