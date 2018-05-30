@@ -3,6 +3,7 @@ package csc309.geocracy.game;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
@@ -10,14 +11,19 @@ import java.util.Random;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.space.SpaceRenderer;
+import csc309.geocracy.states.BattleResultsState;
 import csc309.geocracy.states.DefaultState;
+import csc309.geocracy.states.DiceRollState;
 import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
 import csc309.geocracy.states.IntentToAttackState;
 import csc309.geocracy.states.SelectedAttackTargetTerritoryState;
 import csc309.geocracy.states.SelectedTerritoryState;
+import csc309.geocracy.states.SetUpInitTerritoriesState;
+import csc309.geocracy.states.GainArmyUnitsState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
+import es.dmoral.toasty.Toasty;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
@@ -34,7 +40,7 @@ public class Game {
     private long startT; // time the game was started
     private long lastT; // time last frame happened
     private World world;
-    private Player[] players;
+    public Player[] players;
     private SpaceRenderer spaceRenderer;
     public CameraController cameraController;
     private int idFBHandle;
@@ -45,6 +51,8 @@ public class Game {
     private Vec2i tappedPoint;
     private float zoomFactor;
     private ByteBuffer readbackBuffer;
+    private Random rand;
+    private int randTerr;
 
     public GameData gameData;
     public GameActivity activity;
@@ -55,6 +63,14 @@ public class Game {
     public GameState SelectedTerritoryState;
     public GameState IntentToAttackState;
     public GameState SelectedAttackTargetTerritoryState;
+    public GameState SetUpInitTerritoriesState;
+    public GameState GainArmyUnitsState;
+
+
+    public int currentPlayer;
+    public GameState DiceRollState;
+    public GameState BattleResultsState;
+
 
     public Game(GameActivity activity) {
         this.activity = activity;
@@ -65,20 +81,33 @@ public class Game {
         // Create players
         players = new Player[8];
         Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
-        for (int i = 0; i < players.length; ++i) {
-            players[i] = new Player(i + 1, playerColors[i]);
+
+        players[0] = new HumanPlayer(1, playerColors[0]);
+
+        for (int i = 1; i < players.length; ++i) {
+            players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
+
+        currentPlayer = 0;
+
         // Randomly assign territories players
-        Random rand = new Random();
-        for (Territory terr : world.getTerritories()) {
-            terr.setOwner(players[rand.nextInt(players.length)]);
-            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
-        }
+//        Random rand = new Random();
+//        for (Territory terr : world.getTerritories()) {
+//            terr.setOwner(players[rand.nextInt(players.length)]);
+//            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
+//        }
 
         DefaultState = new DefaultState(this);
         SelectedTerritoryState = new SelectedTerritoryState(this);
         IntentToAttackState = new IntentToAttackState(this);
         SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
+        DiceRollState = new DiceRollState(this);
+        BattleResultsState = new BattleResultsState(this);
+        SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
+        GainArmyUnitsState = new GainArmyUnitsState(this);
+
+        rand = new Random();
+
 
         setState(DefaultState);
 
@@ -116,6 +145,15 @@ public class Game {
                     getState().selectTargetTerritory(selectedTerritory);
                 } else {
                     getState().selectOriginTerritory(selectedTerritory);
+
+//                    if(players[currentPlayer] instanceof HumanPlayer)
+//                        getState().selectOriginTerritory(selectedTerritory);
+//
+//                    else{
+//                        randTerr = rand.nextInt(world.getNTerritories());
+//                        getState().selectOriginTerritory(world.getTerritory(randTerr));
+//
+//                    }
                 }
 
                 getState().initState();
@@ -125,6 +163,12 @@ public class Game {
             case ATTACK_TAPPED:
                 System.out.println("USER TAPPED ATTACK");
                 getState().enableAttackMode();
+                getState().initState();
+                break;
+
+            case CONFIRM_UNITS_TAPPED:
+                System.out.println("CONFIRM UNITS TAPPED");
+                getState().performDiceRoll(null, null);
                 getState().initState();
                 break;
 

@@ -1,9 +1,5 @@
 package csc309.geocracy.states;
 
-import java.util.HashSet;
-
-import csc309.geocracy.game.GameActivity;
-import csc309.geocracy.game.GameData;
 import csc309.geocracy.world.Territory;
 
 public interface GameState {
@@ -11,6 +7,9 @@ public interface GameState {
     void cancelAction();
     void selectOriginTerritory(Territory territory);
     void selectTargetTerritory(Territory territory);
+    void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails);
+    void battleCompleted(BattleResultDetails battleResultDetails);
+
     void enableAttackMode();
     void initState();
 }

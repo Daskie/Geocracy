@@ -1,31 +1,41 @@
 package csc309.geocracy.game;
 
+import com.github.javafaker.Faker;
+
 import java.util.HashSet;
+import java.util.Random;
 
 import csc309.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
-public class Player {
-
+public abstract class Player {
     private int id; // starts at 1. 0 indicates no player
+    public String name;
     private HashSet<Territory> territories;
     private Vec3 color;
+    private int armies;
 
     public Player(int id, Vec3 color) {
         this.id = id;
         this.color = new Vec3(color);
+        this.territories = new HashSet<Territory>();
+        this.armies = 0;
     }
 
     public void addTerritory(Territory territory) {
-        territories.add(territory);
+        this.territories.add(territory);
     }
 
     public void removeTerritory(Territory territory) {
-        territories.remove(territory);
+        this.territories.remove(territory);
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public HashSet<Territory> getTerritories() {
@@ -36,4 +46,15 @@ public class Player {
         return color;
     }
 
+    public void addNArmies(int numArmies){
+        this.armies += numArmies;
+    }
+
+    public void removeNArmies(int numArmies){
+        this.armies -= numArmies;
+    }
+
+    public int getNArmies(){
+        return this.armies;
+    }
 }

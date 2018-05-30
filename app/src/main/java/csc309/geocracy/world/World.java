@@ -139,6 +139,13 @@ public class World {
         return territories[id - 1];
     }
 
+    public boolean allTerritoriesOccupied() {
+        for (Territory terr : territories)
+            if(terr.getOwner()==null)
+                return false;
+        return true;
+    }
+
     public int getNTerritories() {
         return territories.length;
     }

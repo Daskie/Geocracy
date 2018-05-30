@@ -9,32 +9,41 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/territoryID"
+        android:id="@+id/battleResultsHeader"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:background="@color/territoryDetailColor"
         android:gravity="center"
-        android:text="Territory Detail:"
+        android:text="Battle Results"
         android:textColor="@android:color/white" />
 
 
     <TextView
-        android:id="@+id/territoryOwner"
+        android:id="@+id/attackingPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textAlignment="center"
         android:padding="12dp"
-        android:text="Territory Owned By:"/>
+        android:text="Attacking:"/>
 
     <TextView
-        android:id="@+id/numberOfUnits"
+        android:id="@+id/defendingPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textAlignment="center"
         android:padding="12dp"
-        android:text="Number of Units in Territory:"/>
+        android:text="Defending:"/>
+
+    <TextView
+        android:id="@+id/battleResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:padding="12dp"
+        android:text="Result:"/>
 
 
 </LinearLayout>
