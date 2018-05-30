@@ -54,7 +54,7 @@ public class Terrain {
     }
 
     private static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
-    private static final int MIN_TERRITORY_LAND_FACES = World.TESSELLATION_DEGREE <= 4 ? 6 : 6 * (1 << (1 << (World.TESSELLATION_DEGREE - 4)));
+    private static final int MIN_TERRITORY_LAND_FACES = Game.MAX_ARMIES_PER_TERRITORY * 2;
 
     private World world;
     private TerrainShader shader;
@@ -979,19 +979,31 @@ public class Terrain {
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
             terr.armyLocations = new Vec3[Game.MAX_ARMIES_PER_TERRITORY];
+
             int armyI = 0;
             int dist = terr.inlandFaces.size() - 1;
+            HashSet<Integer> checked = new HashSet<>();
             while (dist >= 0) {
                 for (int fi : terr.inlandFaces.valueAt(dist)) {
                     if (armyI >= terr.armyLocations.length) {
                         break;
                     }
+
+                    if (checked.contains(fi)) {
+                        continue;
+                    }
+
                     terr.armyLocations[armyI] = getFaceCenter(fi);
+                    checked.add(fi);
+                    checked.add(faces[fi].adjacencies[0]);
+                    checked.add(faces[fi].adjacencies[1]);
+                    checked.add(faces[fi].adjacencies[2]);
                     ++armyI;
                 }
                 if (armyI >= terr.armyLocations.length) {
                     break;
                 }
+
                 --dist;
             }
 

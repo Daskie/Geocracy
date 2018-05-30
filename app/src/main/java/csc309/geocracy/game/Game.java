@@ -29,7 +29,7 @@ import static csc309.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game {
 
-    public static final int MAX_ARMIES_PER_TERRITORY = 20;
+    public static final int MAX_ARMIES_PER_TERRITORY = 15;
 
     private long startT; // time the game was started
     private long lastT; // time last frame happened
