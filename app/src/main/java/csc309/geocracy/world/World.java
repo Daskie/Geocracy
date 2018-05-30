@@ -86,7 +86,7 @@ public class World {
         terrain.render(t, camera, lightDir, selectionChange, highlightChange, ownershipChange);
         oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
-        armyRenderer.render(camera, lightDir, armyChange);
+        armyRenderer.render(camera, lightDir, armyChange, ownershipChange);
 
         selectionChange = false;
         highlightChange = false;

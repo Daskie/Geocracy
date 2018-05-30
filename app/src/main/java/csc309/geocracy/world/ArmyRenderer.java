@@ -21,6 +21,8 @@ public class ArmyRenderer {
     private Mesh mesh;
     private int instanceVBOHandle;
     private int nArmies;
+    private ByteBuffer[][] armyData;
+
 
     public ArmyRenderer(World world) {
         this.world = world;
@@ -28,6 +30,7 @@ public class ArmyRenderer {
         mesh = MeshMaker.makeTetrahedron("Army");
         mesh.unindex();
         mesh.translate(new Vec3(0.0f, 0.0f, 1.0f / 3.0f));
+        genArmyData();
     }
 
     public boolean load() {
@@ -107,8 +110,8 @@ public class ArmyRenderer {
         return true;
     }
 
-    public void render(Camera camera, Vec3 lightDir, boolean armyChange) {
-        if (armyChange) {
+    public void render(Camera camera, Vec3 lightDir, boolean armyChange, boolean ownerChange) {
+        if (armyChange || ownerChange) {
             refresh();
         }
         shader.setActive();
@@ -129,23 +132,16 @@ public class ArmyRenderer {
         }
     }
 
-    private void refresh() {
-        this.nArmies = world.getTotalNArmies();
-        ByteBuffer instanceData = genInstanceData();
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, instanceVBOHandle);
-        GLES30.glBufferSubData(GLES30.GL_ARRAY_BUFFER, 0, instanceData.limit(), instanceData);
-        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
-    }
-
-    private ByteBuffer genInstanceData() {
-        ByteBuffer bb = ByteBuffer.allocateDirect(nArmies * (3 * 4 + 3 * 3 * 4 + 4));
-        bb.order(ByteOrder.nativeOrder());
-
-        for (Territory terr : world.getTerritories()) {
+    private void genArmyData() {
+        armyData = new ByteBuffer[world.getNTerritories()][];
+        for (int ti = 0; ti < world.getNTerritories(); ++ti) {
+            armyData[ti] = new ByteBuffer[Game.MAX_ARMIES_PER_TERRITORY];
+            Territory terr = world.getTerritories()[ti];
             Vec3[] armyLocations = world.getTerrain().getTerritoryArmyLocations(terr.getId());
             Mat3[] armyOrientations = world.getTerrain().getTerritoryArmyOrientations(terr.getId());
-            int playerID = terr.hasOwner() ? terr.getOwner().getId() : 0;
-            for (int ai = 0; ai < terr.getNArmies(); ++ai) {
+            for (int ai = 0; ai < Game.MAX_ARMIES_PER_TERRITORY; ++ai) {
+                ByteBuffer bb = ByteBuffer.allocateDirect(3 * 4 + 3 * 3 * 4);
+                bb.order(ByteOrder.nativeOrder());
                 Vec3 location = armyLocations[ai];
                 Mat3 orientation = armyOrientations[ai];
                 bb.putFloat(location.x);
@@ -160,6 +156,30 @@ public class ArmyRenderer {
                 bb.putFloat(orientation.get(2, 0));
                 bb.putFloat(orientation.get(2, 1));
                 bb.putFloat(orientation.get(2, 2));
+                bb.flip();
+                armyData[ti][ai] = bb;
+            }
+        }
+    }
+
+    private void refresh() {
+        this.nArmies = world.getTotalNArmies();
+        ByteBuffer instanceData = genInstanceData();
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, instanceVBOHandle);
+        GLES30.glBufferSubData(GLES30.GL_ARRAY_BUFFER, 0, instanceData.limit(), instanceData);
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
+    }
+
+    private ByteBuffer genInstanceData() {
+        ByteBuffer bb = ByteBuffer.allocateDirect(nArmies * (3 * 4 + 3 * 3 * 4 + 4));
+        bb.order(ByteOrder.nativeOrder());
+
+        for (int ti = 0; ti < world.getNTerritories(); ++ti) {
+            Territory terr = world.getTerritories()[ti];
+            int playerID = terr.hasOwner() ? terr.getOwner().getId() : 0;
+            for (int ai = 0; ai < terr.getNArmies(); ++ai) {
+                bb.put(armyData[ti][ai]);
+                armyData[ti][ai].flip();
                 bb.putInt(playerID);
             }
         }
