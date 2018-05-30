@@ -34,7 +34,12 @@ public class Territory implements Serializable {
     }
 
     public void setOwner(Player player) {
+        Player prevOwner = owner;
         owner = player;
+        continent.ownershipChange();
+
+        if (prevOwner != null) prevOwner.removeTerritory(this);
+        owner.addTerritory(this);
 
         world.setOwnershipChange();
     }

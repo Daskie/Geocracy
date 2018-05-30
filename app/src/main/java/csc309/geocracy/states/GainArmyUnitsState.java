@@ -1,9 +1,8 @@
 package csc309.geocracy.states;
 
 import csc309.geocracy.game.Game;
-
-import csc309.geocracy.world.Territory;
 import csc309.geocracy.game.Player;
+import csc309.geocracy.world.Territory;
 
 public class GainArmyUnitsState implements GameState {
 
@@ -43,9 +42,7 @@ public class GainArmyUnitsState implements GameState {
         game.activity.removeActiveBottomPaneFragment();
 
         for(Player player : game.players){
-            int numInitArmies = player.getTerritories().size()/3;
-            if(numInitArmies < 3)
-                numInitArmies =3;
+            int numInitArmies = player.getBonus();
             player.addNArmies(numInitArmies);
 
             System.out.println(player.name + " ADDED " + numInitArmies + " ARMIES.");

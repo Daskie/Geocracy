@@ -1,12 +1,12 @@
 package csc309.geocracy.game;
 
-import com.github.javafaker.Faker;
-
 import java.util.HashSet;
-import java.util.Random;
 
+import csc309.geocracy.world.Continent;
 import csc309.geocracy.world.Territory;
 import glm_.vec3.Vec3;
+
+import static glm_.Java.glm;
 
 public abstract class Player {
     private int id; // starts at 1. 0 indicates no player
@@ -14,20 +14,31 @@ public abstract class Player {
     private HashSet<Territory> territories;
     private Vec3 color;
     private int armies;
+    private HashSet<Continent> ownedContinents; // which continents the player owns all territories of
+    private int bonus;
 
     public Player(int id, Vec3 color) {
         this.id = id;
         this.color = new Vec3(color);
-        this.territories = new HashSet<Territory>();
+        this.territories = new HashSet<>();
         this.armies = 0;
+        this.ownedContinents = new HashSet<>();
     }
 
+    // Called by Territory.setOwner
     public void addTerritory(Territory territory) {
         this.territories.add(territory);
+        if (territory.getContinent().getOwner() == this) {
+            ownedContinents.add(territory.getContinent());
+        }
+        calcBonus();
     }
 
+    // Called by Territory.setOwner
     public void removeTerritory(Territory territory) {
         this.territories.remove(territory);
+        ownedContinents.remove(territory.getContinent());
+        calcBonus();
     }
 
     public int getId() {
@@ -57,4 +68,16 @@ public abstract class Player {
     public int getNArmies(){
         return this.armies;
     }
+
+    public int getBonus() {
+        return bonus;
+    }
+
+    private void calcBonus() {
+        bonus = glm.max(territories.size() / 3, 3);
+        for (Continent continent : ownedContinents) {
+            bonus += continent.getBonus();
+        }
+    }
+
 }
