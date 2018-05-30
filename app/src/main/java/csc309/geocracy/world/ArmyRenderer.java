@@ -144,7 +144,7 @@ public class ArmyRenderer {
         for (Territory terr : world.getTerritories()) {
             Vec3[] armyLocations = world.getTerrain().getTerritoryArmyLocations(terr.getId());
             Mat3[] armyOrientations = world.getTerrain().getTerritoryArmyOrientations(terr.getId());
-            int playerID = terr.getOwner().getId();
+            int playerID = terr.hasOwner() ? terr.getOwner().getId() : 0;
             for (int ai = 0; ai < terr.getNArmies(); ++ai) {
                 Vec3 location = armyLocations[ai];
                 Mat3 orientation = armyOrientations[ai];

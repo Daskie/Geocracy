@@ -118,8 +118,8 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
-//        shader.setPlayerColors(world.game.getPlayers());
-//        shader.setTerritoryPlayers(world.getTerritories());
+        shader.setPlayerColors(world.game.getPlayers());
+        shader.setTerritoryPlayers(world.getTerritories());
         if (Util.isGLError()) {
             Log.e("Terrain", "Failed to initialize shader uniforms");
             return false;
@@ -183,7 +183,7 @@ public class Terrain {
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean highlightChange) {
+    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean highlightChange, boolean ownershipChange) {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
@@ -201,6 +201,9 @@ public class Terrain {
             boolean[] terrsHighlighted = new boolean[territorySpecs.length];
             for (Territory terr : world.getHighlightedTerritories()) terrsHighlighted[terr.getId()] = true;
             shader.setHighlightedTerritories(terrsHighlighted);
+        }
+        if (ownershipChange) {
+            shader.setTerritoryPlayers(world.getTerritories());
         }
 
         GLES30.glBindVertexArray(vaoHandle);

@@ -31,6 +31,7 @@ public class World {
     private HashSet<Territory> highlightedTerritories;
     private boolean selectionChange;
     private boolean highlightChange;
+    private boolean ownershipChange;
     private boolean armyChange;
 
     public World(Game game, long seed) {
@@ -82,7 +83,7 @@ public class World {
     }
 
     public void render(long t, Camera camera, Vec3 lightDir, int cubemapHandle) {
-        terrain.render(t, camera, lightDir, selectionChange, highlightChange);
+        terrain.render(t, camera, lightDir, selectionChange, highlightChange, ownershipChange);
         oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
         armyRenderer.render(camera, lightDir, armyChange);
@@ -174,6 +175,10 @@ public class World {
 
     Terrain getTerrain() {
         return terrain;
+    }
+
+    void setOwnershipChange() {
+        ownershipChange = true;
     }
 
     void setArmyChange() {

@@ -1,13 +1,12 @@
 package csc309.geocracy.world;
 
-import csc309.geocracy.game.Player;
-
 import com.github.javafaker.Faker;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Random;
 
+import csc309.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
 public class Territory implements Serializable {
@@ -36,6 +35,8 @@ public class Territory implements Serializable {
 
     public void setOwner(Player player) {
         owner = player;
+
+        world.setOwnershipChange();
     }
 
     public void setNArmies(int n) {
@@ -97,6 +98,10 @@ public class Territory implements Serializable {
 
     public Player getOwner() {
         return owner;
+    }
+
+    public boolean hasOwner() {
+        return owner != null;
     }
 
     public int getNArmies() {
