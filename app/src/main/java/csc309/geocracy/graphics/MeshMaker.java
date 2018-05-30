@@ -42,6 +42,25 @@ public abstract class MeshMaker {
         return new Mesh(name, locations, normals, indices);
     }
 
+    public static Mesh makeTetrahedron(String name) {
+        float[] locations = {
+             (float)Math.sqrt(8.0f / 9.0f),                           0.0f, -1.0f / 3.0f,
+            -(float)Math.sqrt(2.0f / 9.0f),  (float)Math.sqrt(2.0f / 3.0f), -1.0f / 3.0f,
+            -(float)Math.sqrt(2.0f / 9.0f), -(float)Math.sqrt(2.0f / 3.0f), -1.0f / 3.0f,
+                                      0.0f,                           0.0f,         1.0f
+        };
+        float[] normals = locations.clone();
+
+        int[] indices = {
+            0, 2, 1,
+            0, 1, 3,
+            1, 2, 3,
+            2, 0, 3
+        };
+
+        return new Mesh(name, locations, normals, indices);
+    }
+
     public static Mesh makeCube(String name) {
         float[] locations = {
             -1.0f, -1.0f, -1.0f,

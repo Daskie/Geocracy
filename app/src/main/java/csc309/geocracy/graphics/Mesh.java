@@ -149,6 +149,21 @@ public class Mesh {
         calcFaceNormals();
     }
 
+    public void scale(float factor) {
+        for (int ci = 0; ci < locations.length; ++ci) {
+            locations[ci] *= factor;
+        }
+    }
+
+    public void translate(Vec3 delta) {
+        for (int vi = 0; vi < nVertices; ++vi) {
+            int ci = vi * 3;
+            locations[ci + 0] += delta.x;
+            locations[ci + 1] += delta.y;
+            locations[ci + 2] += delta.z;
+        }
+    }
+
     // Sets each vertex normal to that of last face it belongs to
     public void calcFaceNormals() {
         if (indices != null) {

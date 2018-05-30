@@ -11,6 +11,7 @@ import csc309.geocracy.game.Game;
 import csc309.geocracy.graphics.Camera;
 import csc309.geocracy.graphics.Mesh;
 import csc309.geocracy.graphics.MeshMaker;
+import glm_.mat3x3.Mat3;
 import glm_.vec3.Vec3;
 
 public class ArmyRenderer {
@@ -24,7 +25,9 @@ public class ArmyRenderer {
     public ArmyRenderer(World world) {
         this.world = world;
         shader = new ArmyShader();
-        mesh = MeshMaker.makeSphereIndexed("Army", 1);
+        mesh = MeshMaker.makeTetrahedron("Army");
+        mesh.unindex();
+        mesh.translate(new Vec3(0.0f, 0.0f, 1.0f / 3.0f));
     }
 
     public boolean load() {
@@ -49,7 +52,7 @@ public class ArmyRenderer {
             return false;
         }
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, instanceVBOHandle);
-        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, world.getNTerritories() * Game.MAX_ARMIES_PER_TERRITORY * (3 * 4 + 4), null, GLES30.GL_DYNAMIC_DRAW);
+        GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, world.getNTerritories() * Game.MAX_ARMIES_PER_TERRITORY * (3 * 4 + 3 * 3 * 4 + 4), null, GLES30.GL_DYNAMIC_DRAW);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
@@ -63,17 +66,38 @@ public class ArmyRenderer {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, instanceVBOHandle);
         GLES30.glEnableVertexAttribArray(2);
         GLES30.glEnableVertexAttribArray(3);
-        int instanceSize = 3 * 4 + 4;
-        GLES30.glVertexAttribPointer(2, 3, GLES30.GL_FLOAT, false, instanceSize, 0); // location
-        GLES30.glVertexAttribIPointer(3, 1, GLES30.GL_INT, instanceSize, 3 * 4); // player
+        GLES30.glEnableVertexAttribArray(4);
+        GLES30.glEnableVertexAttribArray(5);
+        GLES30.glEnableVertexAttribArray(6);
+        int instanceSize = 3 * 4 + 3 * 3 * 4 + 4;
+        int offset = 0;
+        GLES30.glVertexAttribPointer(2, 3, GLES30.GL_FLOAT, false, instanceSize, offset); // location
+        offset += 3 * 4;
+        GLES30.glVertexAttribPointer(3, 3, GLES30.GL_FLOAT, false, instanceSize, offset); // orientation
+        offset += 3 * 4;
+        GLES30.glVertexAttribPointer(4, 3, GLES30.GL_FLOAT, false, instanceSize, offset); // orientation continued
+        offset += 3 * 4;
+        GLES30.glVertexAttribPointer(5, 3, GLES30.GL_FLOAT, false, instanceSize, offset); // orientation continued
+        offset += 3 * 4;
+        GLES30.glVertexAttribIPointer(6, 1, GLES30.GL_INT, instanceSize, offset); // player
+        offset += 4;
         GLES30.glVertexAttribDivisor(2, 1);
         GLES30.glVertexAttribDivisor(3, 1);
+        GLES30.glVertexAttribDivisor(4, 1);
+        GLES30.glVertexAttribDivisor(5, 1);
+        GLES30.glVertexAttribDivisor(6, 1);
         GLES30.glBindVertexArray(0);
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         GLES30.glVertexAttribDivisor(2, 0);
         GLES30.glVertexAttribDivisor(3, 0);
+        GLES30.glVertexAttribDivisor(4, 0);
+        GLES30.glVertexAttribDivisor(5, 0);
+        GLES30.glVertexAttribDivisor(6, 0);
         GLES30.glDisableVertexAttribArray(2);
         GLES30.glDisableVertexAttribArray(3);
+        GLES30.glDisableVertexAttribArray(4);
+        GLES30.glDisableVertexAttribArray(5);
+        GLES30.glDisableVertexAttribArray(6);
         // Check for OpenGL errors
         if (Util.isGLError()) {
             Log.e("ArmyRenderer", "Failed to update vao");
@@ -93,7 +117,7 @@ public class ArmyRenderer {
         shader.setCameraLocation(camera.getLocation());
         shader.setLightDirection(lightDir);
         GLES30.glBindVertexArray(mesh.getVAOHandle());
-        GLES30.glDrawElementsInstanced(GLES30.GL_TRIANGLES, mesh.getNumIndices(), GLES30.GL_UNSIGNED_INT, 0, nArmies);
+        GLES30.glDrawArraysInstanced(GLES30.GL_TRIANGLES, 0, mesh.getNumVertices(), nArmies);
         GLES30.glBindVertexArray(0);
     }
 
@@ -114,20 +138,30 @@ public class ArmyRenderer {
     }
 
     private ByteBuffer genInstanceData() {
-        ByteBuffer bb = ByteBuffer.allocateDirect(nArmies * (3 * 4 + 4));
+        ByteBuffer bb = ByteBuffer.allocateDirect(nArmies * (3 * 4 + 3 * 3 * 4 + 4));
         bb.order(ByteOrder.nativeOrder());
 
         for (Territory terr : world.getTerritories()) {
             Vec3[] armyLocations = world.getTerrain().getTerritoryArmyLocations(terr.getId());
+            Mat3[] armyOrientations = world.getTerrain().getTerritoryArmyOrientations(terr.getId());
             int playerID = terr.getOwner().getId();
-            for (int li = 0; li < terr.getNArmies(); ++li) {
-                Vec3 location = armyLocations[li];
+            for (int ai = 0; ai < terr.getNArmies(); ++ai) {
+                Vec3 location = armyLocations[ai];
+                Mat3 orientation = armyOrientations[ai];
                 bb.putFloat(location.x);
                 bb.putFloat(location.y);
                 bb.putFloat(location.z);
+                bb.putFloat(orientation.get(0, 0));
+                bb.putFloat(orientation.get(0, 1));
+                bb.putFloat(orientation.get(0, 2));
+                bb.putFloat(orientation.get(1, 0));
+                bb.putFloat(orientation.get(1, 1));
+                bb.putFloat(orientation.get(1, 2));
+                bb.putFloat(orientation.get(2, 0));
+                bb.putFloat(orientation.get(2, 1));
+                bb.putFloat(orientation.get(2, 2));
                 bb.putInt(playerID);
             }
-
         }
 
         bb.flip();
