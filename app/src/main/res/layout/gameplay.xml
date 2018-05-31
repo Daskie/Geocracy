@@ -28,6 +28,16 @@
         app:backgroundTint="@color/colorPrimary"/>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/closeOverlayBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        app:fabSize="auto"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_cancel_black_48dp"
+        app:backgroundTint="@color/darkGray"/>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/attackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
