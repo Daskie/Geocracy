@@ -10,6 +10,7 @@ import java.util.Random;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
+import csc309.geocracy.fragments.GameInfoFragment;
 import csc309.geocracy.space.SpaceRenderer;
 import csc309.geocracy.states.BattleResultsState;
 import csc309.geocracy.states.DefaultState;
@@ -131,7 +132,12 @@ public class Game {
 
             case TOGGLE_SETTINGS_VISIBILITY:
                 System.out.println("TOGGLE SETTINGS VISIBILITY ACTION");
-                activity.toggleSettingsFragment();
+                activity.showOverlayFragment(GameActivity.settingsFragment);
+                break;
+
+            case TOGGLE_GAME_INFO_VISIBILITY:
+                System.out.println("TOGGLE GAME INFO VISIBILITY ACTION");
+                activity.showOverlayFragment(GameInfoFragment.newInstance(this.players));
                 break;
 
             case TERRITORY_SELECTED:

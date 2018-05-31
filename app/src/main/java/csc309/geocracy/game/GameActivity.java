@@ -33,6 +33,7 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
+import csc309.geocracy.fragments.GameInfoFragment;
 import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.fragments.TerritoryDetailFragment;
 import csc309.geocracy.fragments.TroopSelectionFragment;
@@ -59,6 +60,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     static private FragmentManager fragmentManager;
 
     static private Fragment activeBottomPaneFragment = null;
+    static private Fragment activeOverlayFragment = null;
+
 
     static public SettingsFragment settingsFragment = new SettingsFragment();
 
@@ -67,6 +70,10 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     public FloatingActionButton attackBtn;
     public FloatingActionButton cancelBtn;
+    public FloatingActionButton gameInfoBtn;
+    public FloatingActionButton settingBtn;
+    public FloatingActionButton closeOverlayBtn;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,13 +136,30 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }));
 
-        FloatingActionButton settingBtn = findViewById(R.id.inGameSettingsBtn);
+        settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
             }
         }));
+
+        gameInfoBtn = findViewById(R.id.gameInfoBtn);
+        gameInfoBtn.show();
+        disposables.add(RxView.touches(gameInfoBtn).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_GAME_INFO_VISIBILITY, null));
+            }
+        }));
+
+        closeOverlayBtn = findViewById(R.id.closeOverlayBtn);
+        closeOverlayBtn.hide();
+        disposables.add(RxView.touches(closeOverlayBtn).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                removeActiveOverlayFragment();
+            }
+        }));
+
 
         uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
@@ -156,6 +180,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         case SHOW_CANCEL_BUTTON:
                             this.cancelBtn.show();
                             break;
+
+//                        case SHOW_CLOSE_OVERLAY_BUTTON:
+//                            this.closeOverlayBtn.show();
+//                            break;
+//
+//                        case HIDE_CLOSE_OVERLAY_BUTTON:
+//                            this.closeOverlayBtn.hide();
+//                            break;
 
                         case HIDE_ATTACK_MODE_BUTTON:
                             this.attackBtn.hide();
@@ -195,6 +227,33 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingsVisible = !settingsVisible;
     }
 
+    public void showOverlayFragment(Fragment overlayFragment) {
+        System.out.println("HIT OVERLAY SHOW");
+        removeActiveBottomPaneFragment();
+
+        userInterfaceFT = fragmentManager.beginTransaction();
+        userInterfaceFT.add(R.id.gameLayout, overlayFragment);
+        userInterfaceFT.commit();
+
+        activeOverlayFragment = overlayFragment;
+
+        settingBtn.hide();
+        gameInfoBtn.hide();
+        closeOverlayBtn.show();
+    }
+
+    public void removeActiveOverlayFragment() {
+        if (activeOverlayFragment != null) {
+            userInterfaceFT = fragmentManager.beginTransaction();
+            userInterfaceFT.remove(activeOverlayFragment);
+            userInterfaceFT.commit();
+            activeOverlayFragment = null;
+        }
+        closeOverlayBtn.hide();
+        settingBtn.show();
+        gameInfoBtn.show();
+    }
+
      public void showBottomPaneFragment(Fragment bottomPaneFragment) {
         removeActiveBottomPaneFragment();
 
@@ -204,6 +263,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         activeBottomPaneFragment = bottomPaneFragment;
     }
+
+
 
      public void removeActiveBottomPaneFragment() {
         if (activeBottomPaneFragment != null) {
