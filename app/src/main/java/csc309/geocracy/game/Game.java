@@ -137,7 +137,7 @@ public class Game {
 
             case TOGGLE_GAME_INFO_VISIBILITY:
                 System.out.println("TOGGLE GAME INFO VISIBILITY ACTION");
-                activity.showOverlayFragment(new GameInfoFragment());
+                activity.showOverlayFragment(GameInfoFragment.newInstance(this.players));
                 break;
 
             case TERRITORY_SELECTED:
