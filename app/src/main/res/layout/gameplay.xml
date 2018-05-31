@@ -17,6 +17,17 @@
         android:src="@drawable/ic_settings_outline_white_48dp"/>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/gameInfoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        app:fabSize="auto"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="82dp"
+        android:src="@drawable/ic_earth_white_48dp"
+        app:backgroundTint="@color/colorPrimary"/>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/attackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

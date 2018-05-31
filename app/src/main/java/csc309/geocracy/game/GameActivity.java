@@ -137,6 +137,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }));
 
+        FloatingActionButton gameInfoBtn = findViewById(R.id.gameInfoBtn);
+        gameInfoBtn.show();
+        disposables.add(RxView.touches(settingBtn).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                System.out.println("GAME INFO HIT");
+//                EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
+            }
+        }));
+
         uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
 
