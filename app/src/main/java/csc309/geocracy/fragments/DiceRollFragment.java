@@ -5,7 +5,6 @@ package csc309.geocracy.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,6 @@ import csc309.geocracy.R;
 import csc309.geocracy.world.Territory;
 
 public class DiceRollFragment extends Fragment {
-
-    private static final String TAG = "DICE_ROLL_FRAGMENT";
-
 
     private Territory targetTerritory;
     private Territory originTerritory;
@@ -52,9 +48,6 @@ public class DiceRollFragment extends Fragment {
 
         TextView battleResult = view.findViewById(R.id.battleResult);
         battleResult.setText("RESULT: ");
-
-        // get the bottom sheet view
-        LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);
 
         return view;
     }

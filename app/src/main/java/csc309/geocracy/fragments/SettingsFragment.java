@@ -22,10 +22,6 @@ import csc309.geocracy.R;
 
 public class SettingsFragment extends Fragment {
 
-    private static final String TAG = "SETTINGS_FRAGMENT";
-
-    private Button backButton;
-
     private SeekBar masterVolume;
     private SeekBar musicVolume;
     private CheckBox musicEnabledCheckbox;
@@ -39,18 +35,16 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings, container, false);
 
-        masterVolume = (SeekBar) view.findViewById(R.id.masterVolume);
-
-
-        musicVolume = (SeekBar) view.findViewById(R.id.musicVolume);
+        masterVolume = view.findViewById(R.id.masterVolume);
+        musicVolume = view.findViewById(R.id.musicVolume);
         musicVolume.setProgress(100);
+
         RxSeekBar.changeEvents(musicVolume).subscribe(e -> EventBus.publish("SET_MUSIC_VOLUME_LEVEL_EVENT", e.view().getProgress()));
 
-        musicEnabledCheckbox = (CheckBox) view.findViewById(R.id.musicEnabled);
+        musicEnabledCheckbox = view.findViewById(R.id.musicEnabled);
         musicEnabledCheckbox.setChecked(isMusicEnabled);
 
         RxView.touches(musicEnabledCheckbox).subscribe(e -> {
-            Log.d(TAG, e.toString());
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 isMusicEnabled = !isMusicEnabled;
                 musicEnabledCheckbox.setChecked(isMusicEnabled);
