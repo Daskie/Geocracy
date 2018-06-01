@@ -167,7 +167,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(e -> {
                     UIEvent event = (UIEvent) e;
-                    System.out.println("UI EVENT: " + event);
+                    Log.i(TAG, "UI EVENT: " + event);
 
                     switch (event) {
 
@@ -215,7 +215,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     public void showOverlayFragment(Fragment overlayFragment) {
-        System.out.println("HIT OVERLAY SHOW");
         removeActiveBottomPaneFragment();
 
         userInterfaceFT = fragmentManager.beginTransaction();
