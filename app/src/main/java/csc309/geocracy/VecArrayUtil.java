@@ -4,6 +4,10 @@ import glm_.vec3.Vec3;
 
 public class VecArrayUtil {
 
+    private VecArrayUtil() {
+
+    }
+
     public static void assign(float[] dst, int dstI, float[] src, int srcI) {
         int dci = dstI * 3;
         int sci = srcI * 3;
@@ -60,7 +64,9 @@ public class VecArrayUtil {
     // Normalizes the xyz at the given vertex index in arr
     public static void normalize(float[] arr, int vertexI) {
         int ci = vertexI * 3;
-        float x = arr[ci + 0], y = arr[ci + 1], z = arr[ci + 2];
+        float x = arr[ci + 0];
+        float y = arr[ci + 1];
+        float z = arr[ci + 2];
         float v = x * x + y * y + z * z;
         if (Util.isZero(v)) {
             x = 0.0f; y = 0.0f; z = 0.0f;
@@ -74,7 +80,9 @@ public class VecArrayUtil {
 
     public static float length2(float[] arr, int vertexI) {
         int ci = vertexI * 3;
-        float x = arr[ci + 0], y = arr[ci + 1], z = arr[ci + 2];
+        float x = arr[ci + 0];
+        float y = arr[ci + 1];
+        float z = arr[ci + 2];
         return x * x + y * y + z * z;
     }
 

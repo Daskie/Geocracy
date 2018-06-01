@@ -12,9 +12,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
@@ -245,7 +245,7 @@ public abstract class Util {
     }
 
     // Returns a random element of the set. Since HashSets do not offer random access, this is O(n/2)
-    public static <T> T pickRandom(HashSet<T> set, Random rand) {
+    public static <T> T pickRandom(Set<T> set, Random rand) {
         int i = rand.nextInt(set.size());
         Iterator<T> it = set.iterator();
         while (i > 0) { it.next(); --i; }
