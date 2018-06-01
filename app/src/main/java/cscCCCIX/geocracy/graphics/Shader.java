@@ -38,24 +38,24 @@ public abstract class Shader {
         // Read in shader files
         String vertSrc = Util.readTextFile(vertFile);
         if (vertSrc == null) {
-            Log.e("Shader", "Failed to read shader file: " + vertFile);
+            Log.e("", "Failed to read shader file: " + vertFile);
             return false;
         }
         String fragSrc = Util.readTextFile(fragFile);
         if (fragSrc == null) {
-            Log.e("Shader", "Failed to read shader file: " + fragFile);
+            Log.e("", "Failed to read shader file: " + fragFile);
             return false;
         }
 
         // Create shaders
         int vertShaderHandle = createShader(vertSrc, Type.VERTEX);
         if (vertShaderHandle == 0) {
-            Log.e("Shader", "Failed to create vertex shader");
+            Log.e("", "Failed to create vertex shader");
             return false;
         }
         int fragShaderHandle = createShader(fragSrc, Type.FRAGMENT);
         if (fragShaderHandle == 0) {
-            Log.e("Shader", "Failed to create fragment shader");
+            Log.e("", "Failed to create fragment shader");
             GLES30.glDeleteShader(vertShaderHandle);
             return false;
         }
@@ -63,7 +63,7 @@ public abstract class Shader {
         // Create shader program
         programHandle = createProgram(vertShaderHandle, fragShaderHandle);
         if (programHandle == 0) {
-            Log.e("Shader", "Failed to create program");
+            Log.e("", "Failed to create program");
             GLES30.glDeleteShader(vertShaderHandle);
             GLES30.glDeleteShader(fragShaderHandle);
             return false;
@@ -75,7 +75,7 @@ public abstract class Shader {
 
         // setup uniforms
         if (!setupUniforms()) {
-            Log.e("Shader", "Failed to setup uniforms");
+            Log.e("", "Failed to setup uniforms");
             return false;
         }
 
@@ -91,7 +91,7 @@ public abstract class Shader {
 
     public void setActive() {
         if (programHandle == 0) {
-            Log.e("Shader", "Invalid program handle");
+            Log.e("", "Invalid program handle");
             return;
         }
 
@@ -206,7 +206,7 @@ public abstract class Shader {
                 break;
         }
         if (shaderHandle == 0) {
-            Log.e("Shader", "Failed to create shader");
+            Log.e("", "Failed to create shader");
             return 0;
         }
 
@@ -218,8 +218,8 @@ public abstract class Shader {
         int status[] = { 0 };
         GLES30.glGetShaderiv(shaderHandle, GLES30.GL_COMPILE_STATUS, status, 0);
         if (status[0] == 0) {
-            Log.e("Shader", "Failed to compile shader");
-            Log.e("Shader", GLES30.glGetShaderInfoLog(shaderHandle));
+            Log.e("", "Failed to compile shader");
+            Log.e("", GLES30.glGetShaderInfoLog(shaderHandle));
             GLES30.glDeleteShader(shaderHandle);
             return 0;
         }
@@ -236,7 +236,7 @@ public abstract class Shader {
     static private int createProgram(int vertShaderHandle, int fragShaderHandle) {
         int programHandle = GLES30.glCreateProgram();
         if (programHandle == 0) {
-            Log.e("Shader", "Failed to create program");
+            Log.e("", "Failed to create program");
             return 0;
         }
 
@@ -249,8 +249,8 @@ public abstract class Shader {
         int status[] = { 0 };
         GLES30.glGetProgramiv(programHandle, GLES30.GL_LINK_STATUS, status, 0);
         if (status[0] == 0) {
-            Log.e("Shader", "Failed to link program");
-            Log.e("Shader", GLES30.glGetProgramInfoLog(programHandle));
+            Log.e("", "Failed to link program");
+            Log.e("", GLES30.glGetProgramInfoLog(programHandle));
             GLES30.glDeleteProgram(programHandle);
             return 0;
         }

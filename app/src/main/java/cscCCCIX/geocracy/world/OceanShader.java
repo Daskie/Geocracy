@@ -38,19 +38,19 @@ public class OceanShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("OceanShader", "Failed to get location of u_viewMat");
+            Log.e("", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("OceanShader", "Failed to get location of u_projMat");
+            Log.e("", "Failed to get location of u_projMat");
         }
         if ((cameraLocUniformHandle = getUniformLocation("u_cameraLoc")) == -1) {
-            Log.e("OceanShader", "Failed to get location of u_cameraLoc");
+            Log.e("", "Failed to get location of u_cameraLoc");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
-            Log.e("OceanShader", "Failed to get location of u_lightDir");
+            Log.e("", "Failed to get location of u_lightDir");
         }
         if ((cubemapUniformHandle = getUniformLocation("u_cubemap")) == -1) {
-            Log.e("SpaceShader", "Failed to get location of u_cubemap");
+            Log.e("", "Failed to get location of u_cubemap");
         }
 
         if (cubemapUniformHandle != -1) {

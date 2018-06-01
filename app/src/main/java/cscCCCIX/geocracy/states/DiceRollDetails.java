@@ -1,5 +1,7 @@
 package cscCCCIX.geocracy.states;
 
+import android.util.Log;
+
 import cscCCCIX.geocracy.world.Territory;
 
 class DiceRollDetails {
@@ -8,8 +10,8 @@ class DiceRollDetails {
     public int unitCount;
 
     public DiceRollDetails(Territory territory, int unitCount) {
-        System.out.println(territory);
-        System.out.println("Battling With " + unitCount + " Units");
+        Log.i("", "" + territory.getId());
+        Log.i("", "Battling With " + unitCount + " Units");
     }
 
 }

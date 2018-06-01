@@ -1,5 +1,7 @@
 package cscCCCIX.geocracy.states;
 
+import android.util.Log;
+
 import cscCCCIX.geocracy.EventBus;
 import cscCCCIX.geocracy.game.Game;
 import cscCCCIX.geocracy.game.UIEvent;
@@ -15,14 +17,14 @@ public class IntentToAttackState implements  GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("INTENT TO ATTACK STATE: -> ALREADY CURRENT STATE");
+        Log.i("", "INTENT TO ATTACK STATE: -> ALREADY CURRENT STATE");
         this.originTerritory = territory;
     }
 
     public void selectTargetTerritory(Territory targetTerritory) {
-        System.out.println("INTENT TO ATTACK STATE: ANOTHER TERRITORY SELECTED -> GO TO SELECTED ATTACK TARGET STATE");
+        Log.i("", "INTENT TO ATTACK STATE: ANOTHER TERRITORY SELECTED -> GO TO SELECTED ATTACK TARGET STATE");
         if (originTerritory.getAdjacentTerritories().contains(targetTerritory)) {
-            game.setState(game.SelectedAttackTargetTerritoryState);
+            game.setState(game.selectedAttackTargetTerritoryState);
             game.getState().selectOriginTerritory(this.originTerritory);
             game.getState().selectTargetTerritory(targetTerritory);
             game.getState().initState();
@@ -33,33 +35,33 @@ public class IntentToAttackState implements  GameState {
     }
 
     public void enableAttackMode() {
-        System.out.println("INTENT TO ATTACK STATE: -> Disable Attack Mode");
-        game.setState(game.SelectedTerritoryState);
+        Log.i("", "INTENT TO ATTACK STATE: -> Disable Attack Mode");
+        game.setState(game.selectedTerritoryState);
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().initState();
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        System.out.println("INTENT TO ATTACK STATE: CANNOT UPDATE UNIT COUNT");
+        Log.i("", "INTENT TO ATTACK STATE: CANNOT UPDATE UNIT COUNT");
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        System.out.println("INTENT TO ATTACK STATE: CANNOT PERFORM DICE ROLL");
+        Log.i("", "INTENT TO ATTACK STATE: CANNOT PERFORM DICE ROLL");
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
-        System.out.println("INTENT TO ATTACK STATE: INVALID STATE ACCESSED");
+        Log.i("intentToAttackState", "INTENT TO ATTACK STATE: INVALID STATE ACCESSED");
     }
 
     public void cancelAction() {
-        System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
-        game.setState(game.DefaultState);
+        Log.i("", "USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        game.setState(game.defaultState);
         game.getState().initState();
     }
 
     public void initState() {
-        System.out.println("INIT INTENT TO ATTACK STATE");
-        System.out.println("TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
+        Log.i("", "INIT INTENT TO ATTACK STATE");
+        Log.i("", "TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
         game.getWorld().highlightTerritories(originTerritory.getAdjacentTerritories());
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);

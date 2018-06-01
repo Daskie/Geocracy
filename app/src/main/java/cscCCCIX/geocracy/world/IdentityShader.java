@@ -26,10 +26,10 @@ public class IdentityShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_viewMat");
+            Log.e("", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_projMat");
+            Log.e("",  "Failed to get location of u_projMat");
         }
 
         return true;

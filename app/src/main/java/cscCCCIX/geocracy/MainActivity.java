@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo info = am.getDeviceConfigurationInfo();
         if (info.reqGlEsVersion < 0x30000) {
-            Log.e("MainActivity", "Device does not support OpenGL ES 3.0. Supported version: " + Integer.toHexString(info.reqGlEsVersion));
+            Log.e("", "Device does not support OpenGL ES 3.0. Supported version: " + Integer.toHexString(info.reqGlEsVersion));
             Toasty.error(getApplicationContext(), "Device does not support OpenGL ES 3.0. Supported version: \" + Integer.toHexString(info.reqGlEsVersion)");
         }
 

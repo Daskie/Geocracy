@@ -30,7 +30,7 @@ public class SelectedTerritoryState implements  GameState {
     }
 
     public void enableAttackMode() {
-        game.setState(game.IntentToAttackState);
+        game.setState(game.intentToAttackState);
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
@@ -50,7 +50,7 @@ public class SelectedTerritoryState implements  GameState {
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
-        game.setState(game.DefaultState);
+        game.setState(game.defaultState);
         game.getState().initState();
     }
 

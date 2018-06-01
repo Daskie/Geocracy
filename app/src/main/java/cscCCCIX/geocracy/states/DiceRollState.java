@@ -58,7 +58,7 @@ public class DiceRollState implements  GameState {
 
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
-        game.setState(game.DefaultState);
+        game.setState(game.defaultState);
         game.getState().initState();
     }
 

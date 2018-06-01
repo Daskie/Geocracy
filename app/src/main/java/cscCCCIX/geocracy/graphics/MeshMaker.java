@@ -8,6 +8,8 @@ import glm_.vec3.Vec3;
 
 public abstract class MeshMaker {
 
+    private MeshMaker() {}
+
     public static Mesh makeTriangle(String name) {
         float[] locations = {
             0.0f, 0.0f, 0.0f,
@@ -109,7 +111,6 @@ public abstract class MeshMaker {
         }
         float[] normals = locations.clone();
 
-        int nIndices = 60;
         int[] indices = {
              0,  2,  4,  2,  0,  5,
              3,  1,  6,  1,  3,  7,
@@ -148,15 +149,37 @@ public abstract class MeshMaker {
             LongSparseArray<Integer> edgeMap = new LongSparseArray<>();
 
             for (int ii = 0; ii < indices.length; ii += 3) {
-                int ai = indices[ii + 0], aci = ai * 3;
-                int bi = indices[ii + 1], bci = bi * 3;
-                int ci = indices[ii + 2], cci = ci * 3;
-                int di, dci, ei, eci, fi, fci;
+                int ai = indices[ii + 0];
+                int aci = ai * 3;
+                int bi = indices[ii + 1];
+                int bci = bi * 3;
+                int ci = indices[ii + 2];
+                int cci = ci * 3;
+                int di;
+                int dci;
+                int ei;
+                int eci;
+                int fi;
+                int fci;
 
-                float ax = locations[aci + 0], ay = locations[aci + 1], az = locations[aci + 2];
-                float bx = locations[bci + 0], by = locations[bci + 1], bz = locations[bci + 2];
-                float cx = locations[cci + 0], cy = locations[cci + 1], cz = locations[cci + 2];
-                float dx, dy, dz, ex, ey, ez, fx, fy, fz;
+                float ax = locations[aci + 0];
+                float ay = locations[aci + 1];
+                float az = locations[aci + 2];
+                float bx = locations[bci + 0];
+                float by = locations[bci + 1];
+                float bz = locations[bci + 2];
+                float cx = locations[cci + 0];
+                float cy = locations[cci + 1];
+                float cz = locations[cci + 2];
+                float dx;
+                float dy;
+                float dz;
+                float ex;
+                float ey;
+                float ez;
+                float fx;
+                float fy;
+                float fz;
 
                 // Obtain edge vertex d
                 long key = ai < bi ? Util.toLong(ai, bi) : Util.toLong(bi, ai);
@@ -172,7 +195,7 @@ public abstract class MeshMaker {
                 }
                 else { // Edge vertex d already exists
                     di = value; dci = di * 3;
-                    dx = locations[dci + 0]; dy = locations[dci + 1]; dz = locations[dci + 2];
+                    //dx = locations[dci + 0]; dy = locations[dci + 1]; dz = locations[dci + 2];
                 }
                 // Obtain edge vertex e
                 key = bi < ci ? Util.toLong(bi, ci) : Util.toLong(ci, bi);
@@ -188,7 +211,7 @@ public abstract class MeshMaker {
                 }
                 else { // Edge vertex e already exists
                     ei = value; eci = ei * 3;
-                    ex = locations[eci + 0]; ey = locations[eci + 1]; ez = locations[eci + 2];
+                    //ex = locations[eci + 0]; ey = locations[eci + 1]; ez = locations[eci + 2];
                 }
                 // Obtain edge vertex f
                 key = ci < ai ? Util.toLong(ci, ai) : Util.toLong(ai, ci);
@@ -204,7 +227,7 @@ public abstract class MeshMaker {
                 }
                 else { // Edge vertex f already exists
                     fi = value; fci = fi * 3;
-                    fx = locations[fci + 0]; fy = locations[fci + 1]; fz = locations[fci + 2];
+                    //fx = locations[fci + 0]; fy = locations[fci + 1]; fz = locations[fci + 2];
                 }
 
                 int nii = ii * 4;
@@ -265,7 +288,8 @@ public abstract class MeshMaker {
 
             // Tessellate each face
             for (int fi = 0; fi < nFaces; ++fi) {
-                int vi = fi * 3, newVI = fi * 12;
+                int vi = fi * 3;
+                int newVI = fi * 12;
 
                 // All points involved
                 VecArrayUtil.get(locations, vi + 0, a);

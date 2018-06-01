@@ -23,7 +23,7 @@ public class ScreenTextureRenderer {
         unload();
 
         if (!shader.load()) {
-            Log.e("ScreenTextureRenderer", "Failed to load shader");
+            Log.e("", "Failed to load shader");
             return false;
         }
 
@@ -46,7 +46,7 @@ public class ScreenTextureRenderer {
         GLES30.glGenBuffers(1, vboHandleArr, 0);
         vboHandle = vboHandleArr[0];
         if (vboHandle == 0) {
-            Log.e("ScreenTextureRenderer", "Failed to generate vbo");
+            Log.e("", "Failed to generate vbo");
             return false;
         }
         // Upload vbo data
@@ -55,7 +55,7 @@ public class ScreenTextureRenderer {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("ScreenTextureRenderer", "Failed to upload vbo");
+            Log.e("", "Failed to upload vbo");
             return false;
         }
 
@@ -64,7 +64,7 @@ public class ScreenTextureRenderer {
         GLES30.glGenVertexArrays(1, vaoHandleArr, 0);
         vaoHandle = vaoHandleArr[0];
         if (vaoHandle == 0) {
-            Log.e("ScreenTextureRenderer", "Failed to generate vao");
+            Log.e("", "Failed to generate vao");
         }
         // Setup vao attributes and bindings
         GLES30.glBindVertexArray(vaoHandle);
@@ -76,7 +76,7 @@ public class ScreenTextureRenderer {
         GLES30.glDisableVertexAttribArray(0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("ScreenTextureRenderer", "Failed to setup vao");
+            Log.e("", "Failed to setup vao");
             return false;
         }
 

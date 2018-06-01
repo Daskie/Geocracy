@@ -30,11 +30,7 @@ import glm_.vec3.Vec3;
 import static cscCCCIX.geocracy.states.GameAction.CANCEL_ACTION;
 import static cscCCCIX.geocracy.states.GameAction.TERRITORY_SELECTED;
 
-//import cscCCCIX.geocracy.states.CurrentState;
-
 public class Game {
-
-    private static final String tag = "GAME";
 
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
 
@@ -60,12 +56,12 @@ public class Game {
 
     GameState State;
 
-    public GameState DefaultState;
-    public GameState SelectedTerritoryState;
-    public GameState IntentToAttackState;
-    public GameState SelectedAttackTargetTerritoryState;
-    public GameState SetUpInitTerritoriesState;
-    public GameState GainArmyUnitsState;
+    public GameState defaultState;
+    public GameState selectedTerritoryState;
+    public GameState intentToAttackState;
+    public GameState selectedAttackTargetTerritoryState;
+    public GameState setUpInitTerritoriesState;
+    public GameState gainArmyUnitsState;
 
 
     public int currentPlayer;
@@ -98,19 +94,19 @@ public class Game {
 //            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
 //        }
 
-        DefaultState = new DefaultState(this);
-        SelectedTerritoryState = new SelectedTerritoryState(this);
-        IntentToAttackState = new IntentToAttackState(this);
-        SelectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
+        defaultState = new DefaultState(this);
+        selectedTerritoryState = new SelectedTerritoryState(this);
+        intentToAttackState = new IntentToAttackState(this);
+        selectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
         DiceRollState = new DiceRollState(this);
         BattleResultsState = new BattleResultsState(this);
-        SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
-        GainArmyUnitsState = new GainArmyUnitsState(this, activity);
+        setUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
+        gainArmyUnitsState = new GainArmyUnitsState(this, activity);
 
         rand = new Random();
 
 
-        setState(SetUpInitTerritoriesState);
+        setState(setUpInitTerritoriesState);
 
         spaceRenderer = new SpaceRenderer();
         cameraController = new CameraController();
@@ -131,24 +127,24 @@ public class Game {
         switch (event.action) {
 
             case TOGGLE_SETTINGS_VISIBILITY:
-                Log.i(tag,"TOGGLE SETTINGS VISIBILITY ACTION");
+                Log.i("", "TOGGLE SETTINGS VISIBILITY ACTION");
                 activity.showOverlayFragment(GameActivity.settingsFragment);
                 break;
 
             case TOGGLE_GAME_INFO_VISIBILITY:
-                Log.i(tag,"TOGGLE GAME INFO VISIBILITY ACTION");
+                Log.i("", "TOGGLE GAME INFO VISIBILITY ACTION");
                 activity.showOverlayFragment(GameInfoFragment.newInstance(this.players));
                 break;
 
             case TERRITORY_SELECTED:
-                Log.i(tag,"USER SELECTED TERRITORY");
+                Log.i("", "USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
-                Log.d(tag,"USER SELECTED TERRITORY:" + selectedTerritory);
+                Log.d("", "USER SELECTED TERRITORY:" + selectedTerritory);
 
-                if (getState() == this.IntentToAttackState) {
+                if (getState() == this.intentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
-                else if (getState() == this.GainArmyUnitsState) {
+                else if (getState() == this.gainArmyUnitsState) {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
                 else {
@@ -168,29 +164,29 @@ public class Game {
                 break;
 
             case ATTACK_TAPPED:
-                Log.i(tag,"USER TAPPED ATTACK");
+                Log.i("", "USER TAPPED ATTACK");
                 getState().enableAttackMode();
                 getState().initState();
                 break;
 
             case ADD_UNIT_TAPPED:
-                Log.i(tag,"ADD UNIT TAPPED");
+                Log.i("", "ADD UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(1);
                 break;
 
             case REMOVE_UNIT_TAPPED:
-                Log.i(tag,"REMOVE UNIT TAPPED");
+                Log.i("", "REMOVE UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(-1);
                 break;
 
             case CONFIRM_UNITS_TAPPED:
-                Log.i(tag,"CONFIRM UNITS TAPPED");
+                Log.i("", "CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
                 getState().initState();
                 break;
 
             case CANCEL_ACTION:
-                Log.i(tag,"CANCEL ACTION TAPPED");
+                Log.i("", "CANCEL ACTION TAPPED");
                 getState().cancelAction();
                 getState().initState();
                 break;
@@ -221,17 +217,17 @@ public class Game {
         GLES30.glBlendEquationSeparate(GLES30.GL_FUNC_ADD, GLES30.GL_FUNC_ADD);
 
         if (Util.isGLError()) {
-            Log.e(tag, "Failed to setup OpenGL state");
+            Log.e("", "Failed to setup OpenGL state");
             return false;
         }
 
         if (!world.load()) {
-            Log.e(tag, "Failed to load world");
+            Log.e("", "Failed to load world");
             return false;
         }
 
         if (!spaceRenderer.load()) {
-            Log.e(tag, "Failed to load space renderer");
+            Log.e("", "Failed to load space renderer");
             return false;
         }
 
@@ -259,7 +255,7 @@ public class Game {
         screenSize = size;
 
         if (!reloadIdFrameBuffer()) {
-            Log.e(tag, "Failed to reload frame buffer");
+            Log.e("", "Failed to reload frame buffer");
         }
 
         GLES30.glViewport(0, 0, screenSize.x, screenSize.y);
@@ -364,7 +360,7 @@ public class Game {
         GLES30.glGenRenderbuffers(1, depthRBHandlArr, 0);
         idDepthRBHandle = depthRBHandlArr[0];
         if (idDepthRBHandle == 0) {
-            Log.e(tag, "Failed to generate identity depth render buffer");
+            Log.e("", "Failed to generate identity depth render buffer");
             return false;
         }
         GLES30.glBindRenderbuffer(GLES30.GL_RENDERBUFFER, idDepthRBHandle);
@@ -376,14 +372,14 @@ public class Game {
         GLES30.glGenFramebuffers(1, fbHandleArr, 0);
         idFBHandle = fbHandleArr[0];
         if (idFBHandle == 0) {
-            Log.e(tag, "Failed to generate identity frame buffer");
+            Log.e("", "Failed to generate identity frame buffer");
             return false;
         }
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, idFBHandle);
         GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D, idValueTexHandle, 0);
         GLES30.glFramebufferRenderbuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_DEPTH_STENCIL_ATTACHMENT, GLES30.GL_RENDERBUFFER, idDepthRBHandle);
         if (GLES30.glCheckFramebufferStatus(GLES30.GL_FRAMEBUFFER) != GLES30.GL_FRAMEBUFFER_COMPLETE) {
-            Log.e(tag, "Identity frame buffer is incomplete");
+            Log.e("", "Identity frame buffer is incomplete");
             return false;
         }
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);

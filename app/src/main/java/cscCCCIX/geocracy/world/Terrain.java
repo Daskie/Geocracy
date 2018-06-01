@@ -56,7 +56,8 @@ public class Terrain {
         HashSet<Integer> waterwayConts = new HashSet<>();
     }
 
-    private static final float HIGH_ELEVATION = 1.05f, LOW_ELEVATION = 0.975f;
+    private static final float HIGH_ELEVATION = 1.05f;
+    private static final float LOW_ELEVATION = 0.975f;
     private static final int MIN_TERRITORY_LAND_FACES = Game.MAX_ARMIES_PER_TERRITORY * 2;
 
     private World world;
@@ -71,7 +72,6 @@ public class Terrain {
     private int[] landFaces;
     private int[] oceanFaces;
     private int[] coastFaces;
-    private int maxCoastDist;
     private TerritorySpec[] territorySpecs;
     private ContinentSpec[] continentSpecs;
     private int[] verticesInfo;
@@ -104,7 +104,7 @@ public class Terrain {
         unload();
 
         if (!shader.load()) {
-            Log.e("Terrain", "Failed to load shader");
+            Log.e("", "Failed to load shader");
             return false;
         }
         shader.setActive();
@@ -121,12 +121,12 @@ public class Terrain {
         shader.setPlayerColors(world.game.getPlayers());
         shader.setTerritoryPlayers(world.getTerritories());
         if (Util.isGLError()) {
-            Log.e("Terrain", "Failed to initialize shader uniforms");
+            Log.e("", "Failed to initialize shader uniforms");
             return false;
         }
 
         if (!idShader.load()) {
-            Log.e("Terrain", "Failed to load identity shader");
+            Log.e("", "Failed to load identity shader");
             return false;
         }
 
@@ -135,7 +135,7 @@ public class Terrain {
         GLES30.glGenBuffers(1, vboHandleArr, 0);
         vboHandle = vboHandleArr[0];
         if (vboHandle == 0) {
-            Log.e("Terrain", "Failed to generate vbo");
+            Log.e("", "Failed to generate vbo");
             return false;
         }
         // Upload vbo data
@@ -145,7 +145,7 @@ public class Terrain {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("Terrain", "Failed to upload vbo");
+            Log.e("", "Failed to upload vbo");
             return false;
         }
 
@@ -154,7 +154,7 @@ public class Terrain {
         GLES30.glGenVertexArrays(1, vaoHandleArr, 0);
         vaoHandle = vaoHandleArr[0];
         if (vaoHandle == 0) {
-            Log.e("Terrain", "Failed to generate vao");
+            Log.e("", "Failed to generate vao");
         }
         // Setup vao attributes and bindings
         GLES30.glBindVertexArray(vaoHandle);
@@ -176,7 +176,7 @@ public class Terrain {
         GLES30.glDisableVertexAttribArray(3);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("Terrain", "Failed to setup vao");
+            Log.e("", "Failed to setup vao");
             return false;
         }
 
@@ -335,7 +335,8 @@ public class Terrain {
         }
 
         float minDist = Float.POSITIVE_INFINITY;
-        int minFI1 = -1, minFI2 = -1;
+        int minFI1 = -1;
+        int minFI2 = -1;
         for (int i1 = 0; i1 < faces1.size(); ++i1) {
             int fi1 = faces1.keyAt(i1);
             Vec3 center1 = faces1.valueAt(i1);
@@ -442,7 +443,8 @@ public class Terrain {
     private void genFaceAdjacencies() {
 
         class Edge {
-            int faceI, faceEdgeI;
+            int faceI;
+            int faceEdgeI;
             Edge(int faceI, int faceEdgeI) { this.faceI = faceI; this.faceEdgeI = faceEdgeI; }
         }
 
@@ -496,10 +498,10 @@ public class Terrain {
         final float k_dropoffHeight = 0.01f;
 
         SimplexNoise simplex = new SimplexNoise(rand);
-        //float maxAmplitude = ((float)(1 << k_nOctaves) - 1) / (float)(1 << (k_nOctaves - 1));
         float superRange = HIGH_ELEVATION - 1.0f;
         float subRange = 1.0f - LOW_ELEVATION;
-        float minV = 0.0f, maxV = 0.0f;
+        float minV = 0.0f;
+        float maxV = 0.0f;
 
         int nVertices = locations.length / 3;
         float[] vs = new float[nVertices];
@@ -565,7 +567,8 @@ public class Terrain {
 
         Vec3 faceNorm = new Vec3();
         Vec3 v1 = new Vec3();
-        Vec3 v12 = new Vec3(), v13 = new Vec3();
+        Vec3 v12 = new Vec3();
+        Vec3 v13 = new Vec3();
         for (int fi = 0; fi < faces.length; ++fi) {
             int ii = fi * 3;
             int vi1 = indices[ii + 0];
@@ -643,19 +646,7 @@ public class Terrain {
             nextFaces.clear();
             ++currDist;
         }
-        maxCoastDist = currDist;
     }
-
-    /*private void calcTerritorySpawns(int nTerritories, Random rand) {
-        territorySpawnFaces = new int[nTerritories];
-        Vec3 w = Util.pointOnSphereRandom(rand);
-        Vec3 v = Util.ortho(w);
-        Vec3 u = v.cross(w);
-        Mat3 basis = new Mat3(u, v, w);
-        for (int ti = 0; ti < nTerritories; ++ti) {
-            territorySpawnFaces[ti] = faceNearestTo(basis.times(Util.pointOnSphereFibonacci(ti, nTerritories)));
-        }
-    }*/
 
     private void createTerritories(int maxNTerritories, Random rand) {
         ArrayList<Integer> spawnFaces = new ArrayList<>();
@@ -769,11 +760,12 @@ public class Terrain {
 
     private void handleSmallAndExcessTerritories(ArrayList<TerritorySpec> tempTerritorySpecs, int maxNTerritories) {
         int nTerritories = tempTerritorySpecs.size() - 1;
+        boolean doingLand = true;
         while (nTerritories > maxNTerritories) {
             // Find which two adjacent territories combined is the smallest
             int minN = Integer.MAX_VALUE;
-            int minT1I = -1, minT2I = -1;
-            boolean doingLand = true;
+            int minT1I = -1;
+            int minT2I = -1;
             for (int t1i = 1; t1i < tempTerritorySpecs.size(); ++t1i) {
                 TerritorySpec terr1 = tempTerritorySpecs.get(t1i);
                 if (terr1 == null) {
@@ -836,16 +828,20 @@ public class Terrain {
         // Remove gaps
         if (nTerritories < tempTerritorySpecs.size() - 1) {
             SparseIntArray map = new SparseIntArray();
-            for (int srcTI = 1, dstTI = 1; srcTI < tempTerritorySpecs.size(); ++srcTI) {
+            int dstTI = 1;
+            for (int srcTI = 1; srcTI < tempTerritorySpecs.size(); ++srcTI) {
                 if (tempTerritorySpecs.get(srcTI) != null) {
                     map.put(srcTI, dstTI);
                     ++dstTI;
                 }
             }
-            for (int i = 1; i < tempTerritorySpecs.size(); ++i) {
+            int i = 1;
+            while (i < tempTerritorySpecs.size()) {
                 if (tempTerritorySpecs.get(i) == null) {
                     tempTerritorySpecs.remove(i);
-                    --i;
+                }
+                else {
+                    ++i;
                 }
             }
             for (int ti = 1; ti < tempTerritorySpecs.size(); ++ti) {
@@ -898,7 +894,9 @@ public class Terrain {
             TerritorySpec terr = territorySpecs[ti];
             for (int fi = 0; fi < faces.length; ++fi) {
                 Face face = faces[fi];
-                int f1i = -1, f2i = -1, f3i = -1;
+                int f1i = -1;
+                int f2i = -1;
+                int f3i = -1;
                 for (int ai = 0; ai < 3; ++ai) {
                     int afi = face.adjacencies[ai];
                     if (faces[afi].territory != face.territory) {
@@ -911,7 +909,8 @@ public class Terrain {
                 if (f2i == -1 || f3i != -1) {
                     continue;
                 }
-                Face f1 = faces[f1i], f2 = faces[f2i];
+                Face f1 = faces[f1i];
+                Face f2 = faces[f2i];
                 if (f1.territory != f2.territory || f1.territory == 0) {
                     continue;
                 }
@@ -1038,7 +1037,7 @@ public class Terrain {
 
             // Not enough faces for armies
             if (armyI < terr.armyFaces.length) {
-                Log.e("Terrain", "Not enough faces in territory for armies");
+                Log.e("", "Not enough faces in territory for armies");
             }
         }
     }
@@ -1160,7 +1159,8 @@ public class Terrain {
         while (nContinents > maxNContinents) {
             // Find two adjacent continents that combined are smallest
             int minN = Integer.MAX_VALUE;
-            int minC1I = -1, minC2I = -1;
+            int minC1I = -1;
+            int minC2I = -1;
             for (int c1i = 1; c1i < tempContinentSpecs.size(); ++c1i) {
                 ContinentSpec cont = tempContinentSpecs.get(c1i);
                 if (cont == null) {
@@ -1240,16 +1240,20 @@ public class Terrain {
         // Remove gaps
         if (nContinents < tempContinentSpecs.size() - 1) {
             SparseIntArray map = new SparseIntArray();
-            for (int srcCI = 1, dstCI = 1; srcCI < tempContinentSpecs.size(); ++srcCI) {
+            int dstCI = 1;
+            for (int srcCI = 1; srcCI < tempContinentSpecs.size(); ++srcCI) {
                 if (tempContinentSpecs.get(srcCI) != null) {
                     map.put(srcCI, dstCI);
                     ++dstCI;
                 }
             }
-            for (int i = 1; i < tempContinentSpecs.size(); ++i) {
+            int i = 1;
+            while (i < tempContinentSpecs.size()) {
                 if (tempContinentSpecs.get(i) == null) {
                     tempContinentSpecs.remove(i);
-                    --i;
+                }
+                else {
+                    ++i;
                 }
             }
             for (int ci = 1; ci < tempContinentSpecs.size(); ++ci) {
@@ -1338,7 +1342,8 @@ public class Terrain {
                     if (pair == null) {
                         continue;
                     }
-                    int t1i = pair.first, t2i = pair.second;
+                    int t1i = pair.first;
+                    int t2i = pair.second;
                     territorySpecs[t1i].waterwayTerrs.add(t2i);
                     territorySpecs[t2i].waterwayTerrs.add(t1i);
                 }
@@ -1412,7 +1417,8 @@ public class Terrain {
             }
         }
         int maxCount = 0;
-        int maxTI1 = -1, maxTI2 = -1;
+        int maxTI1 = -1;
+        int maxTI2 = -1;
         for (int i = 0; i < counts.size(); ++i) {
             if (counts.valueAt(i) > maxCount) {
                 maxCount = counts.valueAt(i);
@@ -1427,66 +1433,6 @@ public class Terrain {
         }
 
         return new Pair<>(maxTI1, maxTI2);
-    }
-
-    private int detOceanDistanceBetweenTerritories(int t1i, int t2i) {
-        TerritorySpec terr1 = territorySpecs[t1i];
-        TerritorySpec terr2 = territorySpecs[t2i];
-        if (!terr1.adjacentOceanTerrs.contains(t2i)) {
-            return -1;
-        }
-        HashSet<Integer> currFringe1 = new HashSet<>(terr1.coastFaces);
-        HashSet<Integer> currFringe2 = new HashSet<>(terr2.coastFaces);
-        HashSet<Integer> nextFringe1 = new HashSet<>();
-        HashSet<Integer> nextFringe2 = new HashSet<>();
-        HashSet<Integer> checked1 = new HashSet<>(currFringe1);
-        HashSet<Integer> checked2 = new HashSet<>(currFringe2);
-        int count1 = 0, count2 = 0;
-        while (true) {
-            if (currFringe1.isEmpty() || currFringe2.isEmpty()) {
-                return -1;
-            }
-            for (int fi : currFringe1) {
-                Face face = faces[fi];
-                for (int afi : face.adjacencies) {
-                    if (checked1.contains(afi)) {
-                        continue;
-                    }
-                    if (checked2.contains(afi)) {
-                        return count1 + count2;
-                    }
-                    if (faces[afi].coastDist < 0) {
-                        nextFringe1.add(afi);
-                        checked1.add(afi);
-                    }
-                }
-            }
-            ++count1;
-            for (int fi : currFringe2) {
-                Face face = faces[fi];
-                for (int afi : face.adjacencies) {
-                    if (checked2.contains(afi)) {
-                        continue;
-                    }
-                    if (checked1.contains(afi)) {
-                        return count1 + count2;
-                    }
-                    if (faces[afi].coastDist < 0) {
-                        nextFringe2.add(afi);
-                        checked2.add(afi);
-                    }
-                }
-            }
-            ++count2;
-            currFringe1.clear();
-            currFringe2.clear();
-            HashSet<Integer> temp = currFringe1;
-            currFringe1 = nextFringe1;
-            nextFringe1 = temp;
-            temp = currFringe2;
-            currFringe2 = nextFringe2;
-            nextFringe2 = temp;
-        }
     }
 
     private void createVerticesInfo() {

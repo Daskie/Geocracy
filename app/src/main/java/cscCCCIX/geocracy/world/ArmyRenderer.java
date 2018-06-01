@@ -37,13 +37,13 @@ public class ArmyRenderer {
         unload();
 
         if (!shader.load()) {
-            Log.e("ArmyRenderer", "Failed to load shader");
+            Log.e("", "Failed to load shader");
         }
         shader.setActive();
         shader.setPlayerColors(world.game.getPlayers());
 
         if (!mesh.load()) {
-            Log.e("ArmyRenderer", "Failed to load mesh");
+            Log.e("", "Failed to load mesh");
         }
 
         // Create instance vbo
@@ -51,7 +51,7 @@ public class ArmyRenderer {
         GLES30.glGenBuffers(1, instanceVBOHandleArr, 0);
         instanceVBOHandle = instanceVBOHandleArr[0];
         if (instanceVBOHandle == 0) {
-            Log.e("ArmyRenderer", "Failed to generate instance vbo");
+            Log.e("", "Failed to generate instance vbo");
             return false;
         }
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, instanceVBOHandle);
@@ -59,7 +59,7 @@ public class ArmyRenderer {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("ArmyRenderer", "Failed to update vao");
+            Log.e("", "Failed to update vao");
             return false;
         }
 
@@ -103,7 +103,7 @@ public class ArmyRenderer {
         GLES30.glDisableVertexAttribArray(6);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("ArmyRenderer", "Failed to update vao");
+            Log.e("", "Failed to update vao");
             return false;
         }
 

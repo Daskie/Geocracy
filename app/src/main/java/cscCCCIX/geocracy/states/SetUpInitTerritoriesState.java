@@ -1,5 +1,6 @@
 package cscCCCIX.geocracy.states;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import cscCCCIX.geocracy.EventBus;
@@ -22,7 +23,7 @@ public class SetUpInitTerritoriesState implements GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("SETUP INITIAL TERRITORIES STATE: ANOTHER TERRITORY SELECTED");
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: ANOTHER TERRITORY SELECTED");
         this.territory = territory;
 
         //illegal territory selection for setting up territories
@@ -40,7 +41,7 @@ public class SetUpInitTerritoriesState implements GameState {
     }
 
     public void selectTargetTerritory(Territory territory) {
-        System.out.println("SETUP INITIAL TERRITORIES STATE: CANNOT SELECT TARGET TERRITORY");
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: CANNOT SELECT TARGET TERRITORY");
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
@@ -51,33 +52,33 @@ public class SetUpInitTerritoriesState implements GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        System.out.println("SETUP INITIAL TERRITORIES STATE: ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
         territory.setOwner(game.players[game.currentPlayer]);
         territory.setNArmies(amount);
 
-        System.out.println("PLAYER" + game.currentPlayer + " ADDED " + territory.getTerritoryName());
+        Log.i("", "PLAYER" + game.currentPlayer + " ADDED " + territory.getTerritoryName());
 
         game.currentPlayer++;
         if(game.currentPlayer==game.players.length)
             game.currentPlayer=0;
 
         if(game.getWorld().allTerritoriesOccupied())
-            game.setState(game.GainArmyUnitsState);
+            game.setState(game.gainArmyUnitsState);
 
     }
 
     public void enableAttackMode() {
-        System.out.println("SETUP INITIAL TERRITORIES STATE: CANNOT ENABLE ATTACK MODE");
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: CANNOT ENABLE ATTACK MODE");
     }
 
     public void cancelAction() {
-        System.out.println("SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
     }
 
 
     public void initState() {
-        System.out.println("INIT SETUP INITIAL TERRITORIES STATE:");
+        Log.i("", "INIT SETUP INITIAL TERRITORIES STATE:");
 
         if (this.territory != null) {
             game.activity.removeActiveBottomPaneFragment();

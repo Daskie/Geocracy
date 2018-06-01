@@ -63,19 +63,19 @@ public class World {
         }
 
         if (!terrain.load()) {
-            Log.e("World", "Failed to load terrain");
+            Log.e("", "Failed to load terrain");
             return false;
         }
         if (!oceanRenderer.load()) {
-            Log.e("World", "Failed to load ocean renderer");
+            Log.e("", "Failed to load ocean renderer");
             return false;
         }
         if (!waterways.load()) {
-            Log.e("World", "Failed to load waterway renderer");
+            Log.e("", "Failed to load waterway renderer");
             return false;
         }
         if (!armyRenderer.load()) {
-            Log.e("World", "Failed to load army renderer");
+            Log.e("", "Failed to load army renderer");
             return false;
         }
 

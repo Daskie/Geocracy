@@ -38,17 +38,17 @@ public class SpaceRenderer {
         unload();
 
         if (!shader.load()) {
-            Log.e("SpaceRenderer", "Failed to load shader");
+            Log.e("", "Failed to load shader");
             return false;
         }
 
         if (!loadVertices()) {
-            Log.e("SpaceRenderer", "Failed to load vertices");
+            Log.e("", "Failed to load vertices");
             return false;
         }
 
         if (!loadCubemap()) {
-            Log.e("SpaceRenderer", "Failed to load cubemap");
+            Log.e("", "Failed to load cubemap");
             return false;
         }
 
@@ -95,7 +95,7 @@ public class SpaceRenderer {
         GLES30.glGenBuffers(1, vboHandleArr, 0);
         vboHandle = vboHandleArr[0];
         if (vboHandle == 0) {
-            Log.e("SpaceRenderer", "Failed to generate vbo");
+            Log.e("", "Failed to generate vbo");
             return false;
         }
         // Upload vbo data
@@ -104,7 +104,7 @@ public class SpaceRenderer {
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("SpaceRenderer", "Failed to upload vbo");
+            Log.e("", "Failed to upload vbo");
             return false;
         }
 
@@ -113,7 +113,7 @@ public class SpaceRenderer {
         GLES30.glGenBuffers(1, iboHandleArr, 0);
         iboHandle = iboHandleArr[0];
         if (iboHandle == 0) {
-            Log.e("SpaceRenderer", "Failed to generate ibo");
+            Log.e("", "Failed to generate ibo");
             return false;
         }
         // Upload ibo data
@@ -122,7 +122,7 @@ public class SpaceRenderer {
         GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, 0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("SpaceRenderer", "Failed to upload ibo");
+            Log.e("", "Failed to upload ibo");
             return false;
         }
 
@@ -131,7 +131,7 @@ public class SpaceRenderer {
         GLES30.glGenVertexArrays(1, vaoHandleArr, 0);
         vaoHandle = vaoHandleArr[0];
         if (vaoHandle == 0) {
-            Log.e("SpaceRenderer", "Failed to generate vao");
+            Log.e("", "Failed to generate vao");
         }
         // Setup vao attributes and bindings
         GLES30.glBindVertexArray(vaoHandle);
@@ -145,7 +145,7 @@ public class SpaceRenderer {
         GLES30.glDisableVertexAttribArray(0);
         // Check for OpenGL errors
         if (Util.isGLError()) {
-            Log.e("SpaceRenderer", "Failed to setup vao");
+            Log.e("", "Failed to setup vao");
             return false;
         }
 
@@ -156,7 +156,7 @@ public class SpaceRenderer {
         int[] cubemapHandleArr = { 0 };
         GLES30.glGenTextures(1, cubemapHandleArr, 0);
         if ((cubemapHandle = cubemapHandleArr[0]) == 0) {
-            Log.e("SpaceRenderer", "Failed to generate cubemap");
+            Log.e("", "Failed to generate cubemap");
             return false;
         }
 
@@ -165,7 +165,7 @@ public class SpaceRenderer {
         for (int fi = 0; fi < 6; ++fi) {
             Image image = new Image(FILES[fi]);
             if (!image.load()) {
-                Log.e("SpaceRenderer", "Failed to load face image " + fi);
+                Log.e("",  "Failed to load face image " + fi);
                 return false;
             }
             GLES30.glTexImage2D(GLES30.GL_TEXTURE_CUBE_MAP_POSITIVE_X + fi, 0, GLES30.GL_RGBA, image.getWidth(), image.getHeight(), 0, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, image.getData());

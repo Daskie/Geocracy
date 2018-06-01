@@ -47,22 +47,22 @@ public class WaterwayShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("WaterwayShader", "Failed to get location of u_viewMat");
+            Log.e("", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("WaterwayShader", "Failed to get location of u_projMat");
+            Log.e("", "Failed to get location of u_projMat");
         }
         if ((timeUniformHandle = getUniformLocation("u_time")) == -1) {
-            Log.e("WaterwayShader", "Failed to get location of u_time");
+            Log.e("", "Failed to get location of u_time");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
-            Log.e("WaterwayShader", "Failed to get location of u_lightDir");
+            Log.e("", "Failed to get location of u_lightDir");
         }
         if ((continentColorsUniformHandle = getUniformLocation("u_continentColors")) == -1) {
-            Log.e("WaterwayShader", "Failed to get location of u_continentColors");
+            Log.e("", "Failed to get location of u_continentColors");
         }
         if ((selectedTerritoryHandle = getUniformLocation("u_selectedTerritory")) == -1) {
-            Log.e("WaterwayShader", "Failed to get location of u_selectedTerritory");
+            Log.e("",  "Failed to get location of u_selectedTerritory");
         }
 
         return true;

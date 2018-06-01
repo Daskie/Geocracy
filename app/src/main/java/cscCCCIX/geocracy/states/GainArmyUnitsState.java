@@ -1,5 +1,6 @@
 package cscCCCIX.geocracy.states;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import cscCCCIX.geocracy.EventBus;
@@ -35,7 +36,7 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void selectTargetTerritory(Territory territory) {
-        System.out.println("GAIN ARMIES STATE: SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
+        Log.i("", "GAIN ARMIES STATE: SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
 
         if (territory != null) {
             //illegal territory selection for assigning units
@@ -62,37 +63,37 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void enableAttackMode() {
-        System.out.println("GAIN ARMIES STATE: CANNOT ENABLE ATTACK MODE");
+        Log.i("", "GAIN ARMIES STATE: CANNOT ENABLE ATTACK MODE");
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         if (this.territory != null) {
-            System.out.println("GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
+            Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
             int clampedNArmies = Util.clamp(territory.getNArmies() + amount, MIN_UNITS, MAX_UNITS);
             this.territory.setNArmies(clampedNArmies);
-            System.out.println("PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
+            Log.i("", "PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
         } else {
-            System.out.println("GAIN ARMIES STATE: CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
+            Log.i("", "GAIN ARMIES STATE: CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
         }
     }
 
     public void cancelAction() {
-        System.out.println("GAIN ARMIES STATE: USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
+        Log.i("", "GAIN ARMIES STATE: USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
         this.territory = null;
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 
 
     public void initState() {
-        System.out.println("INIT GAIN ARMIES STATE:");
+        Log.i("", "INIT GAIN ARMIES STATE:");
         game.activity.removeActiveBottomPaneFragment();
         Player currentPlayer = game.players[game.currentPlayer];
         this.unitsToDistribute = currentPlayer.getBonus();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
-        System.out.println(currentPlayer);
-        System.out.println("HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");
+        Log.i("", "" + currentPlayer.getId());
+        Log.i("", "HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");
         currentPlayer.addNArmies(this.unitsToDistribute);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }

@@ -92,40 +92,40 @@ public class TerrainShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_viewMat");
+            Log.e("", "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_projMat");
+            Log.e("", "Failed to get location of u_projMat");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_lightDir");
+            Log.e("",  "Failed to get location of u_lightDir");
         }
         if ((timeUniformHandle = getUniformLocation("u_time")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_time");
+            Log.e("", "Failed to get location of u_time");
         }
         if ((lowElevationFactorUniformHandle = getUniformLocation("u_lowElevationFactor")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_lowElevationFactor");
+            Log.e("", "Failed to get location of u_lowElevationFactor");
         }
         if ((highElevationFactorUniformHandle = getUniformLocation("u_highElevationFactor")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_highElevationFactor");
+            Log.e("", "Failed to get location of u_highElevationFactor");
         }
         if ((continentColorsUniformHandle = getUniformLocation("u_continentColors")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_continentColors");
+            Log.e("", "Failed to get location of u_continentColors");
         }
         if ((selectedTerritoryHandle = getUniformLocation("u_selectedTerritory")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_selectedTerritory");
+            Log.e("", "Failed to get location of u_selectedTerritory");
         }
         if ((highlightedTerritoriesLowerHandle = getUniformLocation("u_highlightedTerritoriesLower")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_highlightedTerritoriesLower");
+            Log.e("", "Failed to get location of u_highlightedTerritoriesLower");
         }
         if ((highlightedTerritoriesUpperHandle = getUniformLocation("u_highlightedTerritoriesUpper")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_highlightedTerritoriesUpper");
+            Log.e("",  "Failed to get location of u_highlightedTerritoriesUpper");
         }
         if ((playerColorsHandle = getUniformLocation("u_playerColors")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_playerColors");
+            Log.e("", "Failed to get location of u_playerColors");
         }
         if ((territoryPlayersHandle = getUniformLocation("u_territoryPlayers")) == -1) {
-            Log.e("TerrainShader", "Failed to get location of u_territoryPlayers");
+            Log.e("", "Failed to get location of u_territoryPlayers");
         }
 
         return true;

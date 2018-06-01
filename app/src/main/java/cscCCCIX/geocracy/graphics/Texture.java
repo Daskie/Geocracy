@@ -35,7 +35,7 @@ public class Texture {
         GLES30.glGenTextures(1, handleArr, 0);
         handle = handleArr[0];
         if (handle == 0) {
-            Log.e("Texture", "Failed to generate texture");
+            Log.e("", "Failed to generate texture");
             return false;
         }
 
@@ -56,11 +56,11 @@ public class Texture {
 
     public boolean upload(ByteBuffer pixelData) {
         if (handle == 0) {
-            Log.e("Texture", "Invalid handle");
+            Log.e("", "Invalid handle");
             return false;
         }
         if (pixelData.limit() != size.x * size.y * 3) {
-            Log.e("Texture", "Invalid pixelData dimensions");
+            Log.e("", "Invalid pixelData dimensions");
             return false;
         }
 

@@ -34,16 +34,16 @@ public class BackgroundShader extends Shader {
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("BackgroundShader", "Failed to get view matrix uniform location");
+            Log.e("", "Failed to get view matrix uniform location");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("BackgroundShader", "Failed to get projection matrix uniform location");
+            Log.e("", "Failed to get projection matrix uniform location");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
-            Log.e("BackgroundShader", "Failed to get light uniform location");
+            Log.e("", "Failed to get light uniform location");
         }
         if ((timeUniformHandle = getUniformLocation("u_time")) == -1) {
-            Log.e("BackgroundShader", "Failed to get light uniform location");
+            Log.e("", "Failed to get light uniform location");
         }
 
         return true;

@@ -21,11 +21,11 @@ public class OceanRenderer {
         unload();
 
         if (!shader.load()) {
-            Log.e("OceanRenderer", "Failed to load shader");
+            Log.e("", "Failed to load shader");
             return false;
         }
         if (!mesh.load()) {
-            Log.e("OceanRenderer", "Failed to load mesh");
+            Log.e("", "Failed to load mesh");
             return false;
         }
 
