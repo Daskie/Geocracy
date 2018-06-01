@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.Window;
@@ -16,17 +17,16 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.jakewharton.rxbinding2.view.RxView;
-
+import es.dmoral.toasty.Toasty;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
 import csc309.geocracy.fragments.SettingsFragment;
 import csc309.geocracy.states.GameAction;
 import csc309.geocracy.states.GameEvent;
-import es.dmoral.toasty.Toasty;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
+
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -35,7 +35,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     static public Game game;
     static public GameSurfaceView gameSurfaceView;
 
-    private final CompositeDisposable disposables = new CompositeDisposable();
+    static final public SettingsFragment settingsFragment = new SettingsFragment();
 
     static private FragmentTransaction userInterfaceFT;
     static private FragmentManager fragmentManager;
@@ -43,19 +43,17 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     static private Fragment activeBottomPaneFragment = null;
     static private Fragment activeOverlayFragment = null;
 
-
-    static public SettingsFragment settingsFragment = new SettingsFragment();
-
     static private boolean settingsVisible = false;
 
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
-    public FloatingActionButton attackBtn;
-    public FloatingActionButton addUnitBtn;
-    public FloatingActionButton removeUnitBtn;
-    public FloatingActionButton cancelBtn;
-    public FloatingActionButton gameInfoBtn;
-    public FloatingActionButton settingBtn;
-    public FloatingActionButton closeOverlayBtn;
+    private FloatingActionButton attackBtn;
+    private FloatingActionButton addUnitBtn;
+    private FloatingActionButton removeUnitBtn;
+    private FloatingActionButton cancelBtn;
+    private FloatingActionButton gameInfoBtn;
+    private FloatingActionButton settingBtn;
+    private FloatingActionButton closeOverlayBtn;
 
 
     @Override
@@ -215,19 +213,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
-     public void toggleSettingsFragment() {
-        if (settingsVisible) {
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.remove(settingsFragment);
-            userInterfaceFT.commit();
-        } else {
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.add(R.id.gameLayout, settingsFragment);
-            userInterfaceFT.commit();
-        }
-        settingsVisible = !settingsVisible;
-    }
-
     public void showOverlayFragment(Fragment overlayFragment) {
         System.out.println("HIT OVERLAY SHOW");
         removeActiveBottomPaneFragment();
@@ -302,7 +287,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        System.out.println("SURFACE CREATED");
+        Log.i(TAG, "SURFACE CREATED");
     }
 
     @Override
