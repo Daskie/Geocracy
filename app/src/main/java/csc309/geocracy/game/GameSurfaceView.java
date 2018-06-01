@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import java.util.concurrent.TimeUnit;
-
 import csc309.geocracy.EventBus;
 import csc309.geocracy.graphics.MainRenderer;
 import glm_.vec2.Vec2i;

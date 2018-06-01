@@ -1,51 +1,32 @@
 package csc309.geocracy.game;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 
-import java.util.Random;
-import java.util.concurrent.Callable;
 import csc309.geocracy.EventBus;
 import csc309.geocracy.R;
-import csc309.geocracy.fragments.GameInfoFragment;
 import csc309.geocracy.fragments.SettingsFragment;
-import csc309.geocracy.fragments.TerritoryDetailFragment;
-import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.states.GameAction;
 import csc309.geocracy.states.GameEvent;
-import csc309.geocracy.states.GameState;
 import es.dmoral.toasty.Toasty;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 

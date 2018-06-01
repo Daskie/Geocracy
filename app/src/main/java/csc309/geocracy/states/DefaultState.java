@@ -2,7 +2,6 @@ package csc309.geocracy.states;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.game.Game;
-import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 

@@ -1,6 +1,7 @@
 package csc309.geocracy.graphics;
 
 import android.util.Log;
+
 import glm_.vec3.Vec3;
 
 public class Background {

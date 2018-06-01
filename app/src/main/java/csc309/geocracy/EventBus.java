@@ -2,16 +2,11 @@ package csc309.geocracy;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 
