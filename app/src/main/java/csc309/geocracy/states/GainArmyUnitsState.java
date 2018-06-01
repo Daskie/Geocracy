@@ -27,26 +27,27 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("GAIN ARMIES STATE: SELECTING ORIGIN TERRITORY TO ADD/REMOVE UNITS");
 
-        //illegal territory selection for assigning units
-        if(this.territory.getOwner() != game.players[game.currentPlayer]){
-            this.parent.runOnUiThread(() -> {
-                Toasty.info(parent.getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show();
-            });
-            return;
-        }
-
-        this.territory = territory;
-
-        EventBus.publish("UI_EVENT", UIEvent.SHOW_UPDATE_UNITS_MODE_BUTTONS);
-        game.cameraController.targetTerritory(territory);
-        parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(territory));
-//        addToSelectedTerritoryUnitCount(1);
     }
 
     public void selectTargetTerritory(Territory territory) {
-        System.out.println("GAIN ARMIES STATE: CANNOT SELECT TARGET TERRITORY");
+        System.out.println("GAIN ARMIES STATE: SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
+
+        if (territory != null) {
+            //illegal territory selection for assigning units
+            if(territory.getOwner() != game.players[game.currentPlayer]){
+                this.parent.runOnUiThread(() -> {
+                    Toasty.info(parent.getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show();
+                });
+                return;
+            }
+
+            this.territory = territory;
+
+            game.cameraController.targetTerritory(territory);
+            EventBus.publish("UI_EVENT", UIEvent.SHOW_UPDATE_UNITS_MODE_BUTTONS);
+            parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory));
+        }
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
@@ -82,6 +83,7 @@ public class GainArmyUnitsState implements GameState {
         game.activity.removeActiveBottomPaneFragment();
         Player currentPlayer = game.players[game.currentPlayer];
         this.unitsToDistribute = currentPlayer.getBonus();
+        game.getWorld().unhighlightTerritories();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         System.out.println(currentPlayer);
         System.out.println("HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");

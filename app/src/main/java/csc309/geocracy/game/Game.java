@@ -147,11 +147,15 @@ public class Game {
                 Territory selectedTerritory = (Territory) event.payload;
                 System.out.println(selectedTerritory);
 
-
                 if (getState() == this.IntentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);
-                } else {
+                }
+                else if (getState() == this.GainArmyUnitsState) {
+                    getState().selectTargetTerritory(selectedTerritory);
+                }
+                else {
                     getState().selectOriginTerritory(selectedTerritory);
+                    getState().initState();
 
 //                    if(players[currentPlayer] instanceof HumanPlayer)
 //                        getState().selectOriginTerritory(selectedTerritory);
@@ -163,7 +167,7 @@ public class Game {
 //                    }
                 }
 
-                getState().initState();
+//                getState().initState();
 
                 break;
 
