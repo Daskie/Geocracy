@@ -1,20 +1,14 @@
 
 package csc309.geocracy.states;
 
-import android.os.Bundle;
-
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.fragments.DiceRollFragment;
-import csc309.geocracy.fragments.TroopSelectionFragment;
 import csc309.geocracy.game.Game;
-import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.game.UIEvent;
 import csc309.geocracy.world.Territory;
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class DiceRollState implements  GameState {

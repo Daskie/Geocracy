@@ -1,9 +1,8 @@
 package csc309.geocracy.world;
 
-import csc309.geocracy.game.Player;
-
 import android.util.Log;
 
+import csc309.geocracy.game.Player;
 import csc309.geocracy.graphics.Shader;
 import glm_.mat4x4.Mat4;
 import glm_.vec3.Vec3;

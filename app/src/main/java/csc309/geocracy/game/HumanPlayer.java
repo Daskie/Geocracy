@@ -2,10 +2,8 @@ package csc309.geocracy.game;
 
 import com.github.javafaker.Faker;
 
-import java.util.HashSet;
 import java.util.Random;
 
-import csc309.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
 public class HumanPlayer extends Player{

@@ -3,8 +3,10 @@ package csc309.geocracy.game;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.util.Random;
+
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
 import csc309.geocracy.fragments.GameInfoFragment;
@@ -12,13 +14,13 @@ import csc309.geocracy.space.SpaceRenderer;
 import csc309.geocracy.states.BattleResultsState;
 import csc309.geocracy.states.DefaultState;
 import csc309.geocracy.states.DiceRollState;
+import csc309.geocracy.states.GainArmyUnitsState;
 import csc309.geocracy.states.GameEvent;
 import csc309.geocracy.states.GameState;
 import csc309.geocracy.states.IntentToAttackState;
 import csc309.geocracy.states.SelectedAttackTargetTerritoryState;
 import csc309.geocracy.states.SelectedTerritoryState;
 import csc309.geocracy.states.SetUpInitTerritoriesState;
-import csc309.geocracy.states.GainArmyUnitsState;
 import csc309.geocracy.world.Territory;
 import csc309.geocracy.world.World;
 import glm_.vec2.Vec2;

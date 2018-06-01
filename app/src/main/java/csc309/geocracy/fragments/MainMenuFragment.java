@@ -6,15 +6,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
 import csc309.geocracy.LoadingScreenActivity;
-import csc309.geocracy.main_menu.MenuActivity;
 import csc309.geocracy.R;
+import csc309.geocracy.main_menu.MenuActivity;
 import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {

@@ -3,8 +3,6 @@ package csc309.geocracy.main_menu;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.AppCompatButton;
-import android.view.MotionEvent;
-import android.widget.Button;
 
 public class MenuButton extends AppCompatButton {
 

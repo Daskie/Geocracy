@@ -3,12 +3,12 @@ package csc309.geocracy.graphics;
 import android.opengl.GLES30;
 import android.util.Log;
 import android.util.SparseArray;
-import csc309.geocracy.Util;
-import csc309.geocracy.VecArrayUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import csc309.geocracy.Util;
+import csc309.geocracy.VecArrayUtil;
 import glm_.vec3.Vec3;
 
 public class BackgroundMesh {
