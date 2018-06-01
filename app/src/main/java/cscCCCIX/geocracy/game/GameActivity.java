@@ -30,12 +30,13 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    private static final String TAG = "GAME_ACTIVITY";
 
     static public Game game;
     static public GameSurfaceView gameSurfaceView;
 
     static final public SettingsFragment settingsFragment = new SettingsFragment();
+
+    private static final String TAG = "GAME_ACTIVITY";
 
     static private FragmentTransaction userInterfaceFT;
     static private FragmentManager fragmentManager;
@@ -43,14 +44,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     static private Fragment activeBottomPaneFragment = null;
     static private Fragment activeOverlayFragment = null;
 
-    static private boolean settingsVisible = false;
-
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    private FloatingActionButton attackBtn;
-    private FloatingActionButton addUnitBtn;
-    private FloatingActionButton removeUnitBtn;
-    private FloatingActionButton cancelBtn;
     private FloatingActionButton gameInfoBtn;
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
@@ -59,6 +54,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FloatingActionButton attackBtn;
+        FloatingActionButton addUnitBtn;
+        FloatingActionButton removeUnitBtn;
+        FloatingActionButton cancelBtn;
+
 
         // 8 bit color format
         getWindow().setFormat(PixelFormat.RGBA_8888);
@@ -166,42 +167,42 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(e -> {
                     UIEvent event = (UIEvent) e;
-                    System.out.println("UI EVENT: " + event);
+                    Log.i(TAG, "UI EVENT: " + event);
 
                     switch (event) {
 
                         case HIDE_CANCEL_BUTTON:
-                            this.cancelBtn.hide();
+                            cancelBtn.hide();
                             break;
 
                         case SHOW_CANCEL_BUTTON:
-                            this.cancelBtn.show();
+                            cancelBtn.show();
                             break;
 
                         case HIDE_UPDATE_UNITS_MODE_BUTTONS:
-                            this.removeUnitBtn.hide();
-                            this.addUnitBtn.hide();
+                            removeUnitBtn.hide();
+                            addUnitBtn.hide();
                             break;
 
                         case SHOW_UPDATE_UNITS_MODE_BUTTONS:
-                            this.removeUnitBtn.show();
-                            this.addUnitBtn.show();
+                            removeUnitBtn.show();
+                            addUnitBtn.show();
                             break;
 
                         case HIDE_ATTACK_MODE_BUTTON:
-                            this.attackBtn.hide();
+                            attackBtn.hide();
                             break;
 
                         case SHOW_ATTACK_MODE_BUTTON:
-                            this.attackBtn.show();
+                            attackBtn.show();
                             break;
 
                         case SET_ATTACK_MODE_ACTIVE:
-                            this.attackBtn.setAlpha(1.0f);
+                            attackBtn.setAlpha(1.0f);
                             break;
 
                         case SET_ATTACK_MODE_INACTIVE:
-                            this.attackBtn.setAlpha(0.4f);
+                            attackBtn.setAlpha(0.4f);
                             break;
 
                         default:
@@ -214,7 +215,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     public void showOverlayFragment(Fragment overlayFragment) {
-        System.out.println("HIT OVERLAY SHOW");
         removeActiveBottomPaneFragment();
 
         userInterfaceFT = fragmentManager.beginTransaction();

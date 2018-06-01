@@ -1,5 +1,7 @@
 package cscCCCIX.geocracy.states;
 
+import android.util.Log;
+
 import cscCCCIX.geocracy.EventBus;
 import cscCCCIX.geocracy.fragments.TroopSelectionFragment;
 import cscCCCIX.geocracy.game.Game;
@@ -7,6 +9,8 @@ import cscCCCIX.geocracy.game.UIEvent;
 import cscCCCIX.geocracy.world.Territory;
 
 public class SelectedAttackTargetTerritoryState implements  GameState {
+
+    private static final String TAG = "SELECTED_ATTACK_T_STATE";
 
     private Game game;
     private Territory originTerritory;
@@ -17,25 +21,25 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: SETTING ORIGIN TERRITORY");
+        Log.i(TAG, "SETTING ORIGIN TERRITORY");
         this.originTerritory = territory;
     }
     public void selectTargetTerritory(Territory territory) {
-        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: SETTING TARGET TERRITORY");
+        Log.i(TAG, "SETTING TARGET TERRITORY");
         this.targetTerritory = territory;
     }
 
     public void enableAttackMode() {
-        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: -> CANNOT ENABLE ATTACK MODE");
+        Log.i(TAG, "-> CANNOT ENABLE ATTACK MODE");
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: CANNOT UPDATE UNIT COUNT");
+        Log.i(TAG, "CANNOT UPDATE UNIT COUNT");
     }
 
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: -> ENTER DICE ROLL STATE");
+        Log.i(TAG, "-> ENTER DICE ROLL STATE");
         game.setState(game.DiceRollState);
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
@@ -47,18 +51,18 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
-        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: INVALID STATE ACCESSED");
+        Log.i(TAG, "INVALID STATE ACCESSED");
     }
 
 
     public void cancelAction() {
-        System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.defaultState);
         game.getState().initState();
     }
 
     public void initState() {
-        System.out.println("INIT SELECTED ATTACK TARGET TERRITORY STATE:");
+        Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");
         game.activity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
@@ -68,7 +72,6 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
-
     }
 
 }

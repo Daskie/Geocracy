@@ -243,7 +243,7 @@ public class Game {
     public void step() {
         long t = System.nanoTime() - startT;
         float dt = (t - lastT) * 1e-9f;
-        //System.out.println("FPS: " + (1.0f / dt));
+//        Log.i(TAG, "FPS: " + (1.0f / dt));
 
         update(t, dt);
         render(t, dt);

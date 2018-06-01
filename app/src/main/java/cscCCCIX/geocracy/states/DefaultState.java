@@ -1,5 +1,7 @@
 package cscCCCIX.geocracy.states;
 
+import android.util.Log;
+
 import cscCCCIX.geocracy.EventBus;
 import cscCCCIX.geocracy.game.Game;
 import cscCCCIX.geocracy.game.UIEvent;
@@ -7,6 +9,7 @@ import cscCCCIX.geocracy.world.Territory;
 
 public class DefaultState implements GameState {
 
+    private static final String TAG = "DEFAULT_STATE";
     private Game game;
 
     public DefaultState(Game game) {
@@ -14,37 +17,38 @@ public class DefaultState implements GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("DEFAULT STATE: TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
+        Log.i(TAG, "TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
         game.setState(game.selectedTerritoryState);
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
 
     public void selectTargetTerritory(Territory territory) {
-        System.out.println("DEFAULT STATE: CANNOT SELECT TARGET TERRITORY, NO ORIGIN TERRITORY");
+        Log.i(TAG, "CANNOT SELECT TARGET TERRITORY, NO ORIGIN TERRITORY");
     }
 
     public void enableAttackMode() {
-        System.out.println("DEFAULT STATE: CANNOT ENABLE ATTACK MODE");
+        Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        System.out.println("DEFAULT STATE: CANNOT UPDATE UNIT COUNT");
+        Log.i(TAG, "CANNOT UPDATE UNIT COUNT");
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        System.out.println("DEFAULT STATE: CANNOT PERFORM DICE ROLL");
+        Log.i(TAG, "CANNOT PERFORM DICE ROLL");
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
-        System.out.println("DEFAULT STATE: INVALID STATE ACCESSED");
+        Log.i(TAG, "INVALID STATE ACCESSED");
     }
 
     public void cancelAction() {
-        System.out.println("DEFAULT STATE: USER CANCELED ACTION -> NULL ACTION");
+        Log.i(TAG, "USER CANCELED ACTION -> NULL ACTION");
     }
 
     public void initState() {
+        Log.i(TAG, "INIT STATE");
         game.activity.removeActiveBottomPaneFragment();
         game.getWorld().unselectTerritory();
         game.getWorld().unhighlightTerritories();
