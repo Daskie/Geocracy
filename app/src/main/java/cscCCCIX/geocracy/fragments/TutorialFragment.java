@@ -13,8 +13,6 @@ import cscCCCIX.R;
 
 public class TutorialFragment extends Fragment {
 
-    private Button backButton;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -22,4 +20,5 @@ public class TutorialFragment extends Fragment {
 
         return view;
     }
+
 }

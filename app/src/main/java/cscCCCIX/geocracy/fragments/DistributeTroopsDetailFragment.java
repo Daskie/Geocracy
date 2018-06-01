@@ -17,8 +17,6 @@ import cscCCCIX.geocracy.world.Territory;
 
 public class DistributeTroopsDetailFragment extends Fragment {
 
-    private Territory originTerritory;
-
     public static DistributeTroopsDetailFragment newInstance(Territory originTerritory) {
         DistributeTroopsDetailFragment newFragment = new DistributeTroopsDetailFragment();
 
@@ -34,7 +32,7 @@ public class DistributeTroopsDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.distribute_troops_detail, container, false);
 
-        this.originTerritory = (Territory) getArguments().get("originTerritory");
+        Territory originTerritory = (Territory) getArguments().get("originTerritory");
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
         originTerritoryID.setText("Update Unit Count At: " + originTerritory.getTerritoryName());

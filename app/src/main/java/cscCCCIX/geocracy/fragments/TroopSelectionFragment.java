@@ -22,10 +22,6 @@ import static android.view.MotionEvent.ACTION_UP;
 
 public class TroopSelectionFragment extends Fragment {
 
-    private Territory targetTerritory;
-    private Territory originTerritory;
-
-
     public static TroopSelectionFragment newInstance(Territory originTerritory, Territory targetTerritory) {
         TroopSelectionFragment newFragment = new TroopSelectionFragment();
 
@@ -42,8 +38,8 @@ public class TroopSelectionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.troop_selection, container, false);
 
-        this.originTerritory = (Territory) getArguments().get("originTerritory");
-        this.targetTerritory = (Territory) getArguments().get("targetTerritory");
+        Territory originTerritory = (Territory) getArguments().get("originTerritory");
+        Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
         originTerritoryID.setText("Select Number of Units From: " + originTerritory.getTerritoryName());

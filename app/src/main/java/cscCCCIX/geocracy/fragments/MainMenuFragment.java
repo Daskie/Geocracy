@@ -18,16 +18,16 @@ import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {
 
-    private Button continueButton;
-    private Button startButton;
-    private Button tutorialButton;
-    private Button settingsButton;
-    private Button exitButton;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu, container, false);
+
+        Button continueButton;
+        Button startButton;
+        Button tutorialButton;
+        Button settingsButton;
+        Button exitButton;
 
         continueButton = view.findViewById(R.id.continueButton);
 
