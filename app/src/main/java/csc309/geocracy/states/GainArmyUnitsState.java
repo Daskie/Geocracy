@@ -3,6 +3,7 @@ package csc309.geocracy.states;
 import android.widget.Toast;
 
 import csc309.geocracy.EventBus;
+import csc309.geocracy.Util;
 import csc309.geocracy.fragments.DistributeTroopsDetailFragment;
 import csc309.geocracy.game.Game;
 import csc309.geocracy.game.GameActivity;
@@ -20,6 +21,9 @@ public class GainArmyUnitsState implements GameState {
     private static GameActivity parent;
 
     private int unitsToDistribute;
+    private final int MAX_UNITS = 10; // whats the max?
+    private final int MIN_UNITS = 1; // whats the max?
+
 
     public GainArmyUnitsState(Game game, GameActivity parent) {
         this.game = game;
@@ -64,7 +68,8 @@ public class GainArmyUnitsState implements GameState {
     public void addToSelectedTerritoryUnitCount(int amount) {
         if (this.territory != null) {
             System.out.println("GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
-            this.territory.setNArmies(territory.getNArmies() + amount);
+            int clampedNArmies = Util.clamp(territory.getNArmies() + amount, MIN_UNITS, MAX_UNITS);
+            this.territory.setNArmies(clampedNArmies);
             System.out.println("PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
         } else {
             System.out.println("GAIN ARMIES STATE: CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");

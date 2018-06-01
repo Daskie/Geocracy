@@ -169,6 +169,10 @@ public abstract class Util {
         return new Pair<>((int)(v & 0xFFFFFFFFL), (int)(v >> 32));
     }
 
+    public static int clamp(int val, int min, int max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
     // I hate Java
     public static int toInt(byte lowest, byte low, byte high, byte highest) {
         return ((int)highest << 24) | (((int)high & 0xFF) << 16) | (((int)low & 0xFF) << 8) | ((int)lowest & 0xFF);
