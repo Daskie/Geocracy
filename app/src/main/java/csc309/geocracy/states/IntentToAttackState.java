@@ -39,6 +39,10 @@ public class IntentToAttackState implements  GameState {
         game.getState().initState();
     }
 
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("INTENT TO ATTACK STATE: CANNOT UPDATE UNIT COUNT");
+    }
+
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         System.out.println("INTENT TO ATTACK STATE: CANNOT PERFORM DICE ROLL");
     }
@@ -60,6 +64,8 @@ public class IntentToAttackState implements  GameState {
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+
     }
 
 }

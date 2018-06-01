@@ -19,8 +19,13 @@ public class SelectedTerritoryState implements  GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("SELECTED TERRITORY STATE: ANOTHER TERRITORY SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
+        if (this.territory == null) {
+            System.out.println("SELECTED TERRITORY STATE: TERRITORY SELECTED, DISPLAY DETAILS");
+        } else {
+            System.out.println("SELECTED TERRITORY STATE: ANOTHER TERRITORY SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
+        }
         this.territory = territory;
+
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -33,6 +38,10 @@ public class SelectedTerritoryState implements  GameState {
         game.getState().initState();
     }
 
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("SELECTED TERRITORY STATE: CANNOT UPDATE UNIT COUNT");
+    }
+
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         System.out.println("SELECTED TERRITORY STATE: CANNOT PERFORM DICE ROLL");
     }
@@ -43,6 +52,7 @@ public class SelectedTerritoryState implements  GameState {
 
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        this.territory = null;
         game.setState(game.DefaultState);
         game.getState().initState();
     }
@@ -56,6 +66,8 @@ public class SelectedTerritoryState implements  GameState {
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+
     }
 
 }

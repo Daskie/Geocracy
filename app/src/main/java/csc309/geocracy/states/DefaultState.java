@@ -16,7 +16,7 @@ public class DefaultState implements GameState {
 
     public void selectOriginTerritory(Territory territory) {
         System.out.println("DEFAULT STATE: TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
-        game.setState(game.SetUpInitTerritoriesState);
+        game.setState(game.SelectedTerritoryState);
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
@@ -27,6 +27,10 @@ public class DefaultState implements GameState {
 
     public void enableAttackMode() {
         System.out.println("DEFAULT STATE: CANNOT ENABLE ATTACK MODE");
+    }
+
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("DEFAULT STATE: CANNOT UPDATE UNIT COUNT");
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {

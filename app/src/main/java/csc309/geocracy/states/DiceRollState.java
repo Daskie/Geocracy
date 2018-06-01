@@ -58,6 +58,10 @@ public class DiceRollState implements  GameState {
         game.getState().initState();
     }
 
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("USER CANCELED ACTION: CANNOT UPDATE UNIT COUNT");
+    }
+
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.DefaultState);

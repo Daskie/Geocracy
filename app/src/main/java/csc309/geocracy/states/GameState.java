@@ -9,6 +9,7 @@ public interface GameState {
     void selectTargetTerritory(Territory territory);
     void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails);
     void battleCompleted(BattleResultDetails battleResultDetails);
+    void addToSelectedTerritoryUnitCount(int amount);
 
     void enableAttackMode();
     void initState();

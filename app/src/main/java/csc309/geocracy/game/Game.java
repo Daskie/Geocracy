@@ -10,6 +10,7 @@ import java.util.Random;
 
 import csc309.geocracy.EventBus;
 import csc309.geocracy.Util;
+import csc309.geocracy.fragments.DistributeTroopsDetailFragment;
 import csc309.geocracy.fragments.GameInfoFragment;
 import csc309.geocracy.space.SpaceRenderer;
 import csc309.geocracy.states.BattleResultsState;
@@ -105,12 +106,12 @@ public class Game {
         DiceRollState = new DiceRollState(this);
         BattleResultsState = new BattleResultsState(this);
         SetUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
-        GainArmyUnitsState = new GainArmyUnitsState(this);
+        GainArmyUnitsState = new GainArmyUnitsState(this, activity);
 
         rand = new Random();
 
 
-        setState(DefaultState);
+        setState(SetUpInitTerritoriesState);
 
         spaceRenderer = new SpaceRenderer();
         cameraController = new CameraController();
@@ -146,11 +147,15 @@ public class Game {
                 Territory selectedTerritory = (Territory) event.payload;
                 System.out.println(selectedTerritory);
 
-
                 if (getState() == this.IntentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);
-                } else {
+                }
+                else if (getState() == this.GainArmyUnitsState) {
+                    getState().selectTargetTerritory(selectedTerritory);
+                }
+                else {
                     getState().selectOriginTerritory(selectedTerritory);
+                    getState().initState();
 
 //                    if(players[currentPlayer] instanceof HumanPlayer)
 //                        getState().selectOriginTerritory(selectedTerritory);
@@ -162,7 +167,7 @@ public class Game {
 //                    }
                 }
 
-                getState().initState();
+//                getState().initState();
 
                 break;
 
@@ -170,6 +175,18 @@ public class Game {
                 System.out.println("USER TAPPED ATTACK");
                 getState().enableAttackMode();
                 getState().initState();
+                break;
+
+            case ADD_UNIT_TAPPED:
+                System.out.println("ADD UNIT TAPPED");
+                getState().addToSelectedTerritoryUnitCount(1);
+//                getState().initState();
+                break;
+
+            case REMOVE_UNIT_TAPPED:
+                System.out.println("REMOVE UNIT TAPPED");
+                getState().addToSelectedTerritoryUnitCount(-1);
+//                getState().initState();
                 break;
 
             case CONFIRM_UNITS_TAPPED:

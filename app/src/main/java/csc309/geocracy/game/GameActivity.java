@@ -69,6 +69,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
     public FloatingActionButton attackBtn;
+    public FloatingActionButton addUnitBtn;
+    public FloatingActionButton removeUnitBtn;
     public FloatingActionButton cancelBtn;
     public FloatingActionButton gameInfoBtn;
     public FloatingActionButton settingBtn;
@@ -136,6 +138,22 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }));
 
+        addUnitBtn = findViewById(R.id.addUnitBtn);
+        addUnitBtn.hide();
+        disposables.add(RxView.touches(addUnitBtn).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.ADD_UNIT_TAPPED, null));
+            }
+        }));
+
+        removeUnitBtn = findViewById(R.id.removeUnitBtn);
+        removeUnitBtn.hide();
+        disposables.add(RxView.touches(removeUnitBtn).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.REMOVE_UNIT_TAPPED, null));
+            }
+        }));
+
         settingBtn = findViewById(R.id.inGameSettingsBtn);
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
@@ -181,13 +199,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             this.cancelBtn.show();
                             break;
 
-//                        case SHOW_CLOSE_OVERLAY_BUTTON:
-//                            this.closeOverlayBtn.show();
-//                            break;
-//
-//                        case HIDE_CLOSE_OVERLAY_BUTTON:
-//                            this.closeOverlayBtn.hide();
-//                            break;
+                        case HIDE_UPDATE_UNITS_MODE_BUTTONS:
+                            this.removeUnitBtn.hide();
+                            this.addUnitBtn.hide();
+                            break;
+
+                        case SHOW_UPDATE_UNITS_MODE_BUTTONS:
+                            this.removeUnitBtn.show();
+                            this.addUnitBtn.show();
+                            break;
 
                         case HIDE_ATTACK_MODE_BUTTON:
                             this.attackBtn.hide();

@@ -42,6 +42,10 @@ public class BattleResultsState implements  GameState {
         System.out.println("BATTLE RESULTS STATE: ALREADY IN BATTLE RESULTS STATE!");
     }
 
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("BATTLE RESULTS STATE: CANNOT UPDATE UNIT COUNT");
+    }
+
     public void cancelAction() {
         System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.DefaultState);
