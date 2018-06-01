@@ -84,6 +84,7 @@ public class GainArmyUnitsState implements GameState {
         Player currentPlayer = game.players[game.currentPlayer];
         this.unitsToDistribute = currentPlayer.getBonus();
         game.getWorld().unhighlightTerritories();
+        game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         System.out.println(currentPlayer);
         System.out.println("HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");
