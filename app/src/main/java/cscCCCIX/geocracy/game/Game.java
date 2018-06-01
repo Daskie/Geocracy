@@ -34,6 +34,8 @@ import static cscCCCIX.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game {
 
+    private static final String tag = "GAME";
+
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
 
     private long startT; // time the game was started
@@ -129,20 +131,19 @@ public class Game {
         switch (event.action) {
 
             case TOGGLE_SETTINGS_VISIBILITY:
-                System.out.println("TOGGLE SETTINGS VISIBILITY ACTION");
+                Log.i(tag,"TOGGLE SETTINGS VISIBILITY ACTION");
                 activity.showOverlayFragment(GameActivity.settingsFragment);
                 break;
 
             case TOGGLE_GAME_INFO_VISIBILITY:
-                System.out.println("TOGGLE GAME INFO VISIBILITY ACTION");
+                Log.i(tag,"TOGGLE GAME INFO VISIBILITY ACTION");
                 activity.showOverlayFragment(GameInfoFragment.newInstance(this.players));
                 break;
 
             case TERRITORY_SELECTED:
-
-                System.out.println("USER SELECTED TERRITORY");
+                Log.i(tag,"USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
-                System.out.println(selectedTerritory);
+                Log.d(tag,"USER SELECTED TERRITORY:" + selectedTerritory);
 
                 if (getState() == this.IntentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);
@@ -164,35 +165,32 @@ public class Game {
 //                    }
                 }
 
-//                getState().initState();
-
                 break;
 
             case ATTACK_TAPPED:
-                System.out.println("USER TAPPED ATTACK");
+                Log.i(tag,"USER TAPPED ATTACK");
                 getState().enableAttackMode();
                 getState().initState();
                 break;
 
             case ADD_UNIT_TAPPED:
-                System.out.println("ADD UNIT TAPPED");
+                Log.i(tag,"ADD UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(1);
-//                getState().initState();
                 break;
 
             case REMOVE_UNIT_TAPPED:
-                System.out.println("REMOVE UNIT TAPPED");
+                Log.i(tag,"REMOVE UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(-1);
-//                getState().initState();
                 break;
 
             case CONFIRM_UNITS_TAPPED:
-                System.out.println("CONFIRM UNITS TAPPED");
+                Log.i(tag,"CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
                 getState().initState();
                 break;
 
             case CANCEL_ACTION:
+                Log.i(tag,"CANCEL ACTION TAPPED");
                 getState().cancelAction();
                 getState().initState();
                 break;
@@ -223,17 +221,17 @@ public class Game {
         GLES30.glBlendEquationSeparate(GLES30.GL_FUNC_ADD, GLES30.GL_FUNC_ADD);
 
         if (Util.isGLError()) {
-            Log.e("Game", "Failed to setup OpenGL state");
+            Log.e(tag, "Failed to setup OpenGL state");
             return false;
         }
 
         if (!world.load()) {
-            Log.e("Game", "Failed to load world");
+            Log.e(tag, "Failed to load world");
             return false;
         }
 
         if (!spaceRenderer.load()) {
-            Log.e("Game", "Failed to load space renderer");
+            Log.e(tag, "Failed to load space renderer");
             return false;
         }
 
@@ -261,7 +259,7 @@ public class Game {
         screenSize = size;
 
         if (!reloadIdFrameBuffer()) {
-            Log.e("Game", "Failed to reload frame buffer");
+            Log.e(tag, "Failed to reload frame buffer");
         }
 
         GLES30.glViewport(0, 0, screenSize.x, screenSize.y);
@@ -366,7 +364,7 @@ public class Game {
         GLES30.glGenRenderbuffers(1, depthRBHandlArr, 0);
         idDepthRBHandle = depthRBHandlArr[0];
         if (idDepthRBHandle == 0) {
-            Log.e("Game", "Failed to generate identity depth render buffer");
+            Log.e(tag, "Failed to generate identity depth render buffer");
             return false;
         }
         GLES30.glBindRenderbuffer(GLES30.GL_RENDERBUFFER, idDepthRBHandle);
@@ -378,14 +376,14 @@ public class Game {
         GLES30.glGenFramebuffers(1, fbHandleArr, 0);
         idFBHandle = fbHandleArr[0];
         if (idFBHandle == 0) {
-            Log.e("Game", "Failed to generate identity frame buffer");
+            Log.e(tag, "Failed to generate identity frame buffer");
             return false;
         }
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, idFBHandle);
         GLES30.glFramebufferTexture2D(GLES30.GL_FRAMEBUFFER, GLES30.GL_COLOR_ATTACHMENT0, GLES30.GL_TEXTURE_2D, idValueTexHandle, 0);
         GLES30.glFramebufferRenderbuffer(GLES30.GL_FRAMEBUFFER, GLES30.GL_DEPTH_STENCIL_ATTACHMENT, GLES30.GL_RENDERBUFFER, idDepthRBHandle);
         if (GLES30.glCheckFramebufferStatus(GLES30.GL_FRAMEBUFFER) != GLES30.GL_FRAMEBUFFER_COMPLETE) {
-            Log.e("Game", "Identity frame buffer is incomplete");
+            Log.e(tag, "Identity frame buffer is incomplete");
             return false;
         }
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);

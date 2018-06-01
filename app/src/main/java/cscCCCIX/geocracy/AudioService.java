@@ -11,7 +11,7 @@ import cscCCCIX.R;
 
 public class AudioService extends Service {
 
-    private static String TAG = "AUDIO_SERVICE";
+    private static String tag = "AUDIO_SERVICE";
 
     private MediaPlayer player;
     private boolean isEnabled = false;
@@ -47,12 +47,12 @@ public class AudioService extends Service {
     }
 
     private void enableMusic() {
-        Log.d(TAG, "ENABLING MUSIC");
+        Log.d(tag, "ENABLING MUSIC");
         player.start();
     }
 
     private void disableMusic() {
-        Log.d(TAG, "DISABLING MUSIC");
+        Log.d(tag, "DISABLING MUSIC");
         player.pause();
     }
 

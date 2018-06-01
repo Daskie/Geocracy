@@ -15,8 +15,6 @@ import cscCCCIX.geocracy.game.Player;
 
 public class GameInfoFragment extends Fragment {
 
-    private static final String TAG = "GAME_INFO_FRAGMENT";
-
     private Player[] players = null;
 
     @Nullable
@@ -26,7 +24,7 @@ public class GameInfoFragment extends Fragment {
 
         this.players = (Player[]) getArguments().get("players");
         System.out.println(this.players);
-        ListView playerList = (ListView) view.findViewById(R.id.playerList);
+        ListView playerList = view.findViewById(R.id.playerList);
         ArrayAdapter<Player> playerArrayAdapter = new ArrayAdapter<Player>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,

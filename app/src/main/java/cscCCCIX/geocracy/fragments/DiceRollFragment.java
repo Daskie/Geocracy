@@ -9,16 +9,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import cscCCCIX.R;
 import cscCCCIX.geocracy.world.Territory;
 
 public class DiceRollFragment extends Fragment {
-
-    private static final String TAG = "DICE_ROLL_FRAGMENT";
-
 
     private Territory targetTerritory;
     private Territory originTerritory;
@@ -51,9 +47,6 @@ public class DiceRollFragment extends Fragment {
 
         TextView battleResult = view.findViewById(R.id.battleResult);
         battleResult.setText("RESULT: ");
-
-        // get the bottom sheet view
-        LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);
 
         return view;
     }
