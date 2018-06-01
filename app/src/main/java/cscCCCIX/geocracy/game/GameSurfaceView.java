@@ -50,10 +50,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
         scaler.onTouchEvent(event);
 
-        int action = event.getActionMasked();
-
-        System.out.println(action);
-        switch (action) {
+        switch (event.getActionMasked()) {
 
 
             case MotionEvent.ACTION_UP:
