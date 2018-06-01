@@ -142,7 +142,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         addUnitBtn.hide();
         disposables.add(RxView.touches(addUnitBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-//                EventBus.publish("USER_ACTION", new GameEvent(GameAction.ADD_UNIT_TAPPED, null));
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.ADD_UNIT_TAPPED, null));
             }
         }));
 
@@ -150,7 +150,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         removeUnitBtn.hide();
         disposables.add(RxView.touches(removeUnitBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-//                EventBus.publish("USER_ACTION", new GameEvent(GameAction.REMOVE_UNIT_TAPPED, null));
+                EventBus.publish("USER_ACTION", new GameEvent(GameAction.REMOVE_UNIT_TAPPED, null));
             }
         }));
 

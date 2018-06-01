@@ -44,7 +44,7 @@ public class DistributeTroopsDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.troop_selection, container, false);
+        View view = inflater.inflate(R.layout.distribute_troops_detail, container, false);
 
         this.originTerritory = (Territory) getArguments().get("originTerritory");
 
