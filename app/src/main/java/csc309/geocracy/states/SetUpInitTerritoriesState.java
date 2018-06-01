@@ -35,14 +35,7 @@ public class SetUpInitTerritoriesState implements GameState {
             return;
         }
 
-        territory.setOwner(game.players[game.currentPlayer]);
-        territory.setNArmies(1);
-
-        System.out.println("PLAYER" + game.currentPlayer + " ADDED " + territory.getTerritoryName());
-
-        game.currentPlayer++;
-        if(game.currentPlayer==game.players.length)
-            game.currentPlayer=0;
+        addToSelectedTerritoryUnitCount(1);
 
     }
 
@@ -57,30 +50,48 @@ public class SetUpInitTerritoriesState implements GameState {
 
     }
 
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("SETUP TERRITORY STATE: ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
+        territory.setOwner(game.players[game.currentPlayer]);
+        territory.setNArmies(amount);
+
+        System.out.println("PLAYER" + game.currentPlayer + " ADDED " + territory.getTerritoryName());
+
+        game.currentPlayer++;
+        if(game.currentPlayer==game.players.length)
+            game.currentPlayer=0;
+
+        if(game.getWorld().allTerritoriesOccupied())
+            game.setState(game.GainArmyUnitsState);
+
+    }
+
     public void enableAttackMode() {
         System.out.println("SETUP TERRITORY STATE: CANNOT ENABLE ATTACK MODE");
     }
 
     public void cancelAction() {
         System.out.println("SETUP TERRITORY STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE");
-        game.setState(game.DefaultState);
-        game.getState().initState();
+        this.territory = null;
     }
 
 
     public void initState() {
         System.out.println("INIT SETUP TERR STATE:");
 
-        game.activity.removeActiveBottomPaneFragment();
-        game.getWorld().selectTerritory(this.territory);
-        game.getWorld().unhighlightTerritories();
-        game.cameraController.targetTerritory(this.territory);
+        if (this.territory != null) {
+            game.activity.removeActiveBottomPaneFragment();
+            game.getWorld().selectTerritory(this.territory);
+            game.getWorld().unhighlightTerritories();
+            game.cameraController.targetTerritory(this.territory);
+        }
+
+
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
 
-        if(game.getWorld().allTerritoriesOccupied())
-            game.setState(game.GainArmyUnitsState);
 
     }
 

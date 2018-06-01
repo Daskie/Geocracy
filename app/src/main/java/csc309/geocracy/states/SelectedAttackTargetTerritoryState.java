@@ -32,6 +32,11 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: -> CANNOT ENABLE ATTACK MODE");
     }
 
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: CANNOT UPDATE UNIT COUNT");
+    }
+
+
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         System.out.println("SELECTED ATTACK TARGET TERRITORY STATE: -> ENTER DICE ROLL STATE");
         game.setState(game.DiceRollState);
@@ -65,6 +70,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SHOW_CANCEL_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+
     }
 
 }
