@@ -12,8 +12,6 @@ import android.widget.Button;
 import csc309.geocracy.R;
 
 public class TutorialFragment extends Fragment {
-    
-    private Button backButton;
 
     @Nullable
     @Override
@@ -22,4 +20,5 @@ public class TutorialFragment extends Fragment {
 
         return view;
     }
+    
 }

@@ -16,10 +16,6 @@ import csc309.geocracy.world.Territory;
 
 public class DiceRollFragment extends Fragment {
 
-    private Territory targetTerritory;
-    private Territory originTerritory;
-
-
     public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory) {
         DiceRollFragment newFragment = new DiceRollFragment();
 
@@ -36,8 +32,8 @@ public class DiceRollFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dice_roll, container, false);
 
-        this.originTerritory = (Territory) getArguments().get("originTerritory");
-        this.targetTerritory = (Territory) getArguments().get("targetTerritory");
+        Territory originTerritory = (Territory) getArguments().get("originTerritory");
+        Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
         attackingPlayer.setText("Attacker ( " + originTerritory.getTerritoryName() + " ) Rolls a: ");

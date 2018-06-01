@@ -14,8 +14,6 @@ import csc309.geocracy.world.Territory;
 
 public class TerritoryDetailFragment extends Fragment {
 
-    private Territory territory;
-
     public static TerritoryDetailFragment newInstance(Territory territory) {
         TerritoryDetailFragment newFragment = new TerritoryDetailFragment();
 
@@ -31,7 +29,7 @@ public class TerritoryDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.territory_detail, container, false);
 
-        this.territory = (Territory) getArguments().get("territory");
+        Territory territory = (Territory) getArguments().get("territory");
 
         TextView territoryID = view.findViewById(R.id.territoryID);
         territoryID.setText("Territory: " + territory.getTerritoryName());

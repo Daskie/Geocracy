@@ -25,6 +25,10 @@ import static glm_.Java.glm;
 
 public abstract class Util {
 
+    private Util() {
+
+    }
+
     // For use with floating point comparisons
     public static final float EPSILON = 1e-6f;
 
