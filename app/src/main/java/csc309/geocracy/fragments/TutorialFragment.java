@@ -14,9 +14,7 @@ import csc309.geocracy.main_menu.MenuActivity;
 import csc309.geocracy.R;
 
 public class TutorialFragment extends Fragment {
-
-    private static final String TAG = "TUTORIAL_FRAGMENT";
-
+    
     private Button backButton;
 
     @Nullable

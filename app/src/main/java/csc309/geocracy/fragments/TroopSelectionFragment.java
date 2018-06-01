@@ -24,9 +24,6 @@ import static android.view.MotionEvent.ACTION_UP;
 
 public class TroopSelectionFragment extends Fragment {
 
-    private static final String TAG = "TROOP_SELECTION_FRAGMENT";
-
-
     private Territory targetTerritory;
     private Territory originTerritory;
 
@@ -60,9 +57,6 @@ public class TroopSelectionFragment extends Fragment {
         RxView.touches(confirmButton).subscribe((event) -> {
             if (event.getActionMasked() == ACTION_UP) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
         });
-
-        // get the bottom sheet view
-        LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);
 
         return view;
     }

@@ -16,7 +16,6 @@ import csc309.geocracy.world.Territory;
 
 public class TerritoryDetailFragment extends Fragment {
 
-    private static final String TAG = "TROOP_SELECTION_FRAGMENT";
     private Territory territory;
 
     public static TerritoryDetailFragment newInstance(Territory territory) {
@@ -44,9 +43,6 @@ public class TerritoryDetailFragment extends Fragment {
 
         TextView numberOfUnits = view.findViewById(R.id.numberOfUnits);
         numberOfUnits.setText("Number of Units in Territory: " + territory.getNArmies());
-
-        // get the bottom sheet view
-        LinearLayout llBottomSheet = view.findViewById(R.id.bottom_sheet);
 
         return view;
     }

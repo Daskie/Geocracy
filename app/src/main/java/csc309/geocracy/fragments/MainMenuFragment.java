@@ -13,14 +13,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import csc309.geocracy.LoadingScreenActivity;
-import csc309.geocracy.game.GameActivity;
 import csc309.geocracy.main_menu.MenuActivity;
 import csc309.geocracy.R;
 import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {
-
-    private static final String TAG = "MAIN_MENU_FRAGMENT";
 
     private Button continueButton;
     private Button startButton;
@@ -33,54 +30,39 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu, container, false);
 
-        continueButton = (Button) view.findViewById(R.id.continueButton);
+        continueButton = view.findViewById(R.id.continueButton);
 
-        continueButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                startActivity(new Intent(getContext(), LoadingScreenActivity.class));
-                return false;
-            }
+        continueButton.setOnTouchListener((v, event) -> {
+            startActivity(new Intent(getContext(), LoadingScreenActivity.class));
+            return false;
         });
 
-        startButton = (Button) view.findViewById(R.id.startButton);
+        startButton = view.findViewById(R.id.startButton);
 
-        startButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                startActivity(new Intent(getContext(), LoadingScreenActivity.class));
-                return false;
-            }
+        startButton.setOnTouchListener((v, event) -> {
+            startActivity(new Intent(getContext(), LoadingScreenActivity.class));
+            return false;
         });
 
-        tutorialButton = (Button) view.findViewById(R.id.tutorialButton);
+        tutorialButton = view.findViewById(R.id.tutorialButton);
 
-        tutorialButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Tutorial);
-                return false;
-            }
+        tutorialButton.setOnTouchListener((v, event) -> {
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Tutorial);
+            return false;
         });
 
-        settingsButton = (Button) view.findViewById(R.id.settingsButton);
+        settingsButton = view.findViewById(R.id.settingsButton);
 
-        settingsButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Settings);
-                return false;
-            }
+        settingsButton.setOnTouchListener((v, event) -> {
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Settings);
+            return false;
         });
 
-        exitButton = (Button) view.findViewById(R.id.exitButton);
+        exitButton = view.findViewById(R.id.exitButton);
 
-        exitButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Toasty.warning(getContext(), "Need to Exit Application!", Toast.LENGTH_SHORT, true).show();
-                return false;
-            }
+        exitButton.setOnTouchListener((v, event) -> {
+            Toasty.warning(getContext(), "Need to Exit Application!", Toast.LENGTH_SHORT, true).show();
+            return false;
         });
 
         return view;
