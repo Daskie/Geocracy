@@ -8,6 +8,7 @@ flat in float v2f_angle;
 out vec4 out_color;
 
 uniform float u_time;
+uniform vec3 u_color;
 
 const float k_radToDegFactor = 180.0f / 3.14159265f;
 const float k_thickness = 0.025f;
@@ -39,6 +40,6 @@ void main() {
 
     float arrow = float(y < head || y < tail * k_tailWidth);
     float interior = float(y < head - k_borderWidth && (head < k_backHeadBorderThreshold || y < k_tailWidth - k_borderWidth) || y < tail * k_tailWidth - k_borderWidth);
-    out_color.rgb = vec3(interior);
+    out_color.rgb = u_color * interior;
     out_color.a = arrow;
 }

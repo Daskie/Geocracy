@@ -101,6 +101,7 @@ public class ArrowRenderer {
         if (isChange) {
             shader.setAngle(angle);
             shader.setBasis(basis);
+            shader.setColor(world.getSelectedTerritory().getOwner().getColor());
         }
         shader.setTime((float)((double)t * 1.0e-9 % 2.0));
         GLES30.glBindVertexArray(vaoHandle);

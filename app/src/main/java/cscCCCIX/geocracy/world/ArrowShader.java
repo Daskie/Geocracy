@@ -5,6 +5,7 @@ import android.util.Log;
 import cscCCCIX.geocracy.graphics.Shader;
 import glm_.mat3x3.Mat3;
 import glm_.mat4x4.Mat4;
+import glm_.vec3.Vec3;
 
 public class ArrowShader extends Shader {
 
@@ -13,6 +14,7 @@ public class ArrowShader extends Shader {
     private int angleUniformHandle;
     private int basisUniformHandle;
     private int timeUniformHandle;
+    private int colorUniformHandle;
 
     public ArrowShader() {
         super("Arrow", "shaders/Arrow.vert", "shaders/Arrow.frag");
@@ -39,6 +41,10 @@ public class ArrowShader extends Shader {
         uploadUniform(timeUniformHandle, time);
     }
 
+    public void setColor(Vec3 color) {
+        uploadUniform(colorUniformHandle, color);
+    }
+
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
@@ -55,6 +61,9 @@ public class ArrowShader extends Shader {
         }
         if ((timeUniformHandle = getUniformLocation("u_time")) == -1) {
             Log.e("", "Failed to get location of u_time");
+        }
+        if ((colorUniformHandle = getUniformLocation("u_color")) == -1) {
+            Log.e("", "Failed to get location of u_color");
         }
 
         return true;
