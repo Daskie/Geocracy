@@ -8,9 +8,9 @@ layout(location = 3) in mat3 in_basis;
 out vec3 v2f_loc;
 out vec3 v2f_norm;
 out vec2 v2f_pos;
-out float v2f_selected;
-out vec3 v2f_continentColor;
-out float v2f_angle;
+flat out float v2f_selected;
+flat out vec3 v2f_continentColor;
+flat out float v2f_angle;
 
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;

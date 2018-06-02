@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cscCCCIX">
+    package="csc_cccix">
 
     <uses-feature android:glEsVersion="0x00030000" android:required="true" />
 
     <application
-        android:name="cscCCCIX.geocracy.Global"
+        android:name="csc_cccix.geocracy.Global"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name="cscCCCIX.geocracy.AudioService"></service>
-        <activity android:name="cscCCCIX.geocracy.MainActivity">
+        <service android:name="csc_cccix.geocracy.AudioService"></service>
+        <activity android:name="csc_cccix.geocracy.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="cscCCCIX.geocracy.game.GameActivity"
-            android:parentActivityName="cscCCCIX.geocracy.MainActivity"
+        <activity android:name="csc_cccix.geocracy.game.GameActivity"
+            android:parentActivityName="csc_cccix.geocracy.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppFullScreenTheme">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="cscCCCIX.geocracy.MainActivity" />
+                android:value="csc_cccix.geocracy.MainActivity" />
         </activity>
-        <activity android:name="cscCCCIX.geocracy.LoadingScreenActivity"
-            android:parentActivityName="cscCCCIX.geocracy.MainActivity"
+        <activity android:name="csc_cccix.geocracy.LoadingScreenActivity"
+            android:parentActivityName="csc_cccix.geocracy.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppFullScreenTheme">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="cscCCCIX.geocracy.MainActivity" />
+                android:value="csc_cccix.geocracy.MainActivity" />
         </activity>
-        <activity android:name="cscCCCIX.geocracy.main_menu.MenuActivity"
-            android:parentActivityName="cscCCCIX.geocracy.MainActivity"
+        <activity android:name="csc_cccix.geocracy.main_menu.MenuActivity"
+            android:parentActivityName="csc_cccix.geocracy.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppFullScreenTheme">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="cscCCCIX.geocracy.MainActivity" />
+                android:value="csc_cccix.geocracy.MainActivity" />
 
         </activity>
 
