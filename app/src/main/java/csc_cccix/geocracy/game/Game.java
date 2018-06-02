@@ -51,7 +51,7 @@ public class Game {
     public GameData gameData;
     public GameActivity activity;
 
-    GameState State;
+    GameState state;
 
     public GameState defaultState;
     public GameState selectedTerritoryState;
@@ -62,8 +62,8 @@ public class Game {
 
 
     public int currentPlayer;
-    public GameState DiceRollState;
-    public GameState BattleResultsState;
+    public GameState diceRollState;
+    public GameState battleResultsState;
 
 
     public Game(GameActivity activity) {
@@ -88,8 +88,8 @@ public class Game {
         selectedTerritoryState = new SelectedTerritoryState(this);
         intentToAttackState = new IntentToAttackState(this);
         selectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
-        DiceRollState = new DiceRollState(this);
-        BattleResultsState = new BattleResultsState(this);
+        diceRollState = new DiceRollState(this);
+        battleResultsState = new BattleResultsState(this);
         setUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
         gainArmyUnitsState = new GainArmyUnitsState(this, activity);
 
@@ -101,9 +101,7 @@ public class Game {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-        EventBus.subscribe("USER_ACTION", this, event -> {
-            handleUserAction((GameEvent) event);
-        });
+        EventBus.subscribe("USER_ACTION", this, event -> handleUserAction((GameEvent) event));
 
         // Should be last in constructor
         startT = System.nanoTime();
@@ -178,10 +176,10 @@ public class Game {
     }
 
     public void setState(GameState state) {
-        this.State = state;
+        this.state = state;
     }
     public GameState getState() {
-        return this.State;
+        return this.state;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)
@@ -211,11 +209,7 @@ public class Game {
         }
 
         // Check for OpenGL errors
-        if (Util.isGLError()) {
-            return false;
-        }
-
-        return true;
+        return !Util.isGLError();
     }
 
     // One iteration of the game loop
@@ -364,11 +358,7 @@ public class Game {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
 
         // Check for OpenGL errors
-        if (Util.isGLError()) {
-            return false;
-        }
-
-        return true;
+        return !Util.isGLError();
     }
 
     public World getWorld() {

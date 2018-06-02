@@ -12,8 +12,10 @@ import glm_.vec3.Vec3;
 
 public class Mesh {
 
-    private static final int LOCATION_COMPONENTS = 3, LOCATION_SIZE = LOCATION_COMPONENTS * 4;
-    private static final int NORMAL_COMPONENTS = 3, NORMAL_SIZE = NORMAL_COMPONENTS * 4;
+    private static final int LOCATION_COMPONENTS = 3;
+    private static final int LOCATION_SIZE = LOCATION_COMPONENTS * 4;
+    private static final int NORMAL_COMPONENTS = 3;
+    private static final int NORMAL_SIZE = NORMAL_COMPONENTS * 4;
     private static final int VERTEX_SIZE = LOCATION_SIZE + NORMAL_SIZE;
 
     private String name;
@@ -137,7 +139,8 @@ public class Mesh {
     public void unindex() {
         float[] newLocations = new float[indices.length * 3];
         for (int i = 0; i < indices.length; ++i) {
-            int ci = i * 3, ci0 = indices[i] * 3;
+            int ci = i * 3;
+            int ci0 = indices[i] * 3;
             newLocations[ci + 0] = locations[ci0 + 0];
             newLocations[ci + 1] = locations[ci0 + 1];
             newLocations[ci + 2] = locations[ci0 + 2];

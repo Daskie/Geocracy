@@ -40,7 +40,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "-> ENTER DICE ROLL STATE");
-        game.setState(game.DiceRollState);
+        game.setState(game.diceRollState);
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
 

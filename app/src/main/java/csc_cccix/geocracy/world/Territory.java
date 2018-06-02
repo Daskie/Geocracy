@@ -5,6 +5,7 @@ import com.github.javafaker.Faker;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import csc_cccix.geocracy.game.Player;
 import glm_.vec3.Vec3;
@@ -18,12 +19,12 @@ public class Territory implements Serializable {
     private String territoryName;
     private World world;
     private Continent continent;
-    private HashSet<Territory> adjacentTerritories;
+    private Set<Territory> adjacentTerritories;
     private Vec3 center;
     private Player owner;
     private int nArmies;
 
-    public Territory(int id, World world, Continent continent, HashSet<Territory> adjacentTerritories, Vec3 center) {
+    public Territory(int id, World world, Continent continent, Set<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;
         this.territoryName = faker.address().country();
         this.world = world;
@@ -87,13 +88,13 @@ public class Territory implements Serializable {
         return continent;
     }
 
-    public HashSet<Territory> getAdjacentTerritories() {
+    public Set<Territory> getAdjacentTerritories() {
         return adjacentTerritories;
     }
 
     // Returns a set of adjacent territories with the same owner, or null if none exist
-    public HashSet<Territory> getAdjacentFriendlyTerritories() {
-        HashSet<Territory> territories = new HashSet<>();
+    public Set<Territory> getAdjacentFriendlyTerritories() {
+        Set<Territory> territories = new HashSet<>();
         for (Territory terr : adjacentTerritories) {
             if (terr.getOwner() == owner) {
                 territories.add(terr);
@@ -103,8 +104,8 @@ public class Territory implements Serializable {
     }
 
     // Returns a set of adjacent territories with a different owner, or null if none exist
-    public HashSet<Territory> getAdjacentEnemyTerritories() {
-        HashSet<Territory> territories = new HashSet<>();
+    public Set<Territory> getAdjacentEnemyTerritories() {
+        Set<Territory> territories = new HashSet<>();
         for (Territory terr : adjacentTerritories) {
             if (terr.getOwner() == owner) {
                 territories.add(terr);

@@ -25,8 +25,6 @@ public class SpaceRenderer {
     };
 
     private SpaceShader shader;
-    private int vboHandle;
-    private int iboHandle;
     private int vaoHandle;
     private int cubemapHandle;
 
@@ -93,7 +91,7 @@ public class SpaceRenderer {
         // Create VBO
         int[] vboHandleArr = { 0 };
         GLES30.glGenBuffers(1, vboHandleArr, 0);
-        vboHandle = vboHandleArr[0];
+        int vboHandle = vboHandleArr[0];
         if (vboHandle == 0) {
             Log.e("", "Failed to generate vbo");
             return false;
@@ -111,7 +109,7 @@ public class SpaceRenderer {
         // Create IBO
         int[] iboHandleArr = { 0 };
         GLES30.glGenBuffers(1, iboHandleArr, 0);
-        iboHandle = iboHandleArr[0];
+        int iboHandle = iboHandleArr[0];
         if (iboHandle == 0) {
             Log.e("", "Failed to generate ibo");
             return false;

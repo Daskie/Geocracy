@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
@@ -30,7 +31,7 @@ public class World {
     private ArrowRenderer arrowRenderer;
     private Territory selectedTerritory;
     private Territory targetedTerritory;
-    private HashSet<Territory> highlightedTerritories;
+    private Set<Territory> highlightedTerritories;
     private boolean selectionChange;
     private boolean targetChange;
     private boolean highlightChange;
@@ -154,7 +155,7 @@ public class World {
         }
     }
 
-    public void highlightTerritories(HashSet<Territory> territories) {
+    public void highlightTerritories(Set<Territory> territories) {
         for (Territory terr : territories) {
             highlightTerritory(terr);
         }
@@ -205,7 +206,7 @@ public class World {
         return targetedTerritory;
     }
 
-    public HashSet<Territory> getHighlightedTerritories() {
+    public Set<Territory> getHighlightedTerritories() {
         return highlightedTerritories;
     }
 
