@@ -27,9 +27,9 @@ public class ArmyRenderer {
     public ArmyRenderer(World world) {
         this.world = world;
         shader = new ArmyShader();
-        mesh = MeshMaker.makeTetrahedron("Army");
+        mesh = MeshMaker.makeCube("Army");
         mesh.unindex();
-        mesh.translate(new Vec3(0.0f, 0.0f, 1.0f / 3.0f));
+        mesh.translate(new Vec3(0.0f, 0.0f, 1.0f));
         genArmyData();
     }
 

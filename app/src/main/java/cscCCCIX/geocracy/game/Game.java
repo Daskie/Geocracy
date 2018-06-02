@@ -84,13 +84,6 @@ public class Game {
 
         currentPlayer = 0;
 
-        // Randomly assign territories players
-//        Random rand = new Random();
-//        for (Territory terr : world.getTerritories()) {
-//            terr.setOwner(players[rand.nextInt(players.length)]);
-//            terr.setNArmies(rand.nextInt(MAX_ARMIES_PER_TERRITORY) + 1);
-//        }
-
         defaultState = new DefaultState(this);
         selectedTerritoryState = new SelectedTerritoryState(this);
         intentToAttackState = new IntentToAttackState(this);
@@ -114,6 +107,10 @@ public class Game {
 
         world.getTerritory(5).select();
         world.getTerritory(29).target();
+        world.getTerritory(5).setNArmies(15);
+        world.getTerritory(29).setNArmies(5);
+        world.getTerritory(5).setOwner(players[0]);
+        world.getTerritory(29).setOwner(players[1]);
 
         // Should be last in constructor
         startT = System.nanoTime();
@@ -148,15 +145,6 @@ public class Game {
                 else {
                     getState().selectOriginTerritory(selectedTerritory);
                     getState().initState();
-
-//                    if(players[currentPlayer] instanceof HumanPlayer)
-//                        getState().selectOriginTerritory(selectedTerritory);
-//
-//                    else{
-//                        randTerr = rand.nextInt(world.getNTerritories());
-//                        getState().selectOriginTerritory(world.getTerritory(randTerr));
-//
-//                    }
                 }
 
                 break;

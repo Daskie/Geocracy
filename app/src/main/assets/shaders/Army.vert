@@ -15,7 +15,7 @@ uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 uniform vec3 u_playerColors[9];
 
-const float k_scale = 0.02f;
+const float k_scale = 0.015f;
 
 void main() {
     v2f_loc = in_armyLocation + in_armyOrientation * k_scale * in_loc;
