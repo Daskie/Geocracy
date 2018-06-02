@@ -27,9 +27,12 @@ public class World {
     private OceanRenderer oceanRenderer;
     private Waterways waterways;
     private ArmyRenderer armyRenderer;
+    private ArrowRenderer arrowRenderer;
     private Territory selectedTerritory;
+    private Territory targetedTerritory;
     private HashSet<Territory> highlightedTerritories;
     private boolean selectionChange;
+    private boolean targetChange;
     private boolean highlightChange;
     private boolean ownershipChange;
     private boolean armyChange;
@@ -51,6 +54,7 @@ public class World {
         EventBus.publish("WORLD_LOAD_EVENT", 90);
         waterways = terrain.createWaterways(100, 0.025f);
         armyRenderer = new ArmyRenderer(this);
+        arrowRenderer = new ArrowRenderer(this, 100);
         highlightedTerritories = new HashSet<>();
         EventBus.publish("WORLD_LOAD_EVENT", 100);
     }
@@ -78,17 +82,28 @@ public class World {
             Log.e("", "Failed to load army renderer");
             return false;
         }
+        if (!arrowRenderer.load()) {
+            Log.e("", "Failed to load arrow renderer");
+            return false;
+        }
 
         return true;
     }
 
     public void render(long t, Camera camera, Vec3 lightDir, int cubemapHandle) {
-        terrain.render(t, camera, lightDir, selectionChange, highlightChange, ownershipChange);
+        terrain.render(t, camera, lightDir, selectionChange, targetChange, highlightChange, ownershipChange);
         oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
         armyRenderer.render(camera, lightDir, armyChange, ownershipChange);
+        if (targetedTerritory != null && selectedTerritory != null) {
+            if (selectionChange || targetChange) {
+                arrowRenderer.set(selectedTerritory.getCenter(), targetedTerritory.getCenter());
+            }
+            arrowRenderer.render(t, camera);
+        }
 
         selectionChange = false;
+        targetChange = false;
         highlightChange = false;
         armyChange = false;
     }
@@ -105,28 +120,51 @@ public class World {
     }
 
     public void selectTerritory(Territory territory) {
-        selectedTerritory = territory;
-        selectionChange = true;
+        if (selectedTerritory != territory) {
+            selectedTerritory = territory;
+            selectionChange = true;
+        }
     }
 
     public void unselectTerritory() {
-        selectedTerritory = null;
-        selectionChange = true;
+        if (selectedTerritory != null) {
+            selectedTerritory = null;
+            selectionChange = true;
+        }
+    }
+
+    public void targetTerritory(Territory territory) {
+        if (targetedTerritory != territory) {
+            targetedTerritory = territory;
+            targetChange = true;
+        }
+    }
+
+    public void untargetTerritory() {
+        if (targetedTerritory != null) {
+            targetedTerritory = null;
+            targetChange = true;
+        }
     }
 
     public void highlightTerritory(Territory territory) {
-        highlightedTerritories.add(territory);
-        highlightChange = true;
+        if (!highlightedTerritories.contains(territory)) {
+            highlightedTerritories.add(territory);
+            highlightChange = true;
+        }
     }
 
     public void highlightTerritories(HashSet<Territory> territories) {
-        highlightedTerritories.addAll(territories);
-        highlightChange = true;
+        for (Territory terr : territories) {
+            highlightTerritory(terr);
+        }
     }
 
     public void unhighlightTerritories() {
-        highlightedTerritories.clear();
-        highlightChange = true;
+        if (!highlightedTerritories.isEmpty()) {
+            highlightedTerritories.clear();
+            highlightChange = true;
+        }
     }
 
     public Territory[] getTerritories() {
@@ -161,6 +199,10 @@ public class World {
 
     public Territory getSelectedTerritory() {
         return selectedTerritory;
+    }
+
+    public Territory getTargetedTerritory() {
+        return targetedTerritory;
     }
 
     public HashSet<Territory> getHighlightedTerritories() {

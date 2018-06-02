@@ -36,7 +36,7 @@ public class Waterways {
         unload();
 
         if (!shader.load()) {
-            Log.e("Waterways", "Failed to load shader");
+            Log.e("", "Failed to load shader");
             return false;
         }
         shader.setActive();
@@ -130,12 +130,7 @@ public class Waterways {
         shader.setTime((float)((double)t * 1.0e-9 % 2.0));
         shader.setLightDirection(lightDir);
         if (selectionChange) {
-            if (world.getSelectedTerritory() != null) {
-                shader.setSelectedTerritory(world.getSelectedTerritory().getId());
-            }
-            else {
-                shader.setSelectedTerritory(0);
-            }
+            shader.setSelectedTerritory(world.getSelectedTerritory() == null ? 0 : world.getSelectedTerritory().getId());
         }
         GLES30.glBindVertexArray(vaoHandle);
         GLES30.glDrawArraysInstanced(GLES30.GL_TRIANGLE_STRIP, 0, positions.length / 2, nWaterways);

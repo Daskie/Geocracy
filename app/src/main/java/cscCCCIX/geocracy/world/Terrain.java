@@ -183,19 +183,17 @@ public class Terrain {
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean highlightChange, boolean ownershipChange) {
+    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean targetChange, boolean highlightChange, boolean ownershipChange) {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
         shader.setLightDirection(lightDir);
         shader.setTime((float)glm.fract((double)t * 1.0e-9));
         if (selectionChange) {
-            if (world.getSelectedTerritory() != null) {
-                shader.setSelectedTerritory(world.getSelectedTerritory().getId());
-            }
-            else {
-                shader.setSelectedTerritory(0);
-            }
+            shader.setSelectedTerritory(world.getSelectedTerritory() == null ? 0 : world.getSelectedTerritory().getId());
+        }
+        if (targetChange) {
+            shader.setTargetTerritory(world.getTargetedTerritory() == null ? 0 : world.getTargetedTerritory().getId());
         }
         if (highlightChange) {
             boolean[] terrsHighlighted = new boolean[territorySpecs.length];

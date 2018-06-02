@@ -5,7 +5,6 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 import cscCCCIX.geocracy.EventBus;
 import cscCCCIX.geocracy.Util;
@@ -48,8 +47,6 @@ public class Game {
     private Vec2i tappedPoint;
     private float zoomFactor;
     private ByteBuffer readbackBuffer;
-    private Random rand;
-    private int randTerr;
 
     public GameData gameData;
     public GameActivity activity;
@@ -103,9 +100,6 @@ public class Game {
         setUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
         gainArmyUnitsState = new GainArmyUnitsState(this, activity);
 
-        rand = new Random();
-
-
         setState(setUpInitTerritoriesState);
 
         spaceRenderer = new SpaceRenderer();
@@ -114,12 +108,16 @@ public class Game {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-        startT = System.nanoTime();
-        lastT = 0;
-
         EventBus.subscribe("USER_ACTION", this, event -> {
             handleUserAction((GameEvent) event);
         });
+
+        world.getTerritory(5).select();
+        world.getTerritory(29).target();
+
+        // Should be last in constructor
+        startT = System.nanoTime();
+        lastT = 0;
     }
 
     private void handleUserAction(GameEvent event) {
@@ -139,7 +137,7 @@ public class Game {
             case TERRITORY_SELECTED:
                 Log.i("", "USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
-                Log.d("", "USER SELECTED TERRITORY:" + selectedTerritory);
+                Log.d("", "USER SELECTED TERRITORY:" + selectedTerritory.getId());
 
                 if (getState() == this.intentToAttackState) {
                     getState().selectTargetTerritory(selectedTerritory);

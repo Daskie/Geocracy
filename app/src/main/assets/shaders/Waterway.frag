@@ -5,9 +5,9 @@ precision highp float;
 in vec3 v2f_loc;
 in vec3 v2f_norm;
 in vec2 v2f_pos;
-in float v2f_selected;
-in vec3 v2f_continentColor;
-in float v2f_angle;
+flat in float v2f_selected;
+flat in vec3 v2f_continentColor;
+flat in float v2f_angle;
 
 out vec4 out_color;
 

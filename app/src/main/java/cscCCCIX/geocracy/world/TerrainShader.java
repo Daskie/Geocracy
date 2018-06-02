@@ -17,6 +17,7 @@ public class TerrainShader extends Shader {
     private int highElevationFactorUniformHandle;
     private int continentColorsUniformHandle;
     private int selectedTerritoryHandle;
+    private int targetTerritoryHandle;
     private int highlightedTerritoriesLowerHandle;
     private int highlightedTerritoriesUpperHandle;
     private int playerColorsHandle;
@@ -56,6 +57,10 @@ public class TerrainShader extends Shader {
 
     public void setSelectedTerritory(int selected) {
         uploadUniform(selectedTerritoryHandle, selected, true);
+    }
+
+    public void setTargetTerritory(int target) {
+        uploadUniform(targetTerritoryHandle, target, true);
     }
 
     public void setHighlightedTerritories(boolean[] highlighted) {
@@ -114,6 +119,9 @@ public class TerrainShader extends Shader {
         }
         if ((selectedTerritoryHandle = getUniformLocation("u_selectedTerritory")) == -1) {
             Log.e("", "Failed to get location of u_selectedTerritory");
+        }
+        if ((targetTerritoryHandle = getUniformLocation("u_targetTerritory")) == -1) {
+            Log.e("", "Failed to get location of u_targetTerritory");
         }
         if ((highlightedTerritoriesLowerHandle = getUniformLocation("u_highlightedTerritoriesLower")) == -1) {
             Log.e("", "Failed to get location of u_highlightedTerritoriesLower");

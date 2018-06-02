@@ -14,7 +14,7 @@ uniform vec3 u_cameraLoc;
 uniform vec3 u_lightDir;
 
 const float k_localAmbience = 0.3f;
-const float k_worldAmbience = 0.15f;
+const float k_worldAmbience = 0.25f;
 const float k_shininess = 16.0f;
 
 void main() {

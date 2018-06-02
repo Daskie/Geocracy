@@ -16,6 +16,7 @@ in vec3 v2f_edges;
 in vec3 v2f_bary;
 flat in vec3 v2f_continentColor;
 flat in float v2f_selected;
+flat in float v2f_targeted;
 flat in float v2f_highlighted;
 flat in vec3 v2f_playerColor;
 
@@ -50,8 +51,10 @@ float smoothInterp(float v) {
 
 void main() {
     vec3 up = normalize(v2f_loc);
+    float strongEmphasis = max(v2f_selected, v2f_targeted);
+    float emphasis = max(strongEmphasis, v2f_highlighted);
     float pulseTime = smoothInterp((u_time > 0.5f ? 1.0f - u_time : u_time) * 2.0f);
-    pulseTime = mix(pulseTime, 1.0f, v2f_selected);
+    pulseTime = mix(pulseTime, 1.0f, strongEmphasis);
 
     float super = clamp((v2f_elevation - 1.0f) * u_highElevationFactor, 0.0f, 1.0f);
     float sub = clamp((v2f_elevation - 1.0f) * u_lowElevationFactor, 0.0f, 1.0f);
@@ -73,11 +76,9 @@ void main() {
         ocean * oceanColor;
     albedo = mix(vec3(0.5f), albedo, dot(v2f_norm, up));
 
-    float selectedOrHighlighted = max(v2f_selected, v2f_highlighted);
-
     float maxBary = max(max(v2f_bary.x, v2f_bary.y), v2f_bary.z);
     float maxEdge = max(max(v2f_edges.x, v2f_edges.y), v2f_edges.z);
-    float innerBorderThreshold = mix(k_borderThreshold, mix(k_highlightBorderHighThreshold, k_highlightBorderLowThreshold, pulseTime), selectedOrHighlighted);
+    float innerBorderThreshold = mix(k_borderThreshold, mix(k_highlightBorderHighThreshold, k_highlightBorderLowThreshold, pulseTime), emphasis);
     float innerCorner = step(innerBorderThreshold, maxBary);
     float innerEdge = step(innerBorderThreshold, maxEdge);
     float innerBorder = step(innerBorderThreshold, v2f_border) * (max(innerCorner, innerEdge));
@@ -85,7 +86,7 @@ void main() {
     float outerCorner = step(outerBorderThreshold, maxBary);
     float outerEdge = step(outerBorderThreshold, maxEdge);
     float outerBorder = step(outerBorderThreshold, v2f_border) * (max(outerCorner, outerEdge));
-    vec3 borderColor = mix(v2f_continentColor * 0.75f, v2f_playerColor + outerBorder, selectedOrHighlighted);
+    vec3 borderColor = mix(v2f_continentColor * 0.75f, v2f_playerColor + outerBorder, emphasis);
 
     /*float pulseWidth = 5.0f;
     float pulseDepth = 12.0f;
@@ -96,12 +97,12 @@ void main() {
     float pulseAt = mix(k_pulseMinDepth, k_pulseMaxDepth, pulseTime);
     float pulseValue = max(1.0f - float(v2f_vertInlandDist) / pulseAt, 0.0f);
     pulseValue *= pulseValue;
-    albedo *= 1.0f + 0.125 * selectedOrHighlighted * land;
-    albedo += v2f_playerColor * (pulseValue * selectedOrHighlighted * land);
+    albedo *= 1.0f + 0.125 * emphasis * land;
+    albedo += v2f_playerColor * (pulseValue * emphasis * land);
 
     out_color.rgb = mix(
         albedo * diffuse,
-        borderColor * mix(diffuse, 1.0f, selectedOrHighlighted),
+        borderColor * mix(diffuse, 1.0f, emphasis),
         innerBorder * land
     );
     out_color.a = 1.0f;

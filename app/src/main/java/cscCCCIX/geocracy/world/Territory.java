@@ -33,6 +33,18 @@ public class Territory implements Serializable {
         nArmies = 0;
     }
 
+    public void select() {
+        world.selectTerritory(this);
+    }
+
+    public void target() {
+        world.targetTerritory(this);
+    }
+
+    public void highlight() {
+        world.highlightTerritory(this);
+    }
+
     public void setOwner(Player player) {
         Player prevOwner = owner;
         owner = player;
@@ -52,6 +64,10 @@ public class Territory implements Serializable {
 
     public boolean isSelected() {
         return world.getSelectedTerritory() == this;
+    }
+
+    public boolean isTargeted() {
+        return world.getTargetedTerritory() == this;
     }
 
     public boolean isHighlighted() {
