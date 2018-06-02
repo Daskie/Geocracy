@@ -13,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.VecArrayUtil;
@@ -35,13 +36,13 @@ public class Terrain {
     }
 
     private class TerritorySpec {
-        HashSet<Integer> landFaces = new HashSet<>();
-        HashSet<Integer> oceanFaces = new HashSet<>();
-        HashSet<Integer> coastFaces = new HashSet<>();
-        SparseArray<HashSet<Integer>> inlandFaces = new SparseArray<>();
-        HashSet<Integer> adjacentLandTerrs = new HashSet<>();
-        HashSet<Integer> adjacentOceanTerrs = new HashSet<>();
-        HashSet<Integer> waterwayTerrs = new HashSet<>();
+        Set<Integer> landFaces = new HashSet<>();
+        Set<Integer> oceanFaces = new HashSet<>();
+        Set<Integer> coastFaces = new HashSet<>();
+        SparseArray<Set<Integer>> inlandFaces = new SparseArray<>();
+        Set<Integer> adjacentLandTerrs = new HashSet<>();
+        Set<Integer> adjacentOceanTerrs = new HashSet<>();
+        Set<Integer> waterwayTerrs = new HashSet<>();
         int continent;
         Vec3 center;
         int[] armyFaces;
@@ -50,10 +51,10 @@ public class Terrain {
     }
 
     private class ContinentSpec {
-        HashSet<Integer> territories = new HashSet<>();
-        HashSet<Integer> adjacentLandConts = new HashSet<>();
-        HashSet<Integer> adjacentOceanConts = new HashSet<>();
-        HashSet<Integer> waterwayConts = new HashSet<>();
+        Set<Integer> territories = new HashSet<>();
+        Set<Integer> adjacentLandConts = new HashSet<>();
+        Set<Integer> adjacentOceanConts = new HashSet<>();
+        Set<Integer> waterwayConts = new HashSet<>();
     }
 
     private static final float HIGH_ELEVATION = 1.05f;
@@ -250,14 +251,14 @@ public class Terrain {
             territories[ti - 1] = new Territory(ti, world, continents[terr.continent - 1], new HashSet<>(), terr.center);
         }
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
-            HashSet<Territory> contTerrs = continents[ci - 1].getTerritories();
+            Set<Territory> contTerrs = continents[ci - 1].getTerritories();
             for (int ti : continentSpecs[ci].territories) {
                 contTerrs.add(territories[ti - 1]);
             }
         }
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
-            HashSet<Territory> adjTerrs = territories[ti - 1].getAdjacentTerritories();
+            Set<Territory> adjTerrs = territories[ti - 1].getAdjacentTerritories();
             for (int ati : terr.adjacentLandTerrs) {
                 adjTerrs.add(territories[ati - 1]);
             }
@@ -360,9 +361,9 @@ public class Terrain {
     private int distToDifferentLandTerritoryWithin(int origFI, int n) {
         Face face = faces[origFI];
         int ti = face.territory;
-        HashSet<Integer> checked = new HashSet<>();
-        HashSet<Integer> fringe = new HashSet<>();
-        HashSet<Integer> nextFringe = new HashSet<>();
+        Set<Integer> checked = new HashSet<>();
+        Set<Integer> fringe = new HashSet<>();
+        Set<Integer> nextFringe = new HashSet<>();
         checked.add(origFI);
         fringe.add(origFI);
         for (int i = 0; i < n && !fringe.isEmpty(); ++i) {
@@ -380,7 +381,7 @@ public class Terrain {
                     nextFringe.add(afi);
                 }
             }
-            HashSet<Integer> temp = fringe;
+            Set<Integer> temp = fringe;
             fringe = nextFringe;
             nextFringe = temp;
             nextFringe.clear();
@@ -614,8 +615,8 @@ public class Terrain {
     }
 
     private void calcCoastDistances(byte[] faceSigns) {
-        HashSet<Integer> currFaces = new HashSet<>();
-        HashSet<Integer> nextFaces = new HashSet<>();
+        Set<Integer> currFaces = new HashSet<>();
+        Set<Integer> nextFaces = new HashSet<>();
         boolean[] checked = new boolean[faces.length];
 
         // Start with coast faces
@@ -638,7 +639,7 @@ public class Terrain {
                 break;
             }
 
-            HashSet<Integer> temp = currFaces;
+            Set<Integer> temp = currFaces;
             currFaces = nextFaces;
             nextFaces = temp;
             nextFaces.clear();
@@ -654,10 +655,10 @@ public class Terrain {
 
         ArrayList<TerritorySpec> tempTerritorySpecs = new ArrayList<>();
         tempTerritorySpecs.add(null);
-        HashSet<Integer> landLeft = new HashSet<>();
-        HashSet<Integer> superFringes = new HashSet<>();
+        Set<Integer> landLeft = new HashSet<>();
+        Set<Integer> superFringes = new HashSet<>();
         ArrayDeque<Integer> superFringeQueue = new ArrayDeque<>();
-        HashSet<Integer> subFringes = new HashSet<>();
+        Set<Integer> subFringes = new HashSet<>();
         ArrayDeque<Integer> subFringeQueue = new ArrayDeque<>();
 
         for (int fi : landFaces) landLeft.add(fi);
@@ -844,12 +845,12 @@ public class Terrain {
             }
             for (int ti = 1; ti < tempTerritorySpecs.size(); ++ti) {
                 TerritorySpec terr = tempTerritorySpecs.get(ti);
-                HashSet<Integer> newLandAdjacents = new HashSet<>();
+                Set<Integer> newLandAdjacents = new HashSet<>();
                 for (int ati : terr.adjacentLandTerrs) {
                     newLandAdjacents.add(map.get(ati));
                 }
                 terr.adjacentLandTerrs = newLandAdjacents;
-                HashSet<Integer> newOceanAdjacents = new HashSet<>();
+                Set<Integer> newOceanAdjacents = new HashSet<>();
                 for (int ati : terr.adjacentOceanTerrs) {
                     newOceanAdjacents.add(map.get(ati));
                 }
@@ -945,9 +946,9 @@ public class Terrain {
     }
 
     private void detInlandDists() {
-        HashSet<Integer> checked = new HashSet<>();
-        HashSet<Integer> fringe = new HashSet<>();
-        HashSet<Integer> nextFringe = new HashSet<>();
+        Set<Integer> checked = new HashSet<>();
+        Set<Integer> fringe = new HashSet<>();
+        Set<Integer> nextFringe = new HashSet<>();
         for (int ti = 1; ti < territorySpecs.length; ++ti) {
             TerritorySpec terr = territorySpecs[ti];
             checked.clear();
@@ -981,7 +982,7 @@ public class Terrain {
                 if (nextFringe.isEmpty()) {
                     break;
                 }
-                HashSet<Integer> temp = fringe;
+                Set<Integer> temp = fringe;
                 fringe = nextFringe;
                 nextFringe = temp;
                 nextFringe.clear();
@@ -1008,7 +1009,7 @@ public class Terrain {
 
             int armyI = 0;
             int dist = terr.inlandFaces.size() - 1;
-            HashSet<Integer> checked = new HashSet<>();
+            Set<Integer> checked = new HashSet<>();
             while (dist >= 0) {
                 for (int fi : terr.inlandFaces.valueAt(dist)) {
                     if (armyI >= terr.armyFaces.length) {
@@ -1256,8 +1257,8 @@ public class Terrain {
             }
             for (int ci = 1; ci < tempContinentSpecs.size(); ++ci) {
                 ContinentSpec cont = tempContinentSpecs.get(ci);
-                HashSet<Integer> newLandAdjacents = new HashSet<>();
-                HashSet<Integer> newOceanAdjacents = new HashSet<>();
+                Set<Integer> newLandAdjacents = new HashSet<>();
+                Set<Integer> newOceanAdjacents = new HashSet<>();
                 for (int aci : cont.adjacentLandConts) newLandAdjacents.add(map.get(aci));
                 for (int aci : cont.adjacentOceanConts) newOceanAdjacents.add(map.get(aci));
                 cont.adjacentLandConts = newLandAdjacents;
@@ -1293,10 +1294,10 @@ public class Terrain {
     }
 
     private int detNearestContinentAccrossOcean(int ci, ContinentSpec cont) {
-        HashSet<Integer> currFringe = new HashSet<>();
+        Set<Integer> currFringe = new HashSet<>();
         for (int ti : cont.territories) currFringe.addAll(territorySpecs[ti].coastFaces);
-        HashSet<Integer> nextFringe = new HashSet<>();
-        HashSet<Integer> checked = new HashSet<>(currFringe);
+        Set<Integer> nextFringe = new HashSet<>();
+        Set<Integer> checked = new HashSet<>(currFringe);
         while (true) {
             if (currFringe.isEmpty()) {
                 return -1;
@@ -1321,7 +1322,7 @@ public class Terrain {
                 }
             }
             currFringe.clear();
-            HashSet<Integer> temp = currFringe;
+            Set<Integer> temp = currFringe;
             currFringe = nextFringe;
             nextFringe = temp;
         }
@@ -1330,7 +1331,7 @@ public class Terrain {
     private void detWaterways() {
         // Connect portions of continent separated by ocean
         for (int ci = 1; ci < continentSpecs.length; ++ci) {
-            ArrayList<HashSet<Integer>> lands = detContinentLands(ci);
+            ArrayList<Set<Integer>> lands = detContinentLands(ci);
             if (lands.size() <= 1) {
                 continue;
             }
@@ -1357,7 +1358,8 @@ public class Terrain {
                     if (pair == null) {
                         continue;
                     }
-                    int t1i = pair.first, t2i = pair.second;
+                    int t1i = pair.first;
+                    int t2i = pair.second;
                     territorySpecs[t1i].waterwayTerrs.add(t2i);
                     territorySpecs[t2i].waterwayTerrs.add(t1i);
                     cont1.waterwayConts.add(c2i);
@@ -1367,13 +1369,13 @@ public class Terrain {
         }
     }
 
-    private ArrayList<HashSet<Integer>> detContinentLands(int ci) {
+    private ArrayList<Set<Integer>> detContinentLands(int ci) {
         ContinentSpec cont = continentSpecs[ci];
-        ArrayList<HashSet<Integer>> lands = new ArrayList<>();
-        HashSet<Integer> land = new HashSet<>();
-        HashSet<Integer> terrsLeft = new HashSet<>(cont.territories);
-        HashSet<Integer> fringe = new HashSet<>();
-        HashSet<Integer> nextFringe = new HashSet<>();
+        ArrayList<Set<Integer>> lands = new ArrayList<>();
+        Set<Integer> land = new HashSet<>();
+        Set<Integer> terrsLeft = new HashSet<>(cont.territories);
+        Set<Integer> fringe = new HashSet<>();
+        Set<Integer> nextFringe = new HashSet<>();
         while (!terrsLeft.isEmpty()) {
             int startTI = terrsLeft.iterator().next();
             land.add(startTI);
@@ -1390,7 +1392,7 @@ public class Terrain {
                         }
                     }
                 }
-                HashSet<Integer> temp = fringe;
+                Set<Integer> temp = fringe;
                 fringe = nextFringe;
                 nextFringe = temp;
                 nextFringe.clear();
@@ -1401,7 +1403,7 @@ public class Terrain {
         return lands;
     }
 
-    private Pair<Integer, Integer> detMainWaterway(HashSet<Integer> terrs1, HashSet<Integer> terrs2) {
+    private Pair<Integer, Integer> detMainWaterway(Set<Integer> terrs1, Set<Integer> terrs2) {
         LongSparseArray<Integer> counts = new LongSparseArray<>();
         for (int ti : terrs1) {
             for (int fi : territorySpecs[ti].oceanFaces) {

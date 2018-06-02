@@ -46,7 +46,7 @@ public class DiceRollState implements  GameState {
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
         System.out.println("DICE ROLL STATE: -> ENTER BATTLE RESULTS STATE");
-        game.setState(game.BattleResultsState);
+        game.setState(game.battleResultsState);
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
         game.getState().initState();

@@ -139,121 +139,122 @@ public abstract class MeshMaker {
 
         float[] locations = new float[detIndexedSphereVertexCount(degree) * 3];
         System.arraycopy(icoMesh.getLocations(), 0, locations, 0, icoMesh.getLocations().length);
-        int nextI = icoMesh.getNumVertices();
+        int[] locI = { icoMesh.getNumVertices() };
         int[] indices = icoMesh.getIndices();
 
         for (int iteration = 0; iteration < degree; ++iteration) {
-            int[] newIndices = new int[indices.length * 4];
-            // key: low order int smaller vertex index, higher order int larger vertex index
-            // value: vertex index of the edge's mid vertex
-            LongSparseArray<Integer> edgeMap = new LongSparseArray<>();
-
-            for (int ii = 0; ii < indices.length; ii += 3) {
-                int ai = indices[ii + 0];
-                int aci = ai * 3;
-                int bi = indices[ii + 1];
-                int bci = bi * 3;
-                int ci = indices[ii + 2];
-                int cci = ci * 3;
-                int di;
-                int dci;
-                int ei;
-                int eci;
-                int fi;
-                int fci;
-
-                float ax = locations[aci + 0];
-                float ay = locations[aci + 1];
-                float az = locations[aci + 2];
-                float bx = locations[bci + 0];
-                float by = locations[bci + 1];
-                float bz = locations[bci + 2];
-                float cx = locations[cci + 0];
-                float cy = locations[cci + 1];
-                float cz = locations[cci + 2];
-                float dx;
-                float dy;
-                float dz;
-                float ex;
-                float ey;
-                float ez;
-                float fx;
-                float fy;
-                float fz;
-
-                // Obtain edge vertex d
-                long key = ai < bi ? Util.toLong(ai, bi) : Util.toLong(bi, ai);
-                Integer value = edgeMap.get(key);
-                if (value == null) { // Edge vertex d not found. Create it
-                    dx = (ax + bx) * 0.5f; dy = (ay + by) * 0.5f; dz = (az + bz) * 0.5f;
-                    float fac = 1.0f / (float)Math.sqrt(dx * dx + dy * dy + dz * dz);
-                    dx *= fac; dy *= fac; dz *= fac;
-                    di = nextI; dci = di * 3;
-                    locations[dci + 0] = dx; locations[dci + 1] = dy; locations[dci + 2] = dz;
-                    ++nextI;
-                    edgeMap.put(key, di);
-                }
-                else { // Edge vertex d already exists
-                    di = value; dci = di * 3;
-                    //dx = locations[dci + 0]; dy = locations[dci + 1]; dz = locations[dci + 2];
-                }
-                // Obtain edge vertex e
-                key = bi < ci ? Util.toLong(bi, ci) : Util.toLong(ci, bi);
-                value = edgeMap.get(key);
-                if (value == null) { // Edge vertex e not found. Create it
-                    ex = (bx + cx) * 0.5f; ey = (by + cy) * 0.5f; ez = (bz + cz) * 0.5f;
-                    float fac = 1.0f / (float)Math.sqrt(ex * ex + ey * ey + ez * ez);
-                    ex *= fac; ey *= fac; ez *= fac;
-                    ei = nextI; eci = ei * 3;
-                    locations[eci + 0] = ex; locations[eci + 1] = ey; locations[eci + 2] = ez;
-                    ++nextI;
-                    edgeMap.put(key, ei);
-                }
-                else { // Edge vertex e already exists
-                    ei = value; eci = ei * 3;
-                    //ex = locations[eci + 0]; ey = locations[eci + 1]; ez = locations[eci + 2];
-                }
-                // Obtain edge vertex f
-                key = ci < ai ? Util.toLong(ci, ai) : Util.toLong(ai, ci);
-                value = edgeMap.get(key);
-                if (value == null) { // Edge vertex f not found. Create it
-                    fx = (cx + ax) * 0.5f; fy = (cy + ay) * 0.5f; fz = (cz + az) * 0.5f;
-                    float fac = 1.0f / (float)Math.sqrt(fx * fx + fy * fy + fz * fz);
-                    fx *= fac; fy *= fac; fz *= fac;
-                    fi = nextI; fci = fi * 3;
-                    locations[fci + 0] = fx; locations[fci + 1] = fy; locations[fci + 2] = fz;
-                    ++nextI;
-                    edgeMap.put(key, fi);
-                }
-                else { // Edge vertex f already exists
-                    fi = value; fci = fi * 3;
-                    //fx = locations[fci + 0]; fy = locations[fci + 1]; fz = locations[fci + 2];
-                }
-
-                int nii = ii * 4;
-                // New face 1 : a d f
-                newIndices[nii +  0] = ai;
-                newIndices[nii +  1] = di;
-                newIndices[nii +  2] = fi;
-                // New face 2: b e d
-                newIndices[nii +  3] = bi;
-                newIndices[nii +  4] = ei;
-                newIndices[nii +  5] = di;
-                // New face 3: c f e
-                newIndices[nii +  6] = ci;
-                newIndices[nii +  7] = fi;
-                newIndices[nii +  8] = ei;
-                // New face 4: d e f
-                newIndices[nii +  9] = di;
-                newIndices[nii + 10] = ei;
-                newIndices[nii + 11] = fi;
-            }
-
-            indices = newIndices;
+            indices = sphericallyTessellate(indices, locations, locI);
         }
 
         float[] normals = locations.clone();
         return new Mesh(name, locations, normals, indices);
+    }
+
+    private static int[] sphericallyTessellate(int[] indices, float[] locations, int[] locI) {
+        int[] newIndices = new int[indices.length * 4];
+        // key: low order int smaller vertex index, higher order int larger vertex index
+        // value: vertex index of the edge's mid vertex
+        LongSparseArray<Integer> edgeMap = new LongSparseArray<>();
+
+        for (int ii = 0; ii < indices.length; ii += 3) {
+            int ai = indices[ii + 0];
+            int aci = ai * 3;
+            int bi = indices[ii + 1];
+            int bci = bi * 3;
+            int ci = indices[ii + 2];
+            int cci = ci * 3;
+            int di;
+            int dci;
+            int ei;
+            int eci;
+            int fi;
+            int fci;
+
+            float ax = locations[aci + 0];
+            float ay = locations[aci + 1];
+            float az = locations[aci + 2];
+            float bx = locations[bci + 0];
+            float by = locations[bci + 1];
+            float bz = locations[bci + 2];
+            float cx = locations[cci + 0];
+            float cy = locations[cci + 1];
+            float cz = locations[cci + 2];
+            float dx;
+            float dy;
+            float dz;
+            float ex;
+            float ey;
+            float ez;
+            float fx;
+            float fy;
+            float fz;
+
+            // Obtain edge vertex d
+            long key = ai < bi ? Util.toLong(ai, bi) : Util.toLong(bi, ai);
+            Integer value = edgeMap.get(key);
+            if (value == null) { // Edge vertex d not found. Create it
+                dx = (ax + bx) * 0.5f; dy = (ay + by) * 0.5f; dz = (az + bz) * 0.5f;
+                float fac = 1.0f / (float)Math.sqrt(dx * dx + dy * dy + dz * dz);
+                dx *= fac; dy *= fac; dz *= fac;
+                di = locI[0]; dci = di * 3;
+                locations[dci + 0] = dx; locations[dci + 1] = dy; locations[dci + 2] = dz;
+                ++locI[0];
+                edgeMap.put(key, di);
+            }
+            else { // Edge vertex d already exists
+                di = value;
+            }
+            // Obtain edge vertex e
+            key = bi < ci ? Util.toLong(bi, ci) : Util.toLong(ci, bi);
+            value = edgeMap.get(key);
+            if (value == null) { // Edge vertex e not found. Create it
+                ex = (bx + cx) * 0.5f; ey = (by + cy) * 0.5f; ez = (bz + cz) * 0.5f;
+                float fac = 1.0f / (float)Math.sqrt(ex * ex + ey * ey + ez * ez);
+                ex *= fac; ey *= fac; ez *= fac;
+                ei = locI[0]; eci = ei * 3;
+                locations[eci + 0] = ex; locations[eci + 1] = ey; locations[eci + 2] = ez;
+                ++locI[0];
+                edgeMap.put(key, ei);
+            }
+            else { // Edge vertex e already exists
+                ei = value;
+            }
+            // Obtain edge vertex f
+            key = ci < ai ? Util.toLong(ci, ai) : Util.toLong(ai, ci);
+            value = edgeMap.get(key);
+            if (value == null) { // Edge vertex f not found. Create it
+                fx = (cx + ax) * 0.5f; fy = (cy + ay) * 0.5f; fz = (cz + az) * 0.5f;
+                float fac = 1.0f / (float)Math.sqrt(fx * fx + fy * fy + fz * fz);
+                fx *= fac; fy *= fac; fz *= fac;
+                fi = locI[0]; fci = fi * 3;
+                locations[fci + 0] = fx; locations[fci + 1] = fy; locations[fci + 2] = fz;
+                ++locI[0];
+                edgeMap.put(key, fi);
+            }
+            else { // Edge vertex f already exists
+                fi = value;
+            }
+
+            int nii = ii * 4;
+            // New face 1 : a d f
+            newIndices[nii +  0] = ai;
+            newIndices[nii +  1] = di;
+            newIndices[nii +  2] = fi;
+            // New face 2: b e d
+            newIndices[nii +  3] = bi;
+            newIndices[nii +  4] = ei;
+            newIndices[nii +  5] = di;
+            // New face 3: c f e
+            newIndices[nii +  6] = ci;
+            newIndices[nii +  7] = fi;
+            newIndices[nii +  8] = ei;
+            // New face 4: d e f
+            newIndices[nii +  9] = di;
+            newIndices[nii + 10] = ei;
+            newIndices[nii + 11] = fi;
+        }
+
+        return newIndices;
     }
 
     private static int detIndexedSphereVertexCount(int degree) {

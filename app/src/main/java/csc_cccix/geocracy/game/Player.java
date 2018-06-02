@@ -1,6 +1,7 @@
 package csc_cccix.geocracy.game;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import csc_cccix.geocracy.world.Continent;
 import csc_cccix.geocracy.world.Territory;
@@ -11,10 +12,10 @@ import static glm_.Java.glm;
 public abstract class Player {
     private int id; // starts at 1. 0 indicates no player
     public String name;
-    private HashSet<Territory> territories;
+    private Set<Territory> territories;
     private Vec3 color;
     private int armies;
-    private HashSet<Continent> ownedContinents; // which continents the player owns all territories of
+    private Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
 
     public Player(int id, Vec3 color) {
@@ -49,7 +50,7 @@ public abstract class Player {
         return name;
     }
 
-    public HashSet<Territory> getTerritories() {
+    public Set<Territory> getTerritories() {
         return territories;
     }
 

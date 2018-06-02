@@ -23,7 +23,8 @@ public abstract class Shader {
     public enum Type { VERTEX, FRAGMENT }
 
     protected String name;
-    protected String vertFile, fragFile;
+    protected String vertFile;
+    protected String fragFile;
     protected int programHandle;
 
     public Shader(String name, String vertFile, String fragFile) {
@@ -197,13 +198,13 @@ public abstract class Shader {
 
     private static int createShader(String src, Type type) {
         int shaderHandle = 0;
-        switch (type) {
-            case VERTEX:
-                shaderHandle = GLES30.glCreateShader(GLES30.GL_VERTEX_SHADER);
-                break;
-            case FRAGMENT:
-                shaderHandle = GLES30.glCreateShader(GLES30.GL_FRAGMENT_SHADER);
-                break;
+        if (type == Type.VERTEX) {
+            shaderHandle = GLES30.glCreateShader(GLES30.GL_VERTEX_SHADER);
+
+        }
+        else if (type == Type.FRAGMENT) {
+            shaderHandle = GLES30.glCreateShader(GLES30.GL_FRAGMENT_SHADER);
+
         }
         if (shaderHandle == 0) {
             Log.e("", "Failed to create shader");
@@ -215,7 +216,7 @@ public abstract class Shader {
         GLES30.glCompileShader(shaderHandle);
 
         // Check for compile errors
-        int status[] = { 0 };
+        int[] status = { 0 };
         GLES30.glGetShaderiv(shaderHandle, GLES30.GL_COMPILE_STATUS, status, 0);
         if (status[0] == 0) {
             Log.e("", "Failed to compile shader");
@@ -233,7 +234,7 @@ public abstract class Shader {
         return shaderHandle;
     }
 
-    static private int createProgram(int vertShaderHandle, int fragShaderHandle) {
+    private static int createProgram(int vertShaderHandle, int fragShaderHandle) {
         int programHandle = GLES30.glCreateProgram();
         if (programHandle == 0) {
             Log.e("", "Failed to create program");
@@ -246,7 +247,7 @@ public abstract class Shader {
         GLES30.glLinkProgram(programHandle);
 
         // Check for linking errors
-        int status[] = { 0 };
+        int[] status = { 0 };
         GLES30.glGetProgramiv(programHandle, GLES30.GL_LINK_STATUS, status, 0);
         if (status[0] == 0) {
             Log.e("", "Failed to link program");
