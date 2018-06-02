@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gameLayout"
-    tools:context="cscCCCIX.geocracy.game.GameActivity">
+    tools:context="csc_cccix.geocracy.game.GameActivity">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/inGameSettingsBtn"
@@ -81,7 +81,7 @@
         android:src="@drawable/ic_cancel_white_48dp"
         app:backgroundTint="@color/darkGray"/>
 
-    <cscCCCIX.geocracy.game.GameSurfaceView
+    <csc_cccix.geocracy.game.GameSurfaceView
         android:id="@+id/gameplaySurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
