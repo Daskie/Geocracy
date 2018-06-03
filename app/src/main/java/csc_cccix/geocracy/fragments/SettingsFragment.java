@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 
@@ -16,6 +17,8 @@ import com.jakewharton.rxbinding2.widget.RxSeekBar;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.states.GameAction;
+import csc_cccix.geocracy.states.GameEvent;
 
 public class SettingsFragment extends Fragment {
 
@@ -29,6 +32,7 @@ public class SettingsFragment extends Fragment {
         SeekBar masterVolume;
         SeekBar musicVolume;
         CheckBox musicEnabledCheckbox;
+        Button saveGameButton;
 
         masterVolume = view.findViewById(R.id.masterVolume);
         musicVolume = view.findViewById(R.id.musicVolume);
@@ -45,6 +49,14 @@ public class SettingsFragment extends Fragment {
                 musicEnabledCheckbox.setChecked(isMusicEnabled);
                 if (isMusicEnabled) EventBus.publish("SET_MUSIC_ENABLED_EVENT", e);
                 else EventBus.publish("SET_MUSIC_DISABLED_EVENT", e);
+            }
+        });
+
+        saveGameButton = view.findViewById(R.id.saveGameButton);
+
+        RxView.touches(saveGameButton).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish("SAVE_GAME_EVENT", new GameEvent(GameAction.SAVE_GAME_TAPPED, null));
             }
         });
 

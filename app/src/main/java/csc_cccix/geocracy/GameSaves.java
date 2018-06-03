@@ -1,38 +1,29 @@
 package csc_cccix.geocracy;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.google.gson.Gson;
+import android.util.Log;
+import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.GameActivity;
 
 public class GameSaves {
 
-    // Save Game Save
-    public static void saveObjectToSharedPreference(Context context, String preferenceFileName, String serializedObjectKey, Object object) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, 0);
-        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-        final Gson gson = new Gson();
-        String serializedObject = gson.toJson(object);
-        sharedPreferencesEditor.putString(serializedObjectKey, serializedObject);
-        sharedPreferencesEditor.apply();
+    private Context context;
+    private GameActivity gameActivity;
+
+    public GameSaves(GameActivity gameActivity, Context context) {
+        this.gameActivity = gameActivity;
+        this.context = context;
     }
 
-    // Load Game Save
-    public static <T> T getSavedObjectFromPreference(Context context, String preferenceFileName, String preferenceKey, Class<T> classType) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, 0);
-        if (sharedPreferences.contains(preferenceKey)) {
-            final Gson gson = new Gson();
-            return gson.fromJson(sharedPreferences.getString(preferenceKey, ""), classType);
-        }
-        return null;
+    public void saveGameToLocalStorage(Game game) {
+        Log.i("GAME_SAVE", game.toString());
+        Util.saveObjectToSharedPreference(context, "gameSave", "mainSave", this.gameActivity.game);
     }
 
-    // Delete Game Save
-    public static void deleteObjectFromSharedPreference(Context context, String preferenceFileName, String serializedObjectKey) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, 0);
-        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-        sharedPreferencesEditor.remove(serializedObjectKey);
-        sharedPreferencesEditor.apply();
+    public Game loadGameFromLocalStorage() {
+        Game game = Util.getSavedObjectFromPreference(context, "gameSave", "mainSave", Game.class);
+        Log.i("GAME_LOAD", game.toString());
+        return game;
     }
 
 }

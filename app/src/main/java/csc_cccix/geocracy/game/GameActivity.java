@@ -22,6 +22,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
@@ -51,10 +52,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
 
+    private GameSaves gameSaves;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        gameSaves = new GameSaves(this, this.getApplicationContext());
 
         FloatingActionButton attackBtn;
         FloatingActionButton addUnitBtn;
@@ -213,7 +217,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 })
         );
 
+        EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
     }
+
+    private void handleSaveEvent(GameEvent event) {
+        if (event.action == GameAction.SAVE_GAME_TAPPED) {
+            gameSaves.saveGameToLocalStorage(game);
+        }
+    }
+
 
     public void showOverlayFragment(Fragment overlayFragment) {
         removeActiveBottomPaneFragment();

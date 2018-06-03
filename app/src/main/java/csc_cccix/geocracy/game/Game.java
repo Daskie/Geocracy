@@ -4,9 +4,11 @@ import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
@@ -14,6 +16,7 @@ import csc_cccix.geocracy.states.BattleResultsState;
 import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.DiceRollState;
 import csc_cccix.geocracy.states.GainArmyUnitsState;
+import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
@@ -29,42 +32,46 @@ import glm_.vec3.Vec3;
 import static csc_cccix.geocracy.states.GameAction.CANCEL_ACTION;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
-public class Game {
+public class Game implements Serializable {
 
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
 
+    public transient Player[] players;
+
+    public transient CameraController cameraController;
+
     private long startT; // time the game was started
     private long lastT; // time last frame happened
-    private World world;
-    public Player[] players;
-    private SpaceRenderer spaceRenderer;
-    public CameraController cameraController;
-    private int idFBHandle;
-    private int idValueTexHandle;
-    private int idDepthRBHandle;
-    private Vec2i screenSize;
-    private Vec2i swipeDelta;
-    private Vec2i tappedPoint;
-    private float zoomFactor;
-    private ByteBuffer readbackBuffer;
+
+    private transient World world;
+    private transient SpaceRenderer spaceRenderer;
+
+    private transient int idFBHandle;
+    private transient int idValueTexHandle;
+    private transient int idDepthRBHandle;
+
+    private transient Vec2i screenSize;
+    private transient Vec2i swipeDelta;
+    private transient Vec2i tappedPoint;
+    private transient float zoomFactor;
+    private transient ByteBuffer readbackBuffer;
 
     public GameData gameData;
-    public GameActivity activity;
+    public transient GameActivity activity;
 
-    GameState state;
+    transient GameState state;
 
-    public GameState defaultState;
-    public GameState selectedTerritoryState;
-    public GameState intentToAttackState;
-    public GameState selectedAttackTargetTerritoryState;
-    public GameState setUpInitTerritoriesState;
-    public GameState gainArmyUnitsState;
+    transient public GameState defaultState;
+    transient public GameState selectedTerritoryState;
+    transient public GameState intentToAttackState;
+    transient public GameState selectedAttackTargetTerritoryState;
+    transient public GameState setUpInitTerritoriesState;
+    transient public GameState gainArmyUnitsState;
 
 
     public int currentPlayer;
-    public GameState diceRollState;
-    public GameState battleResultsState;
-
+    transient public GameState diceRollState;
+    transient public GameState battleResultsState;
 
     public Game(GameActivity activity) {
         this.activity = activity;

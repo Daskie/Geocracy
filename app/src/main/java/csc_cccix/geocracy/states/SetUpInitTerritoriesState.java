@@ -4,6 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.UIEvent;
@@ -64,7 +65,6 @@ public class SetUpInitTerritoriesState implements GameState {
 
         if(game.getWorld().allTerritoriesOccupied())
             game.setState(game.gainArmyUnitsState);
-
     }
 
     public void enableAttackMode() {
