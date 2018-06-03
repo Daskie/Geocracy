@@ -1,6 +1,8 @@
 
 package csc_cccix.geocracy.states;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import csc_cccix.geocracy.EventBus;
@@ -54,6 +56,10 @@ public class DiceRollState implements  GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         System.out.println("USER CANCELED ACTION: CANNOT UPDATE UNIT COUNT");
+    }
+
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
     }
 
     public void cancelAction() {

@@ -71,6 +71,10 @@ public class SetUpInitTerritoriesState implements GameState {
         Log.i("", "SETUP INITIAL TERRITORIES STATE: CANNOT ENABLE ATTACK MODE");
     }
 
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
+    }
+
     public void cancelAction() {
         Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;

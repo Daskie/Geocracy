@@ -169,6 +169,12 @@ public class Game implements Serializable {
                 getState().initState();
                 break;
 
+            case CONFIRM_ACTION:
+                Log.i("", "CONFIRM TAPPED");
+                getState().confirmAction();
+                getState().initState();
+                break;
+
             case CANCEL_ACTION:
                 Log.i("", "CANCEL ACTION TAPPED");
                 getState().cancelAction();

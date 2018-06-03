@@ -1,5 +1,7 @@
 package csc_cccix.geocracy.states;
 
+import android.util.Log;
+
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.Game;
@@ -39,6 +41,10 @@ public class BattleResultsState implements  GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         System.out.println("BATTLE RESULTS STATE: CANNOT UPDATE UNIT COUNT");
+    }
+
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
     }
 
     public void cancelAction() {

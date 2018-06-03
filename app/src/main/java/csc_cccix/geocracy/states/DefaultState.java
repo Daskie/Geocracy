@@ -43,6 +43,10 @@ public class DefaultState implements GameState {
         Log.i(TAG, "INVALID STATE ACCESSED");
     }
 
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
+    }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> NULL ACTION");
     }
@@ -55,5 +59,6 @@ public class DefaultState implements GameState {
         EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
         EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
+        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 }
