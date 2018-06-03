@@ -1,5 +1,7 @@
 package csc_cccix.geocracy;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -7,6 +9,8 @@ import android.opengl.GLES30;
 import android.os.Process;
 import android.util.Log;
 import android.util.Pair;
+
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,6 +40,35 @@ public abstract class Util {
     public static final float PI = glm_.glm.PIf;
     // Golden ratio
     public static final float PHI = (float)((1.0 + Math.sqrt(5.0)) / 2.0);
+
+    // Save Game Save
+    public static void saveObjectToSharedPreference(Context context, String preferenceFileName, String serializedObjectKey, Object object) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, 0);
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        final Gson gson = new Gson();
+        String serializedObject = gson.toJson(object);
+        Log.i("SERIALIZED", serializedObject);
+        sharedPreferencesEditor.putString(serializedObjectKey, serializedObject);
+        sharedPreferencesEditor.apply();
+    }
+
+    // Load Game Save
+    public static <T> T getSavedObjectFromPreference(Context context, String preferenceFileName, String preferenceKey, Class<T> classType) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, 0);
+        if (sharedPreferences.contains(preferenceKey)) {
+            final Gson gson = new Gson();
+            return gson.fromJson(sharedPreferences.getString(preferenceKey, ""), classType);
+        }
+        return null;
+    }
+
+    // Delete Game Save -- need to test
+    public static void deleteObjectFromSharedPreference(Context context, String preferenceFileName, String serializedObjectKey) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(preferenceFileName, 0);
+        SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+        sharedPreferencesEditor.remove(serializedObjectKey);
+        sharedPreferencesEditor.apply();
+    }
 
     // Reads text file from assets folder into string
     public static String readTextFile(String filename) {

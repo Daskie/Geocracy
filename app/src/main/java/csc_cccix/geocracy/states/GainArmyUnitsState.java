@@ -77,6 +77,11 @@ public class GainArmyUnitsState implements GameState {
         }
     }
 
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
+        game.setState(game.defaultState);
+    }
+
     public void cancelAction() {
         Log.i("", "GAIN ARMIES STATE: USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
         this.territory = null;

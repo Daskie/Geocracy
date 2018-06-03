@@ -53,6 +53,10 @@ public class IntentToAttackState implements  GameState {
         Log.i("intentToAttackState", "INTENT TO ATTACK STATE: INVALID STATE ACCESSED");
     }
 
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
+    }
+
     public void cancelAction() {
         Log.i("", "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.defaultState);

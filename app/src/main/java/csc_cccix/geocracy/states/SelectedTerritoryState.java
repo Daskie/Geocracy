@@ -1,5 +1,7 @@
 package csc_cccix.geocracy.states;
 
+import android.util.Log;
+
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
@@ -45,6 +47,10 @@ public class SelectedTerritoryState implements  GameState {
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
         System.out.println("SELECTED TERRITORY STATE: INVALID STATE ACCESSED");
+    }
+
+    public void confirmAction() {
+        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
     }
 
     public void cancelAction() {
