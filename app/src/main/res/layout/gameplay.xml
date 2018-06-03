@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gameLayout"
-    tools:context=".game.GameActivity">
+    tools:context="csc_cccix.geocracy.game.GameActivity">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/inGameSettingsBtn"
@@ -15,6 +15,27 @@
         app:fabSize="auto"
         android:layout_margin="12dp"
         android:src="@drawable/ic_settings_outline_white_48dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/gameInfoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        app:fabSize="auto"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="82dp"
+        android:src="@drawable/ic_earth_white_48dp"
+        app:backgroundTint="@color/colorPrimary"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/closeOverlayBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        app:fabSize="auto"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_cancel_black_48dp"
+        app:backgroundTint="@color/darkGray"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/attackBtn"
@@ -28,6 +49,28 @@
         app:backgroundTint="@color/colorAccent"/>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addUnitBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="60dp"
+        app:fabSize="auto"
+        android:src="@drawable/ic_plus_box_white_48dp"
+        app:backgroundTint="@color/colorPrimaryDark"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/removeUnitBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="82dp"
+        android:layout_marginTop="60dp"
+        app:fabSize="auto"
+        android:src="@drawable/ic_minus_box_white_48dp"
+        app:backgroundTint="@color/colorPrimaryDark"/>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/cancelBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +81,7 @@
         android:src="@drawable/ic_cancel_white_48dp"
         app:backgroundTint="@color/darkGray"/>
 
-    <csc309.geocracy.game.GameSurfaceView
+    <csc_cccix.geocracy.game.GameSurfaceView
         android:id="@+id/gameplaySurfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

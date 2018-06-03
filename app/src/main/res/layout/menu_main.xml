@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/menuLayout"
-    tools:context=".main_menu.MenuActivity">
+    tools:context="csc_cccix.geocracy.main_menu.MenuActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp" />
 
-    <csc309.geocracy.main_menu.NonSwipeableViewPager
+    <csc_cccix.geocracy.main_menu.NonSwipeableViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/menuContainer"></csc309.geocracy.main_menu.NonSwipeableViewPager>
+        android:id="@+id/menuContainer"></csc_cccix.geocracy.main_menu.NonSwipeableViewPager>
 
 </android.support.design.widget.CoordinatorLayout>
