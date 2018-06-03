@@ -38,7 +38,7 @@ public class DistributeTroopsDetailFragment extends Fragment {
         originTerritoryID.setText("Update Unit Count At: " + originTerritory.getTerritoryName());
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
-        RxView.touches(confirmButton).subscribe((event) -> {
+        RxView.touches(confirmButton).subscribe(event -> {
 //            if (event.getActionMasked() == ACTION_UP) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
         });
 

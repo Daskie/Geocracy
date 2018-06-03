@@ -163,7 +163,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
 
-        disposables.add(EventBus.subscribe("UI_EVENT", this)
+        disposables.add(EventBus.subscribe("UI_EVENT")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(e -> {

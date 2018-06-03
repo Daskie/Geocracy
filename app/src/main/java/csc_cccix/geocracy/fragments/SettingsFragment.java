@@ -26,11 +26,9 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings, container, false);
 
-        SeekBar masterVolume;
         SeekBar musicVolume;
         CheckBox musicEnabledCheckbox;
 
-        masterVolume = view.findViewById(R.id.masterVolume);
         musicVolume = view.findViewById(R.id.musicVolume);
         musicVolume.setProgress(100);
 

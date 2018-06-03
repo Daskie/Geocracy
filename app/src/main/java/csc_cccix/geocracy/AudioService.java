@@ -13,7 +13,6 @@ public class AudioService extends Service {
 
     private MediaPlayer player;
     private boolean isEnabled = false;
-    private float playerVolume = 1.0f;
 
     @Nullable
     @Override
@@ -40,7 +39,7 @@ public class AudioService extends Service {
     }
 
     private void setVolume(int volume) {
-        playerVolume = (float) volume / 100;
+        float playerVolume = (float) volume / 100;
         player.setVolume(playerVolume, playerVolume);
     }
 
