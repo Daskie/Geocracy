@@ -22,7 +22,7 @@ public class GameInfoFragment extends Fragment {
 
         Player[] players = (Player[]) getArguments().get("players");
         ListView playerList = view.findViewById(R.id.playerList);
-        ArrayAdapter<Player> playerArrayAdapter = new ArrayAdapter<Player>(
+        ArrayAdapter<Player> playerArrayAdapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
                 players

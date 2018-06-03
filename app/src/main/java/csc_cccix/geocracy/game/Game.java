@@ -70,8 +70,11 @@ public class Game implements Serializable {
 
 
     public int currentPlayer;
-    transient public GameState diceRollState;
-    transient public GameState battleResultsState;
+    public GameState diceRollState;
+    public GameState battleResultsState;
+
+    String user_action = "USER_ACTION";
+
 
     public Game(GameActivity activity) {
         this.activity = activity;
@@ -108,7 +111,7 @@ public class Game implements Serializable {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-        EventBus.subscribe("USER_ACTION", this, event -> handleUserAction((GameEvent) event));
+        EventBus.subscribe(user_action, this, event -> handleUserAction((GameEvent) event));
 
         // Should be last in constructor
         startT = System.nanoTime();
@@ -288,10 +291,10 @@ public class Game implements Serializable {
                 byte terrId = readbackBuffer.get(0);
                 if (terrId > 0) {
                     Territory terr = world.getTerritory(terrId);
-                    EventBus.publish("USER_ACTION", new GameEvent(TERRITORY_SELECTED, terr));
+                    EventBus.publish(user_action, new GameEvent(TERRITORY_SELECTED, terr));
                 }
                 else {
-                    EventBus.publish("USER_ACTION", new GameEvent(CANCEL_ACTION, null));
+                    EventBus.publish(user_action, new GameEvent(CANCEL_ACTION, null));
                 }
                 tappedPoint = null;
             }
