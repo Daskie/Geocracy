@@ -28,8 +28,8 @@ public class ArmyRenderer {
         this.world = world;
         shader = new ArmyShader();
         mesh = MeshMaker.makeCube("Army");
-        mesh.unindex();
         mesh.translate(new Vec3(0.0f, 0.0f, 1.0f));
+        mesh.unindex();
         genArmyData();
     }
 

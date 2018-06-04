@@ -15,7 +15,7 @@ uniform float u_time;
 uniform vec3 u_lightDir;
 
 const float k_radToDegFactor = 180.0f / 3.14159265f;
-const float k_ambience = 0.15f;
+const float k_ambience = 0.225f;
 const float k_outlineWidth = 0.1f;
 
 void main() {

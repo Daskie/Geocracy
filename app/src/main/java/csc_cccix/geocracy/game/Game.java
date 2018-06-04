@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.util.Random;
 
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
@@ -17,7 +16,6 @@ import csc_cccix.geocracy.states.BattleResultsState;
 import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.DiceRollState;
 import csc_cccix.geocracy.states.GainArmyUnitsState;
-import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
@@ -83,8 +81,6 @@ public class Game implements Serializable {
 
         world = new World(this, 0); // TODO: seed should not be predefined
 
-        // TODO: the following is just for testing and should be temporary
-        // Create players
         players = new Player[8];
         Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
 

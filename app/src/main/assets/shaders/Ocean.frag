@@ -13,7 +13,7 @@ uniform vec3 u_lightDir;
 uniform samplerCube u_cubemap;
 
 const vec3 k_waterColor = vec3(0.0f, 0.0f, 1.0f);
-const float k_ambience = 0.15f;
+const float k_ambience = 0.225f;
 const float k_shininess = 16.0f;
 //const float k_r0 = 1.0f / 49.0f;
 //const float k_1_min_r0 = 1.0f - k_r0;
@@ -24,10 +24,7 @@ void main() {
     vec3 light = -u_lightDir;
     vec3 refl = reflect(-light, norm);
 
-    // Diffuse lighting
     float diffuse = (1.0f - k_ambience) * max(dot(norm, -u_lightDir), 0.0f) + k_ambience;
-
-    // Specular lighting
     float specular = pow(max(dot(view, refl), 0.0f), k_shininess);
 
     vec3 waterColor = k_waterColor * diffuse;
