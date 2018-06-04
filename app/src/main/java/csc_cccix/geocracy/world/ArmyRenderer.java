@@ -83,7 +83,6 @@ public class ArmyRenderer {
         GLES30.glVertexAttribPointer(5, 3, GLES30.GL_FLOAT, false, instanceSize, offset); // orientation continued
         offset += 3 * 4;
         GLES30.glVertexAttribIPointer(6, 1, GLES30.GL_INT, instanceSize, offset); // player
-        offset += 4;
         GLES30.glVertexAttribDivisor(2, 1);
         GLES30.glVertexAttribDivisor(3, 1);
         GLES30.glVertexAttribDivisor(4, 1);

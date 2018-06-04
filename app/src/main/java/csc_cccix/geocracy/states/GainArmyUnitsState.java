@@ -21,11 +21,10 @@ public class GainArmyUnitsState implements GameState {
 
     private Territory territory;
 
-    private static GameActivity parent;
+    private GameActivity parent;
 
-    private int unitsToDistribute;
-    private final int MAX_UNITS = 10; // whats the max?
-    private final int MIN_UNITS = 1; // whats the max?
+    private static final int max_units = 10; // whats the max?
+    private static final int min_units = 1; // whats the max?
 
 
     public GainArmyUnitsState(Game game, GameActivity parent) {
@@ -34,7 +33,7 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-
+        Log.i(TAG, "GAIN ARMY UNITS STATE: CANNOT SELECT ORIGIN TERRITORY");
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -58,10 +57,11 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
+        Log.i(TAG, "GAIN ARMY UNITS STATE: CANNOT PERFORM DICE ROLL");
 
     }
     public void battleCompleted(BattleResultDetails battleResultDetails){
-
+        Log.i(TAG, "GAIN ARMY UNITS STATE: CANNOT BATTLE");
     }
 
     public void enableAttackMode() {
@@ -83,7 +83,7 @@ public class GainArmyUnitsState implements GameState {
             }
 
             Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
-            int clampedNArmies = Util.clamp(territory.getNArmies() + amount, MIN_UNITS, MAX_UNITS);
+            int clampedNArmies = Util.clamp(territory.getNArmies() + amount, min_units, max_units);
             this.territory.setNArmies(clampedNArmies);
             Log.i(TAG, "PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
         } else {
@@ -107,13 +107,13 @@ public class GainArmyUnitsState implements GameState {
         Log.i(TAG, "INIT STATE");
         game.activity.removeActiveBottomPaneFragment();
         Player currentPlayer = game.players[game.currentPlayer];
-        this.unitsToDistribute = currentPlayer.getBonus();
+        int unitsToDistribute = currentPlayer.getBonus();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         Log.i(TAG, "" + currentPlayer.getId());
-        Log.i(TAG, "HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");
-        currentPlayer.addOrRemoveNArmies(this.unitsToDistribute);
+        Log.i(TAG, "HAS " + unitsToDistribute + " UNITS TO DISTRIBUTE");
+        currentPlayer.addOrRemoveNArmies(unitsToDistribute);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 }

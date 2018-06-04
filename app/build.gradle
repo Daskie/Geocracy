@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId 'csc_cccix.geocracy'
+        applicationId 'csc_cccix.csc_cccix.geocracy'
         minSdkVersion 23
         targetSdkVersion 27
         versionCode 1

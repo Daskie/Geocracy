@@ -21,13 +21,11 @@ import csc_cccix.geocracy.game.GameSurfaceView;
 
 public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    private MenuPagerAdapter mMenuPagerAdapter;
     private NonSwipeableViewPager mViewPager;
 
     private static final String TAG = "MENU";
 
-    static public GameSurfaceView gameSurfaceView;
-    static public Game game;
+    public static Game game;
 
     public MediaPlayer mp;
 
@@ -66,7 +64,6 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
 
-        mMenuPagerAdapter = new MenuPagerAdapter(getSupportFragmentManager());
         mViewPager = (NonSwipeableViewPager) findViewById(R.id.menuContainer);
         Log.d("MENU", mViewPager.toString());
         setupViewPager(mViewPager);
@@ -105,6 +102,7 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
             case Settings:
                 toolbar.setVisibility(View.VISIBLE);
                 setViewPager(2);
+                break;
 
             default:
                 break;

@@ -17,7 +17,7 @@ public class SetUpInitTerritoriesState implements GameState {
 
     private Game game;
     private Territory territory;
-    private static GameActivity parent;
+    private GameActivity parent;
 
 
     public SetUpInitTerritoriesState(Game game, GameActivity parent) {
@@ -99,10 +99,12 @@ public class SetUpInitTerritoriesState implements GameState {
             game.cameraController.targetTerritory(this.territory);
         }
 
-        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        String tag = "UI_EVENT";
+
+        EventBus.publish(tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
+        EventBus.publish(tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
+        EventBus.publish(tag, UIEvent.HIDE_CANCEL_BUTTON);
+        EventBus.publish(tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
 
     }
 

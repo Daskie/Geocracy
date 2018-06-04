@@ -64,7 +64,8 @@ public class TerrainShader extends Shader {
     }
 
     public void setHighlightedTerritories(boolean[] highlighted) {
-        int highlightedLower = 0, highlightedUpper = 0;
+        int highlightedLower = 0;
+        int highlightedUpper = 0;
         if (highlighted != null) {
             for (int i = 0; i < 32 && i < highlighted.length; ++i) {
                 highlightedLower |= (highlighted[i] ? 1 : 0) << i;

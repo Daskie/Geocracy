@@ -39,9 +39,6 @@ public class DiceRollState implements  GameState {
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-//        this.originTerritory = attackerDetails.territory;
-//        this.targetTerritory = defenderDetails.territory;
-
         Log.i(TAG, "INVALID ACTION: -> ALREADY PERFORMING DICE ROLL");
     }
 
@@ -74,9 +71,11 @@ public class DiceRollState implements  GameState {
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.cameraController.targetTerritory(this.targetTerritory);
-        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
+
+        String ui_tag = "UI_EVENT";
+        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
+        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
 
         Completable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);
