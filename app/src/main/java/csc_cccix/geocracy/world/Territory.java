@@ -24,6 +24,10 @@ public class Territory implements Serializable {
     private transient Player owner;
     private int nArmies;
 
+    public Territory() {
+
+    }
+
     public Territory(int id, World world, Continent continent, Set<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;
         this.territoryName = faker.address().country();

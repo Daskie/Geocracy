@@ -73,6 +73,9 @@ public class Game implements Serializable {
     public transient GameState diceRollState;
     public transient GameState battleResultsState;
 
+    public Game() {
+
+    }
 
     public Game(GameActivity activity) {
         this.activity = activity;
