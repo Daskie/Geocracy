@@ -17,7 +17,7 @@ public class DefaultState implements GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("DEFAULT STATE: TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
+        Log.i(TAG, "TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
         if(!game.getWorld().allTerritoriesOccupied())
             game.setState(game.setUpInitTerritoriesState);
         else
@@ -47,7 +47,7 @@ public class DefaultState implements GameState {
     }
 
     public void confirmAction() {
-        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
+        Log.i(TAG, "INVALID ACTION: CONFRIM NOT AVAILIBLE");
     }
 
     public void cancelAction() {

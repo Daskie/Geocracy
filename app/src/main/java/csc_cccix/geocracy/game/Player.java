@@ -58,6 +58,8 @@ public class Player {
         return territories;
     }
 
+    public int getNTerritories() {return territories.size();}
+
     public Vec3 getColor() {
         return color;
     }

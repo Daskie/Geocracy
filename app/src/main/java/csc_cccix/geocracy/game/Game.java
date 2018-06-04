@@ -34,7 +34,7 @@ import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 public class Game implements Serializable {
 
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
-    public static final transient String user_action = "USER_ACTION";
+    public static final transient String USER_ACTION = "USER_ACTION";
 
     public Player[] players;
     public int currentPlayer;
@@ -109,7 +109,7 @@ public class Game implements Serializable {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-        EventBus.subscribe(user_action, this, event -> handleUserAction((GameEvent) event));
+        EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
 
         // Should be last in constructor
         startT = System.nanoTime();
@@ -168,7 +168,7 @@ public class Game implements Serializable {
 
             case CONFIRM_UNITS_TAPPED:
                 if(getState()==gainArmyUnitsState)
-                    setState(selectedTerritoryState);
+                    setState(defaultState);
                 Log.i("", "CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
                 getState().initState();
@@ -286,9 +286,9 @@ public class Game implements Serializable {
         GameState currState = getState();
         if(currState == setUpInitTerritoriesState){
             Random rand = new Random();
-            int rand_num = rand.nextInt(world.getNTerritories());
-            Territory terr = world.getUnoccTerritory(rand_num);
-            EventBus.publish(user_action, new GameEvent(TERRITORY_SELECTED, terr));
+            int randNum = rand.nextInt(world.getNTerritories());
+            Territory terr = world.getUnoccTerritory(randNum);
+            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
         }
     }
 
@@ -307,10 +307,10 @@ public class Game implements Serializable {
                 byte terrId = readbackBuffer.get(0);
                 if (terrId > 0) {
                     Territory terr = world.getTerritory(terrId);
-                    EventBus.publish(user_action, new GameEvent(TERRITORY_SELECTED, terr));
+                    EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
                 }
                 else {
-                    EventBus.publish(user_action, new GameEvent(CANCEL_ACTION, null));
+                    EventBus.publish(USER_ACTION, new GameEvent(CANCEL_ACTION, null));
                 }
                 tappedPoint = null;
             }
