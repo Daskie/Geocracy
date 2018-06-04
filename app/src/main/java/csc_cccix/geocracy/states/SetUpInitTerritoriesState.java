@@ -6,6 +6,7 @@ import android.widget.Toast;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
@@ -28,11 +29,13 @@ public class SetUpInitTerritoriesState implements GameState {
 
         //illegal territory selection for setting up territories
         if(this.territory.getOwner()!=null){
-            this.parent.runOnUiThread(new Runnable() {
-                public void run() {
-                    Toasty.info(parent.getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show();
-                }
-            });
+            if(game.players[game.currentPlayer] instanceof HumanPlayer) {
+                this.parent.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toasty.info(parent.getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
             return;
         }
 
@@ -56,14 +59,16 @@ public class SetUpInitTerritoriesState implements GameState {
         territory.setOwner(game.players[game.currentPlayer]);
         territory.setNArmies(amount);
 
-        Log.i("", "PLAYER" + game.currentPlayer + " ADDED " + territory.getTerritoryName());
+        Log.i("", game.players[game.currentPlayer].getName() + " ADDED " + territory.getTerritoryName());
 
         game.currentPlayer++;
         if(game.currentPlayer==game.players.length)
             game.currentPlayer=0;
 
-        if(game.getWorld().allTerritoriesOccupied())
+        if(game.getWorld().allTerritoriesOccupied()) {
             game.setState(game.gainArmyUnitsState);
+            game.currentPlayer = 0;
+        }
 
     }
 

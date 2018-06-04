@@ -69,16 +69,19 @@ public class GainArmyUnitsState implements GameState {
     public void addToSelectedTerritoryUnitCount(int amount) {
         if (this.territory != null) {
             Player currentPlayer = game.players[game.currentPlayer];
-            Log.i("", "PLAYER HAS THIS AMOUNT OF TROOPS LEFT TO PLAY WITH: " + currentPlayer.getNArmies());
 
-            currentPlayer.addOrRemoveNArmies(amount);
-            Log.i("", "PLAYER HAS THIS AMOUNT OF TROOPS LEFT TO PLAY WITH: " + currentPlayer.getNArmies());
+            currentPlayer.addOrRemoveNArmies(-amount);
 
             if(currentPlayer.getNArmies()<0){
                 this.parent.runOnUiThread(() -> {
                     Toasty.info(parent.getBaseContext(), "You have no more units to add to this territory.", Toast.LENGTH_LONG).show();
                 });
-                currentPlayer.addOrRemoveNArmies(-amount);
+                currentPlayer.addOrRemoveNArmies(amount);
+                return;
+            }
+
+            if(currentPlayer.getNArmies()==0) {
+                game.setState(game.selectedTerritoryState);
                 return;
             }
 

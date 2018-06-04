@@ -5,6 +5,7 @@ import android.opengl.GLES30;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
@@ -127,6 +128,8 @@ public class Game {
             case TERRITORY_SELECTED:
                 Log.i("", "USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
+                if(selectedTerritory == null)
+                    return;
                 Log.d("", "USER SELECTED TERRITORY:" + selectedTerritory.getId());
 
                 if (getState() == this.intentToAttackState) {
@@ -259,9 +262,23 @@ public class Game {
 
     // The core game logic
     private void update(long t, float dt) {
-        handleInput();
+
+        if(players[currentPlayer] instanceof HumanPlayer)
+            handleInput();
+        else
+            handleComputerInput();
 
         cameraController.update(dt);
+    }
+
+    private void handleComputerInput() {
+        GameState currState = getState();
+        if(currState == setUpInitTerritoriesState){
+            Random rand = new Random();
+            int rand_num = rand.nextInt(world.getNTerritories());
+            Territory terr = world.getUnoccTerritory(rand_num);
+            EventBus.publish(user_action, new GameEvent(TERRITORY_SELECTED, terr));
+        }
     }
 
     private void handleInput() {

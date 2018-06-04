@@ -3,6 +3,7 @@ package csc_cccix.geocracy.world;
 import android.util.Log;
 import android.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -166,6 +167,23 @@ public class World {
             highlightedTerritories.clear();
             highlightChange = true;
         }
+    }
+
+    public ArrayList<Territory> getUnoccupiedTerritories(){
+        ArrayList<Territory> unOccTerrs = new ArrayList<>();
+        for(Territory terr : territories)
+            if(terr.getOwner()==null)
+                unOccTerrs.add(terr);
+
+        return unOccTerrs;
+    }
+
+    public Territory getUnoccTerritory(int id){
+        ArrayList<Territory> unOccTerrs = getUnoccupiedTerritories();
+        if (id <= 0 || id > unOccTerrs.size()) {
+            return null;
+        }
+        return unOccTerrs.remove(id - 1);
     }
 
     public Territory[] getTerritories() {
