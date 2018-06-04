@@ -15,6 +15,8 @@ import es.dmoral.toasty.Toasty;
 
 public class GainArmyUnitsState implements GameState {
 
+    private static final String TAG = "GAIN_ARMIES_STATE";
+
     private Game game;
 
     private Territory territory;
@@ -36,7 +38,7 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void selectTargetTerritory(Territory territory) {
-        Log.i("", "GAIN ARMIES STATE: SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
+        Log.i(TAG, "SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
 
         if (territory != null) {
             //illegal territory selection for assigning units
@@ -63,7 +65,7 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void enableAttackMode() {
-        Log.i("", "GAIN ARMIES STATE: CANNOT ENABLE ATTACK MODE");
+        Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
@@ -85,37 +87,37 @@ public class GainArmyUnitsState implements GameState {
                 return;
             }
 
-            Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
+            Log.i(TAG, "UPDATING UNITS IN TERRITORY BY " + amount);
             int clampedNArmies = Util.clamp(territory.getNArmies() + amount, MIN_UNITS, MAX_UNITS);
             this.territory.setNArmies(clampedNArmies);
-            Log.i("", "PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
+            Log.i(TAG, "PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
         } else {
-            Log.i("", "GAIN ARMIES STATE: CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
+            Log.i(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
         }
     }
 
     public void confirmAction() {
-        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
+        Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
         game.setState(game.defaultState);
     }
 
     public void cancelAction() {
-        Log.i("", "GAIN ARMIES STATE: USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
+        Log.i(TAG, "USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
         this.territory = null;
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 
 
     public void initState() {
-        Log.i("", "INIT GAIN ARMIES STATE:");
+        Log.i(TAG, "INIT STATE");
         game.activity.removeActiveBottomPaneFragment();
         Player currentPlayer = game.players[game.currentPlayer];
         this.unitsToDistribute = currentPlayer.getBonus();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
-        Log.i("", "" + currentPlayer.getId());
-        Log.i("", "HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");
+        Log.i(TAG, "" + currentPlayer.getId());
+        Log.i(TAG, "HAS " + this.unitsToDistribute + " UNITS TO DISTRIBUTE");
         currentPlayer.addOrRemoveNArmies(this.unitsToDistribute);
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }

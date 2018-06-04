@@ -47,7 +47,7 @@ public class DefaultState implements GameState {
     }
 
     public void confirmAction() {
-        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
+        Log.i(TAG, "INVALID ACTION: CONFRIM NOT AVAILIBLE");
     }
 
     public void cancelAction() {
