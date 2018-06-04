@@ -43,9 +43,6 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.setState(game.diceRollState);
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
-
-        System.out.println(this.originTerritory);
-        System.out.println(this.targetTerritory);
         game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, 3),
                                         new DiceRollDetails(this.targetTerritory, 4));
     }

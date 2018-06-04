@@ -71,8 +71,6 @@ public class DiceRollState implements  GameState {
         Log.i(TAG, "INIT STATE");
         game.activity.showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
-        System.out.println(this.originTerritory);
-        System.out.println(this.targetTerritory);
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.cameraController.targetTerritory(this.targetTerritory);

@@ -134,7 +134,6 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        System.out.println("SURFACE CREATED");
     }
 
     @Override
