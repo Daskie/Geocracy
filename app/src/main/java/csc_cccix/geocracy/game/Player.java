@@ -13,9 +13,9 @@ public class Player {
     private int id; // starts at 1. 0 indicates no player
     public String name;
     private Set<Territory> territories;
-    private transient Vec3 color;
+    private Vec3 color;
     private int armies;
-    private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
+    private Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
 
     public Player() {
