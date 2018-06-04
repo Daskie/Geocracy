@@ -9,14 +9,18 @@ import glm_.vec3.Vec3;
 
 import static glm_.Java.glm;
 
-public abstract class Player {
+public class Player {
     private int id; // starts at 1. 0 indicates no player
     public String name;
     private Set<Territory> territories;
-    private Vec3 color;
+    private transient Vec3 color;
     private int armies;
-    private Set<Continent> ownedContinents; // which continents the player owns all territories of
+    private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
+
+    public Player() {
+
+    }
 
     public Player(int id, Vec3 color) {
         this.id = id;

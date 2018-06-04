@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,8 @@ import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
+
+import static android.view.MotionEvent.ACTION_UP;
 
 public class DistributeTroopsDetailFragment extends Fragment {
 
@@ -42,12 +45,10 @@ public class DistributeTroopsDetailFragment extends Fragment {
         originTerritoryID.setText("Update Unit Count At: " + originTerritory.getTerritoryName());
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
-        RxView.touches(confirmButton).subscribe(event -> {
 
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
-            }
-//            if (event.getActionMasked() == ACTION_UP) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
+        RxView.touches(confirmButton).subscribe((event) -> {
+            Log.i("CONFIRM_BTN", "CONFIRM TAPPED!");
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_ACTION, null));
         });
 
         return view;
