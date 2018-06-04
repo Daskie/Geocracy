@@ -35,8 +35,10 @@ import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 public class Game implements Serializable {
 
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
+    public static final transient String user_action = "USER_ACTION";
 
-    public transient Player[] players;
+    public Player[] players;
+    public int currentPlayer;
 
     public transient CameraController cameraController;
 
@@ -61,19 +63,15 @@ public class Game implements Serializable {
 
     transient GameState state;
 
-    transient public GameState defaultState;
-    transient public GameState selectedTerritoryState;
-    transient public GameState intentToAttackState;
-    transient public GameState selectedAttackTargetTerritoryState;
-    transient public GameState setUpInitTerritoriesState;
-    transient public GameState gainArmyUnitsState;
+    public transient GameState defaultState;
+    public transient GameState selectedTerritoryState;
+    public transient GameState intentToAttackState;
+    public transient GameState selectedAttackTargetTerritoryState;
+    public transient GameState setUpInitTerritoriesState;
+    public transient GameState gainArmyUnitsState;
 
-
-    public int currentPlayer;
-    public GameState diceRollState;
-    public GameState battleResultsState;
-
-    String user_action = "USER_ACTION";
+    public transient GameState diceRollState;
+    public transient GameState battleResultsState;
 
 
     public Game(GameActivity activity) {
