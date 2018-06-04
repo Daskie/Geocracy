@@ -22,12 +22,14 @@ flat in vec3 v2f_playerColor;
 
 layout (location = 0) out vec4 out_color;
 
+uniform vec3 u_cameraLoc;
 uniform vec3 u_lightDir;
 uniform float u_time;
 uniform float u_lowElevationFactor, u_highElevationFactor;
 
 const float k_pi = 3.14159265f;
-const float k_ambience = 0.15f;
+const float k_ambience = 0.225f;
+const float k_shininess = 8.0f;
 const vec3 k_sandColor = vec3(1.0f, 0.9f, 0.8f);
 const vec3 k_rockColor = vec3(0.5f);
 const float k_borderEdgeWidth = 0.125f;
@@ -63,11 +65,18 @@ void main() {
     float coast = float(v2f_coastDist == 0);
     float ocean = float(v2f_coastDist < 0);
 
-    // Diffuse lighting
-    float diffuse = (1.0f - k_ambience) * max(dot(v2f_norm, -u_lightDir), 0.0f) + k_ambience;
+    vec3 view = normalize(u_cameraLoc - v2f_loc);
+    vec3 light = -u_lightDir;
+    vec3 refl = reflect(-light, v2f_norm);
+
+    //float diffuse = max(dot(v2f_norm, light), 0.0f);
+    //float specular = pow(max(dot(view, refl), 0.0f), k_shininess);
+    //float lightFactor = min(diffuse * 0.5f + specular * 0.5f + k_ambience, 1.0f);
+    float diffuse = (1.0f - k_ambience) * max(dot(v2f_norm, light), 0.0f) + k_ambience;
+    float lightFactor = min(diffuse, 1.0f);
 
     vec3 landColor = desaturate(v2f_continentColor, 0.33f);
-    vec3 coastColor = mix(k_sandColor, v2f_continentColor, sign(super));
+    vec3 coastColor = mix(k_sandColor, v2f_continentColor, step(0.9999f, v2f_elevation));
     vec3 oceanColor = k_sandColor * (1.0f - sub);
 
     vec3 albedo =
@@ -101,8 +110,8 @@ void main() {
     albedo += v2f_playerColor * (pulseValue * emphasis * land);
 
     out_color.rgb = mix(
-        albedo * diffuse,
-        borderColor * mix(diffuse, 1.0f, emphasis),
+        albedo * lightFactor,
+        borderColor * mix(lightFactor, 1.0f, emphasis),
         innerBorder * land
     );
     out_color.a = 1.0f;

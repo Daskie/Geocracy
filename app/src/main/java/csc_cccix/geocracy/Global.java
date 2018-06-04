@@ -7,7 +7,7 @@ import android.content.Context;
 // A way to store global state
 public class Global extends Application {
 
-    public static Application application;
+    static Application application;
     public static Application getApplication() { return application; }
 
     public static Context getContext() { return application.getApplicationContext(); }

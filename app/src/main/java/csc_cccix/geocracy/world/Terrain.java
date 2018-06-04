@@ -188,6 +188,7 @@ public class Terrain {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
+        shader.setCameraLocation(camera.getLocation());
         shader.setLightDirection(lightDir);
         shader.setTime((float)glm.fract((double)t * 1.0e-9));
         if (selectionChange) {
@@ -314,24 +315,8 @@ public class Terrain {
     }
 
     private Pair<Vec3, Vec3> calcWaterwayPointsBetween(int t1i, int t2i) {
-        SparseArray<Vec3> faces1 = new SparseArray<>();
-        SparseArray<Vec3> faces2 = new SparseArray<>();
-        for (int cfi : territorySpecs[t1i].coastFaces) {
-            for (int fi : faces[cfi].adjacencies) {
-                Face face = faces[fi];
-                if (face.territory == t1i && face.coastDist > 0) {
-                    faces1.put(fi, getFaceCenter(fi));
-                }
-            }
-        }
-        for (int cfi : territorySpecs[t2i].coastFaces) {
-            for (int fi : faces[cfi].adjacencies) {
-                Face face = faces[fi];
-                if (face.territory == t2i && face.coastDist > 0) {
-                    faces2.put(fi, getFaceCenter(fi));
-                }
-            }
-        }
+        SparseArray<Vec3> faces1 = getAllFaceCentersNearCoast(t1i);
+        SparseArray<Vec3> faces2 = getAllFaceCentersNearCoast(t2i);
 
         float minDist = Float.POSITIVE_INFINITY;
         int minFI1 = -1;
@@ -356,6 +341,19 @@ public class Terrain {
         }
 
         return new Pair<>(faces1.get(minFI1).normalizeAssign(), faces2.get(minFI2).normalizeAssign());
+    }
+
+    private SparseArray<Vec3> getAllFaceCentersNearCoast(int ti) {
+        SparseArray<Vec3> centers = new SparseArray<>();
+        for (int cfi : territorySpecs[ti].coastFaces) {
+            for (int fi : faces[cfi].adjacencies) {
+                Face face = faces[fi];
+                if (face.territory == ti && face.coastDist > 0) {
+                    centers.put(fi, getFaceCenter(fi));
+                }
+            }
+        }
+        return centers;
     }
 
     private int distToDifferentLandTerritoryWithin(int origFI, int n) {

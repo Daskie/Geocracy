@@ -81,8 +81,6 @@ public class Game implements Serializable {
 
         world = new World(this, 0); // TODO: seed should not be predefined
 
-        // TODO: the following is just for testing and should be temporary
-        // Create players
         players = new Player[8];
         Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
 
