@@ -20,8 +20,6 @@ import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
-import static android.view.MotionEvent.ACTION_UP;
-
 public class DistributeTroopsDetailFragment extends Fragment {
 
     public static DistributeTroopsDetailFragment newInstance(Territory originTerritory) {
@@ -46,7 +44,7 @@ public class DistributeTroopsDetailFragment extends Fragment {
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 
-        RxView.touches(confirmButton).subscribe((event) -> {
+        RxView.touches(confirmButton).subscribe(event -> {
             Log.i("CONFIRM_BTN", "CONFIRM TAPPED!");
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_ACTION, null));
         });
