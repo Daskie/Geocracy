@@ -71,12 +71,6 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         Log.d("MENU", mViewPager.toString());
         setupViewPager(mViewPager);
 
-        // Setup game
-//        game = new Game();
-//
-//        mainSurfaceView = new MainSurfaceView(this);
-////        setContentView(mainSurfaceView);
-//        mainSurfaceView.getHolder().addCallback(this);
 
     }
 
@@ -118,13 +112,11 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onResume() {
         super.onResume();
-//        mainSurfaceView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        mainSurfaceView.onPause();
     }
 
     @Override

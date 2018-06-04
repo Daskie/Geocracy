@@ -54,8 +54,9 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
 
             case MotionEvent.ACTION_UP:
+                // just here so we get the move action
                 if (event.getPointerCount() == 1) GameActivity.game.wasTap(new Vec2i(event.getX(), event.getY()));
-                return true; // just here so we get the move action
+                return true;
 
             case MotionEvent.ACTION_MOVE:
                 // Rotate camera
