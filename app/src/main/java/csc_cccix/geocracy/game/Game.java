@@ -172,7 +172,7 @@ public class Game implements Serializable {
 
             case CONFIRM_UNITS_TAPPED:
                 if(getState()==gainArmyUnitsState)
-                    setState(selectedTerritoryState);
+                    setState(defaultState);
                 Log.i("", "CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
                 getState().initState();
