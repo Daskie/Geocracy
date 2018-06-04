@@ -10,6 +10,10 @@ public class AIPlayer extends Player {
     private static int fakerSeed = 1;
     private static Faker faker = new Faker(new Random(fakerSeed));
 
+    public AIPlayer() {
+
+    }
+
     public AIPlayer(int id, Vec3 color) {
         super(id, color);
         super.name = "Computer " + faker.name().lastName();

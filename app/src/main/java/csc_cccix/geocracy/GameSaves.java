@@ -18,6 +18,7 @@ public class GameSaves {
     public void saveGameToLocalStorage(Game game) {
         Log.i("GAME_SAVE", game.toString());
         Util.saveObjectToSharedPreference(context, "gameSave", "mainSave", this.gameActivity.game);
+        loadGameFromLocalStorage(); // TEST LOAD HERE FOR NOW...
     }
 
     public Game loadGameFromLocalStorage() {
