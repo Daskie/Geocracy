@@ -12,9 +12,9 @@ import static glm_.Java.glm;
 public abstract class Player {
     private int id; // starts at 1. 0 indicates no player
     public String name;
-    private transient Set<Territory> territories;
+    private Set<Territory> territories;
     private transient Vec3 color;
-    private transient int armies;
+    private int armies;
     private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
 
