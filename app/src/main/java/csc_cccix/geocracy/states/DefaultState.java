@@ -18,7 +18,10 @@ public class DefaultState implements GameState {
 
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
-        game.setState(game.selectedTerritoryState);
+        if(!game.getWorld().allTerritoriesOccupied())
+            game.setState(game.setUpInitTerritoriesState);
+        else
+            game.setState(game.selectedTerritoryState);
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
@@ -43,6 +46,10 @@ public class DefaultState implements GameState {
         Log.i(TAG, "INVALID STATE ACCESSED");
     }
 
+    public void confirmAction() {
+        Log.i(TAG, "INVALID ACTION: CONFRIM NOT AVAILIBLE");
+    }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> NULL ACTION");
     }
@@ -52,8 +59,11 @@ public class DefaultState implements GameState {
         game.activity.removeActiveBottomPaneFragment();
         game.getWorld().unselectTerritory();
         game.getWorld().unhighlightTerritories();
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_ATTACK_MODE_BUTTON);
-        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_INACTIVE);
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
+
+        String ui_tag = "UI_EVENT";
+        EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
+        EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 }

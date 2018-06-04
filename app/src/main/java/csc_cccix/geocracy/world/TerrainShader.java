@@ -11,6 +11,7 @@ public class TerrainShader extends Shader {
 
     private int viewMatUniformHandle;
     private int projMatUniformHandle;
+    private int cameraLocUniformHandle;
     private int lightDirUniformHandle;
     private int timeUniformHandle;
     private int lowElevationFactorUniformHandle;
@@ -34,6 +35,10 @@ public class TerrainShader extends Shader {
 
     public void setProjectionMatrix(Mat4 matrix) {
         uploadUniform(projMatUniformHandle, matrix);
+    }
+
+    public void setCameraLocation(Vec3 loc) {
+        uploadUniform(cameraLocUniformHandle, loc);
     }
 
     public void setLightDirection(Vec3 dir) {
@@ -64,7 +69,8 @@ public class TerrainShader extends Shader {
     }
 
     public void setHighlightedTerritories(boolean[] highlighted) {
-        int highlightedLower = 0, highlightedUpper = 0;
+        int highlightedLower = 0;
+        int highlightedUpper = 0;
         if (highlighted != null) {
             for (int i = 0; i < 32 && i < highlighted.length; ++i) {
                 highlightedLower |= (highlighted[i] ? 1 : 0) << i;
@@ -101,6 +107,9 @@ public class TerrainShader extends Shader {
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
             Log.e("", "Failed to get location of u_projMat");
+        }
+        if ((cameraLocUniformHandle = getUniformLocation("u_cameraLoc")) == -1) {
+            Log.e("",  "Failed to get location of u_cameraLoc");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
             Log.e("",  "Failed to get location of u_lightDir");

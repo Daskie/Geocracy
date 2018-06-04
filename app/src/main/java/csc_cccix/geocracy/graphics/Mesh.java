@@ -158,6 +158,19 @@ public class Mesh {
         }
     }
 
+    public void scale(Vec3 factor, boolean scaleNorms) {
+        for (int vi = 0; vi < nVertices; ++vi) {
+            VecArrayUtil.multiply(locations, vi, factor);
+        }
+        if (scaleNorms) {
+            Vec3 invFactor = new Vec3(1.0f / factor.x, 1.0f / factor.y, 1.0f / factor.z);
+            for (int vi = 0; vi < nVertices; ++vi) {
+                VecArrayUtil.multiply(normals, vi, invFactor);
+                VecArrayUtil.normalize(normals, vi);
+            }
+        }
+    }
+
     public void translate(Vec3 delta) {
         for (int vi = 0; vi < nVertices; ++vi) {
             int ci = vi * 3;

@@ -13,7 +13,8 @@ public class NoiseTest {
     private ScreenTextureRenderer renderer;
     private Texture texture;
     private byte[] image;
-    private int width, height;
+    private int width;
+    private int height;
 
     public NoiseTest() {
         width = 1024; height = 1024;
@@ -62,7 +63,6 @@ public class NoiseTest {
                     v += simplex.noise(px * 2 * (1 << i), py * 2 * (1 << i)) / (1 << i);
                 }
                 v = v * 0.25 + 0.5;
-                //v = 1.0 - Math.abs(v) * 0.5;
                 byte bv = (byte)(v * 255.0);
                 int i = (y * width + x) * 3;
                 image[i + 0] = bv;

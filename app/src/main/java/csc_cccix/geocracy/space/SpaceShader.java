@@ -9,7 +9,6 @@ public class SpaceShader extends Shader {
 
     private int viewMatUniformHandle;
     private int projMatUniformHandle;
-    private int cubemapUniformHandle;
 
     public SpaceShader() {
         super("Space", "shaders/Space.vert", "shaders/Space.frag");
@@ -26,6 +25,8 @@ public class SpaceShader extends Shader {
 
     @Override
     protected boolean setupUniforms() {
+        int cubemapUniformHandle;
+
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
             Log.e("", "Failed to get location of u_viewMat");
         }

@@ -65,7 +65,7 @@ public final class EventBus {
      * <br/><br/>
      * <b>Note:</b> Make sure to call {@link EventBus#unregister(Object)} to avoid memory leaks.
      */
-    public static PublishSubject<Object> subscribe(String subject, @NonNull Object lifecycle) {
+    public static PublishSubject<Object> subscribe(String subject) {
         return getSubject(subject);
     }
 

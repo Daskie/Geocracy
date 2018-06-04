@@ -3,6 +3,8 @@ package csc_cccix.geocracy.world;
 import android.util.Log;
 import android.util.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +23,7 @@ public class World {
     private static final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
 
     Game game;
-    private long seed;
+    long seed;
     private Terrain terrain;
     private Territory[] territories;
     private Continent[] continents;
@@ -41,23 +43,24 @@ public class World {
     public World(Game game, long seed) {
         this.game = game;
         this.seed = seed;
-        EventBus.publish("WORLD_LOAD_EVENT", 0);
+        String tag = "WORLD_LOAD_EVENT";
+        EventBus.publish(tag, 0);
         Mesh sphereMesh = MeshMaker.makeSphereIndexed("World", TESSELLATION_DEGREE);
-        EventBus.publish("WORLD_LOAD_EVENT", 15);
+        EventBus.publish(tag, 15);
         territories = new Territory[MAX_N_TERRITORIES];
         continents = new Continent[MAX_N_CONTINENTS];
         terrain = new Terrain(this, sphereMesh, seed, MAX_N_TERRITORIES, MAX_N_CONTINENTS);
-        EventBus.publish("WORLD_LOAD_EVENT", 75);
+        EventBus.publish(tag, 75);
         Pair<Territory[], Continent[]> pair = terrain.retrieveTerrsConts();
         territories = pair.first;
         continents = pair.second;
         oceanRenderer = new OceanRenderer(sphereMesh);
-        EventBus.publish("WORLD_LOAD_EVENT", 90);
+        EventBus.publish(tag, 90);
         waterways = terrain.createWaterways(100, 0.025f);
         armyRenderer = new ArmyRenderer(this);
         arrowRenderer = new ArrowRenderer(this, 100);
         highlightedTerritories = new HashSet<>();
-        EventBus.publish("WORLD_LOAD_EVENT", 100);
+        EventBus.publish(tag, 100);
     }
 
     public boolean load() {
@@ -166,6 +169,23 @@ public class World {
             highlightedTerritories.clear();
             highlightChange = true;
         }
+    }
+
+    public List<Territory> getUnoccupiedTerritories(){
+        List<Territory> unOccTerrs = new ArrayList<>();
+        for(Territory terr : territories)
+            if(terr.getOwner()==null)
+                unOccTerrs.add(terr);
+
+        return unOccTerrs;
+    }
+
+    public Territory getUnoccTerritory(int id){
+        List<Territory> unOccTerrs = getUnoccupiedTerritories();
+        if (id <= 0 || id > unOccTerrs.size()) {
+            return null;
+        }
+        return unOccTerrs.remove(id - 1);
     }
 
     public Territory[] getTerritories() {

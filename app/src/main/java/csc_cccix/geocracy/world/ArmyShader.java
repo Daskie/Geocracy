@@ -47,20 +47,21 @@ public class ArmyShader extends Shader {
 
     @Override
     protected boolean setupUniforms() {
+        String tag = "ArmyShader";
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
-            Log.e("ArmyShader", "Failed to get location of u_viewMat");
+            Log.e(tag, "Failed to get location of u_viewMat");
         }
         if ((projMatUniformHandle = getUniformLocation("u_projMat")) == -1) {
-            Log.e("ArmyShader", "Failed to get location of u_projMat");
+            Log.e(tag, "Failed to get location of u_projMat");
         }
         if ((cameraLocUniformHandle = getUniformLocation("u_cameraLoc")) == -1) {
-            Log.e("ArmyShader", "Failed to get location of u_cameraLoc");
+            Log.e(tag, "Failed to get location of u_cameraLoc");
         }
         if ((lightDirUniformHandle = getUniformLocation("u_lightDir")) == -1) {
-            Log.e("ArmyShader", "Failed to get location of u_lightDir");
+            Log.e(tag, "Failed to get location of u_lightDir");
         }
         if ((playerColorsHandle = getUniformLocation("u_playerColors")) == -1) {
-            Log.e("ArmyShader", "Failed to get location of u_playerColors");
+            Log.e(tag, "Failed to get location of u_playerColors");
         }
 
         return true;

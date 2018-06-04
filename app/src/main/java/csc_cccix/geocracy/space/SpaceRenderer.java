@@ -177,11 +177,7 @@ public class SpaceRenderer {
 
         GLES30.glBindTexture(GLES30.GL_TEXTURE_CUBE_MAP, 0);
 
-        if (Util.isGLError()) {
-            return false;
-        }
-
-        return true;
+        return !Util.isGLError();
     }
 
 }

@@ -1,4 +1,4 @@
-package csc_cccix;
+package csc_cccix.geocracy;
 
 import org.junit.Test;
 

@@ -39,7 +39,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
         scaler = new ScaleGestureDetector(getContext(), this);
-        this.touchEventSubscription = EventBus.subscribe("WORLD_TOUCH_EVENT", this)
+        this.touchEventSubscription = EventBus.subscribe("WORLD_TOUCH_EVENT")
             .subscribe(e -> handleTouchEvent((MotionEvent) e));
 
     }

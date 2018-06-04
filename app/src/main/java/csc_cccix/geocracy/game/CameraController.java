@@ -24,8 +24,10 @@ public class CameraController {
     private static final float TARGET_FREQ = 1.0f / TARGET_TIME;
 
     private OrbitCamera camera;
-    private Quat originOrient, targetOrient;
-    private float originElev, targetElev;
+    private Quat originOrient;
+    private Quat targetOrient;
+    private float originElev;
+    private float targetElev;
     private float interpT;
     private boolean targetting;
     private Vec3 rotVelAxis;

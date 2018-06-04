@@ -17,12 +17,16 @@ public class Territory implements Serializable {
 
     private int id; // starts at 1. 0 indicates no territory
     private String territoryName;
-    private World world;
-    private Continent continent;
-    private Set<Territory> adjacentTerritories;
-    private Vec3 center;
-    private Player owner;
+    private transient World world;
+    private transient Continent continent;
+    private transient Set<Territory> adjacentTerritories;
+    private transient Vec3 center;
+    private transient Player owner;
     private int nArmies;
+
+    public Territory() {
+
+    }
 
     public Territory(int id, World world, Continent continent, Set<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;

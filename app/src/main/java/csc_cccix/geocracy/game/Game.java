@@ -4,7 +4,9 @@ import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
@@ -29,49 +31,56 @@ import glm_.vec3.Vec3;
 import static csc_cccix.geocracy.states.GameAction.CANCEL_ACTION;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
-public class Game {
+public class Game implements Serializable {
 
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
+    public static final transient String USER_ACTION = "USER_ACTION";
+
+    public Player[] players;
+    public int currentPlayer;
+
+    public transient CameraController cameraController;
 
     private long startT; // time the game was started
     private long lastT; // time last frame happened
-    private World world;
-    public Player[] players;
-    private SpaceRenderer spaceRenderer;
-    public CameraController cameraController;
-    private int idFBHandle;
-    private int idValueTexHandle;
-    private int idDepthRBHandle;
-    private Vec2i screenSize;
-    private Vec2i swipeDelta;
-    private Vec2i tappedPoint;
-    private float zoomFactor;
-    private ByteBuffer readbackBuffer;
+
+    private transient World world;
+    private transient SpaceRenderer spaceRenderer;
+
+    private transient int idFBHandle;
+    private transient int idValueTexHandle;
+    private transient int idDepthRBHandle;
+
+    private transient Vec2i screenSize;
+    private transient Vec2i swipeDelta;
+    private transient Vec2i tappedPoint;
+    private transient float zoomFactor;
+    private transient ByteBuffer readbackBuffer;
 
     public GameData gameData;
-    public GameActivity activity;
+    public transient GameActivity activity;
 
-    GameState state;
+    transient GameState state;
 
-    public GameState defaultState;
-    public GameState selectedTerritoryState;
-    public GameState intentToAttackState;
-    public GameState selectedAttackTargetTerritoryState;
-    public GameState setUpInitTerritoriesState;
-    public GameState gainArmyUnitsState;
+    public transient GameState defaultState;
+    public transient GameState selectedTerritoryState;
+    public transient GameState intentToAttackState;
+    public transient GameState selectedAttackTargetTerritoryState;
+    public transient GameState setUpInitTerritoriesState;
+    public transient GameState gainArmyUnitsState;
 
+    public transient GameState diceRollState;
+    public transient GameState battleResultsState;
 
-    public int currentPlayer;
-    public GameState diceRollState;
-    public GameState battleResultsState;
+    public Game() {
 
+    }
 
     public Game(GameActivity activity) {
         this.activity = activity;
 
         world = new World(this, 0); // TODO: seed should not be predefined
 
-        // Create players
         players = new Player[8];
         Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
 
@@ -100,7 +109,7 @@ public class Game {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-        EventBus.subscribe("USER_ACTION", this, event -> handleUserAction((GameEvent) event));
+        EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
 
         // Should be last in constructor
         startT = System.nanoTime();
@@ -124,6 +133,8 @@ public class Game {
             case TERRITORY_SELECTED:
                 Log.i("", "USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
+                if(selectedTerritory == null)
+                    return;
                 Log.d("", "USER SELECTED TERRITORY:" + selectedTerritory.getId());
 
                 if (getState() == this.intentToAttackState) {
@@ -156,8 +167,16 @@ public class Game {
                 break;
 
             case CONFIRM_UNITS_TAPPED:
+                if(getState()==gainArmyUnitsState)
+                    setState(defaultState);
                 Log.i("", "CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
+                getState().initState();
+                break;
+
+            case CONFIRM_ACTION:
+                Log.i("", "CONFIRM TAPPED");
+                getState().confirmAction();
                 getState().initState();
                 break;
 
@@ -254,9 +273,23 @@ public class Game {
 
     // The core game logic
     private void update(long t, float dt) {
-        handleInput();
+
+        if(players[currentPlayer] instanceof HumanPlayer)
+            handleInput();
+        else
+            handleComputerInput();
 
         cameraController.update(dt);
+    }
+
+    private void handleComputerInput() {
+        GameState currState = getState();
+        if(currState == setUpInitTerritoriesState){
+            Random rand = new Random();
+            int randNum = rand.nextInt(world.getNTerritories());
+            Territory terr = world.getUnoccTerritory(randNum);
+            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+        }
     }
 
     private void handleInput() {
@@ -274,10 +307,10 @@ public class Game {
                 byte terrId = readbackBuffer.get(0);
                 if (terrId > 0) {
                     Territory terr = world.getTerritory(terrId);
-                    EventBus.publish("USER_ACTION", new GameEvent(TERRITORY_SELECTED, terr));
+                    EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
                 }
                 else {
-                    EventBus.publish("USER_ACTION", new GameEvent(CANCEL_ACTION, null));
+                    EventBus.publish(USER_ACTION, new GameEvent(CANCEL_ACTION, null));
                 }
                 tappedPoint = null;
             }

@@ -1,6 +1,8 @@
 
 package csc_cccix.geocracy.states;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import csc_cccix.geocracy.EventBus;
@@ -13,6 +15,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class DiceRollState implements  GameState {
 
+    private static final String TAG = "DICE_ROLL_STATE";
+
     private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
@@ -22,30 +26,24 @@ public class DiceRollState implements  GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        System.out.println("DICE ROLL STATE: SETTING ORIGIN TERRITORY");
+        Log.i(TAG, "SETTING ORIGIN TERRITORY");
         this.originTerritory = territory;
     }
     public void selectTargetTerritory(Territory territory) {
-        System.out.println("DICE ROLL STATE: SETTING TARGET TERRITORY");
+        Log.i(TAG, "SETTING TARGET TERRITORY");
         this.targetTerritory = territory;
     }
 
     public void enableAttackMode() {
-        System.out.println("DICE ROLL STATE: -> CANNOT ENABLE ATTACK MODE");
+        Log.i(TAG, "INVALID ACTION: -> CANNOT ENABLE ATTACK MODE");
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-//        this.originTerritory = attackerDetails.territory;
-//        this.targetTerritory = defenderDetails.territory;
-
-        System.out.println("DICE ROLL STATE: ALREADY PERFORMING DICE ROLL");
-
-        System.out.println(attackerDetails);
-        System.out.println(defenderDetails);
+        Log.i(TAG, "INVALID ACTION: -> ALREADY PERFORMING DICE ROLL");
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
-        System.out.println("DICE ROLL STATE: -> ENTER BATTLE RESULTS STATE");
+        Log.i(TAG, "BATTLE COMPLETED -> ENTER BATTLE RESULTS STATEL");
         game.setState(game.battleResultsState);
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
@@ -53,27 +51,31 @@ public class DiceRollState implements  GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        System.out.println("USER CANCELED ACTION: CANNOT UPDATE UNIT COUNT");
+        Log.i(TAG, "INVALID ACTION: CANNOT UPDATE UNIT COUNT");
+    }
+
+    public void confirmAction() {
+        Log.i(TAG, "USER CONFIRM ACTION -> N/A");
     }
 
     public void cancelAction() {
-        System.out.println("USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(game.defaultState);
         game.getState().initState();
     }
 
     public void initState() {
-        System.out.println("INIT DICE ROLL STATE:");
+        Log.i(TAG, "INIT STATE");
         game.activity.showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
-        System.out.println(this.originTerritory);
-        System.out.println(this.targetTerritory);
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.cameraController.targetTerritory(this.targetTerritory);
-        EventBus.publish("UI_EVENT", UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish("UI_EVENT", UIEvent.SHOW_ATTACK_MODE_BUTTON);
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_CANCEL_BUTTON);
+
+        String ui_tag = "UI_EVENT";
+        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
+        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
 
         Completable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);

@@ -48,7 +48,7 @@ public class TroopSelectionFragment extends Fragment {
         targetTerritoryID.setText("To Attack Territory: " + targetTerritory.getTerritoryName());
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
-        RxView.touches(confirmButton).subscribe((event) -> {
+        RxView.touches(confirmButton).subscribe(event -> {
             if (event.getActionMasked() == ACTION_UP) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
         });
 

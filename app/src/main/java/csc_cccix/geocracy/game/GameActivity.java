@@ -22,6 +22,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
@@ -31,30 +32,34 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
+    private static final String TAG = "GAME_ACTIVITY";
+    public static final transient String USER_ACTION = "USER_ACTION";
+
+
+    static final public SettingsFragment settingsFragment = new SettingsFragment();
 
     static public Game game;
     static public GameSurfaceView gameSurfaceView;
 
-    static final public SettingsFragment settingsFragment = new SettingsFragment();
+    private FragmentTransaction userInterfaceFT;
+    private FragmentManager fragmentManager;
 
-    private static final String TAG = "GAME_ACTIVITY";
+    private Fragment activeBottomPaneFragment = null;
+    private Fragment activeOverlayFragment = null;
 
-    static private FragmentTransaction userInterfaceFT;
-    static private FragmentManager fragmentManager;
-
-    static private Fragment activeBottomPaneFragment = null;
-    static private Fragment activeOverlayFragment = null;
-
-    private final CompositeDisposable disposables = new CompositeDisposable();
+    private CompositeDisposable disposables;
 
     private FloatingActionButton gameInfoBtn;
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
 
+    private GameSaves gameSaves;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        disposables = new CompositeDisposable();
+        gameSaves = new GameSaves(this, this.getApplicationContext());
 
         FloatingActionButton attackBtn;
         FloatingActionButton addUnitBtn;
@@ -80,10 +85,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // Initialize Surface View and Add World Touch Handling
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
-            EventBus.publish("WORLD_TOUCH_EVENT", e);
-        }));
-
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("WORLD_TOUCH_EVENT", e)));
 
         // Get Layout Frame +
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
@@ -107,7 +109,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         cancelBtn.hide();
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.CANCEL_ACTION, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CANCEL_ACTION, null));
             }
         }));
 
@@ -115,7 +117,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         attackBtn.hide();
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.ATTACK_TAPPED, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.ATTACK_TAPPED, null));
             }
         }));
 
@@ -123,7 +125,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         addUnitBtn.hide();
         disposables.add(RxView.touches(addUnitBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.ADD_UNIT_TAPPED, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.ADD_UNIT_TAPPED, null));
             }
         }));
 
@@ -131,7 +133,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         removeUnitBtn.hide();
         disposables.add(RxView.touches(removeUnitBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.REMOVE_UNIT_TAPPED, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.REMOVE_UNIT_TAPPED, null));
             }
         }));
 
@@ -139,7 +141,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
             }
         }));
 
@@ -147,7 +149,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameInfoBtn.show();
         disposables.add(RxView.touches(gameInfoBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("USER_ACTION", new GameEvent(GameAction.TOGGLE_GAME_INFO_VISIBILITY, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.TOGGLE_GAME_INFO_VISIBILITY, null));
             }
         }));
 
@@ -163,7 +165,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
 
-        disposables.add(EventBus.subscribe("UI_EVENT", this)
+        disposables.add(EventBus.subscribe("UI_EVENT")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(e -> {
@@ -213,7 +215,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 })
         );
 
+        EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
     }
+
+    private void handleSaveEvent(GameEvent event) {
+        if (event.action == GameAction.SAVE_GAME_TAPPED) {
+            gameSaves.saveGameToLocalStorage(game);
+        }
+    }
+
 
     public void showOverlayFragment(Fragment overlayFragment) {
         removeActiveBottomPaneFragment();
