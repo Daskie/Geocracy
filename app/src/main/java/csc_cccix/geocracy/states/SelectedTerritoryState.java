@@ -68,10 +68,12 @@ public class SelectedTerritoryState implements  GameState {
         game.getWorld().selectTerritory(this.territory);
         game.getWorld().unhighlightTerritories();
         game.cameraController.targetTerritory(this.territory);
-        String ui_tag = "UI+EVENT";
-        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
+
+        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish(ui_tag, UIEvent.SHOW_CANCEL_BUTTON);
+
         EventBus.publish(ui_tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 
