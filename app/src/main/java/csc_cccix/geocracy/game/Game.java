@@ -36,14 +36,7 @@ public class Game implements Serializable {
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
     public static final transient String USER_ACTION = "USER_ACTION";
 
-    public Player[] players;
-    public int currentPlayer;
-
     public transient CameraController cameraController;
-
-    private long startT; // time the game was started
-    private long lastT; // time last frame happened
-
     private transient World world;
     private transient SpaceRenderer spaceRenderer;
 
@@ -60,6 +53,7 @@ public class Game implements Serializable {
     public transient GameActivity activity;
 
     transient GameState state;
+    public GameData gameData;
 
     public transient GameState defaultState;
     public transient GameState selectedTerritoryState;
@@ -67,7 +61,6 @@ public class Game implements Serializable {
     public transient GameState selectedAttackTargetTerritoryState;
     public transient GameState setUpInitTerritoriesState;
     public transient GameState gainArmyUnitsState;
-
     public transient GameState diceRollState;
     public transient GameState battleResultsState;
 
@@ -75,21 +68,21 @@ public class Game implements Serializable {
 
     }
 
-    public Game(GameActivity activity) {
+    public Game(GameActivity activity, GameData data) {
         this.activity = activity;
+        if (data != null) this.gameData = data;
 
         world = new World(this, 0); // TODO: seed should not be predefined
 
-        players = new Player[8];
-        Vec3[] playerColors = Util.genDistinctColors(players.length, 0.0f);
+        Vec3[] playerColors = Util.genDistinctColors(gameData.players.length, 0.0f);
 
-        players[0] = new HumanPlayer(1, playerColors[0]);
+        gameData.players[0] = new HumanPlayer(1, playerColors[0]);
 
-        for (int i = 1; i < players.length; ++i) {
-            players[i] = new AIPlayer(i + 1, playerColors[i]);
+        for (int i = 1; i < gameData.players.length; ++i) {
+            gameData.players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
 
-        currentPlayer = 0;
+        gameData.currentPlayer = 0;
 
         defaultState = new DefaultState(this);
         selectedTerritoryState = new SelectedTerritoryState(this);
@@ -111,8 +104,8 @@ public class Game implements Serializable {
         EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
 
         // Should be last in constructor
-        startT = System.nanoTime();
-        lastT = 0;
+        gameData.startT = System.nanoTime();
+        gameData.lastT = 0;
     }
 
     private void handleUserAction(GameEvent event) {
@@ -126,7 +119,7 @@ public class Game implements Serializable {
 
             case TOGGLE_GAME_INFO_VISIBILITY:
                 Log.i("", "TOGGLE GAME INFO VISIBILITY ACTION");
-                activity.showOverlayFragment(GameInfoFragment.newInstance(this.players));
+                activity.showOverlayFragment(GameInfoFragment.newInstance(gameData.players));
                 break;
 
             case TERRITORY_SELECTED:
@@ -231,14 +224,14 @@ public class Game implements Serializable {
 
     // One iteration of the game loop
     public void step() {
-        long t = System.nanoTime() - startT;
-        float dt = (t - lastT) * 1e-9f;
+        long t = System.nanoTime() - gameData.startT;
+        float dt = (t - gameData.lastT) * 1e-9f;
 //        Log.i(TAG, "FPS: " + (1.0f / dt));
 
         update(t, dt);
         render(t, dt);
 
-        lastT = t;
+        gameData.lastT = t;
     }
 
     public void screenResized(Vec2i size) {
@@ -273,7 +266,7 @@ public class Game implements Serializable {
     // The core game logic
     private void update(long t, float dt) {
 
-        if(players[currentPlayer] instanceof HumanPlayer)
+        if(gameData.players[gameData.currentPlayer] instanceof HumanPlayer)
             handleInput();
         else
             handleComputerInput();
@@ -397,7 +390,7 @@ public class Game implements Serializable {
     }
 
     public Player[] getPlayers() {
-        return players;
+        return gameData.players;
     }
 
 }

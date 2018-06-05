@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Continue"
         android:id="@+id/continueButton"
-        android:paddingBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:enabled="false"/>
 
     <Button
@@ -27,27 +27,26 @@
         android:layout_height="wrap_content"
         android:text="Start"
         android:id="@+id/startButton"
-        android:paddingBottom="10dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tutorial"
         android:id="@+id/tutorialButton"
-        android:paddingBottom="10dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Settings"
         android:id="@+id/settingsButton"
-        android:paddingBottom="10dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Exit"
-        android:id="@+id/exitButton"
-        android:paddingBottom="10dp"/>
+        android:id="@+id/exitButton" />
 
 </LinearLayout>

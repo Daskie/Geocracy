@@ -41,7 +41,7 @@ public class GainArmyUnitsState implements GameState {
 
         if (territory != null) {
             //illegal territory selection for assigning units
-            if(territory.getOwner() != game.players[game.currentPlayer]){
+            if(territory.getOwner() != game.gameData.players[game.gameData.currentPlayer]){
                 this.parent.runOnUiThread(() -> {
                     Toasty.info(parent.getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show();
                 });
@@ -70,7 +70,7 @@ public class GainArmyUnitsState implements GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         if (this.territory != null) {
-            Player currentPlayer = game.players[game.currentPlayer];
+            Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
 
             currentPlayer.addOrRemoveNArmies(-amount);
 
@@ -85,7 +85,7 @@ public class GainArmyUnitsState implements GameState {
             Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
             int clampedNArmies = Util.clamp(territory.getNArmies() + amount, min_units, max_units);
             this.territory.setNArmies(clampedNArmies);
-            Log.i(TAG, "PLAYER" + game.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
+            Log.i(TAG, "PLAYER" + game.gameData.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
         } else {
             Log.i(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
         }
@@ -106,7 +106,7 @@ public class GainArmyUnitsState implements GameState {
     public void initState() {
         Log.i(TAG, "INIT STATE");
         game.activity.removeActiveBottomPaneFragment();
-        Player currentPlayer = game.players[game.currentPlayer];
+        Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
         int unitsToDistribute = currentPlayer.getBonus();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();

@@ -45,9 +45,10 @@ public class MainMenuFragment extends Fragment {
         }
 
         continueButton.setOnTouchListener((v, event) -> {
-            Intent continueIntent = new Intent(getContext(), LoadingScreenActivity.class);
-            continueIntent.putExtra("LOAD_GAME_SAVE", true);
-            startActivity(continueIntent);
+            Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            mainIntent.putExtra("GAME_LOAD", loadedGame.gameData);
+            this.startActivity(mainIntent);
             return false;
         });
 
