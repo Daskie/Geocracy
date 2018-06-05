@@ -66,7 +66,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.activity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
-        game.getWorld().highlightTerritory(this.targetTerritory);
+        game.getWorld().targetTerritory(this.targetTerritory);
         game.cameraController.targetTerritory(this.targetTerritory);
 
         String ui_tag = "UI_EVENT";
