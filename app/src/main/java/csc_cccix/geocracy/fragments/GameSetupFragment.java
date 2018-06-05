@@ -37,6 +37,7 @@ public class GameSetupFragment extends Fragment {
 
     private ColorPickerDialog colorPicker;
     private ImageView playerColorIcon;
+    private int playerColorSelection;
 
 
     @Nullable
@@ -56,7 +57,8 @@ public class GameSetupFragment extends Fragment {
             @Override
             public void onColorSelected(int dialogId, int color) {
                 Log.i("COLOR_SELECTED", Integer.toHexString((int) color));
-                playerColorIcon.setBackgroundColor(Color.parseColor("#" + Integer.toHexString((int) color)));
+                playerColorSelection = Color.parseColor("#" + Integer.toHexString((int) color));
+                playerColorIcon.setBackgroundColor(playerColorSelection);
             }
 
             @Override
@@ -91,6 +93,7 @@ public class GameSetupFragment extends Fragment {
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             GameData newGameData = new GameData();
             newGameData.players = new Player[playerCount];
+            newGameData.mainPlayerColor = playerColorSelection;
             mainIntent.putExtra("GAME_LOAD", newGameData);
             startActivity(mainIntent);
         });

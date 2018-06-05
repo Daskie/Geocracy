@@ -257,6 +257,16 @@ public abstract class Util {
         return colors;
     }
 
+    // returns vec3 from int color
+    public static Vec3 colorToVec3(int color) {
+        final float factor = 1.0f / 255.0f;
+        return new Vec3(
+                ((color >> 16) & 0xFF) * factor,
+                ((color >> 8) & 0xFF) * factor,
+                (color & 0xFF) * factor
+        );
+    }
+
     // Returns v rotated 90 degrees CCW
     public static Vec2 ortho(Vec2 v) {
         return new Vec2(-v.y, +v.x);

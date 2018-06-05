@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="Set Player Color"
         android:id="@+id/playerColorBtn"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="20dp" />
 
     <TextView
         android:layout_width="wrap_content"

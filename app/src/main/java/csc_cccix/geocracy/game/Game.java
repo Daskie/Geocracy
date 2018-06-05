@@ -76,7 +76,7 @@ public class Game implements Serializable {
 
         Vec3[] playerColors = Util.genDistinctColors(gameData.players.length, 0.0f);
 
-        gameData.players[0] = new HumanPlayer(1, playerColors[0]);
+        gameData.players[0] = new HumanPlayer(1, Util.colorToVec3(gameData.mainPlayerColor));
 
         for (int i = 1; i < gameData.players.length; ++i) {
             gameData.players[i] = new AIPlayer(i + 1, playerColors[i]);
