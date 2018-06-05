@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +13,23 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.LoadingScreenActivity;
+import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.main_menu.MenuActivity;
 import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {
+
+    Button continueButton;
+    Game loadedGame;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu, container, false);
 
-        Button continueButton;
         Button startButton;
         Button tutorialButton;
         Button settingsButton;
@@ -31,15 +37,24 @@ public class MainMenuFragment extends Fragment {
 
         continueButton = view.findViewById(R.id.continueButton);
 
+        GameSaves gameSaves = new GameSaves(getContext());
+        Game loadedGame = gameSaves.loadGameFromLocalStorage();
+        if (loadedGame != null) {
+            Log.i("LOADED", loadedGame.toString());
+            continueButton.setEnabled(true);
+        }
+
         continueButton.setOnTouchListener((v, event) -> {
-            startActivity(new Intent(getContext(), LoadingScreenActivity.class));
+            Intent continueIntent = new Intent(getContext(), LoadingScreenActivity.class);
+            continueIntent.putExtra("LOAD_GAME_SAVE", true);
+            startActivity(continueIntent);
             return false;
         });
 
         startButton = view.findViewById(R.id.startButton);
 
         startButton.setOnTouchListener((v, event) -> {
-            startActivity(new Intent(getContext(), LoadingScreenActivity.class));
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.GameSetup);
             return false;
         });
 
@@ -65,6 +80,10 @@ public class MainMenuFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void enableContinueGameButton() {
+        continueButton.setEnabled(true);
     }
 
 }

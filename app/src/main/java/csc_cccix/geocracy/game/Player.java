@@ -1,5 +1,6 @@
 package csc_cccix.geocracy.game;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import glm_.vec3.Vec3;
 
 import static glm_.Java.glm;
 
-public class Player {
+public class Player implements Serializable {
     private int id; // starts at 1. 0 indicates no player
     public String name;
     private Set<Territory> territories;

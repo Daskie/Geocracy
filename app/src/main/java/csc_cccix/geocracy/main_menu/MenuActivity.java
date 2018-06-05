@@ -1,8 +1,10 @@
 package csc_cccix.geocracy.main_menu;
 
+import android.app.FragmentManager;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +15,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.GameSaves;
+import csc_cccix.geocracy.fragments.GameSetupFragment;
 import csc_cccix.geocracy.fragments.MainMenuFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.fragments.TutorialFragment;
@@ -34,7 +38,8 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public enum Pages {
         Home,
         Tutorial,
-        Settings
+        Settings,
+        GameSetup
     }
 
     /** Called when the activity is first created. */
@@ -68,12 +73,17 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         Log.d("MENU", mViewPager.toString());
         setupViewPager(mViewPager);
 
-
     }
+
+    private MainMenuFragment mainMenuFragment;
 
     private void setupViewPager(ViewPager vp) {
         MenuPagerAdapter adapter = new MenuPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MainMenuFragment(), "Main Menu");
+
+        mainMenuFragment = new MainMenuFragment();
+
+        adapter.addFragment(mainMenuFragment, "Main Menu");
+        adapter.addFragment(new GameSetupFragment(), "Game Setup");
         adapter.addFragment(new TutorialFragment(), "Tutorial");
         adapter.addFragment(new SettingsFragment(), "Settings");
         vp.setAdapter(adapter);
@@ -84,18 +94,24 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         switch (page) {
 
             case Home:
+
                 toolbar.setVisibility(View.INVISIBLE);
                 setViewPager(0);
                 break;
 
-            case Tutorial:
+            case GameSetup:
                 toolbar.setVisibility(View.VISIBLE);
                 setViewPager(1);
                 break;
 
-            case Settings:
+            case Tutorial:
                 toolbar.setVisibility(View.VISIBLE);
                 setViewPager(2);
+                break;
+
+            case Settings:
+                toolbar.setVisibility(View.VISIBLE);
+                setViewPager(3);
                 break;
 
             default:
