@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.GameSaves;
-import csc_cccix.geocracy.LoadingScreenActivity;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.main_menu.MenuActivity;
@@ -45,6 +44,8 @@ public class MainMenuFragment extends Fragment {
         }
 
         continueButton.setOnTouchListener((v, event) -> {
+            Toasty.warning(this.getContext(), "Your game save is being loaded... hang tight!",  Toast.LENGTH_LONG).show();
+
             Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             mainIntent.putExtra("GAME_LOAD", loadedGame.gameData);
