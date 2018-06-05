@@ -59,7 +59,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         disposables = new CompositeDisposable();
-        gameSaves = new GameSaves(this, this.getApplicationContext());
+        gameSaves = new GameSaves(this.getApplicationContext());
 
         FloatingActionButton attackBtn;
         FloatingActionButton addUnitBtn;

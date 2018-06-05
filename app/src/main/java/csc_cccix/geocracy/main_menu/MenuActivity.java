@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.fragments.GameSetupFragment;
 import csc_cccix.geocracy.fragments.MainMenuFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
@@ -74,9 +75,14 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
+    private MainMenuFragment mainMenuFragment;
+
     private void setupViewPager(ViewPager vp) {
         MenuPagerAdapter adapter = new MenuPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MainMenuFragment(), "Main Menu");
+
+        mainMenuFragment = new MainMenuFragment();
+
+        adapter.addFragment(mainMenuFragment, "Main Menu");
         adapter.addFragment(new GameSetupFragment(), "Game Setup");
         adapter.addFragment(new TutorialFragment(), "Tutorial");
         adapter.addFragment(new SettingsFragment(), "Settings");
@@ -88,6 +94,7 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         switch (page) {
 
             case Home:
+
                 toolbar.setVisibility(View.INVISIBLE);
                 setViewPager(0);
                 break;
