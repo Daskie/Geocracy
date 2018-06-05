@@ -13,6 +13,7 @@ public class IntentToAttackState implements  GameState {
 
     private Game game;
     private Territory originTerritory;
+    private boolean originTerritoryLock;
 
     public IntentToAttackState(Game game) {
         this.game = game;
@@ -20,7 +21,7 @@ public class IntentToAttackState implements  GameState {
 
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "ALREADY CURRENT STATE");
-        this.originTerritory = territory;
+        if (originTerritoryLock == false) this.originTerritory = territory;
     }
 
     public void selectTargetTerritory(Territory targetTerritory) {
@@ -61,6 +62,7 @@ public class IntentToAttackState implements  GameState {
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        originTerritoryLock = false;
         game.setState(game.defaultState);
         game.getState().initState();
     }
@@ -70,8 +72,9 @@ public class IntentToAttackState implements  GameState {
         Log.i(TAG, "TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
         game.getWorld().highlightTerritories(originTerritory.getAdjacentTerritories());
 
-        String ui_tag = "UI_EVENT";
+        originTerritoryLock = true;
 
+        String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
         EventBus.publish(ui_tag, UIEvent.SHOW_CANCEL_BUTTON);

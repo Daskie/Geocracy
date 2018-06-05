@@ -135,6 +135,12 @@ public class Game implements Serializable {
                 else if (getState() == this.gainArmyUnitsState) {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
+                else if (getState() == this.diceRollState) {
+                    // do nothing
+                }
+                else if (getState() == this.battleResultsState) {
+                    // do nothing
+                }
                 else {
                     getState().selectOriginTerritory(selectedTerritory);
                     getState().initState();

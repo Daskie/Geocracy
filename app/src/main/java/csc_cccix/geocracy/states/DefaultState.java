@@ -4,6 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
@@ -58,7 +59,11 @@ public class DefaultState implements GameState {
         Log.i(TAG, "INIT STATE");
         game.activity.removeActiveBottomPaneFragment();
         game.getWorld().unselectTerritory();
+        game.getWorld().untargetTerritory();
         game.getWorld().unhighlightTerritories();
+
+        Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+        game.getWorld().highlightTerritories(currentPlayer.getTerritories());
 
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);

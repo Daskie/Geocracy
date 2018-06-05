@@ -5,6 +5,7 @@ import android.util.Log;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
@@ -15,6 +16,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
+    private boolean originTerritoryLock;
 
     public SelectedAttackTargetTerritoryState(Game game) {
         this.game = game;
@@ -22,8 +24,9 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
-        this.originTerritory = territory;
+        if (originTerritoryLock == false) this.originTerritory = territory;
     }
+
     public void selectTargetTerritory(Territory territory) {
         Log.i(TAG, "SETTING TARGET TERRITORY");
         this.targetTerritory = territory;
@@ -57,6 +60,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        originTerritoryLock = false;
         game.setState(game.defaultState);
         game.getState().initState();
     }
@@ -68,6 +72,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().targetTerritory(this.targetTerritory);
         game.cameraController.targetTerritory(this.targetTerritory);
+
+        originTerritoryLock = true;
 
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
