@@ -75,6 +75,13 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        toolbar.setVisibility(View.INVISIBLE);
+        setViewPager(0);
+    }
+
     private MainMenuFragment mainMenuFragment;
 
     private void setupViewPager(ViewPager vp) {
