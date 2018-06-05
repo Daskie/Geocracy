@@ -31,7 +31,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player Color:"
-        android:paddingBottom="10dp"/>
+        android:id="@+id/playerColor"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/account"
+        android:id="@+id/playerColorIcon"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Player Color"
+        android:id="@+id/playerColorBtn"
+        android:paddingBottom="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
