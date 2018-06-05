@@ -31,7 +31,7 @@ public class SetUpInitTerritoriesState implements GameState {
 
         //illegal territory selection for setting up territories
         if(this.territory.getOwner()!=null){
-            if(game.players[game.currentPlayer] instanceof HumanPlayer) {
+            if(game.gameData.players[game.gameData.currentPlayer] instanceof HumanPlayer) {
                 this.parent.runOnUiThread(new Runnable() {
                     public void run() {
                         Toasty.info(parent.getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show();
@@ -59,18 +59,18 @@ public class SetUpInitTerritoriesState implements GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        territory.setOwner(game.players[game.currentPlayer]);
+        territory.setOwner(game.gameData.players[game.gameData.currentPlayer]);
         territory.setNArmies(amount);
 
-        Log.i("", game.players[game.currentPlayer].getName() + " ADDED " + territory.getTerritoryName());
+        Log.i("", game.gameData.players[game.gameData.currentPlayer].getName() + " ADDED " + territory.getTerritoryName());
 
-        game.currentPlayer++;
-        if(game.currentPlayer==game.players.length)
-            game.currentPlayer=0;
+        game.gameData.currentPlayer++;
+        if(game.gameData.currentPlayer==game.gameData.players.length)
+            game.gameData.currentPlayer=0;
 
         if(game.getWorld().allTerritoriesOccupied()) {
             game.setState(game.gainArmyUnitsState);
-            game.currentPlayer = 0;
+            game.gameData.currentPlayer = 0;
         }
 
     }

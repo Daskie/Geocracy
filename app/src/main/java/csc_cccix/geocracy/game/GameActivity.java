@@ -35,7 +35,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "GAME_ACTIVITY";
     public static final transient String USER_ACTION = "USER_ACTION";
 
-
     static final public SettingsFragment settingsFragment = new SettingsFragment();
 
     static public Game game;
@@ -59,9 +58,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Game loadedGame = (Game) getIntent().getSerializableExtra("GAME_LOAD");
-        if (loadedGame != null) Log.i(TAG, "GAME LOADED: " + loadedGame.players);
-
         disposables = new CompositeDisposable();
         gameSaves = new GameSaves(this.getApplicationContext());
 
@@ -82,7 +78,17 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         fragmentManager = getSupportFragmentManager();
 
         // Setup game
-        game = new Game(this);
+        GameData loadedGameData = (GameData) getIntent().getSerializableExtra("GAME_LOAD");
+        if (loadedGameData != null) {
+            Log.i(TAG, "GAME LOADED: " + loadedGameData.players);
+            game = new Game(this, loadedGameData);
+        } else {
+            GameData newGameData = new GameData();
+            newGameData.currentPlayer = 0;
+            newGameData.gameTurn = 0;
+            newGameData.players = new Player[8];
+            game = new Game(this, newGameData);
+        }
 
         setContentView(R.layout.gameplay);
 
@@ -225,6 +231,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void handleSaveEvent(GameEvent event) {
         if (event.action == GameAction.SAVE_GAME_TAPPED) {
             gameSaves.saveGameToLocalStorage(game);
+            Toasty.info(this, "Game Saved!", Toast.LENGTH_LONG).show();
+
         }
     }
 

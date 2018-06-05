@@ -39,7 +39,7 @@ public class LoadingScreenActivity extends Activity {
             new Handler().postDelayed(() -> {
                 Intent mainIntent = new Intent(LoadingScreenActivity.this, GameActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mainIntent.putExtra("GAME_LOAD", loadedGame);
+                mainIntent.putExtra("GAME_LOAD", loadedGame.gameData);
                 LoadingScreenActivity.this.startActivity(mainIntent);
                 LoadingScreenActivity.this.finish();
             }, WAITTIME);

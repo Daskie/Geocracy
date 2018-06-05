@@ -19,6 +19,9 @@ import com.jakewharton.rxbinding2.widget.RxSeekBar;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.LoadingScreenActivity;
+import csc_cccix.geocracy.game.GameActivity;
+import csc_cccix.geocracy.game.GameData;
+import csc_cccix.geocracy.game.Player;
 
 public class GameSetupFragment extends Fragment {
 
@@ -35,10 +38,21 @@ public class GameSetupFragment extends Fragment {
         SeekBar numberofPlayers = view.findViewById(R.id.numberofPlayers);
         numberofPlayers.setProgress(playerCount);
 
-        RxSeekBar.changeEvents(numberofPlayers).subscribe(e -> playerCountView.setText(Integer.toString(e.view().getProgress() + 4)));
+        RxSeekBar.changeEvents(numberofPlayers).subscribe(e -> {
+            playerCount = e.view().getProgress() + 4;
+            playerCountView.setText(Integer.toString(playerCount));
+        });
 
         Button confirmGameSettings = view.findViewById(R.id.confirmGameSettingsBtn);
-        RxView.touches(confirmGameSettings).subscribe(e -> startActivity(new Intent(getContext(), LoadingScreenActivity.class)));
+
+        RxView.touches(confirmGameSettings).subscribe(e -> {
+            Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            GameData newGameData = new GameData();
+            newGameData.players = new Player[playerCount];
+            mainIntent.putExtra("GAME_LOAD", newGameData);
+            startActivity(mainIntent);
+        });
 
         return view;
     }

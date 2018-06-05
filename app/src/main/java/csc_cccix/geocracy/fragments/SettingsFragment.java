@@ -53,7 +53,7 @@ public class SettingsFragment extends Fragment {
         saveGameButton = view.findViewById(R.id.saveGameButton);
 
         RxView.touches(saveGameButton).subscribe(e -> {
-            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_UP) {
                 EventBus.publish("SAVE_GAME_EVENT", new GameEvent(GameAction.SAVE_GAME_TAPPED, null));
             }
         });
