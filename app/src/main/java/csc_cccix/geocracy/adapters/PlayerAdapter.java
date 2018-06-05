@@ -48,7 +48,7 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         // TODO: set player color icon accordingly
         Vec3 color = currentPlayer.getColor();
 //        image.setBackgroundColor(Color.rgb((int) color.x, (int) color.y, (int) color.z));
-        
+
         TextView details = (TextView) listItem.findViewById(R.id.playerDetails);
         details.setText(currentPlayer.getName());
 

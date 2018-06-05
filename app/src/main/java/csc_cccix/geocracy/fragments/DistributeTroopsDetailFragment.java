@@ -16,17 +16,19 @@ import com.jakewharton.rxbinding2.view.RxView;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class DistributeTroopsDetailFragment extends Fragment {
 
-    public static DistributeTroopsDetailFragment newInstance(Territory originTerritory) {
+    public static DistributeTroopsDetailFragment newInstance(Territory originTerritory, Player currentPlayer) {
         DistributeTroopsDetailFragment newFragment = new DistributeTroopsDetailFragment();
 
         Bundle args = new Bundle();
         args.putSerializable("originTerritory", originTerritory);
+        args.putSerializable("currentPlayer", currentPlayer);
         newFragment.setArguments(args);
 
         return newFragment;
@@ -38,9 +40,13 @@ public class DistributeTroopsDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.distribute_troops_detail, container, false);
 
         Territory originTerritory = (Territory) getArguments().get("originTerritory");
+        Player currentPlayer = (Player) getArguments().get("currentPlayer");
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
         originTerritoryID.setText("Update Unit Count At: " + originTerritory.getTerritoryName());
+
+        TextView unitPoolCount = view.findViewById(R.id.unitPoolCount);
+        unitPoolCount.setText("Remaining Number of Units: " + currentPlayer.getArmyPool());
 
         Button confirmButton = view.findViewById(R.id.confirmButton);
 

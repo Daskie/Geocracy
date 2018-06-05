@@ -15,6 +15,7 @@ public class Player implements Serializable {
     public String name;
     private Set<Territory> territories;
     private transient Vec3 color;
+    private transient int armyPool;
     private int armies;
     private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
@@ -71,6 +72,18 @@ public class Player implements Serializable {
 
     public int getNArmies(){
         return this.armies;
+    }
+
+    public void addOrRemoveNArmiesToPool(int numArmies){
+        this.armyPool += numArmies;
+    }
+
+    public void setArmyPool(int poolSize){
+        this.armyPool = poolSize;
+    }
+
+    public int getArmyPool(){
+        return this.armyPool;
     }
 
     public int getBonus() {

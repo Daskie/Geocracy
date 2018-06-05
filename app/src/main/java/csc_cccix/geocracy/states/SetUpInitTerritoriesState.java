@@ -7,6 +7,7 @@ import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.HumanPlayer;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
@@ -69,8 +70,10 @@ public class SetUpInitTerritoriesState implements GameState {
             game.gameData.currentPlayer=0;
 
         if(game.getWorld().allTerritoriesOccupied()) {
+            game.gameData.currentPlayer = 0; // HUMAN PLAYER
+            Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+            currentPlayer.setArmyPool(currentPlayer.getBonus()); // WILL NEED TO MOVE
             game.setState(game.gainArmyUnitsState);
-            game.gameData.currentPlayer = 0;
         }
 
     }

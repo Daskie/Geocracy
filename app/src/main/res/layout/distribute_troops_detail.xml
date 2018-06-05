@@ -23,10 +23,8 @@
         android:id="@+id/unitPoolCount"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:background="@color/troopSelectionColor"
         android:gravity="center"
-        android:text="Remaining Number of Units:"
-        android:textColor="@android:color/black" />
+        android:text="Remaining Number of Units:" />
 
     <Button
         android:id="@+id/confirmButton"

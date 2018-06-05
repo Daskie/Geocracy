@@ -52,7 +52,8 @@ public class GainArmyUnitsState implements GameState {
 
             game.cameraController.targetTerritory(territory);
             EventBus.publish("UI_EVENT", UIEvent.SHOW_UPDATE_UNITS_MODE_BUTTONS);
-            parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory));
+            Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+            parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, currentPlayer));
         }
     }
 
@@ -69,26 +70,38 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
+        Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+
         if (this.territory != null) {
-            Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
 
-            currentPlayer.addOrRemoveNArmies(-amount);
-
-            if(currentPlayer.getNArmies()<0) {
+            if(currentPlayer.getArmyPool()-amount<0) {
                 this.parent.runOnUiThread(() -> {
-                    Toasty.info(parent.getBaseContext(), "You have no more units to add to this territory.", Toast.LENGTH_LONG).show();
+                    Toasty.info(parent.getBaseContext(), "You don't have enough units to add to this territory.", Toast.LENGTH_LONG).show();
                 });
-                currentPlayer.addOrRemoveNArmies(amount);
                 return;
             }
+            else if (amount<0 && this.territory.getNArmies() <= 1) {
+                this.parent.runOnUiThread(() -> {
+                    Toasty.info(parent.getBaseContext(), "Cannot remove units from territory.", Toast.LENGTH_LONG).show();
+                });
+                return;
+            }
+            else {
+                Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
+                int clampedNArmies = Util.clamp(territory.getNArmies() + amount, min_units, max_units);
+                this.territory.setNArmies(clampedNArmies);
+                currentPlayer.addOrRemoveNArmiesToPool(-amount);
+                Log.i(TAG, "PLAYER" + game.gameData.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
+            }
 
-            Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
-            int clampedNArmies = Util.clamp(territory.getNArmies() + amount, min_units, max_units);
-            this.territory.setNArmies(clampedNArmies);
-            Log.i(TAG, "PLAYER" + game.gameData.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
+
         } else {
             Log.i(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
         }
+
+        game.activity.removeActiveBottomPaneFragment();
+        parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, currentPlayer));
+
     }
 
     public void confirmAction() {
@@ -107,13 +120,11 @@ public class GainArmyUnitsState implements GameState {
         Log.i(TAG, "INIT STATE");
         game.activity.removeActiveBottomPaneFragment();
         Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
-        int unitsToDistribute = currentPlayer.getBonus();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         Log.i(TAG, "" + currentPlayer.getId());
-        Log.i(TAG, "HAS " + unitsToDistribute + " UNITS TO DISTRIBUTE");
-        currentPlayer.addOrRemoveNArmies(unitsToDistribute);
+        Log.i(TAG, "HAS " + currentPlayer.getArmyPool() + " UNITS TO DISTRIBUTE");
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 }
