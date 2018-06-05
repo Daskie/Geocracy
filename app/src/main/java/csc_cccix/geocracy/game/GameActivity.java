@@ -3,6 +3,7 @@ package csc_cccix.geocracy.game;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.GameSaves;
+import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
@@ -66,7 +68,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         FloatingActionButton removeUnitBtn;
         FloatingActionButton cancelBtn;
 
-
         // 8 bit color format
         getWindow().setFormat(PixelFormat.RGBA_8888);
         // Fullscreen
@@ -75,6 +76,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.gameplay);
+
+        // Initialize Surface View
+        gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
+        gameSurfaceView.getHolder().addCallback(this);
+
         fragmentManager = getSupportFragmentManager();
 
         // Setup game
@@ -89,13 +95,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             newGameData.players = new Player[8];
             game = new Game(this, newGameData);
         }
-
-        setContentView(R.layout.gameplay);
-
-        // Initialize Surface View and Add World Touch Handling
-        gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
-        gameSurfaceView.getHolder().addCallback(this);
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("WORLD_TOUCH_EVENT", e)));
 
         // Get Layout Frame +
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
@@ -224,6 +223,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     }
                 })
         );
+        showOverlayFragment(new LoadingFragment());
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
     }
@@ -311,10 +311,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.i(TAG, "SURFACE CREATED");
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("WORLD_TOUCH_EVENT", e)));
+        new Handler().postDelayed(() -> {
+            removeActiveOverlayFragment();
+        }, 4000);
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {}
+    public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {
+    }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {}

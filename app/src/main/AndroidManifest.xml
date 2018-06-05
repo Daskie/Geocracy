@@ -28,15 +28,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="csc_cccix.geocracy.MainActivity" />
         </activity>
-        <activity android:name="csc_cccix.geocracy.LoadingScreenActivity"
-            android:parentActivityName="csc_cccix.geocracy.MainActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/AppFullScreenTheme">
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="csc_cccix.geocracy.MainActivity" />
-        </activity>
         <activity android:name="csc_cccix.geocracy.main_menu.MenuActivity"
             android:parentActivityName="csc_cccix.geocracy.MainActivity"
             android:launchMode="singleTop"

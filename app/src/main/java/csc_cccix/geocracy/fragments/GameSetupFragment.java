@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
@@ -29,6 +30,7 @@ import csc_cccix.R;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.GameData;
 import csc_cccix.geocracy.game.Player;
+import es.dmoral.toasty.Toasty;
 
 public class GameSetupFragment extends Fragment {
 
@@ -89,6 +91,7 @@ public class GameSetupFragment extends Fragment {
         Button confirmGameSettings = view.findViewById(R.id.confirmGameSettingsBtn);
 
         RxView.touches(confirmGameSettings).subscribe(e -> {
+            Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
             Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             GameData newGameData = new GameData();
