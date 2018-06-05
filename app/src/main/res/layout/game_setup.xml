@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Game Setup"
         android:textSize="28dp"
-        android:paddingBottom="40dp"
+        android:layout_marginBottom="40dp"
         android:labelFor="@+id/gameSetupHeaderHeader"/>
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:text="ANONYMOUS"
         android:id="@+id/playerName"
-        android:paddingBottom="10dp"/>
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="Set Player Color"
         android:id="@+id/playerColorBtn"
-        android:paddingBottom="20dp" />
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
         android:max="6"
         android:id="@+id/numberofPlayers"
         android:tickMark="@drawable/tickmark"
-        android:paddingBottom="20dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
