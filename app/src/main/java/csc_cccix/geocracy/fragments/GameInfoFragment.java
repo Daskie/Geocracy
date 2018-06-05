@@ -10,7 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import csc_cccix.R;
+import csc_cccix.geocracy.adapters.PlayerAdapter;
 import csc_cccix.geocracy.game.Player;
 
 public class GameInfoFragment extends Fragment {
@@ -21,11 +25,11 @@ public class GameInfoFragment extends Fragment {
         View view = inflater.inflate(R.layout.game_info, container, false);
 
         Player[] players = (Player[]) getArguments().get("players");
+
         ListView playerList = view.findViewById(R.id.playerList);
-        ArrayAdapter<Player> playerArrayAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                players
+        PlayerAdapter playerArrayAdapter = new PlayerAdapter(
+                getContext(),
+                new ArrayList<>(Arrays.asList(players))
         );
 
         playerList.setAdapter(playerArrayAdapter);
