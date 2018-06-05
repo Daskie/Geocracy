@@ -39,7 +39,7 @@ public class MainMenuFragment extends Fragment {
         startButton = view.findViewById(R.id.startButton);
 
         startButton.setOnTouchListener((v, event) -> {
-            startActivity(new Intent(getContext(), LoadingScreenActivity.class));
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.GameSetup);
             return false;
         });
 
