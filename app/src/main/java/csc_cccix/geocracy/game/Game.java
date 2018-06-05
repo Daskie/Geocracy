@@ -57,7 +57,6 @@ public class Game implements Serializable {
     private transient float zoomFactor;
     private transient ByteBuffer readbackBuffer;
 
-    public GameData gameData;
     public transient GameActivity activity;
 
     transient GameState state;

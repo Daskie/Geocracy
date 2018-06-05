@@ -16,12 +16,14 @@ import csc_cccix.R;
 import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.LoadingScreenActivity;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.main_menu.MenuActivity;
 import es.dmoral.toasty.Toasty;
 
 public class MainMenuFragment extends Fragment {
 
     Button continueButton;
+    Game loadedGame;
 
     @Nullable
     @Override
@@ -35,7 +37,7 @@ public class MainMenuFragment extends Fragment {
 
         continueButton = view.findViewById(R.id.continueButton);
 
-        GameSaves gameSaves = new GameSaves(this.getContext());
+        GameSaves gameSaves = new GameSaves(getContext());
         Game loadedGame = gameSaves.loadGameFromLocalStorage();
         if (loadedGame != null) {
             Log.i("LOADED", loadedGame.toString());
@@ -43,7 +45,9 @@ public class MainMenuFragment extends Fragment {
         }
 
         continueButton.setOnTouchListener((v, event) -> {
-            startActivity(new Intent(getContext(), LoadingScreenActivity.class));
+            Intent continueIntent = new Intent(getContext(), LoadingScreenActivity.class);
+            continueIntent.putExtra("LOAD_GAME_SAVE", true);
+            startActivity(continueIntent);
             return false;
         });
 

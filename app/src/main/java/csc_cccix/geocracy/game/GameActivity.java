@@ -58,6 +58,10 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Game loadedGame = (Game) getIntent().getSerializableExtra("GAME_LOAD");
+        if (loadedGame != null) Log.i(TAG, "GAME LOADED: " + loadedGame.players);
+
         disposables = new CompositeDisposable();
         gameSaves = new GameSaves(this.getApplicationContext());
 
