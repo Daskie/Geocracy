@@ -76,23 +76,15 @@ public class OrbitCamera extends Camera {
     public Mat3 getOrientMatrix() { return orientMatrix; }
 
     @Override
-    public Vec3 getU() {
-        return orientMatrix.get(0);
-    }
+    public Vec3 getU() { return orientMatrix.get(0); }
 
     @Override
-    public Vec3 getV() {
-        return orientMatrix.get(1);
-    }
+    public Vec3 getV() { return orientMatrix.get(1); }
 
     @Override
-    public Vec3 getW() {
-        return orientMatrix.get(2);
-    }
+    public Vec3 getW() { return orientMatrix.get(2); }
 
     @Override
-    public Vec3 getLocation() {
-        return getW().times(elevation);
-    }
+    public Vec3 getLocation() { return getW().times(elevation); }
 
 }

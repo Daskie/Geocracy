@@ -109,29 +109,17 @@ public abstract class Shader {
 
     protected boolean setupUniforms() { return true; }
 
-    protected int getUniformLocation(String name) {
-        return GLES30.glGetUniformLocation(programHandle, name);
-    }
+    protected int getUniformLocation(String name) { return GLES30.glGetUniformLocation(programHandle, name); }
 
-    protected void uploadUniform(int handle, boolean v) {
-        GLES30.glUniform1i(handle, v ? 1 : 0);
-    }
+    protected void uploadUniform(int handle, boolean v) { GLES30.glUniform1i(handle, v ? 1 : 0); }
 
-    protected void uploadUniform(int handle, float v) {
-        GLES30.glUniform1f(handle, v);
-    }
+    protected void uploadUniform(int handle, float v) { GLES30.glUniform1f(handle, v); }
 
-    protected void uploadUniform(int handle, Vec2 v) {
-        GLES30.glUniform2f(handle, v.x, v.y);
-    }
+    protected void uploadUniform(int handle, Vec2 v) { GLES30.glUniform2f(handle, v.x, v.y); }
 
-    protected void uploadUniform(int handle, Vec3 v) {
-        GLES30.glUniform3f(handle, v.x, v.y, v.z);
-    }
+    protected void uploadUniform(int handle, Vec3 v) { GLES30.glUniform3f(handle, v.x, v.y, v.z); }
 
-    protected void uploadUniform(int handle, Vec4 v) {
-        GLES30.glUniform4f(handle, v.x, v.y, v.z, v.w);
-    }
+    protected void uploadUniform(int handle, Vec4 v) { GLES30.glUniform4f(handle, v.x, v.y, v.z, v.w); }
 
     protected void uploadUniform(int handle, int v, boolean signed) {
         if (signed) {
@@ -142,17 +130,11 @@ public abstract class Shader {
         }
     }
 
-    protected void uploadUniform(int handle, Vec2i v) {
-        GLES30.glUniform2i(handle, v.x, v.y);
-    }
+    protected void uploadUniform(int handle, Vec2i v) { GLES30.glUniform2i(handle, v.x, v.y); }
 
-    protected void uploadUniform(int handle, Vec3i v) {
-        GLES30.glUniform3i(handle, v.x, v.y, v.z);
-    }
+    protected void uploadUniform(int handle, Vec3i v) { GLES30.glUniform3i(handle, v.x, v.y, v.z); }
 
-    protected void uploadUniform(int handle, Vec4i v) {
-        GLES30.glUniform4i(handle, v.x, v.y, v.z, v.w);
-    }
+    protected void uploadUniform(int handle, Vec4i v) { GLES30.glUniform4i(handle, v.x, v.y, v.z, v.w); }
 
     protected void uploadUniform(int handle, Mat2 v) {
         ByteBuffer bb = ByteBuffer.allocateDirect(2 * 2 * 4);
@@ -227,6 +209,7 @@ public abstract class Shader {
 
         // Check for OpenGL errors
         if (Util.isGLError()) {
+            Log.e("", "OpenGL error");
             GLES30.glDeleteShader(shaderHandle);
             return 0;
         }
@@ -258,6 +241,7 @@ public abstract class Shader {
 
         // Check for OpenGL errors
         if (Util.isGLError()) {
+            Log.e("", "OpenGL error");
             GLES30.glDeleteProgram(programHandle);
             return 0;
         }

@@ -126,13 +126,11 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onResume() {
         super.onResume();
-//        mainSurfaceView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        mainSurfaceView.onPause();
     }
 
     @Override

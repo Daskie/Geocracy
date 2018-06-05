@@ -48,6 +48,7 @@ public class Texture {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
 
         if (Util.isGLError()) {
+            Log.e("", "OpenGL error");
             return false;
         }
 
@@ -69,6 +70,7 @@ public class Texture {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
 
         if (Util.isGLError()) {
+            Log.e("", "OpenGL error");
             return false;
         }
 
@@ -120,8 +122,6 @@ public class Texture {
         }
     }
 
-    private static int calcMipmapLevels(Vec2i size) {
-        return Util.log2Floor(Math.max(size.x, size.y)) + 1;
-    }
+    private static int calcMipmapLevels(Vec2i size) { return Util.log2Floor(Math.max(size.x, size.y)) + 1; }
 
 }
