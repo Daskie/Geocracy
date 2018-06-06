@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
@@ -298,6 +297,12 @@ public abstract class Util {
         Iterator<T> it = set.iterator();
         while (i > 0) { it.next(); --i; }
         return it.next();
+    }
+
+    // Returns a color integer in form 0xAARRGGBB from a Vec3
+    // Assumes each component of color vector is between 0.0 and 1.0 inclusive
+    public static int colorToInt(Vec3 color) {
+        return 0xFF000000 | ((int)(color.x * 255.0f) << 16) | ((int)(color.y * 255.0f) << 8) | (int)(color.z * 255.0f);
     }
 
 }
