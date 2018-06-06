@@ -24,10 +24,12 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import com.jaredrummler.android.colorpicker.ColorShape;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.GameData;
 import csc_cccix.geocracy.game.Player;
 import es.dmoral.toasty.Toasty;
+import glm_.vec3.Vec3;
 
 public class GameSetupFragment extends Fragment {
 
@@ -43,7 +45,9 @@ public class GameSetupFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
-
+        Vec3[] colorPresets = Util.genDistinctColors(10, 0.0f);
+        int[] colorIntPresets = new int[colorPresets.length];
+        for (int i = 0; i < colorPresets.length; ++i) colorIntPresets[i] = Util.colorToVec3()
         colorPicker = ColorPickerDialog.newBuilder()
                 .setDialogType(ColorPickerDialog.TYPE_CUSTOM)
                 .setAllowPresets(true)
