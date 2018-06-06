@@ -168,8 +168,13 @@ public class Game implements Serializable {
 
             case CANCEL_ACTION:
                 Log.i(TAG, "CANCEL ACTION TAPPED");
+
                 getState().cancelAction();
-                getState().initState();
+
+                if (getState().getClass() != GainArmyUnitsState.class) {
+                    getState().initState();
+                }
+
                 break;
 
             default:
