@@ -97,13 +97,15 @@ public class GameSetupFragment extends Fragment {
         Button confirmGameSettings = view.findViewById(R.id.confirmGameSettingsBtn);
 
         RxView.touches(confirmGameSettings).subscribe(e -> {
-            Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
-            Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            mainIntent.putExtra("NUM_PLAYERS", playerCount);
-            mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
-            mainIntent.putExtra("SEED", 0L); // TODO: implement seed text field or something
-            startActivity(mainIntent);
+            if (e.getAction() == MotionEvent.ACTION_UP) {
+                Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
+                Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mainIntent.putExtra("NUM_PLAYERS", playerCount);
+                mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
+                mainIntent.putExtra("SEED", 0L); // TODO: implement seed text field or something
+                startActivity(mainIntent);
+            }
         });
 
         return view;

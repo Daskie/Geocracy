@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,13 +40,15 @@ public class MainMenuFragment extends Fragment {
         }
 
         continueButton.setOnTouchListener((v, event) -> {
-            Toasty.warning(this.getContext(), "Your game save is being loaded... hang tight!",  Toast.LENGTH_LONG).show();
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                Toasty.warning(this.getContext(), "Your game save is being loaded... hang tight!",  Toast.LENGTH_LONG).show();
 
-            Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            mainIntent.putExtra("GAME_LOAD", true);
-            this.startActivity(mainIntent);
-            return false;
+                Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mainIntent.putExtra("GAME_LOAD", true);
+                this.startActivity(mainIntent);
+            }
+            return true;
         });
 
         startButton = view.findViewById(R.id.startButton);
