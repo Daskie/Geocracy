@@ -52,6 +52,8 @@ public class DefaultState implements GameState {
         Log.i(TAG, "INVALID ACTION: CONFRIM NOT AVAILIBLE");
     }
 
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> END PLAYER TURN"); }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> NULL ACTION");
     }
@@ -68,6 +70,7 @@ public class DefaultState implements GameState {
 
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.SHOW_END_TURN_BUTTON);
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
         EventBus.publish(ui_tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);

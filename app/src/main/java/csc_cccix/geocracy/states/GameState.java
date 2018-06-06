@@ -13,7 +13,7 @@ public interface GameState {
     void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails);
     void battleCompleted(BattleResultDetails battleResultDetails);
     void addToSelectedTerritoryUnitCount(int amount);
-
+    void endTurn();
     void enableAttackMode();
     void initState();
 }

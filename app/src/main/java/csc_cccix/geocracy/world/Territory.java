@@ -111,7 +111,7 @@ public class Territory implements Serializable {
     public Set<Territory> getAdjacentEnemyTerritories() {
         Set<Territory> territories = new HashSet<>();
         for (Territory terr : adjacentTerritories) {
-            if (terr.getOwner() == owner) {
+            if (terr.getOwner() != owner) {
                 territories.add(terr);
             }
         }

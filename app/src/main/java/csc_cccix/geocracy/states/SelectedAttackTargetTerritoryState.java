@@ -58,6 +58,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
     }
 
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;

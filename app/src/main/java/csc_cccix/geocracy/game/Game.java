@@ -64,7 +64,7 @@ public class Game implements Serializable {
         this.activity = activity;
         if (data != null) this.gameData = data;
 
-        world = new World(this, 0); // TODO: seed should not be predefined
+        world = new World(this, 420); // TODO: seed should not be predefined
 
         Vec3[] playerColors = Util.genDistinctColors(gameData.players.length, 0.0f);
 
@@ -171,9 +171,16 @@ public class Game implements Serializable {
 
                 getState().cancelAction();
 
-                if (getState().getClass() != GainArmyUnitsState.class) {
+                if (getState().getClass() != GainArmyUnitsState.class || getState().getClass() != DefaultState.class) {
                     getState().initState();
                 }
+
+                break;
+
+            case END_TURN_ACTION:
+
+                Log.i(TAG, "END TURN TAPPED");
+                getState().endTurn();
 
                 break;
 

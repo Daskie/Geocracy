@@ -42,11 +42,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="82dp"
         android:layout_marginTop="60dp"
         app:fabSize="auto"
         android:src="@drawable/ic_chemical_weapon_white_48dp"
         app:backgroundTint="@color/colorAccent"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/endTurnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="60dp"
+        app:fabSize="auto"
+        android:src="@drawable/ic_flag_checkered_white_48dp"
+        app:backgroundTint="@color/darkGray"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addUnitBtn"
