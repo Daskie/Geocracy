@@ -59,13 +59,12 @@
         android:id="@+id/playerCount" />
 
     <SeekBar
+        android:id="@+id/numberofPlayers"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:max="6"
-        android:id="@+id/numberofPlayers"
-        android:tickMark="@drawable/tickmark"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:tickMark="@drawable/tickmark" />
 
     <Button
         android:layout_width="wrap_content"

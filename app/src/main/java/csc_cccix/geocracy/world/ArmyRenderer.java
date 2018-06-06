@@ -28,8 +28,6 @@ public class ArmyRenderer {
         this.world = world;
         shader = new ArmyShader();
         mesh = MeshMaker.makeCylinder("Army", 32);
-        //mesh.translate(new Vec3(0.0f, 0.0f, 1.0f));
-        //mesh.scale(new Vec3(1.0f, 1.0f, 0.5f), false);
         genArmyData();
     }
 
