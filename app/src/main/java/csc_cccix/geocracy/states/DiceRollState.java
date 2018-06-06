@@ -76,7 +76,7 @@ public class DiceRollState implements  GameState {
 
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
         EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
 
         Completable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
