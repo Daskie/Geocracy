@@ -34,7 +34,7 @@ public class SelectedTerritoryState implements  GameState {
 
     public void enableAttackMode() {
         Log.i(TAG, "ENABLE ATTACK MODE -> ENTER INTENT TO ATTACK STATE");
-        game.setState(game.intentToAttackState);
+        game.setState(new IntentToAttackState(game));
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
@@ -58,16 +58,16 @@ public class SelectedTerritoryState implements  GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
-        game.setState(game.defaultState);
+        game.setState(new DefaultState(game));
         game.getState().initState();
     }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.activity.showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
+        game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
         game.getWorld().selectTerritory(this.territory);
         game.getWorld().unhighlightTerritories();
-        game.cameraController.targetTerritory(this.territory);
+        game.getCameraController().targetTerritory(this.territory);
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
 

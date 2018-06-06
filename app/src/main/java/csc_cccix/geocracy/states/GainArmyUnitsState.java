@@ -33,7 +33,7 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void selectOriginTerritory(Territory territory) {
-        Log.i(TAG, "GAIN ARMY UNITS STATE: CANNOT SELECT ORIGIN TERRITORY");
+        Log.i(TAG, "CANNOT SELECT ORIGIN TERRITORY (USE TARGET)");
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -41,7 +41,7 @@ public class GainArmyUnitsState implements GameState {
 
         if (territory != null) {
             //illegal territory selection for assigning units
-            if(territory.getOwner() != game.gameData.players[game.gameData.currentPlayer]){
+            if(territory.getOwner() != game.getGameData().players[game.getGameData().currentPlayer]){
                 this.parent.runOnUiThread(() -> {
                     Toasty.info(parent.getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show();
                 });
@@ -50,9 +50,9 @@ public class GainArmyUnitsState implements GameState {
 
             this.territory = territory;
 
-            game.cameraController.targetTerritory(territory);
+            game.getCameraController().targetTerritory(territory);
             EventBus.publish("UI_EVENT", UIEvent.SHOW_UPDATE_UNITS_MODE_BUTTONS);
-            Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+            Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
             parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, currentPlayer));
         }
     }
@@ -70,7 +70,7 @@ public class GainArmyUnitsState implements GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
 
         if (this.territory != null) {
 
@@ -91,7 +91,7 @@ public class GainArmyUnitsState implements GameState {
                 int clampedNArmies = Util.clamp(territory.getNArmies() + amount, min_units, max_units);
                 this.territory.setNArmies(clampedNArmies);
                 currentPlayer.addOrRemoveNArmiesToPool(-amount);
-                Log.i(TAG, "PLAYER" + game.gameData.currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
+                Log.i(TAG, "PLAYER" + game.getGameData().currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());
             }
 
 
@@ -99,14 +99,14 @@ public class GainArmyUnitsState implements GameState {
             Log.i(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
         }
 
-        game.activity.removeActiveBottomPaneFragment();
+        game.getActivity().removeActiveBottomPaneFragment();
         parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, currentPlayer));
 
     }
 
     public void confirmAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
-        game.setState(game.defaultState);
+        game.setState(new DefaultState(game));
     }
 
     public void cancelAction() {
@@ -118,11 +118,12 @@ public class GainArmyUnitsState implements GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.activity.removeActiveBottomPaneFragment();
-        Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+        game.getActivity().removeActiveBottomPaneFragment();
+        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
+        parent.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
         Log.i(TAG, "" + currentPlayer.getId());
         Log.i(TAG, "HAS " + currentPlayer.getArmyPool() + " UNITS TO DISTRIBUTE");
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);

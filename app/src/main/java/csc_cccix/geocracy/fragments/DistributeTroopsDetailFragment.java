@@ -43,7 +43,9 @@ public class DistributeTroopsDetailFragment extends Fragment {
         Player currentPlayer = (Player) getArguments().get("currentPlayer");
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
-        originTerritoryID.setText("Update Unit Count At: " + originTerritory.getTerritoryName());
+        if (originTerritory != null) originTerritoryID.setText("Update Unit Count At: " + originTerritory.getTerritoryName());
+        else originTerritoryID.setText("SELECT A TERRITORY");
+
 
         TextView unitPoolCount = view.findViewById(R.id.unitPoolCount);
         unitPoolCount.setText("Remaining Number of Units: " + currentPlayer.getArmyPool());
