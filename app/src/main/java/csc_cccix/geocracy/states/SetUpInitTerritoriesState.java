@@ -101,9 +101,7 @@ public class SetUpInitTerritoriesState implements GameState {
             game.getWorld().unhighlightTerritories();
             game.getCameraController().targetTerritory(this.territory);
         } else {
-            game.getActivity().runOnUiThread(() -> {
-                Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show();
-            });
+            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show());
         }
 
         game.getWorld().unhighlightTerritories();

@@ -47,11 +47,11 @@ public class Game implements Serializable {
     public static final int DEFAULT_N_PLAYERS = 4;
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
     public static final String USER_ACTION = "USER_ACTION";
-    public static final String saveFileName = "save";
+    public static final String SAVE_FILE_NAME = "save";
 
     public static boolean saveGame(Game game) {
         try {
-            FileOutputStream fos = Global.getContext().openFileOutput(saveFileName, Context.MODE_PRIVATE);
+            FileOutputStream fos = Global.getContext().openFileOutput(SAVE_FILE_NAME, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(game);
             oos.close();
@@ -65,7 +65,7 @@ public class Game implements Serializable {
 
     public static Game loadGame() {
         try {
-            FileInputStream fis = Global.getContext().openFileInput(saveFileName);
+            FileInputStream fis = Global.getContext().openFileInput(SAVE_FILE_NAME);
             ObjectInputStream ois = new ObjectInputStream(fis);
             Game game = (Game)ois.readObject();
             ois.close();
@@ -78,14 +78,13 @@ public class Game implements Serializable {
     }
 
     public static boolean isSavedGame() {
-        return Arrays.binarySearch(Global.getContext().fileList(), saveFileName) >= 0;
+        return Arrays.binarySearch(Global.getContext().fileList(), SAVE_FILE_NAME) >= 0;
     }
 
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private World world;
     private Player[] players;
     private int currentPlayerIndex;
-    private int gameTurn;
     private long lastT; // Time of the previous game update / frame relative to the start of the game
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
 
@@ -105,11 +104,10 @@ public class Game implements Serializable {
     private transient Vec2i tappedPoint;
     private transient float zoomFactor;
 
-    private transient long startT; // Time the game was started / loaded relative to start of game
     private transient long lastTimestamp;
 
     public Game(int nPlayers, Vec3 mainPlayerColor, long seed) {
-        world = new World(this, seed); // TODO: seed should not be predefined
+        world = new World(this, seed);
 
         players = new Player[nPlayers];
         Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
@@ -118,8 +116,6 @@ public class Game implements Serializable {
             players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
         currentPlayerIndex = 0;
-
-        gameTurn = 0;
 
         lastT = 0;
 
@@ -146,7 +142,6 @@ public class Game implements Serializable {
 
         EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
 
-        startT = lastT;
         lastTimestamp = System.nanoTime();
     }
 
@@ -306,7 +301,6 @@ public class Game implements Serializable {
         long deltaT = currentTimestamp - lastTimestamp;
         long t = lastT + deltaT;
         float dt = (float)deltaT * 1e-9f;
-//        Log.i(TAG, "FPS: " + (1.0f / dt));
 
         update(t, dt);
         render(t, dt);

@@ -23,7 +23,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
-        if (originTerritoryLock == false) this.originTerritory = territory;
+        if (!originTerritoryLock) this.originTerritory = territory;
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -76,11 +76,11 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
         originTerritoryLock = true;
 
-        String ui_tag = "UI_EVENT";
-        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
-        EventBus.publish(ui_tag, UIEvent.SHOW_CANCEL_BUTTON);
-        EventBus.publish(ui_tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        String uiTag = "UI_EVENT";
+        EventBus.publish(uiTag, UIEvent.SET_ATTACK_MODE_ACTIVE);
+        EventBus.publish(uiTag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(uiTag, UIEvent.SHOW_CANCEL_BUTTON);
+        EventBus.publish(uiTag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 
 }

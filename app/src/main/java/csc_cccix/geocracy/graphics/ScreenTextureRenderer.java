@@ -102,6 +102,10 @@ public class ScreenTextureRenderer {
             int[] vaoHandleArr = { vaoHandle };
             GLES30.glDeleteVertexArrays(1, vaoHandleArr, 0);
         }
+        if (vboHandle != 0) {
+            int[] vboHandleArr = { vboHandle};
+            GLES30.glDeleteBuffers(1, vboHandleArr, 0);
+        }
     }
 
 }

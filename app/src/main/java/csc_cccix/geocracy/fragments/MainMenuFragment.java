@@ -51,21 +51,21 @@ public class MainMenuFragment extends Fragment {
         startButton = view.findViewById(R.id.startButton);
 
         startButton.setOnTouchListener((v, event) -> {
-            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.GameSetup);
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.GAME_SETUP);
             return false;
         });
 
         tutorialButton = view.findViewById(R.id.tutorialButton);
 
         tutorialButton.setOnTouchListener((v, event) -> {
-            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Tutorial);
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.TUTORIAL);
             return false;
         });
 
         settingsButton = view.findViewById(R.id.settingsButton);
 
         settingsButton.setOnTouchListener((v, event) -> {
-            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.Settings);
+            ((MenuActivity)getActivity()).navigateToPage(MenuActivity.Pages.SETTINGS);
             return false;
         });
 

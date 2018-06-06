@@ -112,6 +112,7 @@ public class ArrowRenderer {
     }
 
     public void unload() {
+        shader.unload();
         if (vaoHandle != 0) {
             int[] vaoArr = { vaoHandle };
             GLES30.glDeleteVertexArrays(1, vaoArr, 0);

@@ -64,10 +64,10 @@ public class BattleResultsState implements  GameState {
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.getCameraController().targetTerritory(this.targetTerritory);
-        String ui_tag = "UI_EVENT";
-        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
-        EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
+        String uiTag = "UI_EVENT";
+        EventBus.publish(uiTag, UIEvent.SET_ATTACK_MODE_ACTIVE);
+        EventBus.publish(uiTag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
+        EventBus.publish(uiTag, UIEvent.HIDE_CANCEL_BUTTON);
     }
 
 }

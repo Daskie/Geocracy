@@ -25,6 +25,7 @@ public class SpaceRenderer {
     };
 
     private SpaceShader shader;
+    private int vboHandle;
     private int vaoHandle;
     private int cubemapHandle;
 
@@ -70,6 +71,15 @@ public class SpaceRenderer {
     }
 
     public void unload() {
+        shader.unload();
+        if (vaoHandle != 0) {
+            int[] vaoHandleArr = { vaoHandle };
+            GLES30.glDeleteVertexArrays(1, vaoHandleArr, 0);
+        }
+        if (vboHandle != 0) {
+            int[] vboHandleArr = { vboHandle};
+            GLES30.glDeleteBuffers(1, vboHandleArr, 0);
+        }
         if (cubemapHandle != 0) {
             GLES30.glDeleteTextures(1, new int[]{cubemapHandle}, 0);
         }
@@ -91,7 +101,7 @@ public class SpaceRenderer {
         // Create VBO
         int[] vboHandleArr = { 0 };
         GLES30.glGenBuffers(1, vboHandleArr, 0);
-        int vboHandle = vboHandleArr[0];
+        vboHandle = vboHandleArr[0];
         if (vboHandle == 0) {
             Log.e("", "Failed to generate vbo");
             return false;

@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import csc_cccix.R;
@@ -23,9 +22,9 @@ import glm_.vec3.Vec3;
 public class PlayerAdapter extends ArrayAdapter<Player> {
 
     private Context mContext;
-    private List<Player> playerList = new ArrayList<>();
+    private List<Player> playerList;
 
-    public PlayerAdapter(@NonNull Context context, ArrayList<Player> list) {
+    public PlayerAdapter(@NonNull Context context, List<Player> list) {
         super(context, 0 , list);
         mContext = context;
         playerList = list;

@@ -10,7 +10,8 @@ public class Image {
 
     private String filename;
     private ByteBuffer data;
-    private int width, height;
+    private int width;
+    private int height;
 
     public Image(String filename) {
         this.filename = filename;

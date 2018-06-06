@@ -23,8 +23,6 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private NonSwipeableViewPager mViewPager;
 
-    private static final String TAG = "MENU";
-
     public static Game game;
 
     public MediaPlayer mp;
@@ -32,10 +30,10 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public Toolbar toolbar;
 
     public enum Pages {
-        Home,
-        Tutorial,
-        Settings,
-        GameSetup
+        HOME,
+        TUTORIAL,
+        SETTINGS,
+        GAME_SETUP
     }
 
     /** Called when the activity is first created. */
@@ -61,7 +59,7 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToPage(Pages.Home);
+                navigateToPage(Pages.HOME);
             }
         });
 
@@ -90,29 +88,29 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         adapter.addFragment(new TutorialFragment(), "Tutorial");
         adapter.addFragment(new SettingsFragment(), "Settings");
         vp.setAdapter(adapter);
-        navigateToPage(Pages.Home);
+        navigateToPage(Pages.HOME);
     }
 
     public void navigateToPage(Pages page) {
         switch (page) {
 
-            case Home:
+            case HOME:
 
                 toolbar.setVisibility(View.INVISIBLE);
                 setViewPager(0);
                 break;
 
-            case GameSetup:
+            case GAME_SETUP:
                 toolbar.setVisibility(View.VISIBLE);
                 setViewPager(1);
                 break;
 
-            case Tutorial:
+            case TUTORIAL:
                 toolbar.setVisibility(View.VISIBLE);
                 setViewPager(2);
                 break;
 
-            case Settings:
+            case SETTINGS:
                 toolbar.setVisibility(View.VISIBLE);
                 setViewPager(3);
                 break;
@@ -127,28 +125,18 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void surfaceCreated(SurfaceHolder holder) {
+
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {}
+    public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {
+        
+    }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {}
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
 
 }

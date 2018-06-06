@@ -20,10 +20,6 @@ public class GainArmyUnitsState implements GameState {
 
     private Territory territory;
 
-    private static final int max_units = 10; // whats the max?
-    private static final int min_units = 1; // whats the max?
-
-
     public GainArmyUnitsState(Game game) {
         this.game = game;
     }
@@ -77,7 +73,7 @@ public class GainArmyUnitsState implements GameState {
             }
             else {
                 Log.i("", "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
-                int clampedNArmies = Util.clamp(territory.getNArmies() + amount, min_units, max_units);
+                int clampedNArmies = Util.clamp(territory.getNArmies() + amount, 1, Game.MAX_ARMIES_PER_TERRITORY);
                 this.territory.setNArmies(clampedNArmies);
                 currentPlayer.addOrRemoveNArmiesToPool(-amount);
                 Log.i(TAG, "PLAYER" + currentPlayer + " UPDATED UNITS AT " + territory.getTerritoryName());

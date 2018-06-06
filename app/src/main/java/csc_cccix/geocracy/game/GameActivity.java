@@ -38,10 +38,10 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "GAME_ACTIVITY";
     public static final transient String USER_ACTION = "USER_ACTION";
 
-    static final public SettingsFragment settingsFragment = new SettingsFragment();
+    public static final SettingsFragment settingsFragment = new SettingsFragment();
 
-    static public Game game;
-    static public GameSurfaceView gameSurfaceView;
+    public static Game game;
+    public static GameSurfaceView gameSurfaceView;
 
     private FragmentTransaction userInterfaceFT;
     private FragmentManager fragmentManager;
@@ -340,16 +340,17 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public void surfaceCreated(SurfaceHolder holder) {
         Log.i(TAG, "SURFACE CREATED");
         disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("WORLD_TOUCH_EVENT", e)));
-        new Handler().postDelayed(() -> {
-            removeActiveOverlayFragment();
-        }, 4000);
+        new Handler().postDelayed(() -> removeActiveOverlayFragment(), 4000);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {
+
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {}
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        
+    }
 
 }
