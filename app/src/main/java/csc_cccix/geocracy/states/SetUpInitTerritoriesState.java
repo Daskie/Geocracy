@@ -3,6 +3,8 @@ package csc_cccix.geocracy.states;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.HashSet;
+
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
@@ -42,6 +44,8 @@ public class SetUpInitTerritoriesState implements GameState {
             return;
         }
 
+        game.getWorld().unhighlightTerritories();
+        game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
         addToSelectedTerritoryUnitCount(1);
 
     }
@@ -108,6 +112,9 @@ public class SetUpInitTerritoriesState implements GameState {
                 Toasty.info(parent.getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show();
             });
         }
+
+        game.getWorld().unhighlightTerritories();
+        game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
 
         String tag = "UI_EVENT";
 
