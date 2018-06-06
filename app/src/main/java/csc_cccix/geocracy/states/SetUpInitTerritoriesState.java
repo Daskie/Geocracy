@@ -60,8 +60,10 @@ public class SetUpInitTerritoriesState implements GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        territory.setOwner(game.getGameData().players[game.getGameData().currentPlayer]);
+        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
+        territory.setOwner(currentPlayer);
         territory.setNArmies(amount);
+        currentPlayer.addOrRemoveNArmies(1);
 
         Log.i(TAG, game.getGameData().players[game.getGameData().currentPlayer].getName() + " ADDED " + territory.getTerritoryName());
 
@@ -72,7 +74,6 @@ public class SetUpInitTerritoriesState implements GameState {
         // If all territories occupied, exit state
         if(game.getWorld().allTerritoriesOccupied()) {
             game.getGameData().currentPlayer = 0; // HUMAN PLAYER
-            Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
             currentPlayer.setArmyPool(currentPlayer.getBonus()); // WILL NEED TO MOVE
             game.setState(new GainArmyUnitsState(game, parent));
             game.getState().initState();

@@ -49,8 +49,11 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         Vec3 color = currentPlayer.getColor();
         image.setBackgroundColor(Util.colorToInt(color));
 
-        TextView details = (TextView) listItem.findViewById(R.id.playerDetails);
+        TextView details = (TextView) listItem.findViewById(R.id.playerName);
         details.setText(currentPlayer.getName());
+
+        TextView unitCount = (TextView) listItem.findViewById(R.id.playerDetails);
+        unitCount.setText("Armies: " + currentPlayer.getNArmies() + " | Territories: " + currentPlayer.getNTerritories());
 
         return listItem;
     }
