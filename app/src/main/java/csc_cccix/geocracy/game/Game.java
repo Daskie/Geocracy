@@ -19,8 +19,6 @@ import csc_cccix.geocracy.states.GainArmyUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
-import csc_cccix.geocracy.states.SelectedAttackTargetTerritoryState;
-import csc_cccix.geocracy.states.SelectedTerritoryState;
 import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
@@ -34,6 +32,7 @@ import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 public class Game implements Serializable {
 
     public static final String TAG = "GAME";
+    public static final int MAX_N_PLAYERS = 8;
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
     public static final transient String USER_ACTION = "USER_ACTION";
 

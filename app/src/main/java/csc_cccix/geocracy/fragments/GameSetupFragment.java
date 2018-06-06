@@ -21,7 +21,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
-import com.jaredrummler.android.colorpicker.ColorShape;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
@@ -45,19 +44,20 @@ public class GameSetupFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
-        Vec3[] colorPresets = Util.genDistinctColors(10, 0.0f);
+
+        Vec3[] colorPresets = Util.genDistinctColors(25, 0.0f);
         int[] colorIntPresets = new int[colorPresets.length];
-        for (int i = 0; i < colorPresets.length; ++i) colorIntPresets[i] = Util.colorToVec3()
+        for (int i = 0; i < colorPresets.length; ++i) colorIntPresets[i] = Util.colorToInt(colorPresets[i]);
+        playerColorSelection = colorIntPresets[(int)(Math.random() * colorIntPresets.length)];
         colorPicker = ColorPickerDialog.newBuilder()
-                .setDialogType(ColorPickerDialog.TYPE_CUSTOM)
+                .setDialogType(ColorPickerDialog.TYPE_PRESETS)
                 .setAllowPresets(true)
+                .setPresets(colorIntPresets)
+                .setColor(playerColorSelection)
+                .setAllowCustom(false)
+                .setShowColorShades(false)
                 .setDialogId(10)
-                .setColor(Color.BLACK)
                 .setShowAlphaSlider(false)
-                .setColorShape(ColorShape.SQUARE)
-                .setPresets(new int[]{
-                    0xFFFF0000
-                })
                 .create();
 
         colorPicker.setColorPickerDialogListener(new ColorPickerDialogListener() {
@@ -77,6 +77,7 @@ public class GameSetupFragment extends Fragment {
         playerCountView = view.findViewById(R.id.playerCount);
 
         playerColorIcon = view.findViewById(R.id.playerColorIcon);
+        playerColorIcon.setBackgroundColor(playerColorSelection);
 
         Button playerColorBtn = view.findViewById(R.id.playerColorBtn);
         RxView.touches(playerColorBtn).subscribe(e -> {
