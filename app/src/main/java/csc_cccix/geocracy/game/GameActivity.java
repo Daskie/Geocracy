@@ -103,7 +103,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         TextView geocracyHeader = new TextView(this);
         geocracyHeader.setTextColor(Color.argb(240, 255, 255, 255));
-        geocracyHeader.setText("Geocracy (v0.1)");
+        geocracyHeader.setText("Geocracy (v0.2)");
         geocracyHeader.setTextSize(18.0f);
         geocracyHeader.setPadding(20, 20, 0, 40);
 

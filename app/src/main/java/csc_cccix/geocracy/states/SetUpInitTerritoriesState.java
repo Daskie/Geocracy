@@ -3,6 +3,8 @@ package csc_cccix.geocracy.states;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.HashSet;
+
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
@@ -42,6 +44,8 @@ public class SetUpInitTerritoriesState implements GameState {
             return;
         }
 
+        game.getWorld().unhighlightTerritories();
+        game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
         addToSelectedTerritoryUnitCount(1);
 
     }
@@ -60,8 +64,10 @@ public class SetUpInitTerritoriesState implements GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        territory.setOwner(game.getGameData().players[game.getGameData().currentPlayer]);
+        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
+        territory.setOwner(currentPlayer);
         territory.setNArmies(amount);
+        currentPlayer.addOrRemoveNArmies(1);
 
         Log.i(TAG, game.getGameData().players[game.getGameData().currentPlayer].getName() + " ADDED " + territory.getTerritoryName());
 
@@ -72,7 +78,6 @@ public class SetUpInitTerritoriesState implements GameState {
         // If all territories occupied, exit state
         if(game.getWorld().allTerritoriesOccupied()) {
             game.getGameData().currentPlayer = 0; // HUMAN PLAYER
-            Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
             currentPlayer.setArmyPool(currentPlayer.getBonus()); // WILL NEED TO MOVE
             game.setState(new GainArmyUnitsState(game, parent));
             game.getState().initState();
@@ -107,6 +112,9 @@ public class SetUpInitTerritoriesState implements GameState {
                 Toasty.info(parent.getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show();
             });
         }
+
+        game.getWorld().unhighlightTerritories();
+        game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
 
         String tag = "UI_EVENT";
 
