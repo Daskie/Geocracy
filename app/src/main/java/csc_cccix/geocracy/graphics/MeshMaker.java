@@ -323,4 +323,73 @@ public abstract class MeshMaker {
         return mesh;
     }
 
+    public static Mesh makeCylinder(String name, int lod) {
+        float theta = 2.0f * (float)Math.PI / lod;
+
+        float[] circXs = new float[lod];
+        float[] circYs = new float[lod];
+        for (int i = 0; i < lod; ++i) {
+            circXs[i] = (float)Math.cos(i * theta);
+            circYs[i] = (float)Math.sin(i * theta);
+        }
+
+        int nCylVerts = lod * 2;
+        int nCapVerts = lod * 2 + 2;
+        int nVerts = nCylVerts + nCapVerts;
+
+        float[] locs = new float[nVerts * 3];
+        float[] norms = new float[nVerts * 3];
+
+        for (int i = 0; i < lod; ++i) {
+            int ci = i * 3;
+            locs[ci] = circXs[i]; locs[ci + 1] = circYs[i]; locs[ci + 2] = 1.0f;
+            norms[ci] = circXs[i]; norms[ci + 1] = circYs[i]; norms[ci + 2] = 0.0f;
+
+            ci = (lod + i) * 3;
+            locs[ci] = circXs[i]; locs[ci + 1] = circYs[i]; locs[ci + 2] = -1.0f;
+            norms[ci] = circXs[i]; norms[ci + 1] = circYs[i]; norms[ci + 2] = 0.0f;
+
+            ci = (2 * lod + i) * 3;
+            locs[ci] = circXs[i]; locs[ci + 1] = circYs[i]; locs[ci + 2] = 1.0f;
+            norms[ci] = 0.0f; norms[ci + 1] = 0.0f; norms[ci + 2] = 1.0f;
+
+            ci = (3 * lod + i) * 3;
+            locs[ci] = circXs[i]; locs[ci + 1] = circYs[i]; locs[ci + 2] = -1.0f;
+            norms[ci] = 0.0f; norms[ci + 1] = 0.0f; norms[ci + 2] = -1.0f;
+        }
+
+        int ci = (nVerts - 2) * 3;
+        locs[ci] = 0.0f; locs[ci + 1] = 0.0f; locs[ci + 2] = 1.0f;
+        norms[ci] = 0.0f; norms[ci + 1] = 0.0f; norms[ci + 2] = 1.0f;
+        ci = (nVerts - 1) * 3;
+        locs[ci] = 0.0f; locs[ci + 1] = 0.0f; locs[ci + 2] = -1.0f;
+        norms[ci] = 0.0f; norms[ci + 1] = 0.0f; norms[ci + 2] = -1.0f;
+
+        int nIndices = lod * 6 + 2 * lod * 3;
+        int[] indices = new int[nIndices];
+
+        int ii = 0;
+        for (int i = 0; i < lod; ++i) {
+            indices[ii++] = i;
+            indices[ii++] = i + lod;
+            indices[ii++] = (i + 1) % lod;
+
+            indices[ii++] = (i + 1) % lod + lod;
+            indices[ii++] = (i + 1) % lod;
+            indices[ii++] = i + lod;
+        }
+        for (int i = 0; i < lod; ++i) {
+            indices[ii++] = nCylVerts + i;
+            indices[ii++] = nCylVerts + (i + 1) % lod;
+            indices[ii++] = nCylVerts + nCapVerts - 2;
+        }
+        for (int i = 0; i < lod; ++i) {
+            indices[ii++] = nCylVerts + (i + 1) % lod + lod;
+            indices[ii++] = nCylVerts + i + lod;
+            indices[ii++] = nCylVerts + nCapVerts - 1;
+        }
+
+        return new Mesh(name, locs, norms, indices);
+    }
+
 }
