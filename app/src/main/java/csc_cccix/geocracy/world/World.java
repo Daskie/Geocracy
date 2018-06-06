@@ -3,12 +3,14 @@ package csc_cccix.geocracy.world;
 import android.util.Log;
 import android.util.Pair;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.graphics.Camera;
@@ -16,51 +18,66 @@ import csc_cccix.geocracy.graphics.Mesh;
 import csc_cccix.geocracy.graphics.MeshMaker;
 import glm_.vec3.Vec3;
 
-public class World {
+public class World implements Serializable {
+
+    private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
 
     public static final int TESSELLATION_DEGREE = 5; // Should really not change
     private static final int MAX_N_TERRITORIES = 40; // Cannot be greater than 63
     private static final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
 
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     Game game;
-    long seed;
-    private Terrain terrain;
+    private long seed;
     private Territory[] territories;
     private Continent[] continents;
-    private OceanRenderer oceanRenderer;
-    private Waterways waterways;
-    private ArmyRenderer armyRenderer;
-    private ArrowRenderer arrowRenderer;
-    private Territory selectedTerritory;
-    private Territory targetedTerritory;
-    private Set<Territory> highlightedTerritories;
-    private boolean selectionChange;
-    private boolean targetChange;
-    private boolean highlightChange;
-    private boolean ownershipChange;
-    private boolean armyChange;
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
+
+    private transient Terrain terrain;
+    private transient OceanRenderer oceanRenderer;
+    private transient Waterways waterways;
+    private transient ArmyRenderer armyRenderer;
+    private transient ArrowRenderer arrowRenderer;
+    private transient Territory selectedTerritory;
+    private transient Territory targetedTerritory;
+    private transient Set<Territory> highlightedTerritories;
+    private transient boolean selectionChange;
+    private transient boolean targetChange;
+    private transient boolean highlightChange;
+    private transient boolean ownershipChange;
+    private transient boolean armyChange;
 
     public World(Game game, long seed) {
         this.game = game;
         this.seed = seed;
-        String tag = "WORLD_LOAD_EVENT";
-        EventBus.publish(tag, 0);
+
+        constructTransient(true);
+    }
+
+    // Called during deserialization
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        constructTransient(false);
+    }
+
+    private void constructTransient(boolean isNew) {
         Mesh sphereMesh = MeshMaker.makeSphereIndexed("World", TESSELLATION_DEGREE);
-        EventBus.publish(tag, 15);
-        territories = new Territory[MAX_N_TERRITORIES];
-        continents = new Continent[MAX_N_CONTINENTS];
         terrain = new Terrain(this, sphereMesh, seed, MAX_N_TERRITORIES, MAX_N_CONTINENTS);
-        EventBus.publish(tag, 75);
-        Pair<Territory[], Continent[]> pair = terrain.retrieveTerrsConts();
-        territories = pair.first;
-        continents = pair.second;
+        if (isNew) {
+            Pair<Territory[], Continent[]> pair = terrain.retrieveTerrsConts();
+            territories = pair.first;
+            continents = pair.second;
+        }
         oceanRenderer = new OceanRenderer(sphereMesh);
-        EventBus.publish(tag, 90);
         waterways = terrain.createWaterways(100, 0.025f);
         armyRenderer = new ArmyRenderer(this);
         arrowRenderer = new ArrowRenderer(this, 100);
         highlightedTerritories = new HashSet<>();
-        EventBus.publish(tag, 100);
+        selectionChange = true;
+        targetChange = true;
+        highlightChange = true;
+        ownershipChange = true;
+        armyChange = true;
     }
 
     public boolean load() {
@@ -234,6 +251,10 @@ public class World {
         int nArmies = 0;
         for (Territory terr : territories) nArmies += terr.getNArmies();
         return nArmies;
+    }
+
+    public long getSeed() {
+        return seed;
     }
 
     Terrain getTerrain() {

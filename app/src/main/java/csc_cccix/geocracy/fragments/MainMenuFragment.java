@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.main_menu.MenuActivity;
@@ -36,10 +34,7 @@ public class MainMenuFragment extends Fragment {
 
         continueButton = view.findViewById(R.id.continueButton);
 
-        GameSaves gameSaves = new GameSaves(getContext());
-        Game loadedGame = gameSaves.loadGameFromLocalStorage();
-        if (loadedGame != null) {
-            Log.i("LOADED", loadedGame.toString());
+        if (Game.isSavedGame()) {
             continueButton.setEnabled(true);
         }
 
@@ -48,7 +43,7 @@ public class MainMenuFragment extends Fragment {
 
             Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            mainIntent.putExtra("GAME_LOAD", loadedGame.getGameData());
+            mainIntent.putExtra("GAME_LOAD", true);
             this.startActivity(mainIntent);
             return false;
         });

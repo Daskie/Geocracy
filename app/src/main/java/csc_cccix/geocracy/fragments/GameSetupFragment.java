@@ -23,10 +23,10 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.GameActivity;
-import csc_cccix.geocracy.game.GameData;
-import csc_cccix.geocracy.game.Player;
 import es.dmoral.toasty.Toasty;
+import glm_.vec3.Vec3;
 
 public class GameSetupFragment extends Fragment {
 
@@ -43,11 +43,18 @@ public class GameSetupFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
 
+        Vec3[] colorPresets = Util.genDistinctColors(25, 0.0f);
+        int[] colorIntPresets = new int[colorPresets.length];
+        for (int i = 0; i < colorPresets.length; ++i) colorIntPresets[i] = Util.colorToInt(colorPresets[i]);
+        playerColorSelection = colorIntPresets[(int)(Math.random() * colorIntPresets.length)];
         colorPicker = ColorPickerDialog.newBuilder()
-                .setDialogType(ColorPickerDialog.TYPE_CUSTOM)
+                .setDialogType(ColorPickerDialog.TYPE_PRESETS)
                 .setAllowPresets(true)
+                .setPresets(colorIntPresets)
+                .setColor(playerColorSelection)
+                .setAllowCustom(false)
+                .setShowColorShades(false)
                 .setDialogId(10)
-                .setColor(Color.BLACK)
                 .setShowAlphaSlider(false)
                 .create();
 
@@ -68,6 +75,7 @@ public class GameSetupFragment extends Fragment {
         playerCountView = view.findViewById(R.id.playerCount);
 
         playerColorIcon = view.findViewById(R.id.playerColorIcon);
+        playerColorIcon.setBackgroundColor(playerColorSelection);
 
         Button playerColorBtn = view.findViewById(R.id.playerColorBtn);
         RxView.touches(playerColorBtn).subscribe(e -> {
@@ -90,10 +98,9 @@ public class GameSetupFragment extends Fragment {
             Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
             Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            GameData newGameData = new GameData();
-            newGameData.players = new Player[playerCount];
-            newGameData.mainPlayerColor = playerColorSelection;
-            mainIntent.putExtra("GAME_LOAD", newGameData);
+            mainIntent.putExtra("NUM_PLAYERS", playerCount);
+            mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
+            mainIntent.putExtra("SEED", 0L); // TODO: implement seed text field or something
             startActivity(mainIntent);
         });
 

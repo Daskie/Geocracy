@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import csc_cccix.geocracy.SerializableVec3;
 import csc_cccix.geocracy.world.Continent;
 import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
@@ -11,22 +12,21 @@ import glm_.vec3.Vec3;
 import static glm_.Java.glm;
 
 public class Player implements Serializable {
+
+    private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
+
     private int id; // starts at 1. 0 indicates no player
     public String name;
     private Set<Territory> territories;
-    private transient Vec3 color;
-    private transient int armyPool;
+    private SerializableVec3 color;
+    private int armyPool;
     private int armies;
     private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
 
-    public Player() {
-
-    }
-
     public Player(int id, Vec3 color) {
         this.id = id;
-        this.color = new Vec3(color);
+        this.color = new SerializableVec3(new Vec3(color));
         this.territories = new HashSet<>();
         this.armies = 0;
         this.ownedContinents = new HashSet<>();
@@ -63,7 +63,7 @@ public class Player implements Serializable {
     public int getNTerritories() {return territories.size();}
 
     public Vec3 getColor() {
-        return color;
+        return color.get();
     }
 
     public void addOrRemoveNArmies(int numArmies){
