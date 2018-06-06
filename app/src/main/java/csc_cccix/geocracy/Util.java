@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import glm_.vec2.Vec2;
 import glm_.vec3.Vec3;
@@ -83,7 +84,7 @@ public abstract class Util {
             }
             return lines.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.i("UTIL", e.toString());
             return null;
         }
     }
@@ -93,7 +94,7 @@ public abstract class Util {
         try {
             return BitmapFactory.decodeStream(Global.getContext().getAssets().open(filename));
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.i("UTIL", e.toString());
             return null;
         }
     }

@@ -27,7 +27,7 @@ public class IntentToAttackState implements  GameState {
     public void selectTargetTerritory(Territory targetTerritory) {
         Log.i(TAG, "ANOTHER TERRITORY SELECTED -> GO TO SELECTED ATTACK TARGET STATE");
         if (originTerritory.getAdjacentTerritories().contains(targetTerritory)) {
-            game.setState(game.selectedAttackTargetTerritoryState);
+            game.setState(new SelectedAttackTargetTerritoryState(game));
             game.getState().selectOriginTerritory(this.originTerritory);
             game.getState().selectTargetTerritory(targetTerritory);
             game.getState().initState();
@@ -39,7 +39,7 @@ public class IntentToAttackState implements  GameState {
 
     public void enableAttackMode() {
         Log.i(TAG, "-> Disable Attack Mode");
-        game.setState(game.selectedTerritoryState);
+        game.setState(new SelectedTerritoryState(game));
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().initState();
     }
@@ -63,7 +63,7 @@ public class IntentToAttackState implements  GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;
-        game.setState(game.defaultState);
+        game.setState(new DefaultState(game));
         game.getState().initState();
     }
 

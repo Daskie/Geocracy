@@ -43,7 +43,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "-> ENTER DICE ROLL STATE");
-        game.setState(game.diceRollState);
+        game.setState(new DiceRollState(game));
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
         game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, 3),
@@ -61,17 +61,17 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;
-        game.setState(game.defaultState);
+        game.setState(new DefaultState(game));
         game.getState().initState();
     }
 
     public void initState() {
         Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");
-        game.activity.showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory));
+        game.getActivity().showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().targetTerritory(this.targetTerritory);
-        game.cameraController.targetTerritory(this.targetTerritory);
+        game.getCameraController().targetTerritory(this.targetTerritory);
 
         originTerritoryLock = true;
 
