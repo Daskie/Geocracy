@@ -2,14 +2,10 @@ package csc_cccix.geocracy.fragments;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +21,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
+import com.jaredrummler.android.colorpicker.ColorShape;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.game.GameActivity;
@@ -53,6 +50,10 @@ public class GameSetupFragment extends Fragment {
                 .setDialogId(10)
                 .setColor(Color.BLACK)
                 .setShowAlphaSlider(false)
+                .setColorShape(ColorShape.SQUARE)
+                .setPresets(new int[]{
+                    0xFFFF0000
+                })
                 .create();
 
         colorPicker.setColorPickerDialogListener(new ColorPickerDialogListener() {
