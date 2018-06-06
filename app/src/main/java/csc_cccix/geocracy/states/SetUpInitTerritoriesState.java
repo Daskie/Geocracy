@@ -7,7 +7,6 @@ import java.util.HashSet;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
@@ -20,12 +19,10 @@ public class SetUpInitTerritoriesState implements GameState {
 
     private Game game;
     private Territory territory;
-    private GameActivity parent;
 
 
-    public SetUpInitTerritoriesState(Game game, GameActivity parent) {
+    public SetUpInitTerritoriesState(Game game) {
         this.game = game;
-        this.parent = parent;
     }
 
     public void selectOriginTerritory(Territory territory) {
@@ -33,13 +30,9 @@ public class SetUpInitTerritoriesState implements GameState {
         this.territory = territory;
 
         //illegal territory selection for setting up territories
-        if(this.territory.getOwner()!=null){
-            if(game.getGameData().players[game.getGameData().currentPlayer] instanceof HumanPlayer) {
-                this.parent.runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toasty.info(parent.getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show();
-                    }
-                });
+        if(this.territory.getOwner() != null){
+            if(game.getCurrentPlayer() instanceof HumanPlayer) {
+                game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show());
             }
             return;
         }
@@ -64,22 +57,20 @@ public class SetUpInitTerritoriesState implements GameState {
 
     public void addToSelectedTerritoryUnitCount(int amount) {
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
+        Player currentPlayer = game.getCurrentPlayer();
         territory.setOwner(currentPlayer);
         territory.setNArmies(amount);
         currentPlayer.addOrRemoveNArmies(1);
 
-        Log.i(TAG, game.getGameData().players[game.getGameData().currentPlayer].getName() + " ADDED " + territory.getTerritoryName());
+        Log.i(TAG, currentPlayer.getName() + " ADDED " + territory.getTerritoryName());
 
-        game.getGameData().currentPlayer++;
-        if(game.getGameData().currentPlayer==game.getGameData().players.length)
-            game.getGameData().currentPlayer=0;
+        game.nextPlayer();
 
         // If all territories occupied, exit state
         if(game.getWorld().allTerritoriesOccupied()) {
-            game.getGameData().currentPlayer = 0; // HUMAN PLAYER
+            game.firstPlayer(); // HUMAN PLAYER
             currentPlayer.setArmyPool(currentPlayer.getBonus()); // WILL NEED TO MOVE
-            game.setState(new GainArmyUnitsState(game, parent));
+            game.setState(new GainArmyUnitsState(game));
             game.getState().initState();
         }
 
@@ -108,8 +99,8 @@ public class SetUpInitTerritoriesState implements GameState {
             game.getWorld().unhighlightTerritories();
             game.getCameraController().targetTerritory(this.territory);
         } else {
-            this.parent.runOnUiThread(() -> {
-                Toasty.info(parent.getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show();
+            game.getActivity().runOnUiThread(() -> {
+                Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show();
             });
         }
 

@@ -7,26 +7,27 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import csc_cccix.geocracy.SerializableVec3;
 import csc_cccix.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
 public class Territory implements Serializable {
 
+    private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
+
     private static int fakerSeed = 1;
     private static Faker faker = new Faker(new Random(fakerSeed));
 
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private int id; // starts at 1. 0 indicates no territory
     private String territoryName;
-    private transient World world;
-    private transient Continent continent;
-    private transient Set<Territory> adjacentTerritories;
-    private transient Vec3 center;
-    private transient Player owner;
+    private World world;
+    private Continent continent;
+    private Set<Territory> adjacentTerritories;
+    private SerializableVec3 center;
+    private Player owner;
     private int nArmies;
-
-    public Territory() {
-
-    }
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
 
     public Territory(int id, World world, Continent continent, Set<Territory> adjacentTerritories, Vec3 center) {
         this.id = id;
@@ -34,7 +35,7 @@ public class Territory implements Serializable {
         this.world = world;
         this.continent = continent;
         this.adjacentTerritories = adjacentTerritories;
-        this.center = center;
+        this.center = new SerializableVec3(center);
         nArmies = 0;
     }
 
@@ -119,7 +120,7 @@ public class Territory implements Serializable {
     }
 
     public Vec3 getCenter() {
-        return center;
+        return center.get();
     }
 
     public Player getOwner() {

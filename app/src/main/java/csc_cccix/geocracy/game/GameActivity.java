@@ -23,9 +23,10 @@ import com.jakewharton.rxbinding2.view.RxView;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.GameSaves;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
+import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import es.dmoral.toasty.Toasty;
@@ -54,14 +55,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
 
-    private GameSaves gameSaves;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         disposables = new CompositeDisposable();
-        gameSaves = new GameSaves(this.getApplicationContext());
 
         FloatingActionButton attackBtn;
         FloatingActionButton addUnitBtn;
@@ -84,16 +82,23 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         fragmentManager = getSupportFragmentManager();
 
         // Setup game
-        GameData loadedGameData = (GameData) getIntent().getSerializableExtra("GAME_LOAD");
-        if (loadedGameData != null) {
-            Log.i(TAG, "GAME LOADED: " + loadedGameData.players);
-            game = new Game(this, loadedGameData);
-        } else {
-            GameData newGameData = new GameData();
-            newGameData.currentPlayer = 0;
-            newGameData.gameTurn = 0;
-            newGameData.players = new Player[8];
-            game = new Game(this, newGameData);
+        Boolean load = (Boolean)getIntent().getSerializableExtra("GAME_LOAD");
+        // Load game
+        if (load != null && load) {
+            game = Game.loadGame();
+            if (game == null) {
+                Log.e("", "Failed to load game");
+                Util.exit();
+            }
+            game.setActivityAndState(this, new DefaultState(game));
+        }
+        // Start new game
+        else {
+            int numPlayers = (int)getIntent().getSerializableExtra("NUM_PLAYERS");
+            int mainPlayerColor = (int)getIntent().getSerializableExtra("MAIN_PLAYER_COLOR");
+            long seed = (long)getIntent().getSerializableExtra(("SEED"));
+            game = new Game(numPlayers, Util.colorToVec3(mainPlayerColor), seed);
+            game.setActivityAndState(this, new DefaultState(game));
         }
 
         // Get Layout Frame +
@@ -230,9 +235,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private void handleSaveEvent(GameEvent event) {
         if (event.action == GameAction.SAVE_GAME_TAPPED) {
-            gameSaves.saveGameToLocalStorage(game);
-            Toasty.info(this, "Game Saved!", Toast.LENGTH_LONG).show();
-
+            if (Game.saveGame(game)) {
+                Toasty.info(this, "Game Saved!", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Log.e("", "Failed to save game");
+                Toasty.info(this, "Error saving game", Toast.LENGTH_LONG).show();
+            }
         }
     }
 

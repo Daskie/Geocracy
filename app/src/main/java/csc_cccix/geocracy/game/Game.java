@@ -1,14 +1,22 @@
 package csc_cccix.geocracy.game;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.util.Log;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Random;
 
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
@@ -31,51 +39,104 @@ import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
 
+    private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
+
     public static final String TAG = "GAME";
     public static final int MAX_N_PLAYERS = 8;
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
-    public static final transient String USER_ACTION = "USER_ACTION";
+    public static final String USER_ACTION = "USER_ACTION";
+    public static final String saveFileName = "save";
 
-    private transient CameraController cameraController;
-    private transient World world;
+    public static boolean saveGame(Game game) {
+        try {
+            FileOutputStream fos = Global.getContext().openFileOutput(saveFileName, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(game);
+            oos.close();
+            fos.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Game loadGame() {
+        try {
+            FileInputStream fis = Global.getContext().openFileInput(saveFileName);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Game game = (Game)ois.readObject();
+            ois.close();
+            fis.close();
+            return game;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static boolean isSavedGame() {
+        return Arrays.binarySearch(Global.getContext().fileList(), saveFileName) >= 0;
+    }
+
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
+    private World world;
+    private Player[] players;
+    private int currentPlayerIndex;
+    private int gameTurn;
+    private long lastT; // Time of the previous game update / frame relative to the start of the game
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
+
+    private transient GameActivity activity;
+    private transient GameState state;
+
     private transient SpaceRenderer spaceRenderer;
+    private transient CameraController cameraController;
 
     private transient int idFBHandle;
     private transient int idValueTexHandle;
     private transient int idDepthRBHandle;
+    private transient ByteBuffer readbackBuffer;
 
     private transient Vec2i screenSize;
     private transient Vec2i swipeDelta;
     private transient Vec2i tappedPoint;
     private transient float zoomFactor;
-    private transient ByteBuffer readbackBuffer;
 
-    private transient GameActivity activity;
+    private transient long startT; // Time the game was started / loaded relative to start of game
+    private transient long lastTimestamp;
 
-    transient GameState state;
-    private GameData gameData;
+    public Game(int nPlayers, Vec3 mainPlayerColor, long seed) {
+        world = new World(this, seed); // TODO: seed should not be predefined
 
-    public Game() {
+        players = new Player[nPlayers];
+        Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
+        players[0] = new HumanPlayer(1, playerColors[0]);
+        for (int i = 1; i < players.length; ++i) {
+            players[i] = new AIPlayer(i + 1, playerColors[i]);
+        }
+        currentPlayerIndex = 0;
 
+        gameTurn = 0;
+
+        lastT = 0;
+
+        constructTransient();
     }
 
-    public Game(GameActivity activity, GameData data) {
-        this.activity = activity;
-        if (data != null) this.gameData = data;
+    // Called during deserialization
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        constructTransient();
+    }
 
-        world = new World(this, 0); // TODO: seed should not be predefined
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
 
-        Vec3[] playerColors = Util.genDistinctColors(gameData.players.length, 0.0f);
-
-        gameData.players[0] = new HumanPlayer(1, Util.colorToVec3(gameData.mainPlayerColor));
-
-        for (int i = 1; i < gameData.players.length; ++i) {
-            gameData.players[i] = new AIPlayer(i + 1, playerColors[i]);
-        }
-
-        gameData.currentPlayer = 0;
-
+    private void constructTransient() {
         spaceRenderer = new SpaceRenderer();
+
         cameraController = new CameraController();
         EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
 
@@ -83,13 +144,15 @@ public class Game implements Serializable {
 
         EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
 
-        // Should be last in constructor
-        gameData.startT = System.nanoTime();
-        gameData.lastT = 0;
+        startT = lastT;
+        lastTimestamp = System.nanoTime();
+    }
 
-        setState(new SetUpInitTerritoriesState(this, this.getActivity()));
+    // Must be called once after Game is either newly constructed or loaded
+    public void setActivityAndState(GameActivity activity, GameState state) {
+        this.activity = activity;
+        setState(state);
         getState().initState();
-
     }
 
     private void handleUserAction(GameEvent event) {
@@ -103,7 +166,7 @@ public class Game implements Serializable {
 
             case TOGGLE_GAME_INFO_VISIBILITY:
                 Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
-                activity.showOverlayFragment(GameInfoFragment.newInstance(gameData.players));
+                activity.showOverlayFragment(GameInfoFragment.newInstance(players));
                 break;
 
             case TERRITORY_SELECTED:
@@ -198,10 +261,6 @@ public class Game implements Serializable {
         return activity;
     }
 
-    public GameData getGameData() {
-        return gameData;
-    }
-
     // May be called more than once during app execution (waking from sleep, for instance)
     // In this method we need to create/recreate any GPU resources
     public boolean loadOpenGL() {
@@ -234,14 +293,26 @@ public class Game implements Serializable {
 
     // One iteration of the game loop
     public void step() {
-        long t = System.nanoTime() - gameData.startT;
-        float dt = (t - gameData.lastT) * 1e-9f;
+        long currentTimestamp = System.nanoTime();
+        long deltaT = currentTimestamp - lastTimestamp;
+        long t = lastT + deltaT;
+        float dt = (float)deltaT * 1e-9f;
 //        Log.i(TAG, "FPS: " + (1.0f / dt));
 
         update(t, dt);
         render(t, dt);
 
-        gameData.lastT = t;
+        lastT = t;
+        lastTimestamp = currentTimestamp;
+    }
+
+    // Increments current player index
+    public void nextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    }
+
+    public void firstPlayer() {
+        currentPlayerIndex = 0;
     }
 
     public void screenResized(Vec2i size) {
@@ -275,11 +346,12 @@ public class Game implements Serializable {
 
     // The core game logic
     private void update(long t, float dt) {
-
-        if(gameData.players[gameData.currentPlayer] instanceof HumanPlayer)
+        if(getCurrentPlayer() instanceof HumanPlayer) {
             handleInput();
-        else
+        }
+        else {
             handleComputerInput();
+        }
 
         cameraController.update(dt);
     }
@@ -400,7 +472,11 @@ public class Game implements Serializable {
     }
 
     public Player[] getPlayers() {
-        return gameData.players;
+        return players;
+    }
+
+    public Player getCurrentPlayer() {
+        return players[currentPlayerIndex];
     }
 
 }

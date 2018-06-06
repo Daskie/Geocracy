@@ -25,8 +25,6 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.GameActivity;
-import csc_cccix.geocracy.game.GameData;
-import csc_cccix.geocracy.game.Player;
 import es.dmoral.toasty.Toasty;
 import glm_.vec3.Vec3;
 
@@ -100,10 +98,9 @@ public class GameSetupFragment extends Fragment {
             Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
             Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            GameData newGameData = new GameData();
-            newGameData.players = new Player[playerCount];
-            newGameData.mainPlayerColor = playerColorSelection;
-            mainIntent.putExtra("GAME_LOAD", newGameData);
+            mainIntent.putExtra("NUM_PLAYERS", playerCount);
+            mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
+            mainIntent.putExtra("SEED", 0L); // TODO: implement seed text field or something
             startActivity(mainIntent);
         });
 

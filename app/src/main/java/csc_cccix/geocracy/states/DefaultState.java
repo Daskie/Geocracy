@@ -4,8 +4,6 @@ import android.util.Log;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameActivity;
-import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
@@ -21,7 +19,7 @@ public class DefaultState implements GameState {
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
         if(!game.getWorld().allTerritoriesOccupied())
-            game.setState(new SetUpInitTerritoriesState(game, game.getActivity()));
+            game.setState(new SetUpInitTerritoriesState(game));
         else
             game.setState(new SelectedTerritoryState(game));
         game.getState().selectOriginTerritory(territory);
@@ -63,8 +61,7 @@ public class DefaultState implements GameState {
         game.getWorld().untargetTerritory();
         game.getWorld().unhighlightTerritories();
 
-        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
-        game.getWorld().highlightTerritories(currentPlayer.getTerritories());
+        game.getWorld().highlightTerritories(game.getCurrentPlayer().getTerritories());
 
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);

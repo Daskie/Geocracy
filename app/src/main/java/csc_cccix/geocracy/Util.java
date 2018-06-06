@@ -237,10 +237,10 @@ public abstract class Util {
         return cylindricToCartesian((float)Math.sqrt(1.0f - z * z), theta, z);
     }
 
-    // Get RGB color from Hue Saturation Luminosity
+    // Get RGB color from HSV color
     // All three inputs are between 0.0 and 1.0
-    public static Vec3 hsv2rgb(float hue, float sat, float val) {
-        int color = Color.HSVToColor(new float[]{ 360.0f * hue, sat, val });
+    public static Vec3 hsv2rgb(Vec3 hsv) {
+        int color = Color.HSVToColor(new float[]{ 360.0f * hsv.x, hsv.y, hsv.z });
         final float factor = 1.0f / 255.0f;
         return new Vec3(
             ((color >> 16) & 0xFF) * factor,
@@ -249,12 +249,28 @@ public abstract class Util {
         );
     }
 
+    // Get HSV color from RGB color
+    // All three outputs are between 0.0 and 1.0
+    public static Vec3 rgb2hsv(Vec3 rgb) {
+        float[] hsv = new float[3];
+        Color.RGBToHSV((int)(rgb.x * 255.0f), (int)(rgb.y * 255.0f), (int)(rgb.z * 255.0f), hsv);
+        return new Vec3(hsv[0] / 360.0f, hsv[1], hsv[2]);
+    }
+
+    // Generates n "bright" colors
     public static Vec3[] genDistinctColors(int n, float hueOffset) {
         Vec3[] colors = new Vec3[n];
+        Vec3 hsv = new Vec3(0.0f, 1.0f, 1.0f);
         for(int i = 0; i < n; ++i) {
-            colors[i] = hsv2rgb(glm.fract((float)i / n + hueOffset), 1.0f, 1.0f);
+            hsv.x = glm.fract((float)i / n + hueOffset);
+            colors[i] = hsv2rgb(hsv);
         }
         return colors;
+    }
+
+    // Returns the hue of the color in range [0.0, 1.0)
+    public static float getHue(Vec3 color) {
+        return rgb2hsv(color).x;
     }
 
     // returns vec3 from int color
