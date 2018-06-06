@@ -4,8 +4,8 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import csc_cccix.geocracy.EventBus;

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;

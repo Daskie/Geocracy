@@ -1,10 +1,8 @@
 package csc_cccix.geocracy.main_menu;
 
-import android.app.FragmentManager;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,13 +13,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.GameSaves;
 import csc_cccix.geocracy.fragments.GameSetupFragment;
 import csc_cccix.geocracy.fragments.MainMenuFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.fragments.TutorialFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameSurfaceView;
 
 public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 

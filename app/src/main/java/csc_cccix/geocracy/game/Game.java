@@ -19,8 +19,6 @@ import csc_cccix.geocracy.states.GainArmyUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
-import csc_cccix.geocracy.states.SelectedAttackTargetTerritoryState;
-import csc_cccix.geocracy.states.SelectedTerritoryState;
 import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;

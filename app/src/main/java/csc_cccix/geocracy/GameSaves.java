@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameActivity;
 
 public class GameSaves {
 

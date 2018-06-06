@@ -1,7 +1,5 @@
 package csc_cccix.geocracy.states;
 
-import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.world.Territory;
 
 public interface GameState {
