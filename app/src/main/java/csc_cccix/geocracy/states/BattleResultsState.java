@@ -49,6 +49,8 @@ public class BattleResultsState implements  GameState {
         Log.i(TAG, "USER CANCELED ACTION -> N/A");
     }
 
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(new DefaultState(game));
@@ -64,7 +66,7 @@ public class BattleResultsState implements  GameState {
         game.getCameraController().targetTerritory(this.targetTerritory);
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
         EventBus.publish(ui_tag, UIEvent.HIDE_CANCEL_BUTTON);
     }
 

@@ -233,9 +233,16 @@ public class Game implements Serializable {
 
                 getState().cancelAction();
 
-                if (getState().getClass() != GainArmyUnitsState.class) {
+                if (getState().getClass() != GainArmyUnitsState.class || getState().getClass() != DefaultState.class) {
                     getState().initState();
                 }
+
+                break;
+
+            case END_TURN_ACTION:
+
+                Log.i(TAG, "END TURN TAPPED");
+                getState().endTurn();
 
                 break;
 

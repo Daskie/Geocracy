@@ -60,6 +60,8 @@ public class IntentToAttackState implements  GameState {
         Log.i(TAG, "INVALID ACTION: USER CONFIRMED ACTION");
     }
 
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;
@@ -70,13 +72,15 @@ public class IntentToAttackState implements  GameState {
     public void initState() {
         Log.i(TAG, "INIT STATE");
         Log.i(TAG, "TERRITORY SELECTED, ATTACK MODE ENABLED: -> DISPLAY ADJACENT TERRITORIES AVAILABLE TO ATTACK");
-        game.getWorld().highlightTerritories(originTerritory.getAdjacentTerritories());
+
+        game.getWorld().highlightTerritories(originTerritory.getAdjacentEnemyTerritories());
 
         originTerritoryLock = true;
 
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.HIDE_END_TURN_BUTTON);
         EventBus.publish(ui_tag, UIEvent.SHOW_CANCEL_BUTTON);
         EventBus.publish(ui_tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
 

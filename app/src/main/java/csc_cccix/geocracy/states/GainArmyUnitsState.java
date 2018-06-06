@@ -103,6 +103,7 @@ public class GainArmyUnitsState implements GameState {
         EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");

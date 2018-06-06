@@ -55,6 +55,8 @@ public class SelectedTerritoryState implements  GameState {
         Log.i(TAG, "INVALID ACTION: USER CANCELED ACTION");
     }
 
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
@@ -69,11 +71,10 @@ public class SelectedTerritoryState implements  GameState {
         game.getWorld().unhighlightTerritories();
         game.getCameraController().targetTerritory(this.territory);
         String ui_tag = "UI_EVENT";
-        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
-
+        EventBus.publish(ui_tag, UIEvent.SHOW_END_TURN_BUTTON);
         EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
+        EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
         EventBus.publish(ui_tag, UIEvent.SHOW_CANCEL_BUTTON);
-
         EventBus.publish(ui_tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 

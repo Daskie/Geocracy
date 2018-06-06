@@ -11,5 +11,6 @@ public enum GameAction {
     CONFIRM_UNITS_TAPPED,
     CONFIRM_ACTION,
     CANCEL_ACTION,
+    END_TURN_ACTION,
     SAVE_GAME_TAPPED
 }

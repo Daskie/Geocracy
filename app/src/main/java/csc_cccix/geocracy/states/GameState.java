@@ -1,7 +1,5 @@
 package csc_cccix.geocracy.states;
 
-import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.world.Territory;
 
 public interface GameState {
@@ -13,7 +11,7 @@ public interface GameState {
     void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails);
     void battleCompleted(BattleResultDetails battleResultDetails);
     void addToSelectedTerritoryUnitCount(int amount);
-
+    void endTurn();
     void enableAttackMode();
     void initState();
 }

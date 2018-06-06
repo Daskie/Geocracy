@@ -5,7 +5,6 @@ import android.util.Log;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
@@ -57,6 +56,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     public void confirmAction() {
         Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
     }
+
+    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");

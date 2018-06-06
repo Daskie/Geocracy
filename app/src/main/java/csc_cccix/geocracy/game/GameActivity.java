@@ -61,6 +61,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         disposables = new CompositeDisposable();
 
+        FloatingActionButton endTurnButton;
         FloatingActionButton attackBtn;
         FloatingActionButton addUnitBtn;
         FloatingActionButton removeUnitBtn;
@@ -124,6 +125,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.CANCEL_ACTION, null));
+            }
+        }));
+
+        endTurnButton = findViewById(R.id.endTurnButton);
+        endTurnButton.hide();
+        disposables.add(RxView.touches(endTurnButton).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.END_TURN_ACTION, null));
             }
         }));
 
@@ -196,6 +205,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             cancelBtn.show();
                             break;
 
+                        case SHOW_END_TURN_BUTTON:
+                            endTurnButton.show();
+                            break;
+
+                        case HIDE_END_TURN_BUTTON:
+                            endTurnButton.hide();
+                            break;
+
                         case HIDE_UPDATE_UNITS_MODE_BUTTONS:
                             removeUnitBtn.hide();
                             addUnitBtn.hide();
@@ -216,10 +233,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                         case SET_ATTACK_MODE_ACTIVE:
                             attackBtn.setAlpha(1.0f);
+                            attackBtn.refreshDrawableState();
                             break;
 
                         case SET_ATTACK_MODE_INACTIVE:
                             attackBtn.setAlpha(0.4f);
+                            attackBtn.refreshDrawableState();
                             break;
 
                         default:
