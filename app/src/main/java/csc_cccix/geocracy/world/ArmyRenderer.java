@@ -27,9 +27,7 @@ public class ArmyRenderer {
     public ArmyRenderer(World world) {
         this.world = world;
         shader = new ArmyShader();
-        mesh = MeshMaker.makeCube("Army");
-        mesh.translate(new Vec3(0.0f, 0.0f, 1.0f));
-        mesh.unindex();
+        mesh = MeshMaker.makeCylinder("Army", 32);
         genArmyData();
     }
 
@@ -119,7 +117,12 @@ public class ArmyRenderer {
         shader.setCameraLocation(camera.getLocation());
         shader.setLightDirection(lightDir);
         GLES30.glBindVertexArray(mesh.getVAOHandle());
-        GLES30.glDrawArraysInstanced(GLES30.GL_TRIANGLES, 0, mesh.getNumVertices(), nArmies);
+        if (mesh.isIndexed()) {
+            GLES30.glDrawElementsInstanced(GLES30.GL_TRIANGLES, mesh.getNumIndices(), GLES30.GL_UNSIGNED_INT, 0, nArmies);
+        }
+        else {
+            GLES30.glDrawArraysInstanced(GLES30.GL_TRIANGLES, 0, mesh.getNumVertices(), nArmies);
+        }
         GLES30.glBindVertexArray(0);
     }
 

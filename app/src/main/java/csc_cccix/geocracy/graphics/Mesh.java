@@ -218,6 +218,8 @@ public class Mesh {
 
     public int getNumIndices() { return indices == null ? 0 : indices.length; }
 
+    public boolean isIndexed() { return indices != null; }
+
     public int getVBOHandle() { return vboHandle; }
 
     public int getIBOHandle() { return iboHandle; }

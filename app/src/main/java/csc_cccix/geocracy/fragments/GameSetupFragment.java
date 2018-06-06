@@ -24,13 +24,14 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import es.dmoral.toasty.Toasty;
 import glm_.vec3.Vec3;
 
 public class GameSetupFragment extends Fragment {
 
-    private int playerCount = 4;
+    private int playerCount = Game.DEFAULT_N_PLAYERS;
     private TextView playerCountView;
 
     private ColorPickerDialog colorPicker;
@@ -85,10 +86,11 @@ public class GameSetupFragment extends Fragment {
         });
 
         SeekBar numberofPlayers = view.findViewById(R.id.numberofPlayers);
-        numberofPlayers.setProgress(playerCount);
+        numberofPlayers.setMax(Game.MAX_N_PLAYERS - Game.MIN_N_PLAYERS);
+        numberofPlayers.setProgress(playerCount - Game.MIN_N_PLAYERS);
 
         RxSeekBar.changeEvents(numberofPlayers).subscribe(e -> {
-            playerCount = e.view().getProgress() + 4;
+            playerCount = e.view().getProgress() + Game.MIN_N_PLAYERS;
             playerCountView.setText(Integer.toString(playerCount));
         });
 

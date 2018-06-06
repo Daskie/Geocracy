@@ -43,6 +43,8 @@ public class Game implements Serializable {
 
     public static final String TAG = "GAME";
     public static final int MAX_N_PLAYERS = 8;
+    public static final int MIN_N_PLAYERS = 2;
+    public static final int DEFAULT_N_PLAYERS = 4;
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
     public static final String USER_ACTION = "USER_ACTION";
     public static final String saveFileName = "save";
