@@ -23,6 +23,7 @@ public class Player implements Serializable {
     private int armies;
     private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
+    private int die[];
 
     public Player(int id, Vec3 color) {
         this.id = id;
@@ -30,6 +31,7 @@ public class Player implements Serializable {
         this.territories = new HashSet<>();
         this.armies = 0;
         this.ownedContinents = new HashSet<>();
+        this.die = new int[] {-1,-1,-1};
     }
 
     // Called by Territory.setOwner
@@ -96,6 +98,9 @@ public class Player implements Serializable {
             bonus += continent.getBonus();
         }
     }
+
+    public int[] getDie(){ return die; }
+    public void addToDie(int index, int value){ die[index] = value; }
 
     @Override
     public String toString() {

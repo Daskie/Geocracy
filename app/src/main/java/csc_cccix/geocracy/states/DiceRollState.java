@@ -40,6 +40,16 @@ public class DiceRollState implements  GameState {
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "INVALID ACTION: -> ALREADY PERFORMING DICE ROLL");
+        roll(attackerDetails.unitCount, defenderDetails.unitCount);
+    }
+
+
+    public void roll(int attackerNumDie, int defenderNumDie){
+        for(int i = 0; i < attackerNumDie; i++)
+            this.originTerritory.getOwner().addToDie(i, (int)(Math.random()*6) + 1);
+
+        for(int i = 0; i < defenderNumDie; i++)
+            this.targetTerritory.getOwner().addToDie(i, (int)(Math.random()*6) + 1);
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
