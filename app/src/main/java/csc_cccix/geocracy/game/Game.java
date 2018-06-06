@@ -33,10 +33,11 @@ import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
 
+    public static final String TAG = "GAME";
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
     public static final transient String USER_ACTION = "USER_ACTION";
 
-    public transient CameraController cameraController;
+    private transient CameraController cameraController;
     private transient World world;
     private transient SpaceRenderer spaceRenderer;
 
@@ -50,19 +51,10 @@ public class Game implements Serializable {
     private transient float zoomFactor;
     private transient ByteBuffer readbackBuffer;
 
-    public transient GameActivity activity;
+    private transient GameActivity activity;
 
     transient GameState state;
-    public GameData gameData;
-
-    public transient GameState defaultState;
-    public transient GameState selectedTerritoryState;
-    public transient GameState intentToAttackState;
-    public transient GameState selectedAttackTargetTerritoryState;
-    public transient GameState setUpInitTerritoriesState;
-    public transient GameState gainArmyUnitsState;
-    public transient GameState diceRollState;
-    public transient GameState battleResultsState;
+    private GameData gameData;
 
     public Game() {
 
@@ -84,17 +76,6 @@ public class Game implements Serializable {
 
         gameData.currentPlayer = 0;
 
-        defaultState = new DefaultState(this);
-        selectedTerritoryState = new SelectedTerritoryState(this);
-        intentToAttackState = new IntentToAttackState(this);
-        selectedAttackTargetTerritoryState = new SelectedAttackTargetTerritoryState(this);
-        diceRollState = new DiceRollState(this);
-        battleResultsState = new BattleResultsState(this);
-        setUpInitTerritoriesState = new SetUpInitTerritoriesState(this, activity);
-        gainArmyUnitsState = new GainArmyUnitsState(this, activity);
-
-        setState(setUpInitTerritoriesState);
-
         spaceRenderer = new SpaceRenderer();
         cameraController = new CameraController();
         EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
@@ -106,6 +87,10 @@ public class Game implements Serializable {
         // Should be last in constructor
         gameData.startT = System.nanoTime();
         gameData.lastT = 0;
+
+        setState(new SetUpInitTerritoriesState(this, this.getActivity()));
+        getState().initState();
+
     }
 
     private void handleUserAction(GameEvent event) {
@@ -118,27 +103,30 @@ public class Game implements Serializable {
                 break;
 
             case TOGGLE_GAME_INFO_VISIBILITY:
-                Log.i("", "TOGGLE GAME INFO VISIBILITY ACTION");
+                Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
                 activity.showOverlayFragment(GameInfoFragment.newInstance(gameData.players));
                 break;
 
             case TERRITORY_SELECTED:
-                Log.i("", "USER SELECTED TERRITORY");
+                Log.i(TAG, "USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
                 if(selectedTerritory == null)
                     return;
-                Log.d("", "USER SELECTED TERRITORY:" + selectedTerritory.getId());
+                Log.i(TAG, "USER SELECTED TERRITORY:" + selectedTerritory.getId());
 
-                if (getState() == this.intentToAttackState) {
+                Class stateClass = getState().getClass();
+
+                if (stateClass == IntentToAttackState.class) {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
-                else if (getState() == this.gainArmyUnitsState) {
+                else if (stateClass == GainArmyUnitsState.class) {
+                    Log.i("HERE", "HIT");
                     getState().selectTargetTerritory(selectedTerritory);
                 }
-                else if (getState() == this.diceRollState) {
+                else if (stateClass == DiceRollState.class) {
                     // do nothing
                 }
-                else if (getState() == this.battleResultsState) {
+                else if (stateClass == BattleResultsState.class) {
                     // do nothing
                 }
                 else {
@@ -149,37 +137,37 @@ public class Game implements Serializable {
                 break;
 
             case ATTACK_TAPPED:
-                Log.i("", "USER TAPPED ATTACK");
+                Log.i(TAG, "USER TAPPED ATTACK");
                 getState().enableAttackMode();
                 getState().initState();
                 break;
 
             case ADD_UNIT_TAPPED:
-                Log.i("", "ADD UNIT TAPPED");
+                Log.i(TAG, "ADD UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(1);
                 break;
 
             case REMOVE_UNIT_TAPPED:
-                Log.i("", "REMOVE UNIT TAPPED");
+                Log.i(TAG, "REMOVE UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(-1);
                 break;
 
             case CONFIRM_UNITS_TAPPED:
-                if(getState()==gainArmyUnitsState)
-                    setState(defaultState);
-                Log.i("", "CONFIRM UNITS TAPPED");
+                if(getState().getClass() == GainArmyUnitsState.class)
+                    setState(new DefaultState(this));
+                Log.i(TAG, "CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
                 getState().initState();
                 break;
 
             case CONFIRM_ACTION:
-                Log.i("", "CONFIRM TAPPED");
+                Log.i(TAG, "CONFIRM TAPPED");
                 getState().confirmAction();
                 getState().initState();
                 break;
 
             case CANCEL_ACTION:
-                Log.i("", "CANCEL ACTION TAPPED");
+                Log.i(TAG, "CANCEL ACTION TAPPED");
                 getState().cancelAction();
                 getState().initState();
                 break;
@@ -196,6 +184,18 @@ public class Game implements Serializable {
     }
     public GameState getState() {
         return this.state;
+    }
+
+    public CameraController getCameraController() {
+        return cameraController;
+    }
+
+    public GameActivity getActivity() {
+        return activity;
+    }
+
+    public GameData getGameData() {
+        return gameData;
     }
 
     // May be called more than once during app execution (waking from sleep, for instance)
@@ -282,7 +282,7 @@ public class Game implements Serializable {
 
     private void handleComputerInput() {
         GameState currState = getState();
-        if(currState == setUpInitTerritoriesState){
+        if(currState.getClass() == SetUpInitTerritoriesState.class){
             Random rand = new Random();
             int randNum = rand.nextInt(world.getNTerritories());
             Territory terr = world.getUnoccTerritory(randNum);

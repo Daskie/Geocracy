@@ -4,6 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
@@ -20,9 +21,9 @@ public class DefaultState implements GameState {
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
         if(!game.getWorld().allTerritoriesOccupied())
-            game.setState(game.setUpInitTerritoriesState);
+            game.setState(new SetUpInitTerritoriesState(game, game.getActivity()));
         else
-            game.setState(game.selectedTerritoryState);
+            game.setState(new SelectedTerritoryState(game));
         game.getState().selectOriginTerritory(territory);
         game.getState().initState();
     }
@@ -57,12 +58,12 @@ public class DefaultState implements GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.activity.removeActiveBottomPaneFragment();
+        game.getActivity().removeActiveBottomPaneFragment();
         game.getWorld().unselectTerritory();
         game.getWorld().untargetTerritory();
         game.getWorld().unhighlightTerritories();
 
-        Player currentPlayer = game.gameData.players[game.gameData.currentPlayer];
+        Player currentPlayer = game.getGameData().players[game.getGameData().currentPlayer];
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
 
         String ui_tag = "UI_EVENT";

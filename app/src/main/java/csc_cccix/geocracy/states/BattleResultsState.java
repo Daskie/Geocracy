@@ -51,17 +51,17 @@ public class BattleResultsState implements  GameState {
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
-        game.setState(game.defaultState);
+        game.setState(new DefaultState(game));
         game.getState().initState();
     }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.activity.showBottomPaneFragment(BattleResultsFragment.newInstance(this.originTerritory, this.targetTerritory));
+        game.getActivity().showBottomPaneFragment(BattleResultsFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
-        game.cameraController.targetTerritory(this.targetTerritory);
+        game.getCameraController().targetTerritory(this.targetTerritory);
         String ui_tag = "UI_EVENT";
         EventBus.publish(ui_tag, UIEvent.SET_ATTACK_MODE_ACTIVE);
         EventBus.publish(ui_tag, UIEvent.SHOW_ATTACK_MODE_BUTTON);

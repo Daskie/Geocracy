@@ -48,7 +48,7 @@ public class MainMenuFragment extends Fragment {
 
             Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            mainIntent.putExtra("GAME_LOAD", loadedGame.gameData);
+            mainIntent.putExtra("GAME_LOAD", loadedGame.getGameData());
             this.startActivity(mainIntent);
             return false;
         });
