@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
@@ -45,9 +46,8 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         ImageView image = (ImageView)listItem.findViewById(R.id.playerIcon);
         image.setImageResource(R.drawable.account);
 
-        // TODO: set player color icon accordingly
         Vec3 color = currentPlayer.getColor();
-//        image.setBackgroundColor(Color.rgb((int) color.x, (int) color.y, (int) color.z));
+        image.setBackgroundColor(Util.colorToInt(color));
 
         TextView details = (TextView) listItem.findViewById(R.id.playerDetails);
         details.setText(currentPlayer.getName());
