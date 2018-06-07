@@ -103,6 +103,7 @@ public class Player implements Serializable {
 
     public int[] getDie(){ return this.die; }
     public void setDie(int index, int value){ this.die[index] = value; }
+    public void resetDie(){ this.die = new int[] {-1,-1,-1}; }
     public void sortDie(){ Arrays.sort(this.die); }
     public int getNumArmiesAttacking(){ return this.numArmiesAttacking; }
     public void setNumArmiesAttacking(int num){ this.numArmiesAttacking = num; }

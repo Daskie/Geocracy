@@ -17,7 +17,7 @@ import csc_cccix.geocracy.world.Territory;
 
 public class DiceRollFragment extends Fragment {
 
-    public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory, String attackerString, String defenderString, String winnerString) {
+    public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory, String attackerString, String defenderString) {
         DiceRollFragment newFragment = new DiceRollFragment();
 
         Bundle args = new Bundle();
@@ -25,7 +25,6 @@ public class DiceRollFragment extends Fragment {
         args.putSerializable("targetTerritory", targetTerritory);
         args.putSerializable("attackerString", attackerString);
         args.putSerializable("defenderString", defenderString);
-        args.putSerializable("winnerString", winnerString);
         newFragment.setArguments(args);
 
         return newFragment;
@@ -40,8 +39,6 @@ public class DiceRollFragment extends Fragment {
         Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
         String attackerString = (String) getArguments().get("attackerString");
         String defenderString  = (String) getArguments().get("defenderString");
-        String winnerString  = (String) getArguments().get("winners");
-
 
 
 
@@ -50,9 +47,6 @@ public class DiceRollFragment extends Fragment {
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
         defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName() + " rolls -> " + defenderString);
-
-        TextView battleResult = view.findViewById(R.id.battleResult);
-        battleResult.setText("RESULT: " + winnerString);
 
         return view;
     }
