@@ -45,13 +45,10 @@ public class UtilTest {
     }
 
     @Test
-    public void assign() {
-        Vec3 src = new Vec3(1.1f, 1.1f, 1.1f);
-        Vec3 dst = new Vec3();
-        Util.assign(dst, src);
-        assertEquals(src.x, dst.x);
-        assertEquals(src.y, dst.y);
-        assertEquals(src.z, dst.z);
+    public void orthogonal() {
+        Vec2 ortho = Util.ortho(new Vec2(1.0f, 0.0f));
+        assertEquals(ortho.x, 0.0f, 0.0f);
+        assertEquals(ortho.y, 1.0f, 0.0f);
     }
 
     @Test
@@ -60,6 +57,40 @@ public class UtilTest {
         int high = 10;
         assertEquals(low, Util.clamp(-1, low, high));
         assertEquals(high, Util.clamp(11, low, high));
+    }
+
+    @Test
+    public void toLong() {
+        assertEquals(0xAAAAAAAABBBBBBBBL, Util.toLong(0xBBBBBBBB, 0xAAAAAAAA));
+        assertEquals(0xFFFFFFFF00000000L, Util.toLong(0x00000000, 0xFFFFFFFF));
+        assertEquals(0x00000000FFFFFFFFL, Util.toLong(0xFFFFFFFF, 0x00000000));
+    }
+
+    @Test
+    public void fromLong() {
+        assertEquals(0xBBBBBBBB, Util.fromLongLower(0xAAAAAAAABBBBBBBBL));
+        assertEquals(0xAAAAAAAA, Util.fromLongUpper(0xAAAAAAAABBBBBBBBL));
+        assertEquals(0x00000000, Util.fromLongLower(0xFFFFFFFF00000000L));
+        assertEquals(0xFFFFFFFF, Util.fromLongUpper(0xFFFFFFFF00000000L));
+        assertEquals(0xFFFFFFFF, Util.fromLongLower(0x00000000FFFFFFFFL));
+        assertEquals(0x00000000, Util.fromLongUpper(0x00000000FFFFFFFFL));
+    }
+
+    @Test
+    public void toInt() {
+        assertEquals(0xAAAABBBB, Util.toInt((short)0xBBBB, (short)0xAAAA));
+        assertEquals(0xFFFF0000, Util.toInt((short)0x0000, (short)0xFFFF));
+        assertEquals(0x0000FFFF, Util.toInt((short)0xFFFF, (short)0x0000));
+
+        assertEquals(0xAABBCCDD, Util.toInt((byte)0xDD, (byte)0xCC, (byte)0xBB, (byte)0xAA));
+    }
+
+    @Test
+    public void cylindricToCartesian() {
+        Vec3 v = Util.cylindricToCartesian((float)Math.sqrt(2.0), (float)(Math.PI / 4.0), 1.0f);
+        assertEquals(1.0f, v.x, 1e-6f);
+        assertEquals(1.0f, v.y, 1e-6f);
+        assertEquals(1.0f, v.z, 1e-6f);
     }
 
 }

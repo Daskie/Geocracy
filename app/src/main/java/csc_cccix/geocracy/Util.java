@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.opengl.GLES30;
 import android.os.Process;
 import android.util.Log;
-import android.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -85,13 +84,8 @@ public abstract class Util {
         Process.killProcess(Process.myPid());
     }
 
-    // Returns a vector rotated 90 degrees CCW
-    public static Vec2 orthogonal(Vec2 v) {
-        return new Vec2(-v.y, v.x.floatValue());
-    }
-
     public static boolean isZero(float v) {
-        return Math.abs(v) < EPSILON;
+        return glm.abs(v) < EPSILON;
     }
 
     public static boolean isZero(Vec2 v) {
@@ -169,8 +163,12 @@ public abstract class Util {
         return ((long)low & 0xFFFFFFFFL) | ((long)high << 32);
     }
 
-    public static Pair<Integer, Integer> fromLong(long v) {
-        return new Pair<>((int)(v & 0xFFFFFFFFL), (int)(v >> 32));
+    public static int fromLongLower(long v) {
+        return (int)(v & 0xFFFFFFFFL);
+    }
+
+    public static int fromLongUpper(long v) {
+        return (int)(v >> 32);
     }
 
     public static int clamp(int val, int min, int max) {

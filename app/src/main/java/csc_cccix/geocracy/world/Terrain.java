@@ -1430,9 +1430,8 @@ public class Terrain {
         for (int i = 0; i < counts.size(); ++i) {
             if (counts.valueAt(i) > maxCount) {
                 maxCount = counts.valueAt(i);
-                Pair<Integer, Integer> pair = Util.fromLong(counts.keyAt(i));
-                maxTI1 = pair.first;
-                maxTI2 = pair.second;
+                maxTI1 = Util.fromLongLower(counts.keyAt(i));
+                maxTI2 = Util.fromLongUpper(counts.keyAt(i));
             }
         }
 

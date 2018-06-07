@@ -61,7 +61,7 @@ public class OrbitCamera extends Camera {
     public void move(Vec2 delta) {
         if (!Util.isZero(delta)) {
             float angle = delta.getLength();
-            Vec3 axis = new Vec3(Util.orthogonal(delta.div(angle)), 0.0f);
+            Vec3 axis = new Vec3(Util.ortho(delta.div(angle)), 0.0f);
             axis = orientMatrix.times(axis); // convert to world space
             rotate(glm.angleAxis(angle, axis));
         }

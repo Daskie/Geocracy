@@ -80,7 +80,7 @@ public class CameraController {
         delta.timesAssign(MOVE_SPEED_FACTOR * glm.clamp((camera.getElevation() - 1.0f) / (START_ELEVATION - 1.0f), 0.0f, 1.0f));
 
         rotVelAngle = delta.getLength();
-        rotVelAxis = new Vec3(Util.orthogonal(delta.div(rotVelAngle)), 0.0f);
+        rotVelAxis = new Vec3(Util.ortho(delta.div(rotVelAngle)), 0.0f);
         rotVelAxis = camera.getOrientMatrix().times(rotVelAxis); // convert to world space
 
         targetting = false;

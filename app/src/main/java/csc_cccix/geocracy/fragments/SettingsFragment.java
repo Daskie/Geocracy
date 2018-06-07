@@ -16,13 +16,12 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.AudioService;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 
 public class SettingsFragment extends Fragment {
-
-    boolean isMusicEnabled = true;
 
     @Nullable
     @Override
@@ -39,13 +38,12 @@ public class SettingsFragment extends Fragment {
         RxSeekBar.changeEvents(musicVolume).subscribe(e -> EventBus.publish("SET_MUSIC_VOLUME_LEVEL_EVENT", e.view().getProgress()));
 
         musicEnabledCheckbox = view.findViewById(R.id.musicEnabled);
-        musicEnabledCheckbox.setChecked(isMusicEnabled);
+        musicEnabledCheckbox.setChecked(AudioService.ENABLED_BY_DEFAULT);
 
         RxView.touches(musicEnabledCheckbox).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                isMusicEnabled = !isMusicEnabled;
-                musicEnabledCheckbox.setChecked(isMusicEnabled);
-                if (isMusicEnabled) EventBus.publish("SET_MUSIC_ENABLED_EVENT", e);
+                musicEnabledCheckbox.toggle();
+                if (musicEnabledCheckbox.isChecked()) EventBus.publish("SET_MUSIC_ENABLED_EVENT", e);
                 else EventBus.publish("SET_MUSIC_DISABLED_EVENT", e);
             }
         });

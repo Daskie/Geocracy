@@ -11,8 +11,9 @@ import csc_cccix.R;
 
 public class AudioService extends Service {
 
+    public static final boolean ENABLED_BY_DEFAULT = false;
+
     private MediaPlayer player;
-    private boolean isEnabled = false;
 
     @Nullable
     @Override
@@ -27,9 +28,7 @@ public class AudioService extends Service {
         player.setLooping(true);
         player.seekTo(0);
         player.setVolume(1f, 1f);
-        if (isEnabled) {
-            player.start();
-        }
+        if (ENABLED_BY_DEFAULT) player.start();
 
         EventBus.subscribe("SET_MUSIC_ENABLED_EVENT", this, e -> enableMusic());
         EventBus.subscribe("SET_MUSIC_DISABLED_EVENT", this, e -> disableMusic());
@@ -44,13 +43,17 @@ public class AudioService extends Service {
     }
 
     private void enableMusic() {
-        Log.d("", "ENABLING MUSIC");
-        player.start();
+        if (!player.isPlaying()) {
+            Log.d("", "ENABLING MUSIC");
+            player.start();
+        }
     }
 
     private void disableMusic() {
-        Log.d("", "DISABLING MUSIC");
-        player.pause();
+        if (player.isPlaying()) {
+            Log.d("", "DISABLING MUSIC");
+            player.pause();
+        }
     }
 
     @Override
