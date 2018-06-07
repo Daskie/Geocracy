@@ -3,12 +3,10 @@ package csc_cccix.geocracy.states;
 import android.util.Log;
 import android.widget.Toast;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DistributeTroopsDetailFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
@@ -41,7 +39,7 @@ public class GainArmyUnitsState implements GameState {
             this.territory = territory;
 
             game.getCameraController().targetTerritory(territory);
-            EventBus.publish("UI_EVENT", UIEvent.SHOW_UPDATE_UNITS_MODE_BUTTONS);
+            game.getActivity().runOnUiThread(() -> game.getActivity().setUpdateUnitCountButtonsVisibility(true));
             game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, game.getCurrentPlayer()));
         }
     }
@@ -96,22 +94,24 @@ public class GainArmyUnitsState implements GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
         this.territory = null;
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        game.getActivity().runOnUiThread(() -> game.getActivity().setUpdateUnitCountButtonsVisibility(false));
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.getActivity().removeActiveBottomPaneFragment();
         Player currentPlayer = game.getCurrentPlayer();
         currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
+
+        game.getActivity().removeActiveBottomPaneFragment();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+        game.getActivity().runOnUiThread(() -> game.getActivity().setUpdateUnitCountButtonsVisibility(false));
+
         Log.i(TAG, "" + currentPlayer.getId());
         Log.i(TAG, "HAS " + currentPlayer.getArmyPool() + " UNITS TO DISTRIBUTE");
-        EventBus.publish("UI_EVENT", UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
     }
 }

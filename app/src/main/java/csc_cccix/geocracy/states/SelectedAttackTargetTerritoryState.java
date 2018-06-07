@@ -2,8 +2,6 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
-import java.util.Random;
-
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
@@ -90,11 +88,11 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
         originTerritoryLock = true;
 
-        String uiTag = "UI_EVENT";
-        EventBus.publish(uiTag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(uiTag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
-        EventBus.publish(uiTag, UIEvent.SHOW_CANCEL_BUTTON);
-        EventBus.publish(uiTag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
+            game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+            game.getActivity().getCancelBtn().show();
+        });
     }
 
 }

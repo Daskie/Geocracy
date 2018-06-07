@@ -29,6 +29,7 @@ import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -51,6 +52,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private CompositeDisposable disposables;
 
+    private FloatingActionButton endTurnButton;
+    private FloatingActionButton attackBtn;
+    private FloatingActionButton addUnitBtn;
+    private FloatingActionButton removeUnitBtn;
+    private FloatingActionButton cancelBtn;
     private FloatingActionButton gameInfoBtn;
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
@@ -60,12 +66,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onCreate(savedInstanceState);
 
         disposables = new CompositeDisposable();
-
-        FloatingActionButton endTurnButton;
-        FloatingActionButton attackBtn;
-        FloatingActionButton addUnitBtn;
-        FloatingActionButton removeUnitBtn;
-        FloatingActionButton cancelBtn;
 
         // 8 bit color format
         getWindow().setFormat(PixelFormat.RGBA_8888);
@@ -91,7 +91,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 Log.e("", "Failed to load game");
                 Util.exit();
             }
-            game.setActivityAndState(this, new DefaultState(game));
         }
         // Start new game
         else {
@@ -99,7 +98,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             int mainPlayerColor = (int)getIntent().getSerializableExtra("MAIN_PLAYER_COLOR");
             long seed = (long)getIntent().getSerializableExtra(("SEED"));
             game = new Game(numPlayers, Util.colorToVec3(mainPlayerColor), seed);
-            game.setActivityAndState(this, new DefaultState(game));
         }
 
         // Get Layout Frame +
@@ -184,72 +182,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }));
 
-
         uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
-
-        disposables.add(EventBus.subscribe("UI_EVENT")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(e -> {
-                    UIEvent event = (UIEvent) e;
-                    Log.i(TAG, "UI EVENT: " + event);
-
-                    switch (event) {
-
-                        case HIDE_CANCEL_BUTTON:
-                            cancelBtn.hide();
-                            break;
-
-                        case SHOW_CANCEL_BUTTON:
-                            cancelBtn.show();
-                            break;
-
-                        case SHOW_END_TURN_BUTTON:
-                            endTurnButton.show();
-                            break;
-
-                        case HIDE_END_TURN_BUTTON:
-                            endTurnButton.hide();
-                            break;
-
-                        case HIDE_UPDATE_UNITS_MODE_BUTTONS:
-                            removeUnitBtn.hide();
-                            addUnitBtn.hide();
-                            break;
-
-                        case SHOW_UPDATE_UNITS_MODE_BUTTONS:
-                            removeUnitBtn.show();
-                            addUnitBtn.show();
-                            break;
-
-                        case HIDE_ATTACK_MODE_BUTTON:
-                            attackBtn.hide();
-                            break;
-
-                        case SHOW_ATTACK_MODE_BUTTON:
-                            attackBtn.show();
-                            break;
-
-                        case SET_ATTACK_MODE_ACTIVE:
-                            attackBtn.setAlpha(1.0f);
-                            attackBtn.refreshDrawableState();
-                            break;
-
-                        case SET_ATTACK_MODE_INACTIVE:
-                            attackBtn.setAlpha(0.4f);
-                            attackBtn.refreshDrawableState();
-                            break;
-
-                        default:
-                            break;
-
-                    }
-                })
-        );
         showOverlayFragment(new LoadingFragment());
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
+        game.setActivityAndState(this, new SetUpInitTerritoriesState(game));
+
     }
 
     private void handleSaveEvent(GameEvent event) {
@@ -301,8 +240,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         activeBottomPaneFragment = bottomPaneFragment;
     }
 
-
-
      public void removeActiveBottomPaneFragment() {
         if (activeBottomPaneFragment != null) {
             userInterfaceFT = fragmentManager.beginTransaction();
@@ -314,6 +251,32 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     void showGameDevelopers() {
         Toasty.info(this, "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
+    }
+
+    public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
+        if (isVisible) {
+            attackBtn.show();
+        } else {
+            attackBtn.hide();
+        }
+    }
+
+    public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
+        if (isVisible) {
+            addUnitBtn.show();
+            removeUnitBtn.show();
+        } else {
+            addUnitBtn.hide();
+            removeUnitBtn.hide();
+        }
+    }
+
+    public void hideAllGameInteractionButtons() {
+        attackBtn.hide();
+        cancelBtn.hide();
+        addUnitBtn.hide();
+        removeUnitBtn.hide();
+        endTurnButton.hide();
     }
 
 
@@ -353,4 +316,35 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         
     }
 
+    public FloatingActionButton getAddUnitBtn() {
+        return addUnitBtn;
+    }
+
+    public FloatingActionButton getAttackBtn() {
+        return attackBtn;
+    }
+
+    public FloatingActionButton getCancelBtn() {
+        return cancelBtn;
+    }
+
+    public FloatingActionButton getCloseOverlayBtn() {
+        return closeOverlayBtn;
+    }
+
+    public FloatingActionButton getEndTurnButton() {
+        return endTurnButton;
+    }
+
+    public FloatingActionButton getGameInfoBtn() {
+        return gameInfoBtn;
+    }
+
+    public FloatingActionButton getRemoveUnitBtn() {
+        return removeUnitBtn;
+    }
+
+    public FloatingActionButton getSettingBtn() {
+        return settingBtn;
+    }
 }

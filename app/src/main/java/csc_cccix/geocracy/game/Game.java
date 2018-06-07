@@ -27,6 +27,7 @@ import csc_cccix.geocracy.states.GainArmyUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
+import csc_cccix.geocracy.states.SelectedTerritoryState;
 import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
@@ -167,10 +168,10 @@ public class Game implements Serializable {
                 break;
 
             case TERRITORY_SELECTED:
-                Log.i(TAG, "USER SELECTED TERRITORY");
                 Territory selectedTerritory = (Territory) event.payload;
                 if(selectedTerritory == null)
                     return;
+
                 Log.i(TAG, "USER SELECTED TERRITORY:" + selectedTerritory.getId());
 
                 Class stateClass = getState().getClass();
@@ -196,9 +197,15 @@ public class Game implements Serializable {
                 break;
 
             case ATTACK_TAPPED:
-                Log.i(TAG, "USER TAPPED ATTACK");
-                getState().enableAttackMode();
-                getState().initState();
+
+                if (getState().getClass() == SelectedTerritoryState.class) {
+                    Log.i(TAG, "USER TAPPED ATTACK");
+                    getState().enableAttackMode();
+                    getState().initState();
+                } else {
+                    Log.i(TAG, "ATTACK BUTTON UNAVAILIBLE");
+                }
+
                 break;
 
             case ADD_UNIT_TAPPED:

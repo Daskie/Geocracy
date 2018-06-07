@@ -5,11 +5,9 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
@@ -106,13 +104,9 @@ public class SetUpInitTerritoriesState implements GameState {
 
         game.getWorld().unhighlightTerritories();
         game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
-
-        String tag = "UI_EVENT";
-
-        EventBus.publish(tag, UIEvent.SET_ATTACK_MODE_INACTIVE);
-        EventBus.publish(tag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
-        EventBus.publish(tag, UIEvent.HIDE_CANCEL_BUTTON);
-        EventBus.publish(tag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
+        });
 
     }
 
