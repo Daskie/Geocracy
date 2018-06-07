@@ -2,38 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="60dp"
     android:layout_gravity="bottom"
-    android:background="@color/whiteTransparent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/territoryID"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/territoryDetailColor"
-        android:gravity="center"
-        android:text="Territory Detail:"
-        android:textColor="@android:color/white" />
+        android:layout_height="60dp"
+        >
+        <ImageView
+            android:id="@+id/playerIcon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:foregroundGravity="center_vertical" />
+        <TextView
+            android:id="@+id/territoryDetails"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/whiteTransparent"
+            android:gravity="center_vertical"
+            android:text="TERRITORY:"
+            android:textColor="@android:color/black"
+            android:layout_toRightOf="@id/playerIcon"
+            android:paddingLeft="8dp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/territoryOwner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Territory Owned By:"/>
-
-    <TextView
-        android:id="@+id/numberOfUnits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Number of Units in Territory:"/>
 
 
 </LinearLayout>

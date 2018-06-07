@@ -312,7 +312,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.i(TAG, "SURFACE CREATED");
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("WORLD_TOUCH_EVENT", e)));
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_UP ||
+                e.getAction() == MotionEvent.ACTION_MOVE) {
+                EventBus.publish("WORLD_TOUCH_EVENT", e);
+            }
+        }));
         new Handler().postDelayed(() -> removeActiveOverlayFragment(), 4000);
     }
 

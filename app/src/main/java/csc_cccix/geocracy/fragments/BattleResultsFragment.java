@@ -34,10 +34,10 @@ public class BattleResultsFragment extends Fragment {
         Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("Attacker: " + originTerritory.getTerritoryName());
+        attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName());
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("Defender: " + targetTerritory.getTerritoryName());
+        defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName());
 
         TextView battleResult = view.findViewById(R.id.battleResult);
         battleResult.setText("RESULT: ");

@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/originTerritoryID"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="@color/colorPrimaryDark"
         android:gravity="center"
         android:text="Select Number of Units From: "
@@ -19,7 +19,7 @@
     <TextView
         android:id="@+id/targetTerritoryID"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:text="To Attack Territory: "
