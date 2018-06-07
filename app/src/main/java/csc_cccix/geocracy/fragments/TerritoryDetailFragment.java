@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.world.Territory;
+import glm_.vec3.Vec3;
 
 public class TerritoryDetailFragment extends Fragment {
 
@@ -31,14 +34,14 @@ public class TerritoryDetailFragment extends Fragment {
 
         Territory territory = (Territory) getArguments().get("territory");
 
-        TextView territoryID = view.findViewById(R.id.territoryID);
-        territoryID.setText("Territory: " + territory.getTerritoryName());
+        TextView territoryID = view.findViewById(R.id.territoryDetails);
+        territoryID.setText("TERRITORY: " + territory.getTerritoryName() + "\nUNITS: " + territory.getNArmies());
 
-        TextView territoryOwner = view.findViewById(R.id.territoryOwner);
-        territoryOwner.setText("Territory Owned by Player: " + territory.getOwner().getName() + " (" + territory.getOwner().getId() + ")");
+        ImageView ownerIcon = view.findViewById(R.id.playerIcon);
+        ownerIcon.setImageResource(R.drawable.account);
 
-        TextView numberOfUnits = view.findViewById(R.id.numberOfUnits);
-        numberOfUnits.setText("Number of Units in Territory: " + territory.getNArmies());
+        Vec3 color = territory.getOwner().getColor();
+        ownerIcon.setBackgroundColor(Util.colorToInt(color));
 
         return view;
     }

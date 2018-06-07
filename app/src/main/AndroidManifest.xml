@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name="csc_cccix.geocracy.AudioService"></service>
-        <activity android:name="csc_cccix.geocracy.MainActivity">
+        <activity android:name="csc_cccix.geocracy.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name="csc_cccix.geocracy.game.GameActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName="csc_cccix.geocracy.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppFullScreenTheme">
@@ -29,6 +30,7 @@
                 android:value="csc_cccix.geocracy.MainActivity" />
         </activity>
         <activity android:name="csc_cccix.geocracy.main_menu.MenuActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName="csc_cccix.geocracy.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppFullScreenTheme">

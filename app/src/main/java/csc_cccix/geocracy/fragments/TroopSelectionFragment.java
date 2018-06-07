@@ -52,10 +52,10 @@ public class TroopSelectionFragment extends Fragment {
 
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
-        originTerritoryID.setText("Select Number of Units From: " + originTerritory.getTerritoryName());
+        originTerritoryID.setText("SELECT NUMBER OF UNITS FROM: " + originTerritory.getTerritoryName());
 
         TextView targetTerritoryID = view.findViewById(R.id.targetTerritoryID);
-        targetTerritoryID.setText("To Attack Territory: " + targetTerritory.getTerritoryName());
+        targetTerritoryID.setText("TO ATTACK TERRITORY: " + targetTerritory.getTerritoryName());
 
         radioGroup = view.findViewById(R.id.radio);
 

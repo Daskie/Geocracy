@@ -61,6 +61,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
 
+    private boolean fromGameLoad;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +85,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         fragmentManager = getSupportFragmentManager();
 
         // Setup game
+        fromGameLoad = false;
         Boolean load = (Boolean)getIntent().getSerializableExtra("GAME_LOAD");
         // Load game
         if (load != null && load) {
@@ -90,6 +93,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             if (game == null) {
                 Log.e("", "Failed to load game");
                 Util.exit();
+            } else {
+                fromGameLoad = true;
             }
         }
         // Start new game
@@ -187,7 +192,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         showOverlayFragment(new LoadingFragment());
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
-        game.setActivityAndState(this, new SetUpInitTerritoriesState(game));
+
+        if (fromGameLoad) {
+            game.setActivityAndState(this, new DefaultState(game));
+        } else {
+            game.setActivityAndState(this, new SetUpInitTerritoriesState(game));
+        }
 
     }
 
@@ -302,7 +312,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.i(TAG, "SURFACE CREATED");
-        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> EventBus.publish("WORLD_TOUCH_EVENT", e)));
+        disposables.add(RxView.touches(gameSurfaceView).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_UP ||
+                e.getAction() == MotionEvent.ACTION_MOVE) {
+                EventBus.publish("WORLD_TOUCH_EVENT", e);
+            }
+        }));
         new Handler().postDelayed(() -> removeActiveOverlayFragment(), 4000);
     }
 

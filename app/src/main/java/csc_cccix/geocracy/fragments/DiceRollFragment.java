@@ -78,10 +78,10 @@ public class DiceRollFragment extends Fragment {
         }
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("Attacker ( " + originTerritory.getTerritoryName() + " ) Rolls a: " + attackerString);
+        attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName() + " rolls -> " + attackerString);
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("Defender ( " + targetTerritory.getTerritoryName() + " ) Rolls a: " + defenderString);
+        defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName() + " rolls -> " + defenderString);
 
         TextView battleResult = view.findViewById(R.id.battleResult);
         battleResult.setText("RESULT: " + winnerString);
