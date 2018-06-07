@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.world.Territory;
+import glm_.vec3.Vec3;
 
 public class BattleResultsFragment extends Fragment {
 
@@ -48,9 +51,20 @@ public class BattleResultsFragment extends Fragment {
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
         attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName() + "  :   " + originTerritory.getNArmies() + "   -   " + attackerArmiesLost + "   =   " + attackerNewArmyNum);
 
+        ImageView attackerIcon = view.findViewById(R.id.attackingPlayerIcon);
+        attackerIcon.setImageResource(R.drawable.account);
+
+        Vec3 color = originTerritory.getOwner().getColor();
+        attackerIcon.setBackgroundColor(Util.colorToInt(color));
+
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
         defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName() + "  :   " + targetTerritory.getNArmies() + "   -   " + defenderArmiesLost + "   =   " + defenderNewArmyNum);
 
+        ImageView defenderIcon = view.findViewById(R.id.defendingPlayerIcon);
+        defenderIcon.setImageResource(R.drawable.account);
+
+        Vec3 color2 = targetTerritory.getOwner().getColor();
+        defenderIcon.setBackgroundColor(Util.colorToInt(color2));
 
 
         return view;

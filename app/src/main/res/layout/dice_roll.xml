@@ -2,38 +2,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="121dp"
     android:layout_gravity="bottom"
     android:background="@color/whiteTransparent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/diceRollHeader"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/territoryDetailColor"
-        android:gravity="center"
-        android:text="Dice Roll"
-        android:textColor="@android:color/white" />
+        android:layout_height="60dp"
+        >
+        <ImageView
+            android:id="@+id/attackingPlayerIcon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:foregroundGravity="center_vertical" />
+        <TextView
+            android:id="@+id/attackingPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/whiteTransparent"
+            android:gravity="center_vertical"
+            android:text="TERRITORY:"
+            android:textColor="@android:color/black"
+            android:layout_toRightOf="@id/attackingPlayerIcon"
+            android:paddingLeft="8dp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
-    <TextView
-        android:id="@+id/attackingPlayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Attacker Rolls a:"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        >
+        <ImageView
+            android:id="@+id/defendingPlayerIcon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:foregroundGravity="center_vertical" />
+        <TextView
+            android:id="@+id/defendingPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/whiteTransparent"
+            android:gravity="center_vertical"
+            android:text="TERRITORY:"
+            android:textColor="@android:color/black"
+            android:layout_toRightOf="@id/defendingPlayerIcon"
+            android:paddingLeft="8dp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/defendingPlayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Defender Rolls a:"/>
 
     <TextView
         android:id="@+id/battleResult"

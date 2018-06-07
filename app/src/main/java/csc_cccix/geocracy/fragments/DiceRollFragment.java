@@ -9,11 +9,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import csc_cccix.R;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
+import glm_.vec3.Vec3;
 
 public class DiceRollFragment extends Fragment {
 
@@ -40,13 +43,23 @@ public class DiceRollFragment extends Fragment {
         String attackerString = (String) getArguments().get("attackerString");
         String defenderString  = (String) getArguments().get("defenderString");
 
-
-
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName() + " rolls -> " + attackerString);
+        attackingPlayer.setText("ATTACKER ROLLS -> " + attackerString);
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName() + " rolls -> " + defenderString);
+        defendingPlayer.setText("DEFENDER ROLLS -> " + defenderString);
+
+        ImageView attackerIcon = view.findViewById(R.id.attackingPlayerIcon);
+        attackerIcon.setImageResource(R.drawable.account);
+
+        Vec3 color = originTerritory.getOwner().getColor();
+        attackerIcon.setBackgroundColor(Util.colorToInt(color));
+
+        ImageView defenderIcon = view.findViewById(R.id.defendingPlayerIcon);
+        defenderIcon.setImageResource(R.drawable.account);
+
+        Vec3 color2 = targetTerritory.getOwner().getColor();
+        defenderIcon.setBackgroundColor(Util.colorToInt(color2));
 
         return view;
     }
