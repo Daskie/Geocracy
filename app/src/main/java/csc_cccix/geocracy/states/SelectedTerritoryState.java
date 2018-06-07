@@ -4,6 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedTerritoryState implements  GameState {
@@ -19,11 +20,21 @@ public class SelectedTerritoryState implements  GameState {
 
     public void selectOriginTerritory(Territory territory) {
         if (this.territory == null) {
-            Log.i(TAG, "TERRITORY SELECTED, DISPLAY DETAILS");
+            Log.i(TAG, "A TERRITORY WAS SELECTED, DISPLAY DETAILS");
+            this.territory = territory;
+            if (this.territory == null) return;
         } else {
-            Log.i(TAG, "ANOTHER TERRITORY SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
+            Log.i(TAG, "ANOTHER TERRITORY WAS SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
+            this.territory = territory;
         }
-        this.territory = territory;
+
+        if (this.territory.getOwner().getId() == game.getCurrentPlayer().getId()) {
+            Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE ON");
+            game.getActivity().runOnUiThread(() ->  game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true));
+        } else {
+            Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY TO DISABLE ATTACK BUTTON");
+            game.getActivity().runOnUiThread(() ->  game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false));
+        }
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -31,10 +42,14 @@ public class SelectedTerritoryState implements  GameState {
     }
 
     public void enableAttackMode() {
-        Log.i(TAG, "ENABLE ATTACK MODE -> ENTER INTENT TO ATTACK STATE");
-        game.setState(new IntentToAttackState(game));
-        game.getState().selectOriginTerritory(territory);
-        game.getState().initState();
+        if (this.territory.getOwner() == game.getCurrentPlayer()) {
+            Log.i(TAG, "ENABLE ATTACK MODE -> ENTER INTENT TO ATTACK STATE");
+            game.setState(new IntentToAttackState(game));
+            game.getState().selectOriginTerritory(territory);
+            game.getState().initState();
+        } else {
+            Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY TO ENABLE ATTACK MODE ON");
+        }
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
@@ -71,7 +86,7 @@ public class SelectedTerritoryState implements  GameState {
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().getEndTurnButton().show();
-            game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
+            game.getActivity().getAttackBtn().show();
             game.getActivity().getCancelBtn().show();
         });
 
