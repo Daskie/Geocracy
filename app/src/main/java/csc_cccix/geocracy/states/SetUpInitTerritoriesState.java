@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 
+import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.Player;
@@ -26,19 +27,6 @@ public class SetUpInitTerritoriesState implements GameState {
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "TERRITORY SELECTED");
         this.territory = territory;
-
-        //illegal territory selection for setting up territories
-        if(this.territory.getOwner() != null){
-            if(game.getCurrentPlayer() instanceof HumanPlayer) {
-                game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show());
-            }
-            return;
-        }
-
-        game.getWorld().unhighlightTerritories();
-        game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
-        addToSelectedTerritoryUnitCount(1);
-
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -79,7 +67,19 @@ public class SetUpInitTerritoriesState implements GameState {
     }
 
     public void confirmAction() {
-        Log.i(TAG, "USER CANCELED ACTION -> N/A");
+
+        //illegal territory selection for setting up territories
+        if(this.territory.getOwner() != null){
+            if(game.getCurrentPlayer() instanceof HumanPlayer) {
+                game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show());
+            }
+            return;
+        }
+
+        addToSelectedTerritoryUnitCount(1);
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().removeActiveBottomPaneFragment();
+        });
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
@@ -87,26 +87,33 @@ public class SetUpInitTerritoriesState implements GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
+        game.getActivity().removeActiveBottomPaneFragment();
     }
 
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
 
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
+        });
+
         if (this.territory != null) {
-            game.getActivity().removeActiveBottomPaneFragment();
             game.getWorld().selectTerritory(this.territory);
             game.getWorld().unhighlightTerritories();
             game.getCameraController().targetTerritory(this.territory);
+            game.getActivity().runOnUiThread(() -> {
+                game.getActivity().removeActiveBottomPaneFragment();
+                if (this.territory.getOwner() == null) game.getActivity().getConfirmButton().show();
+                game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
+            });
         } else {
             game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show());
         }
 
         game.getWorld().unhighlightTerritories();
         game.getWorld().highlightTerritories(new HashSet<>(game.getWorld().getUnoccupiedTerritories()));
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().hideAllGameInteractionButtons();
-        });
+
 
     }
 

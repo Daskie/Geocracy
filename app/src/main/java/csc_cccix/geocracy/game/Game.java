@@ -3,6 +3,7 @@ package csc_cccix.geocracy.game;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -14,6 +15,8 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
@@ -36,6 +39,7 @@ import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
 import static csc_cccix.geocracy.states.GameAction.CANCEL_ACTION;
+import static csc_cccix.geocracy.states.GameAction.CONFIRM_ACTION;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
@@ -366,7 +370,8 @@ public class Game implements Serializable {
             Random rand = new Random();
             int randNum = rand.nextInt(world.getNTerritories());
             Territory terr = world.getUnoccTerritory(randNum);
-            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+            EventBus.publishAfterDelay(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr), 100);
+            EventBus.publishAfterDelay(USER_ACTION, new GameEvent(CONFIRM_ACTION, null), 500);
         }
     }
 

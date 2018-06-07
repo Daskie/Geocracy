@@ -37,11 +37,17 @@ public class TerritoryDetailFragment extends Fragment {
         TextView territoryID = view.findViewById(R.id.territoryDetails);
         territoryID.setText("TERRITORY: " + territory.getTerritoryName() + "\nUNITS: " + territory.getNArmies());
 
-        ImageView ownerIcon = view.findViewById(R.id.playerIcon);
-        ownerIcon.setImageResource(R.drawable.account);
 
-        Vec3 color = territory.getOwner().getColor();
-        ownerIcon.setBackgroundColor(Util.colorToInt(color));
+        ImageView ownerIcon = view.findViewById(R.id.playerIcon);
+
+        if (territory.getOwner() != null) {
+            ownerIcon.setImageResource(R.drawable.account);
+
+            Vec3 color = territory.getOwner().getColor();
+            ownerIcon.setBackgroundColor(Util.colorToInt(color));
+        } else {
+            ownerIcon.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }

@@ -2,7 +2,11 @@ package csc_cccix.geocracy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -86,5 +90,12 @@ public final class EventBus {
      */
     public static void publish(String subject, @NonNull Object message) {
         getSubject(subject).onNext(message);
+    }
+
+    /**
+     * Publish an object to the specified subject for all subscribers of that subject.
+     */
+    public static void publishAfterDelay(String subject, @NonNull Object message, int delayMS) {
+        getSubject(subject).onNext(Single.just(message).delay(delayMS, TimeUnit.MILLISECONDS).blockingGet());
     }
 }
