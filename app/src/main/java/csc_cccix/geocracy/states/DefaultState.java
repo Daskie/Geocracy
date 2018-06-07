@@ -63,7 +63,6 @@ public class DefaultState implements GameState {
         game.getWorld().highlightTerritories(game.getCurrentPlayer().getTerritories());
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().hideAllGameInteractionButtons();
-            game.getActivity().setAttackModeButtonVisibilityAndActiveState(false, false);
             game.getActivity().getEndTurnButton().show();
         });
     }

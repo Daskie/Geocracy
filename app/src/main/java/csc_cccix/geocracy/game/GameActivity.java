@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -264,11 +265,24 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
+
+        AlphaAnimation alphaChange;
+
+        if (isActive) {
+            alphaChange = new AlphaAnimation(attackBtn.getAlpha(), 1.0f);
+        } else {
+            alphaChange = new AlphaAnimation(attackBtn.getAlpha(), 0.4f);
+        }
+
+        alphaChange.setFillAfter(true);
+        attackBtn.startAnimation(alphaChange);
+
         if (isVisible) {
             attackBtn.show();
         } else {
             attackBtn.hide();
         }
+
     }
 
     public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
