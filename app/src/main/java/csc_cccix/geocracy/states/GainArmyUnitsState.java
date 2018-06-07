@@ -94,6 +94,8 @@ public class GainArmyUnitsState implements GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
         this.territory = null;
+        Player currentPlayer = game.getCurrentPlayer();
+        game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
         game.getActivity().runOnUiThread(() -> game.getActivity().setUpdateUnitCountButtonsVisibility(false));
     }
 
