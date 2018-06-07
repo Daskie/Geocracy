@@ -370,8 +370,8 @@ public class Game implements Serializable {
             Random rand = new Random();
             int randNum = rand.nextInt(world.getNTerritories());
             Territory terr = world.getUnoccTerritory(randNum);
-            EventBus.publishAfterDelay(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr), 100);
-            EventBus.publishAfterDelay(USER_ACTION, new GameEvent(CONFIRM_ACTION, null), 500);
+            EventBus.publishAfterDelay(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr), 300);
+            EventBus.publishAfterDelay(USER_ACTION, new GameEvent(CONFIRM_ACTION, null), 800);
         }
     }
 
