@@ -5,10 +5,8 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.DiceRollFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -68,18 +66,17 @@ public class DiceRollState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
+
         game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.getCameraController().targetTerritory(this.targetTerritory);
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
+        });
 
-        String uiTag = "UI_EVENT";
-        EventBus.publish(uiTag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(uiTag, UIEvent.HIDE_ATTACK_MODE_BUTTON);
-        EventBus.publish(uiTag, UIEvent.HIDE_CANCEL_BUTTON);
-
-        Completable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        Completable.timer(4, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);
 
     }

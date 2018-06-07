@@ -2,9 +2,7 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class IntentToAttackState implements  GameState {
@@ -65,8 +63,12 @@ public class IntentToAttackState implements  GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().setAttackModeButtonVisibilityAndActiveState(false, false);
+        });
         game.setState(new DefaultState(game));
         game.getState().initState();
+
     }
 
     public void initState() {
@@ -77,13 +79,12 @@ public class IntentToAttackState implements  GameState {
 
         originTerritoryLock = true;
 
-        String uiTag = "UI_EVENT";
-        EventBus.publish(uiTag, UIEvent.SET_ATTACK_MODE_ACTIVE);
-        EventBus.publish(uiTag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
-        EventBus.publish(uiTag, UIEvent.HIDE_END_TURN_BUTTON);
-        EventBus.publish(uiTag, UIEvent.SHOW_CANCEL_BUTTON);
-        EventBus.publish(uiTag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
+            game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+            game.getActivity().getCancelBtn().show();
 
+        });
     }
 
 }
