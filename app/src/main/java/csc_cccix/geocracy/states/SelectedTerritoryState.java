@@ -4,7 +4,6 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedTerritoryState implements  GameState {
@@ -26,14 +25,6 @@ public class SelectedTerritoryState implements  GameState {
         } else {
             Log.i(TAG, "ANOTHER TERRITORY WAS SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
             this.territory = territory;
-        }
-
-        if (this.territory.getOwner().getId() == game.getCurrentPlayer().getId() && this.territory.getNArmies() >= 2) {
-            Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE ON");
-            game.getActivity().runOnUiThread(() ->  game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true));
-        } else {
-            Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY TO DISABLE ATTACK BUTTON");
-            game.getActivity().runOnUiThread(() ->  game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false));
         }
     }
 
@@ -86,7 +77,15 @@ public class SelectedTerritoryState implements  GameState {
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().getEndTurnButton().show();
-            game.getActivity().getAttackBtn().show();
+            if (this.territory.getOwner().getId() == game.getCurrentPlayer().getId()) {
+                if (this.territory.getNArmies() >= 2) {
+                    Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE");
+                    game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+                } else {
+                    Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY -> DISABLE ATTACK BUTTON");
+                    game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
+                }
+            }
             game.getActivity().getCancelBtn().show();
         });
 

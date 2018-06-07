@@ -3,7 +3,6 @@ package csc_cccix.geocracy.game;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.os.Handler;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -15,8 +14,6 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;

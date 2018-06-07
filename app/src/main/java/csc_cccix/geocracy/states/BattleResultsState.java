@@ -2,14 +2,10 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
-import java.util.concurrent.TimeUnit;
-
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
-import io.reactivex.Completable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class BattleResultsState implements  GameState {
 

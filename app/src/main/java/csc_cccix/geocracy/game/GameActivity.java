@@ -16,7 +16,6 @@ import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +32,6 @@ import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
 import es.dmoral.toasty.Toasty;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {

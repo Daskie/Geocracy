@@ -7,24 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
-
-import com.jakewharton.rxbinding2.view.RxView;
+import android.widget.TextView;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.states.GameAction;
-import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
-import es.dmoral.toasty.Toasty;
-
-import static android.view.MotionEvent.ACTION_UP;
 
 public class TroopSelectionFragment extends Fragment {
 

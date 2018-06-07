@@ -1,7 +1,5 @@
 package csc_cccix.geocracy.states;
 
-import csc_cccix.geocracy.game.Player;
-
 class BattleResultDetails {
 
     public int attackerArmiesLost;

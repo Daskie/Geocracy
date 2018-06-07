@@ -7,7 +7,6 @@ import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.HumanPlayer;
-import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 

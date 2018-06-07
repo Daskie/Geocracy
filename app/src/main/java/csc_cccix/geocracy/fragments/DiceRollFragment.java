@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
