@@ -81,6 +81,16 @@ public class GainArmyUnitsState implements GameState {
             Log.i(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
         }
 
+        if (game.getCurrentPlayer().getArmyPool() == 0) {
+            game.getActivity().runOnUiThread(() -> {
+                game.getActivity().setConfirmButtonButtonVisibilityAndActiveState(true, true);
+            });
+        } else {
+            game.getActivity().runOnUiThread(() -> {
+                game.getActivity().setConfirmButtonButtonVisibilityAndActiveState(true, false);
+            });
+        }
+
         game.getActivity().removeActiveBottomPaneFragment();
         game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, currentPlayer));
 
@@ -95,8 +105,10 @@ public class GainArmyUnitsState implements GameState {
         Log.i(TAG, "USER CANCELED ACTION -> DESELECT TERRITORY IF SELECTED");
         this.territory = null;
         Player currentPlayer = game.getCurrentPlayer();
-        game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
-        game.getActivity().runOnUiThread(() -> game.getActivity().setUpdateUnitCountButtonsVisibility(false));
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+            game.getActivity().setUpdateUnitCountButtonsVisibility(false);
+        });
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
@@ -106,12 +118,15 @@ public class GainArmyUnitsState implements GameState {
         Player currentPlayer = game.getCurrentPlayer();
         currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
 
-        game.getActivity().removeActiveBottomPaneFragment();
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
-        game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
-        game.getActivity().runOnUiThread(() -> game.getActivity().setUpdateUnitCountButtonsVisibility(false));
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().removeActiveBottomPaneFragment();
+            game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+            game.getActivity().setUpdateUnitCountButtonsVisibility(false);
+            game.getActivity().setConfirmButtonButtonVisibilityAndActiveState(true, false);
+        });
 
         Log.i(TAG, "" + currentPlayer.getId());
         Log.i(TAG, "HAS " + currentPlayer.getArmyPool() + " UNITS TO DISTRIBUTE");

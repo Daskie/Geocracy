@@ -1,6 +1,7 @@
 package csc_cccix.geocracy.states;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
@@ -8,6 +9,7 @@ import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
+import es.dmoral.toasty.Toasty;
 
 public class SelectedAttackTargetTerritoryState implements  GameState {
 
@@ -17,6 +19,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     private Territory originTerritory;
     private Territory targetTerritory;
     private boolean originTerritoryLock;
+    private TroopSelectionFragment troopSelectionFragment;
 
     public SelectedAttackTargetTerritoryState(Game game) {
         this.game = game;
@@ -66,7 +69,13 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     }
 
     public void confirmAction() {
-        Log.i("", "SETUP INITIAL TERRITORIES STATE: USER CANCELED ACTION -> N/A");
+        int numArmiesSelected = troopSelectionFragment.getSelectedNumberOfUnits();
+        if(numArmiesSelected<=originTerritory.getNArmies()) {
+            game.getCurrentPlayer().setNumArmiesAttacking(numArmiesSelected);
+            EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
+        }
+        else
+            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "You do not have enough armies in this territory to attack with the number you selected! ", Toast.LENGTH_LONG).show());
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
@@ -80,7 +89,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");
-        game.getActivity().showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory, game.getCurrentPlayer()));
+        troopSelectionFragment = TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory, game.getCurrentPlayer());
+        game.getActivity().showBottomPaneFragment(troopSelectionFragment);
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().targetTerritory(this.targetTerritory);
@@ -91,6 +101,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+            game.getActivity().getConfirmButton().show();
             game.getActivity().getCancelBtn().show();
         });
     }

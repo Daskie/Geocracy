@@ -27,6 +27,7 @@ import static android.view.MotionEvent.ACTION_UP;
 
 public class TroopSelectionFragment extends Fragment {
 
+    private View view;
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private static Player player;
@@ -45,11 +46,10 @@ public class TroopSelectionFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.troop_selection, container, false);
+        view = inflater.inflate(R.layout.troop_selection, container, false);
 
         Territory originTerritory = (Territory) getArguments().get("originTerritory");
         Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
-
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
         originTerritoryID.setText("SELECT NUMBER OF UNITS FROM: " + originTerritory.getTerritoryName());
@@ -59,26 +59,12 @@ public class TroopSelectionFragment extends Fragment {
 
         radioGroup = view.findViewById(R.id.radio);
 
-        Button confirmButton = view.findViewById(R.id.confirmButton);
-        RxView.touches(confirmButton).subscribe(event -> {
-            if (event.getActionMasked() == ACTION_UP){
-
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                // find the radiobutton by returned id
-                radioButton = view.findViewById(selectedId);
-
-                int numArmiesSelected = Integer.parseInt(radioButton.getText().toString());
-                if(numArmiesSelected<=originTerritory.getNArmies()) {
-                    player.setNumArmiesAttacking(numArmiesSelected);
-
-                    EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
-                }
-                else
-                    Toasty.warning(this.getContext(), "You do not have enough armies in this territory to attack with the number you selected! ",  Toast.LENGTH_LONG).show();
-
-            }
-        });
-
         return view;
+    }
+
+    public int getSelectedNumberOfUnits() {
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        radioButton = view.findViewById(selectedId);
+        return Integer.parseInt(radioButton.getText().toString());
     }
 }

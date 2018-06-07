@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +62,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FloatingActionButton gameInfoBtn;
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
+    private FloatingActionButton confirmButton;
 
     private boolean fromGameLoad;
 
@@ -129,6 +131,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
             if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.CANCEL_ACTION, null));
+            }
+        }));
+
+        confirmButton = findViewById(R.id.confirmButton);
+        confirmButton.hide();
+        disposables.add(RxView.touches(confirmButton).subscribe(event -> {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CONFIRM_ACTION, null));
             }
         }));
 
@@ -285,6 +295,27 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
+    public void setConfirmButtonButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
+
+        AlphaAnimation alphaChange;
+
+        if (isActive) {
+            alphaChange = new AlphaAnimation(confirmButton.getAlpha(), 1.0f);
+        } else {
+            alphaChange = new AlphaAnimation(confirmButton.getAlpha(), 0.4f);
+        }
+
+        alphaChange.setFillAfter(true);
+        confirmButton.startAnimation(alphaChange);
+
+        if (isVisible) {
+            confirmButton.show();
+        } else {
+            confirmButton.hide();
+        }
+
+    }
+
     public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
         if (isVisible) {
             addUnitBtn.show();
@@ -301,6 +332,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         addUnitBtn.hide();
         removeUnitBtn.hide();
         endTurnButton.hide();
+        confirmButton.hide();
     }
 
 
@@ -356,6 +388,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public FloatingActionButton getCancelBtn() {
         return cancelBtn;
     }
+
+    public FloatingActionButton getConfirmButton() { return confirmButton; }
 
     public FloatingActionButton getCloseOverlayBtn() {
         return closeOverlayBtn;

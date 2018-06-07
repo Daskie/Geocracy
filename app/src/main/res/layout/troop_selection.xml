@@ -1,29 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="130dp"
     android:layout_gravity="bottom"
     android:background="@color/whiteTransparent"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/originTerritoryID"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="center"
-        android:text="Select Number of Units From: "
-        android:textColor="@android:color/white" />
-
-    <TextView
-        android:id="@+id/targetTerritoryID"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="To Attack Territory: "
-        android:textColor="@android:color/white" />
 
     <RadioGroup
         android:id="@+id/radio"
@@ -31,6 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="8dp"
+        android:background="@color/md_orange_500"
         android:orientation="horizontal">
         <RadioButton
             android:id="@+id/radio1"
@@ -52,12 +36,22 @@
             android:text="@string/radio_3"/>
     </RadioGroup>
 
-    <Button
-        android:id="@+id/confirmButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Confirm"/>
+    <TextView
+        android:id="@+id/originTerritoryID"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:text="Select Number of Units From: "
+        android:textColor="@android:color/white" />
 
+    <TextView
+        android:id="@+id/targetTerritoryID"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="To Attack Territory: "
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

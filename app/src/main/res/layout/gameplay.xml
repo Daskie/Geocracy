@@ -92,6 +92,17 @@
         android:src="@drawable/ic_cancel_white_48dp"
         app:backgroundTint="@color/darkGray"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/confirmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:fabSize="auto"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="100dp"
+        android:src="@drawable/ic_check_white_48dp"
+        app:backgroundTint="@color/md_green_500"/>
+
     <csc_cccix.geocracy.game.GameSurfaceView
         android:id="@+id/gameplaySurfaceView"
         android:layout_width="match_parent"

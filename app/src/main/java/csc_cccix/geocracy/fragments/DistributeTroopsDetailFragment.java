@@ -46,16 +46,8 @@ public class DistributeTroopsDetailFragment extends Fragment {
         if (originTerritory != null) originTerritoryID.setText("UPDATE UNITS AT: " + originTerritory.getTerritoryName());
         else originTerritoryID.setText("SELECT A TERRITORY TO ADD/REMOVE UNITS");
 
-
         TextView unitPoolCount = view.findViewById(R.id.unitPoolCount);
         unitPoolCount.setText("Remaining Number of Units: " + currentPlayer.getArmyPool());
-
-        Button confirmButton = view.findViewById(R.id.confirmButton);
-
-        RxView.touches(confirmButton).subscribe(event -> {
-            Log.i("CONFIRM_BTN", "CONFIRM TAPPED!");
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_ACTION, null));
-        });
 
         return view;
     }

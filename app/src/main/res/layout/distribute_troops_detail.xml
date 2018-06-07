@@ -2,12 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="70dp"
     android:layout_gravity="bottom"
     android:background="@color/whiteTransparent"
     android:orientation="vertical">
 
-
+    <TextView
+        android:id="@+id/unitPoolCount"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="Remaining Number of Units:"
+        android:background="@color/md_orange_500"/>
 
     <TextView
         android:id="@+id/originTerritoryID"
@@ -17,20 +23,5 @@
         android:gravity="center"
         android:text="Update Units at Territory: "
         android:textColor="@android:color/white" />
-
-    <TextView
-        android:id="@+id/unitPoolCount"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:text="Remaining Number of Units:" />
-
-    <Button
-        android:id="@+id/confirmButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Confirm"/>
-
 
 </LinearLayout>
