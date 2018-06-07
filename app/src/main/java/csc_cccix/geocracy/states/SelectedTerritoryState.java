@@ -2,10 +2,8 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedTerritoryState implements  GameState {
@@ -70,12 +68,13 @@ public class SelectedTerritoryState implements  GameState {
         game.getWorld().selectTerritory(this.territory);
         game.getWorld().unhighlightTerritories();
         game.getCameraController().targetTerritory(this.territory);
-        String uiTag = "UI_EVENT";
-        EventBus.publish(uiTag, UIEvent.SHOW_END_TURN_BUTTON);
-        EventBus.publish(uiTag, UIEvent.SHOW_ATTACK_MODE_BUTTON);
-        EventBus.publish(uiTag, UIEvent.SET_ATTACK_MODE_INACTIVE);
-        EventBus.publish(uiTag, UIEvent.SHOW_CANCEL_BUTTON);
-        EventBus.publish(uiTag, UIEvent.HIDE_UPDATE_UNITS_MODE_BUTTONS);
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
+            game.getActivity().getEndTurnButton().show();
+            game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
+            game.getActivity().getCancelBtn().show();
+        });
+
     }
 
 }
