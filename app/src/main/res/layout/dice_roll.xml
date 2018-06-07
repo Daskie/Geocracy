@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="180dp"
     android:layout_gravity="bottom"
     android:background="@color/whiteTransparent"
     android:orientation="vertical">
@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/diceRollHeader"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="45dp"
         android:background="@color/territoryDetailColor"
         android:gravity="center"
         android:text="Dice Roll"
