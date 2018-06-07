@@ -38,7 +38,6 @@ import glm_.vec3.Vec3;
 import static csc_cccix.geocracy.states.GameAction.CANCEL_ACTION;
 import static csc_cccix.geocracy.states.GameAction.CONFIRM_ACTION;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
-import static glm_.Java.glm;
 
 public class Game implements Serializable {
 
@@ -346,7 +345,6 @@ public class Game implements Serializable {
     public void wasTapUp(Vec2i p) {
         synchronized (this) {
             tapUpPoint = p;
-            swipeDistance = 0.0f;
         }
     }
 
@@ -354,9 +352,6 @@ public class Game implements Serializable {
         synchronized (this) {
             swipeDelta = d;
             swipeDistance += d.x * d.x + d.y * d.y;
-            if (swipeDistance > TAP_DISTANCE_THRESHOLD) {
-                tapDownPoint = null;
-            }
         }
     }
 
@@ -398,7 +393,7 @@ public class Game implements Serializable {
                 swipeDelta = null;
             }
             if (tapDownPoint != null && tapUpPoint != null) {
-                if (glm.distance(new Vec2(tapDownPoint), new Vec2(tapUpPoint)) <= TAP_DISTANCE_THRESHOLD) {
+                if (swipeDistance <= TAP_DISTANCE_THRESHOLD) {
                     GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, idFBHandle);
                     GLES30.glReadPixels(tapDownPoint.x, screenSize.y - tapDownPoint.y - 1, 1, 1, GLES30.GL_RED_INTEGER, GLES30.GL_UNSIGNED_BYTE, readbackBuffer);
                     int downTerrId = readbackBuffer.get(0);
