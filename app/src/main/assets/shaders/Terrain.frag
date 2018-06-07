@@ -11,6 +11,7 @@ in float v2f_sub;
 flat in int v2f_coastDist;
 flat in int v2f_faceInlandDist;
 in float v2f_vertInlandDist;
+in float v2f_inlandness;
 in float v2f_border;
 in vec3 v2f_edges;
 in vec3 v2f_bary;
@@ -19,6 +20,7 @@ flat in float v2f_selected;
 flat in float v2f_targeted;
 flat in float v2f_highlighted;
 flat in vec3 v2f_playerColor;
+flat in float v2f_pulseTime;
 
 layout (location = 0) out vec4 out_color;
 
@@ -36,8 +38,9 @@ const float k_borderEdgeWidth = 0.125f;
 const float k_borderThreshold = 1.0f - k_borderEdgeWidth;
 const float k_highlightBorderHighThreshold = 0.75f;
 const float k_highlightBorderLowThreshold = 0.5f;
-const float k_pulseMinDepth = 1.5f;
-const float k_pulseMaxDepth = 3.0f;
+const float k_glowMinDepth = 1.5f;
+const float k_glowMaxDepth = 2.25f;
+const float k_pulseWidth = 2.0f;
 
 float between(float v, float low, float high) {
     return float(v >= low && v <= high);
@@ -55,8 +58,8 @@ void main() {
     vec3 up = normalize(v2f_loc);
     float strongEmphasis = max(v2f_selected, v2f_targeted);
     float emphasis = max(strongEmphasis, v2f_highlighted);
-    float pulseTime = smoothInterp((u_time > 0.5f ? 1.0f - u_time : u_time) * 2.0f);
-    pulseTime = mix(pulseTime, 1.0f, strongEmphasis);
+    float glowTime = smoothInterp((u_time > 0.5f ? 1.0f - u_time : u_time) * 2.0f);
+    glowTime = mix(glowTime, 1.0f, strongEmphasis);
 
     float super = clamp((v2f_elevation - 1.0f) * u_highElevationFactor, 0.0f, 1.0f);
     float sub = clamp((v2f_elevation - 1.0f) * u_lowElevationFactor, 0.0f, 1.0f);
@@ -87,7 +90,7 @@ void main() {
 
     float maxBary = max(max(v2f_bary.x, v2f_bary.y), v2f_bary.z);
     float maxEdge = max(max(v2f_edges.x, v2f_edges.y), v2f_edges.z);
-    float innerBorderThreshold = mix(k_borderThreshold, mix(k_highlightBorderHighThreshold, k_highlightBorderLowThreshold, pulseTime), emphasis);
+    float innerBorderThreshold = mix(k_borderThreshold, mix(k_highlightBorderHighThreshold, k_highlightBorderLowThreshold, glowTime), emphasis);
     float innerCorner = step(innerBorderThreshold, maxBary);
     float innerEdge = step(innerBorderThreshold, maxEdge);
     float innerBorder = step(innerBorderThreshold, v2f_border) * (max(innerCorner, innerEdge));
@@ -97,17 +100,16 @@ void main() {
     float outerBorder = step(outerBorderThreshold, v2f_border) * (max(outerCorner, outerEdge));
     vec3 borderColor = mix(v2f_continentColor * 0.75f, v2f_playerColor + outerBorder, emphasis);
 
-    /*float pulseWidth = 5.0f;
-    float pulseDepth = 12.0f;
-    float pulseAt = u_time * (pulseDepth + 2.0f * pulseWidth) - pulseWidth;
-    float pulseDist = abs(float(v2f_inlandDist) - pulseAt);
-    float pulseValue = max(1.0f - pulseDist / pulseWidth, 0.0f) * (1.0f - u_time * u_time);
-    pulseValue = max(1.0f - float(v2f_inlandDist) * 0.25f, 0.0f);*/
-    float pulseAt = mix(k_pulseMinDepth, k_pulseMaxDepth, pulseTime);
-    float pulseValue = max(1.0f - float(v2f_vertInlandDist) / pulseAt, 0.0f);
-    pulseValue *= pulseValue;
+    float glowAt = mix(k_glowMinDepth, k_glowMaxDepth, glowTime);
+    float glowValue = max(1.0f - float(v2f_vertInlandDist) / glowAt, 0.0f);
+    glowValue *= glowValue;
+
+    float pulseAt = (1.0f - v2f_pulseTime) * (1.0f + 2.0f * k_pulseWidth) - k_pulseWidth;
+    float pulseValue = max(1.0f - abs(v2f_inlandness - pulseAt) / k_pulseWidth, 0.0f);
+
     albedo *= 1.0f + 0.125 * emphasis * land;
-    albedo += v2f_playerColor * (pulseValue * emphasis * land);
+    albedo += v2f_playerColor * (glowValue * emphasis * land);
+    albedo += mix(v2f_playerColor, vec3(1.0f), pulseValue) * (pulseValue * land);
 
     out_color.rgb = mix(
         albedo * lightFactor,

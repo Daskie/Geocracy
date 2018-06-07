@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,8 @@ public class World implements Serializable {
     private transient boolean targetChange;
     private transient boolean highlightChange;
     private transient boolean ownershipChange;
+    private transient float[] ownershipChangeTimes;
+    private transient boolean isOwnershipChangeInProgress;
     private transient boolean armyChange;
 
     public World(Game game, long seed) {
@@ -77,6 +80,9 @@ public class World implements Serializable {
         targetChange = true;
         highlightChange = true;
         ownershipChange = true;
+        ownershipChangeTimes = new float[64];
+        Arrays.fill(ownershipChangeTimes, 1.0f);
+        isOwnershipChangeInProgress = true;
         armyChange = true;
     }
 
@@ -111,8 +117,8 @@ public class World implements Serializable {
         return true;
     }
 
-    public synchronized void render(long t, Camera camera, Vec3 lightDir, int cubemapHandle) {
-        terrain.render(t, camera, lightDir, selectionChange, targetChange, highlightChange, ownershipChange);
+    public synchronized void render(long t, float dt, Camera camera, Vec3 lightDir, int cubemapHandle) {
+        terrain.render(t, camera, lightDir, selectionChange, targetChange, highlightChange, ownershipChange, isOwnershipChangeInProgress ? ownershipChangeTimes : null);
         oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
         armyRenderer.render(camera, lightDir, armyChange, ownershipChange);
@@ -127,6 +133,19 @@ public class World implements Serializable {
         targetChange = false;
         highlightChange = false;
         armyChange = false;
+        ownershipChange = false;
+        if (isOwnershipChangeInProgress) {
+            isOwnershipChangeInProgress = false;
+            for (int i = 0; i < ownershipChangeTimes.length; ++i) {
+                ownershipChangeTimes[i] += dt;
+                if (ownershipChangeTimes[i] < 1.0f) {
+                    isOwnershipChangeInProgress = true;
+                }
+                else {
+                    ownershipChangeTimes[i] = 1.0f;
+                }
+            }
+        }
     }
 
     public void renderId(Camera camera) {
@@ -261,11 +280,13 @@ public class World implements Serializable {
         return terrain;
     }
 
-    void setOwnershipChange() {
+    synchronized void setOwnershipChange(Territory territory) {
         ownershipChange = true;
+        ownershipChangeTimes[territory.getId()] = 0.0f;
+        isOwnershipChangeInProgress = true;
     }
 
-    void setArmyChange() {
+    synchronized void setArmyChange() {
         armyChange = true;
     }
 

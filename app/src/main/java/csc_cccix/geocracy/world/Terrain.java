@@ -45,6 +45,7 @@ public class Terrain {
         Set<Integer> waterwayTerrs = new HashSet<>();
         int continent;
         Vec3 center;
+        int maxInlandDist;
         int[] armyFaces;
         Vec3[] armyLocations;
         Mat3[] armyOrientations;
@@ -121,6 +122,11 @@ public class Terrain {
         shader.setHighlightedTerritories(null);
         shader.setPlayerColors(world.game.getPlayers());
         shader.setTerritoryPlayers(world.getTerritories());
+        float[] invMaxInlandDists = new float[64];
+        for (int ti = 1; ti < territorySpecs.length; ++ti) {
+            invMaxInlandDists[ti] = 1.0f / territorySpecs[ti].maxInlandDist;
+        }
+        shader.setInvMaxInlandDists(invMaxInlandDists);
         if (Util.isGLError()) {
             Log.e("", "Failed to initialize shader uniforms");
             return false;
@@ -184,7 +190,7 @@ public class Terrain {
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean targetChange, boolean highlightChange, boolean ownershipChange) {
+    public void render(long t, Camera camera, Vec3 lightDir, boolean selectionChange, boolean targetChange, boolean highlightChange, boolean ownershipChange, float[] ownershipChangeTimes) {
         shader.setActive();
         shader.setViewMatrix(camera.getViewMatrix());
         shader.setProjectionMatrix(camera.getProjectionMatrix());
@@ -204,6 +210,9 @@ public class Terrain {
         }
         if (ownershipChange) {
             shader.setTerritoryPlayers(world.getTerritories());
+        }
+        if (ownershipChangeTimes != null) {
+            shader.setPulseTimes(ownershipChangeTimes);
         }
 
         GLES30.glBindVertexArray(vaoHandle);
@@ -986,6 +995,7 @@ public class Terrain {
                 nextFringe.clear();
                 ++dist;
             }
+            terr.maxInlandDist = dist;
         }
     }
 

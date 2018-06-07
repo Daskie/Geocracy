@@ -11,6 +11,7 @@ out float v2f_elevation;
 flat out int v2f_coastDist;
 flat out int v2f_faceInlandDist;
 out float v2f_vertInlandDist;
+out float v2f_inlandness;
 out float v2f_border;
 out vec3 v2f_edges;
 out vec3 v2f_bary;
@@ -19,6 +20,7 @@ flat out float v2f_selected;
 flat out float v2f_targeted;
 flat out float v2f_highlighted;
 flat out vec3 v2f_playerColor;
+flat out float v2f_pulseTime;
 
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
@@ -29,6 +31,8 @@ uniform int u_highlightedTerritoriesLower;
 uniform int u_highlightedTerritoriesUpper;
 uniform vec3 u_playerColors[9];
 uniform int u_territoryPlayers[64];
+uniform float u_pulseTimes[64];
+uniform float u_invMaxInlandDists[64];
 
 void main() {
     v2f_loc = in_loc;
@@ -57,6 +61,10 @@ void main() {
     v2f_highlighted = float((highlightedTerritories >> (territory & 0x1F)) & 1);
 
     v2f_playerColor = u_playerColors[u_territoryPlayers[territory]];
+
+    v2f_pulseTime = u_pulseTimes[territory];
+
+    v2f_inlandness = in_vertInlandDist * u_invMaxInlandDists[territory];
 
 	gl_Position = u_projMat * u_viewMat * vec4(in_loc, 1.0f);
 }
