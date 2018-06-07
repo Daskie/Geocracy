@@ -16,12 +16,14 @@ import csc_cccix.geocracy.world.Territory;
 
 public class DiceRollFragment extends Fragment {
 
-    public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory) {
+    public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory, int[] attackerDie, int[] defenderDie) {
         DiceRollFragment newFragment = new DiceRollFragment();
 
         Bundle args = new Bundle();
         args.putSerializable("originTerritory", originTerritory);
         args.putSerializable("targetTerritory", targetTerritory);
+        args.putSerializable("attackerDie", attackerDie);
+        args.putSerializable("defenderDie", defenderDie);
         newFragment.setArguments(args);
 
         return newFragment;
@@ -34,12 +36,33 @@ public class DiceRollFragment extends Fragment {
 
         Territory originTerritory = (Territory) getArguments().get("originTerritory");
         Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
+        int[] attackerDie = (int[]) getArguments().get("attackerDie");
+        int[] defenderDie  = (int[]) getArguments().get("defenderDie");
+
+        String attackerString = "";
+        String defenderString = "";
+
+        for(int i = attackerDie.length-1; i > -1; i--){
+            if(attackerDie[i]!=-1) {
+                attackerString += attackerDie[i];
+                if (i != 1)
+                    attackerString += ", ";
+            }
+        }
+
+        for(int i = defenderDie.length-1; i > -1; i--){
+            if(defenderDie[i]!=-1) {
+                defenderString += defenderDie[i];
+                if (i != 0)
+                    defenderString += ", ";
+            }
+        }
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("Attacker ( " + originTerritory.getTerritoryName() + " ) Rolls a: ");
+        attackingPlayer.setText("Attacker ( " + originTerritory.getTerritoryName() + " ) Rolls a: " + attackerString);
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("Defender ( " + targetTerritory.getTerritoryName() + " ) Rolls a: ");
+        defendingPlayer.setText("Defender ( " + targetTerritory.getTerritoryName() + " ) Rolls a: " + defenderString);
 
         TextView battleResult = view.findViewById(R.id.battleResult);
         battleResult.setText("RESULT: ");

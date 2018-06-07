@@ -1,6 +1,7 @@
 package csc_cccix.geocracy.game;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ public class Player implements Serializable {
     private int armies;
     private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
+    private int numArmiesAttacking;
+    private int die[];
 
     public Player(int id, Vec3 color) {
         this.id = id;
@@ -30,6 +33,7 @@ public class Player implements Serializable {
         this.territories = new HashSet<>();
         this.armies = 0;
         this.ownedContinents = new HashSet<>();
+        this.die = new int[] {-1,-1,-1};
     }
 
     // Called by Territory.setOwner
@@ -91,11 +95,17 @@ public class Player implements Serializable {
     }
 
     private void calcBonus() {
-        bonus = glm.max(territories.size() / 3, 3);
-        for (Continent continent : ownedContinents) {
-            bonus += continent.getBonus();
+        this.bonus = glm.max(this.territories.size() / 3, 3);
+        for (Continent continent : this.ownedContinents) {
+            this.bonus += continent.getBonus();
         }
     }
+
+    public int[] getDie(){ return this.die; }
+    public void setDie(int index, int value){ this.die[index] = value; }
+    public void sortDie(){ Arrays.sort(this.die); }
+    public int getNumArmiesAttacking(){ return this.numArmiesAttacking; }
+    public void setNumArmiesAttacking(int num){ this.numArmiesAttacking = num; }
 
     @Override
     public String toString() {

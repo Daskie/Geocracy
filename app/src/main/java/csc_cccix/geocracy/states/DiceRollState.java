@@ -38,10 +38,23 @@ public class DiceRollState implements  GameState {
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "INVALID ACTION: -> ALREADY PERFORMING DICE ROLL");
+        roll(attackerDetails.unitCount, defenderDetails.unitCount);
+
+        this.originTerritory.getOwner().sortDie();
+        this.targetTerritory.getOwner().sortDie();
+    }
+
+    private void roll(int attackerNumDie, int defenderNumDie){
+        for(int i = 0; i < attackerNumDie; i++)
+            this.originTerritory.getOwner().setDie(i, (int)(Math.random()*6) + 1);
+
+        for(int i = 0; i < defenderNumDie; i++)
+            this.targetTerritory.getOwner().setDie(i, (int)(Math.random()*6) + 1);
+
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
-        Log.i(TAG, "BATTLE COMPLETED -> ENTER BATTLE RESULTS STATEL");
+        Log.i(TAG, "BATTLE COMPLETED -> ENTER BATTLE RESULTS STATE");
         game.setState(new BattleResultsState(game));
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
@@ -66,7 +79,7 @@ public class DiceRollState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-
+        game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory, this.originTerritory.getOwner().getDie(), this.targetTerritory.getOwner().getDie()));
         game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
@@ -76,7 +89,7 @@ public class DiceRollState implements  GameState {
             game.getActivity().hideAllGameInteractionButtons();
         });
 
-        Completable.timer(4, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        Completable.timer(6, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);
 
     }
