@@ -410,7 +410,7 @@ public class Game implements Serializable {
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         Vec3 lightDir = cameraController.getCamera().getOrientMatrix().times((new Vec3(-0.75f, -0.75f, -1.0f)).normalizeAssign());
-        world.render(t, cameraController.getCamera(), lightDir, spaceRenderer.getCubemapHandle());
+        world.render(t, dt, cameraController.getCamera(), lightDir, spaceRenderer.getCubemapHandle());
         spaceRenderer.render(cameraController.getCamera());
     }
 

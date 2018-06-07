@@ -160,6 +160,10 @@ public abstract class Shader {
         GLES30.glUniformMatrix4fv(handle, 1, false, fb);
     }
 
+    protected void uploadUniform(int handle, float[] vs) {
+        GLES30.glUniform1fv(handle, vs.length, vs, 0);
+    }
+
     protected void uploadUniform(int handle, Vec3[] vs) {
         ByteBuffer bb = ByteBuffer.allocateDirect(vs.length * 3 * 4);
         bb.order(ByteOrder.nativeOrder());

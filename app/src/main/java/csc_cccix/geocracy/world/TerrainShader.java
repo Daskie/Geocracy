@@ -23,6 +23,8 @@ public class TerrainShader extends Shader {
     private int highlightedTerritoriesUpperHandle;
     private int playerColorsHandle;
     private int territoryPlayersHandle;
+    private int pulseTimesHandle;
+    private int invMaxInlandDistsHandle;
 
     public TerrainShader() {
         super("Terrain", "shaders/Terrain.vert", "shaders/Terrain.frag");
@@ -100,6 +102,14 @@ public class TerrainShader extends Shader {
         uploadUniform(territoryPlayersHandle, terrPlayers, true);
     }
 
+    public void setPulseTimes(float[] pulseTimes) {
+        uploadUniform(pulseTimesHandle, pulseTimes);
+    }
+
+    public void setInvMaxInlandDists(float[] invMaxInlandDists) {
+        uploadUniform(invMaxInlandDistsHandle, invMaxInlandDists);
+    }
+
     @Override
     protected boolean setupUniforms() {
         if ((viewMatUniformHandle = getUniformLocation("u_viewMat")) == -1) {
@@ -143,6 +153,12 @@ public class TerrainShader extends Shader {
         }
         if ((territoryPlayersHandle = getUniformLocation("u_territoryPlayers")) == -1) {
             Log.e("", "Failed to get location of u_territoryPlayers");
+        }
+        if ((pulseTimesHandle = getUniformLocation("u_pulseTimes")) == -1) {
+            Log.e("", "Failed to get location of u_pulseTimes");
+        }
+        if ((invMaxInlandDistsHandle = getUniformLocation("u_invMaxInlandDists")) == -1) {
+            Log.e("", "Failed to get location of u_invMaxInlandDists");
         }
 
         return true;

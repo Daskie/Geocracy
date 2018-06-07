@@ -111,7 +111,7 @@ public class CameraController {
     }
 
     public void targetTerritory(Territory territory) {
-        setTarget(territory.getCenter().times(camera.getElevation()));
+        //setTarget(territory.getCenter().times(camera.getElevation()));
     }
 
     public OrbitCamera getCamera() {
