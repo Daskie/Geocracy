@@ -1,21 +1,16 @@
 package csc_cccix.geocracy.states;
 
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.game.Player;
 
 class BattleResultDetails {
 
-    public Territory attackingTerritory;
-    public int attackingUnitCount;
+    public int attackerArmiesLost;
+    public int defenderArmiesLost;
 
-    public Territory defendingTerritory;
-    public int defendingUnitCount;
 
-    public BattleResultDetails(Territory attackingTerritory, int attackingUnitCount,
-                               Territory defendingTerritory, int defendingUnitCount) {
-        this.attackingTerritory = attackingTerritory;
-        this.attackingUnitCount = attackingUnitCount;
-        this.defendingTerritory = defendingTerritory;
-        this.defendingUnitCount = defendingUnitCount;
+    public BattleResultDetails(int attackerArmiesLost, int defenderArmiesLost) {
+        this.attackerArmiesLost = attackerArmiesLost;
+        this.defenderArmiesLost = defenderArmiesLost;
     }
 
 }

@@ -2,10 +2,14 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class BattleResultsState implements  GameState {
 
@@ -14,6 +18,10 @@ public class BattleResultsState implements  GameState {
     private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
+    private int attackerArmiesLost = 0;
+    private int defenderArmiesLost = 0;
+    private DiceRollDetails attackerDetails;
+    private DiceRollDetails defenderDetails;
 
     public BattleResultsState(Game game) {
         this.game = game;
@@ -34,11 +42,14 @@ public class BattleResultsState implements  GameState {
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "INVALID ACTION: -> CANNOT PERFORM DICE ROLL");
+        this.attackerDetails = attackerDetails;
+        this.defenderDetails = defenderDetails;
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
         Log.i(TAG, "INVALID ACTION: -> ALREADY IN BATTLE RESULTS STATE!");
-
+        this.attackerArmiesLost = battleResultDetails.attackerArmiesLost;
+        this.defenderArmiesLost = battleResultDetails.defenderArmiesLost;
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
@@ -59,7 +70,7 @@ public class BattleResultsState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.getActivity().showBottomPaneFragment(BattleResultsFragment.newInstance(this.originTerritory, this.targetTerritory));
+        game.getActivity().showBottomPaneFragment(BattleResultsFragment.newInstance(this.originTerritory, this.targetTerritory, this.attackerArmiesLost, this.defenderArmiesLost));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
@@ -67,6 +78,45 @@ public class BattleResultsState implements  GameState {
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().hideAllGameInteractionButtons();
         });
+
+        Completable.timer(4, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe(this::goToBattleResults);
+    }
+
+    private void goToBattleResults() {
+        Territory originTerritory = this.originTerritory;
+        Territory targetTerritory = this.targetTerritory;
+
+        originTerritory.setNArmies(originTerritory.getNArmies()-this.attackerArmiesLost);
+        targetTerritory.setNArmies(targetTerritory.getNArmies()-this.defenderArmiesLost);
+
+        Player attacker = originTerritory.getOwner();
+        Player defender = targetTerritory.getOwner();
+
+        if(originTerritory.getNArmies()==0) {
+            attacker.removeTerritory(originTerritory);
+            originTerritory.setOwner(defender);
+            defender.addTerritory(originTerritory);
+
+            int numArmiesToMove = this.defenderDetails.unitCount;
+            if(numArmiesToMove == targetTerritory.getNArmies())
+                numArmiesToMove -= 1;
+            originTerritory.setNArmies(numArmiesToMove);
+            targetTerritory.setNArmies(targetTerritory.getNArmies()-numArmiesToMove);
+        }
+        if(targetTerritory.getNArmies()==0) {
+            defender.removeTerritory(targetTerritory);
+            targetTerritory.setOwner(attacker);
+            attacker.addTerritory(targetTerritory);
+
+            int numArmiesToMove = this.attackerDetails.unitCount;
+            if(numArmiesToMove == originTerritory.getNArmies())
+                numArmiesToMove -= 1;
+            targetTerritory.setNArmies(numArmiesToMove);
+            originTerritory.setNArmies(originTerritory.getNArmies()-numArmiesToMove);
+        }
+
+
     }
 
 }

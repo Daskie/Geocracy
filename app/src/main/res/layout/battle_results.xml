@@ -16,6 +16,13 @@
         android:text="Battle Results"
         android:textColor="@android:color/white" />
 
+    <TextView
+        android:id="@+id/example"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:padding="3dp"/>
 
     <TextView
         android:id="@+id/attackingPlayer"
@@ -23,8 +30,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Attacking:"/>
+        android:padding="7dp"/>
 
     <TextView
         android:id="@+id/defendingPlayer"
@@ -32,17 +38,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Defending:"/>
-
-    <TextView
-        android:id="@+id/battleResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Result:"/>
+        android:padding="7dp"/>
 
 
 </LinearLayout>

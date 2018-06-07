@@ -14,12 +14,14 @@ import csc_cccix.geocracy.world.Territory;
 
 public class BattleResultsFragment extends Fragment {
 
-    public static BattleResultsFragment newInstance(Territory originTerritory, Territory targetTerritory) {
+    public static BattleResultsFragment newInstance(Territory originTerritory, Territory targetTerritory, int attackerArmiesLost, int defenderArmiesLost) {
         BattleResultsFragment newFragment = new BattleResultsFragment();
 
         Bundle args = new Bundle();
         args.putSerializable("originTerritory", originTerritory);
         args.putSerializable("targetTerritory", targetTerritory);
+        args.putSerializable("attackerArmiesLost", attackerArmiesLost);
+        args.putSerializable("defenderArmiesLost", defenderArmiesLost);
         newFragment.setArguments(args);
 
         return newFragment;
@@ -32,15 +34,24 @@ public class BattleResultsFragment extends Fragment {
 
         Territory originTerritory = (Territory) getArguments().get("originTerritory");
         Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
+        int attackerArmiesLost = (int) getArguments().get("attackerArmiesLost");
+        int defenderArmiesLost = (int) getArguments().get("defenderArmiesLost");
+
+        //CountryName: OriginalNumber - TroopsLost = NewAmountTroops
+
+        int attackerNewArmyNum = originTerritory.getNArmies() - attackerArmiesLost;
+        int defenderNewArmyNum = targetTerritory.getNArmies() - defenderArmiesLost;
+
+        TextView example = view.findViewById(R.id.example);
+        example.setText("(country): (original number) - (troops lost) = (new number)");
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName());
+        attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName() + "  :   " + originTerritory.getNArmies() + "   -   " + attackerArmiesLost + "   =   " + attackerNewArmyNum);
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName());
+        defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName() + "  :   " + targetTerritory.getNArmies() + "   -   " + defenderArmiesLost + "   =   " + defenderNewArmyNum);
 
-        TextView battleResult = view.findViewById(R.id.battleResult);
-        battleResult.setText("RESULT: ");
+
 
         return view;
     }
