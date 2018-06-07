@@ -44,6 +44,8 @@ public class DefaultState implements GameState {
         Log.i(TAG, "INVALID STATE ACCESSED");
     }
 
+    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE, SELECT A TERRITORY FIRST"); }
+
     public void confirmAction() {
         Log.i(TAG, "INVALID ACTION: CONFRIM NOT AVAILIBLE");
     }

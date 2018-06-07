@@ -23,6 +23,7 @@ import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.states.BattleResultsState;
 import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.DiceRollState;
+import csc_cccix.geocracy.states.FortifyTerritoryState;
 import csc_cccix.geocracy.states.GainArmyUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
@@ -35,8 +36,8 @@ import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc_cccix.geocracy.states.GameAction.CANCEL_ACTION;
-import static csc_cccix.geocracy.states.GameAction.CONFIRM_ACTION;
+import static csc_cccix.geocracy.states.GameAction.CANCEL_TAPPED;
+import static csc_cccix.geocracy.states.GameAction.CONFIRM_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
@@ -161,12 +162,12 @@ public class Game implements Serializable {
 
         switch (event.action) {
 
-            case TOGGLE_SETTINGS_VISIBILITY:
+            case SETTINGS_TAPPED:
                 Log.i("", "TOGGLE SETTINGS VISIBILITY ACTION");
                 activity.showOverlayFragment(GameActivity.settingsFragment);
                 break;
 
-            case TOGGLE_GAME_INFO_VISIBILITY:
+            case GAME_INFO_TAPPED:
                 Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
                 activity.showOverlayFragment(GameInfoFragment.newInstance(players));
                 break;
@@ -183,8 +184,12 @@ public class Game implements Serializable {
                 if (stateClass == IntentToAttackState.class) {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
-                else if (stateClass == GainArmyUnitsState.class) {
-                    Log.i("HERE", "HIT");
+                else if (
+                    stateClass == GainArmyUnitsState.class ||
+                    stateClass == IntentToAttackState.class ||
+                    stateClass == FortifyTerritoryState.class
+                )
+                {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
                 else if (stateClass == DiceRollState.class) {
@@ -212,6 +217,18 @@ public class Game implements Serializable {
 
                 break;
 
+            case FORTIFY_TAPPED:
+
+                if (getState().getClass() == SelectedTerritoryState.class) {
+                    Log.i(TAG, "USER TAPPED FORTIFY TERRITORY");
+                    getState().fortifyAction();
+                    getState().initState();
+                } else {
+                    Log.i(TAG, "FORTIFY BUTTON UNAVAILIBLE");
+                }
+
+                break;
+
             case ADD_UNIT_TAPPED:
                 Log.i(TAG, "ADD UNIT TAPPED");
                 getState().addToSelectedTerritoryUnitCount(1);
@@ -230,18 +247,18 @@ public class Game implements Serializable {
                 getState().initState();
                 break;
 
-            case CONFIRM_ACTION:
+            case CONFIRM_TAPPED:
                 Log.i(TAG, "CONFIRM TAPPED");
                 getState().confirmAction();
                 getState().initState();
                 break;
 
-            case CANCEL_ACTION:
+            case CANCEL_TAPPED:
                 Log.i(TAG, "CANCEL ACTION TAPPED");
                 getState().cancelAction();
                 break;
 
-            case END_TURN_ACTION:
+            case END_TURN_TAPPED:
 
                 Log.i(TAG, "END TURN TAPPED");
                 getState().endTurn();
@@ -380,7 +397,7 @@ public class Game implements Serializable {
             int randNum = rand.nextInt(world.getNTerritories());
             Territory terr = world.getUnoccTerritory(randNum);
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_ACTION, null));
+            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
     }
 
@@ -405,7 +422,7 @@ public class Game implements Serializable {
                         EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
                     }
                     else {
-                        EventBus.publish(USER_ACTION, new GameEvent(CANCEL_ACTION, null));
+                        EventBus.publish(USER_ACTION, new GameEvent(CANCEL_TAPPED, null));
                     }
                 }
                 tapDownPoint = null;

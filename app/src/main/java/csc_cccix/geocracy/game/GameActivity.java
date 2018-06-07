@@ -61,6 +61,8 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FloatingActionButton settingBtn;
     private FloatingActionButton closeOverlayBtn;
     private FloatingActionButton confirmButton;
+    private FloatingActionButton fortifyButton;
+
 
     private boolean fromGameLoad;
 
@@ -128,7 +130,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         cancelBtn.hide();
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CANCEL_ACTION, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CANCEL_TAPPED, null));
             }
         }));
 
@@ -136,7 +138,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         confirmButton.hide();
         disposables.add(RxView.touches(confirmButton).subscribe(event -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CONFIRM_ACTION, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CONFIRM_TAPPED, null));
             }
         }));
 
@@ -144,7 +146,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         endTurnButton.hide();
         disposables.add(RxView.touches(endTurnButton).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish(USER_ACTION, new GameEvent(GameAction.END_TURN_ACTION, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.END_TURN_TAPPED, null));
             }
         }));
 
@@ -153,6 +155,14 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.ATTACK_TAPPED, null));
+            }
+        }));
+
+        fortifyButton = findViewById(R.id.fortifyButton);
+        fortifyButton.hide();
+        disposables.add(RxView.touches(fortifyButton).subscribe(e -> {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.FORTIFY_TAPPED, null));
             }
         }));
 
@@ -176,7 +186,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         settingBtn.show();
         disposables.add(RxView.touches(settingBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish(USER_ACTION, new GameEvent(GameAction.TOGGLE_SETTINGS_VISIBILITY, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.SETTINGS_TAPPED, null));
             }
         }));
 
@@ -184,7 +194,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameInfoBtn.show();
         disposables.add(RxView.touches(gameInfoBtn).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish(USER_ACTION, new GameEvent(GameAction.TOGGLE_GAME_INFO_VISIBILITY, null));
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.GAME_INFO_TAPPED, null));
             }
         }));
 
@@ -273,45 +283,25 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
-
-        AlphaAnimation alphaChange;
-
-        if (isActive) {
-            alphaChange = new AlphaAnimation(attackBtn.getAlpha(), 1.0f);
-        } else {
-            alphaChange = new AlphaAnimation(attackBtn.getAlpha(), 0.4f);
-        }
-
-        alphaChange.setFillAfter(true);
-        attackBtn.startAnimation(alphaChange);
-
-        if (isVisible) {
-            attackBtn.show();
-        } else {
-            attackBtn.hide();
-        }
-
+        setFABVisibilityAndActiveState(attackBtn, isVisible, isActive);
     }
 
-    public void setConfirmButtonButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
+    public void setConfirmButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
+        setFABVisibilityAndActiveState(confirmButton, isVisible, isActive);
+    }
 
+    public void setFortifyButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
+        setFABVisibilityAndActiveState(fortifyButton, isVisible, isActive);
+    }
+
+    private void setFABVisibilityAndActiveState(FloatingActionButton fab, boolean isVisible, boolean isActive) {
         AlphaAnimation alphaChange;
-
-        if (isActive) {
-            alphaChange = new AlphaAnimation(confirmButton.getAlpha(), 1.0f);
-        } else {
-            alphaChange = new AlphaAnimation(confirmButton.getAlpha(), 0.4f);
-        }
-
+        if (isActive) { alphaChange = new AlphaAnimation(fab.getAlpha(), 1.0f); }
+        else { alphaChange = new AlphaAnimation(fab.getAlpha(), 0.4f); }
         alphaChange.setFillAfter(true);
-        confirmButton.startAnimation(alphaChange);
-
-        if (isVisible) {
-            confirmButton.show();
-        } else {
-            confirmButton.hide();
-        }
-
+        fab.startAnimation(alphaChange);
+        if (isVisible) { fab.show(); }
+        else { fab.hide(); }
     }
 
     public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
@@ -331,6 +321,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         removeUnitBtn.hide();
         endTurnButton.hide();
         confirmButton.hide();
+        fortifyButton.hide();
     }
 
 

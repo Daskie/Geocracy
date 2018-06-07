@@ -60,6 +60,8 @@ public class IntentToAttackState implements  GameState {
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
+    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
+
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;

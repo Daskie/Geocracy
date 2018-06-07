@@ -41,6 +41,8 @@ public class DiceRollState implements  GameState {
         this.targetTerritory = territory;
     }
 
+    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
+
     public void enableAttackMode() {
         Log.i(TAG, "INVALID ACTION: -> CANNOT ENABLE ATTACK MODE");
     }

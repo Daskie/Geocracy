@@ -65,6 +65,7 @@ public class SetUpInitTerritoriesState implements GameState {
     public void enableAttackMode() {
         Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
     }
+    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
 
     public void confirmAction() {
 
