@@ -90,21 +90,15 @@ public class FortifyTerritoryState implements  GameState {
     public void fortifyAction() { Log.i(TAG, "CANNOT REENABLE FORTIFY MODE"); }
 
     public void initState() {
-        Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");
-        troopSelectionFragment = TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory, game.getCurrentPlayer());
-        game.getActivity().showBottomPaneFragment(troopSelectionFragment);
+        Log.i(TAG, "INIT STATE");
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
-        game.getWorld().targetTerritory(this.targetTerritory);
-        game.getCameraController().targetTerritory(this.targetTerritory);
-
+        game.getWorld().highlightTerritory(this.originTerritory);
         originTerritoryLock = true;
 
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().hideAllGameInteractionButtons();
-            game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
             game.getActivity().getConfirmButton().show();
-
             game.getActivity().getCancelBtn().show();
         });
     }

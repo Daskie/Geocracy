@@ -56,7 +56,7 @@ public class SelectedTerritoryState implements  GameState {
     }
 
     public void fortifyAction() {
-        Log.i(TAG, "FORTIFY ACTION -> ENABLE FORTIFY MODE");
+        Log.i(TAG, "FORTIFY ACTION");
         if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
             Log.i(TAG, "ENABLE FORTIFY MODE -> ENTER FORTIFY STATE");
             game.setState(new FortifyTerritoryState(game));
