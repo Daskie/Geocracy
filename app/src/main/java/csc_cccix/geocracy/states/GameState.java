@@ -6,6 +6,7 @@ public interface GameState {
     // ALL AVAILABLE ACTIONS
     void cancelAction();
     void confirmAction();
+    void fortifyAction();
     void selectOriginTerritory(Territory territory);
     void selectTargetTerritory(Territory territory);
     void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails);

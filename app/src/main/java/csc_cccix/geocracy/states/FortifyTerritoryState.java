@@ -10,7 +10,7 @@ import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class SelectedAttackTargetTerritoryState implements  GameState {
+public class FortifyTerritoryState implements  GameState {
 
     private static final String TAG = "SELECTED_ATTACK_T_STATE";
 
@@ -18,9 +18,10 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     private Territory originTerritory;
     private Territory targetTerritory;
     private boolean originTerritoryLock;
+    private boolean targetTerritoryLock;
     private TroopSelectionFragment troopSelectionFragment;
 
-    public SelectedAttackTargetTerritoryState(Game game) {
+    public FortifyTerritoryState(Game game) {
         this.game = game;
     }
 
@@ -51,7 +52,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
         int randNumArmies;
         if(game.getCurrentPlayer() instanceof HumanPlayer) {
-             randNumArmies = (int)(Math.random()*this.targetTerritory.getNArmies()) + 1;
+            randNumArmies = (int)(Math.random()*this.targetTerritory.getNArmies()) + 1;
             game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking() - 1),
                     new DiceRollDetails(this.targetTerritory, randNumArmies));
         }
@@ -66,8 +67,6 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     public void battleCompleted(BattleResultDetails battleResultDetails) {
         Log.i(TAG, "INVALID STATE ACCESSED");
     }
-
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
 
     public void confirmAction() {
         int numArmiesSelected = troopSelectionFragment.getSelectedNumberOfUnits();
@@ -87,6 +86,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.setState(new DefaultState(game));
         game.getState().initState();
     }
+
+    public void fortifyAction() { Log.i(TAG, "CANNOT REENABLE FORTIFY MODE"); }
 
     public void initState() {
         Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");

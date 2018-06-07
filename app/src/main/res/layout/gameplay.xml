@@ -93,6 +93,17 @@
         app:backgroundTint="@color/darkGray"/>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fortifyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        app:fabSize="auto"
+        android:layout_marginLeft="82dp"
+        android:layout_marginTop="130dp"
+        android:src="@drawable/ic_chess_rook_white_48dp"
+        app:backgroundTint="@color/md_orange_500"/>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/confirmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

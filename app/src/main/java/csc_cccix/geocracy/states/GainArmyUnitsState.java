@@ -83,11 +83,11 @@ public class GainArmyUnitsState implements GameState {
 
         if (game.getCurrentPlayer().getArmyPool() == 0) {
             game.getActivity().runOnUiThread(() -> {
-                game.getActivity().setConfirmButtonButtonVisibilityAndActiveState(true, true);
+                game.getActivity().setConfirmButtonVisibilityAndActiveState(true, true);
             });
         } else {
             game.getActivity().runOnUiThread(() -> {
-                game.getActivity().setConfirmButtonButtonVisibilityAndActiveState(true, false);
+                game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
             });
         }
 
@@ -95,6 +95,8 @@ public class GainArmyUnitsState implements GameState {
         game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(this.territory, currentPlayer));
 
     }
+
+    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
 
     public void confirmAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
@@ -126,7 +128,7 @@ public class GainArmyUnitsState implements GameState {
             game.getActivity().removeActiveBottomPaneFragment();
             game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
             game.getActivity().setUpdateUnitCountButtonsVisibility(false);
-            game.getActivity().setConfirmButtonButtonVisibilityAndActiveState(true, false);
+            game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
         });
 
         Log.i(TAG, "" + currentPlayer.getId());

@@ -55,6 +55,18 @@ public class SelectedTerritoryState implements  GameState {
         Log.i(TAG, "INVALID ACTION: BATTLE COMPLETED");
     }
 
+    public void fortifyAction() {
+        Log.i(TAG, "FORTIFY ACTION -> ENABLE FORTIFY MODE");
+        if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
+            Log.i(TAG, "ENABLE FORTIFY MODE -> ENTER FORTIFY STATE");
+            game.setState(new FortifyTerritoryState(game));
+            game.getState().selectOriginTerritory(territory);
+            game.getState().initState();
+        } else {
+            Log.i(TAG, "ENABLE FORTIFY MODE: INVALID TERRITORY TO ENABLE FORTIFY MODE ON");
+        }
+    }
+
     public void confirmAction() {
         Log.i(TAG, "INVALID ACTION: USER CANCELED ACTION");
     }
@@ -81,9 +93,12 @@ public class SelectedTerritoryState implements  GameState {
                 if (this.territory.getNArmies() >= 2) {
                     Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE");
                     game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+                    game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
+
                 } else {
                     Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY -> DISABLE ATTACK BUTTON");
                     game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
+                    game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
                 }
             }
             game.getActivity().getCancelBtn().show();
