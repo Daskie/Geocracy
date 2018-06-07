@@ -32,7 +32,22 @@ public class FortifyTerritoryState implements  GameState {
 
     public void selectTargetTerritory(Territory territory) {
         Log.i(TAG, "SETTING TARGET TERRITORY");
-        this.targetTerritory = territory;
+
+        if (game.getCurrentPlayer().getId() == territory.getOwner().getId() && this.originTerritory != territory) {
+            this.targetTerritory = territory;
+            game.getWorld().unhighlightTerritories();
+            game.getWorld().selectTerritory(this.targetTerritory);
+            game.getWorld().highlightTerritory(this.originTerritory);
+            game.getWorld().highlightTerritories(this.originTerritory.getAdjacentFriendlyTerritories());
+            game.getActivity().runOnUiThread(() -> {
+                game.getActivity().hideAllGameInteractionButtons();
+                game.getActivity().getAddUnitBtn().show();
+                game.getActivity().getRemoveUnitBtn().show();
+                game.getActivity().getCancelBtn().show();
+            });
+        } else {
+            Log.i(TAG, "INVALID TARGET TERRITORY TO FORTIFY");
+        }
     }
 
     public void enableAttackMode() {
@@ -44,29 +59,9 @@ public class FortifyTerritoryState implements  GameState {
     }
 
 
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        Log.i(TAG, "-> ENTER DICE ROLL STATE");
-        game.setState(new DiceRollState(game));
-        game.getState().selectOriginTerritory(this.originTerritory);
-        game.getState().selectTargetTerritory(this.targetTerritory);
+    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) { Log.i(TAG, "CANNOT PERFORM DICE ROLL"); }
 
-        int randNumArmies;
-        if(game.getCurrentPlayer() instanceof HumanPlayer) {
-            randNumArmies = (int)(Math.random()*this.targetTerritory.getNArmies()) + 1;
-            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking() - 1),
-                    new DiceRollDetails(this.targetTerritory, randNumArmies));
-        }
-
-//        else{
-//            randNumArmies = (int)(Math.random()*this.originTerritory.getNArmies()) + 1;
-//            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, randNumArmies),
-//                    new DiceRollDetails(this.targetTerritory, game.getCurrentPlayer().getNumArmiesDefending()));
-//        }
-    }
-
-    public void battleCompleted(BattleResultDetails battleResultDetails) {
-        Log.i(TAG, "INVALID STATE ACCESSED");
-    }
+    public void battleCompleted(BattleResultDetails battleResultDetails) { Log.i(TAG, "INVALID STATE ACCESSED"); }
 
     public void confirmAction() {
         int numArmiesSelected = troopSelectionFragment.getSelectedNumberOfUnits();
@@ -91,9 +86,11 @@ public class FortifyTerritoryState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
+        game.getActivity().removeActiveBottomPaneFragment();
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.originTerritory);
+        game.getWorld().highlightTerritories(this.originTerritory.getAdjacentFriendlyTerritories());
         originTerritoryLock = true;
 
         game.getActivity().runOnUiThread(() -> {

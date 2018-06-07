@@ -23,6 +23,7 @@ import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.states.BattleResultsState;
 import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.DiceRollState;
+import csc_cccix.geocracy.states.FortifyTerritoryState;
 import csc_cccix.geocracy.states.GainArmyUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
@@ -180,8 +181,12 @@ public class Game implements Serializable {
                 if (stateClass == IntentToAttackState.class) {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
-                else if (stateClass == GainArmyUnitsState.class) {
-                    Log.i("HERE", "HIT");
+                else if (
+                    stateClass == GainArmyUnitsState.class ||
+                    stateClass == IntentToAttackState.class ||
+                    stateClass == FortifyTerritoryState.class
+                )
+                {
                     getState().selectTargetTerritory(selectedTerritory);
                 }
                 else if (stateClass == DiceRollState.class) {
