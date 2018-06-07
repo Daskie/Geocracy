@@ -45,16 +45,18 @@ public class DiceRollFragment extends Fragment {
         for(int i = attackerDie.length-1; i > -1; i--){
             if(attackerDie[i]!=-1) {
                 attackerString += attackerDie[i];
-                if (i != 1)
-                    attackerString += ", ";
+                if (i!=0)
+                    if(attackerDie[i-1] != -1)
+                        attackerString += ", ";
             }
         }
 
         for(int i = defenderDie.length-1; i > -1; i--){
             if(defenderDie[i]!=-1) {
                 defenderString += defenderDie[i];
-                if (i != 0)
-                    defenderString += ", ";
+                if (i!=0)
+                    if(defenderDie[i-1] != -1)
+                        defenderString += ", ";
             }
         }
 
