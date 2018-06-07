@@ -92,10 +92,4 @@ public final class EventBus {
         getSubject(subject).onNext(message);
     }
 
-    /**
-     * Publish an object to the specified subject for all subscribers of that subject.
-     */
-    public static void publishAfterDelay(String subject, @NonNull Object message, int delayMS) {
-        getSubject(subject).onNext(Single.just(message).delay(delayMS, TimeUnit.MILLISECONDS).blockingGet());
-    }
 }
