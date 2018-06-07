@@ -22,6 +22,12 @@ public class DiceRollState implements  GameState {
     private int attackerArmies;
     private int defenderArmies;
     private Player[] winners = new Player[3];
+    private String attackerString = "";
+    private String defenderString = "";
+
+    private String winnerString = "";
+
+
 
     public DiceRollState(Game game) {
         this.game = game;
@@ -55,6 +61,8 @@ public class DiceRollState implements  GameState {
         for(int i = 2; i > 0; i--){
             this.winners[2-i] = checkWinner(attacker, defender, i);
         }
+
+        resultsToString();
     }
 
     private void roll(int attackerNumDie, int defenderNumDie){
@@ -75,6 +83,40 @@ public class DiceRollState implements  GameState {
             return attacker;
         else
             return defender;
+    }
+
+    private void resultsToString(){
+
+        int[] attackerDie = this.originTerritory.getOwner().getDie();
+        int[] defenderDie = this.targetTerritory.getOwner().getDie();
+
+        for(int i = attackerDie.length-1; i > -1; i--){
+            if(attackerDie[i]!=-1) {
+                this.attackerString += attackerDie[i];
+                if (i!=0)
+                    if(attackerDie[i-1] != -1)
+                        this.attackerString += ", ";
+            }
+        }
+
+        for(int j = defenderDie.length-1; j > -1; j--){
+            if(defenderDie[j]!=-1) {
+                this.defenderString += defenderDie[j];
+                if (j!=0)
+                    if(defenderDie[j-1] != -1)
+                        this.defenderString += ", ";
+            }
+        }
+
+        for(int k = 0; k<this.winners.length; k++){
+            if(this.winners[k]!=null) {
+                this.winnerString = this.winnerString + (k+1) + ": " + this.winners[k].getName() + " WINS";
+                if(k!=winners.length-1)
+                    this.winnerString += "\n";
+            }
+            else
+                break;
+        }
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
@@ -103,7 +145,7 @@ public class DiceRollState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory, this.originTerritory.getOwner().getDie(), this.targetTerritory.getOwner().getDie(), this.winners));
+        game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory, this.attackerString, this.defenderString, this.winnerString));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
