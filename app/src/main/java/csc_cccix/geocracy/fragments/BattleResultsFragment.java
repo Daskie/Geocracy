@@ -46,10 +46,10 @@ public class BattleResultsFragment extends Fragment {
         example.setText("(country): (original number) - (troops lost) = (new number)");
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText(originTerritory.getTerritoryName() + "  :   " + originTerritory.getNArmies() + "   -   " + attackerArmiesLost + "   =   " + attackerNewArmyNum);
+        attackingPlayer.setText("ATTACKER: " + originTerritory.getTerritoryName() + "  :   " + originTerritory.getNArmies() + "   -   " + attackerArmiesLost + "   =   " + attackerNewArmyNum);
 
         TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText(targetTerritory.getTerritoryName() + "  :   " + targetTerritory.getNArmies() + "   -   " + defenderArmiesLost + "   =   " + defenderNewArmyNum);
+        defendingPlayer.setText("DEFENDER: " + targetTerritory.getTerritoryName() + "  :   " + targetTerritory.getNArmies() + "   -   " + defenderArmiesLost + "   =   " + defenderNewArmyNum);
 
 
 
