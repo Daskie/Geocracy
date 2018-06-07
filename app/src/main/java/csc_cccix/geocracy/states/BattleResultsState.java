@@ -79,8 +79,7 @@ public class BattleResultsState implements  GameState {
             game.getActivity().hideAllGameInteractionButtons();
         });
 
-        Completable.timer(4, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .subscribe(this::goToBattleResults);
+        goToBattleResults();
     }
 
     private void goToBattleResults() {
@@ -110,7 +109,7 @@ public class BattleResultsState implements  GameState {
             attacker.addTerritory(targetTerritory);
 
             int numArmiesToMove = this.attackerDetails.unitCount;
-            if(numArmiesToMove == originTerritory.getNArmies())
+            if(numArmiesToMove >= originTerritory.getNArmies())
                 numArmiesToMove -= 1;
             targetTerritory.setNArmies(numArmiesToMove);
             originTerritory.setNArmies(originTerritory.getNArmies()-numArmiesToMove);

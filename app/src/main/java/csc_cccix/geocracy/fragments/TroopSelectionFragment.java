@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,6 +32,7 @@ public class TroopSelectionFragment extends Fragment {
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private static Player player;
+    private Territory originTerritory;
 
     public static TroopSelectionFragment newInstance(Territory originTerritory, Territory targetTerritory, Player attackingPlayer) {
         TroopSelectionFragment newFragment = new TroopSelectionFragment();
@@ -43,12 +45,16 @@ public class TroopSelectionFragment extends Fragment {
         return newFragment;
     }
 
+    private static final int[] ATTACK_OPTIONS = new int[]{2,3,4};
+    private static final int[] DEFEND_OPTIONS = new int[]{1,2};
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.troop_selection, container, false);
 
-        Territory originTerritory = (Territory) getArguments().get("originTerritory");
+        originTerritory = (Territory) getArguments().get("originTerritory");
         Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
 
         TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
@@ -57,9 +63,28 @@ public class TroopSelectionFragment extends Fragment {
         TextView targetTerritoryID = view.findViewById(R.id.targetTerritoryID);
         targetTerritoryID.setText("TO ATTACK TERRITORY: " + targetTerritory.getTerritoryName());
 
-        radioGroup = view.findViewById(R.id.radio);
+        radioGroup = view.findViewById(R.id.troopSelection);
+        addRadioButtons(ATTACK_OPTIONS);
 
         return view;
+    }
+
+    private void addRadioButtons(int[] values) {
+        RadioGroup ll = radioGroup;
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        boolean first = true;
+
+        for (int i = 0; i < values.length && i + 1 < this.originTerritory.getNArmies(); i++) {
+            RadioButton rdbtn = new RadioButton(getContext());
+            if (first) {
+                rdbtn.setChecked(true);
+                first = false;
+            }
+
+            rdbtn.setId(i);
+            rdbtn.setText("" + values[i]);
+            ll.addView(rdbtn);
+        }
     }
 
     public int getSelectedNumberOfUnits() {

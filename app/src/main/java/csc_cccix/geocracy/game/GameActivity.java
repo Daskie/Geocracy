@@ -129,7 +129,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         cancelBtn = findViewById(R.id.cancelBtn);
         cancelBtn.hide();
         disposables.add(RxView.touches(cancelBtn).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.CANCEL_ACTION, null));
             }
         }));
@@ -137,7 +137,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         confirmButton = findViewById(R.id.confirmButton);
         confirmButton.hide();
         disposables.add(RxView.touches(confirmButton).subscribe(event -> {
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.CONFIRM_ACTION, null));
             }
         }));
@@ -145,7 +145,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         endTurnButton = findViewById(R.id.endTurnButton);
         endTurnButton.hide();
         disposables.add(RxView.touches(endTurnButton).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.END_TURN_ACTION, null));
             }
         }));
@@ -153,7 +153,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         attackBtn = findViewById(R.id.attackBtn);
         attackBtn.hide();
         disposables.add(RxView.touches(attackBtn).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.ATTACK_TAPPED, null));
             }
         }));
@@ -161,7 +161,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         addUnitBtn = findViewById(R.id.addUnitBtn);
         addUnitBtn.hide();
         disposables.add(RxView.touches(addUnitBtn).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.ADD_UNIT_TAPPED, null));
             }
         }));
@@ -169,7 +169,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         removeUnitBtn = findViewById(R.id.removeUnitBtn);
         removeUnitBtn.hide();
         disposables.add(RxView.touches(removeUnitBtn).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
                 EventBus.publish(USER_ACTION, new GameEvent(GameAction.REMOVE_UNIT_TAPPED, null));
             }
         }));

@@ -122,6 +122,7 @@ public class GainArmyUnitsState implements GameState {
         game.getWorld().unselectTerritory();
         game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         game.getActivity().runOnUiThread(() -> {
+            game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().removeActiveBottomPaneFragment();
             game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
             game.getActivity().setUpdateUnitCountButtonsVisibility(false);

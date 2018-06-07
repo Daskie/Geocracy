@@ -46,7 +46,7 @@ public class DiceRollState implements  GameState {
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        Log.i(TAG, "INVALID ACTION: -> ALREADY PERFORMING DICE ROLL");
+        Log.i(TAG, "PERFORMING DICE ROLL");
         this.attackerDetails = attackerDetails;
         this.defenderDetails = defenderDetails;
         roll(attackerDetails.unitCount, defenderDetails.unitCount);

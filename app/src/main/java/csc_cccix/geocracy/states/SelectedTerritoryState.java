@@ -28,7 +28,7 @@ public class SelectedTerritoryState implements  GameState {
             this.territory = territory;
         }
 
-        if (this.territory.getOwner().getId() == game.getCurrentPlayer().getId()) {
+        if (this.territory.getOwner().getId() == game.getCurrentPlayer().getId() && this.territory.getNArmies() >= 2) {
             Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE ON");
             game.getActivity().runOnUiThread(() ->  game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true));
         } else {
@@ -42,7 +42,7 @@ public class SelectedTerritoryState implements  GameState {
     }
 
     public void enableAttackMode() {
-        if (this.territory.getOwner() == game.getCurrentPlayer()) {
+        if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
             Log.i(TAG, "ENABLE ATTACK MODE -> ENTER INTENT TO ATTACK STATE");
             game.setState(new IntentToAttackState(game));
             game.getState().selectOriginTerritory(territory);

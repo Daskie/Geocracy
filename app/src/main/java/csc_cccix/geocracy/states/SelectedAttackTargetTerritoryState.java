@@ -53,7 +53,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         int randNumArmies;
         if(game.getCurrentPlayer() instanceof HumanPlayer) {
              randNumArmies = (int)(Math.random()*this.targetTerritory.getNArmies()) + 1;
-            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking()),
+            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking() - 1),
                     new DiceRollDetails(this.targetTerritory, randNumArmies));
         }
 
@@ -102,6 +102,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
             game.getActivity().getConfirmButton().show();
+
             game.getActivity().getCancelBtn().show();
         });
     }
