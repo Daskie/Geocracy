@@ -2,9 +2,12 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
+import java.util.Random;
+
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.UIEvent;
 import csc_cccix.geocracy.world.Territory;
 
@@ -45,8 +48,19 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.setState(new DiceRollState(game));
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
-        game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, 3),
-                                        new DiceRollDetails(this.targetTerritory, 4));
+
+        int randNumArmies;
+        if(game.getCurrentPlayer() instanceof HumanPlayer) {
+             randNumArmies = (int)(Math.random()*this.targetTerritory.getNArmies()) + 1;
+            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking()),
+                    new DiceRollDetails(this.targetTerritory, randNumArmies));
+        }
+
+//        else{
+//            randNumArmies = (int)(Math.random()*this.originTerritory.getNArmies()) + 1;
+//            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, randNumArmies),
+//                    new DiceRollDetails(this.targetTerritory, game.getCurrentPlayer().getNumArmiesDefending()));
+//        }
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
@@ -68,7 +82,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");
-        game.getActivity().showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory));
+        game.getActivity().showBottomPaneFragment(TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory, game.getCurrentPlayer()));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().targetTerritory(this.targetTerritory);

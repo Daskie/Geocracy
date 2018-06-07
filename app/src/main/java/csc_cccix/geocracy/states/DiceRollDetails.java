@@ -12,6 +12,8 @@ class DiceRollDetails {
     public DiceRollDetails(Territory territory, int unitCount) {
         Log.i("", "" + territory.getId());
         Log.i("", "Battling With " + unitCount + " Units");
+        this.territory = territory;
+        this.unitCount = unitCount;
     }
 
 }

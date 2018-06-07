@@ -42,16 +42,20 @@ public class DiceRollFragment extends Fragment {
         String attackerString = "";
         String defenderString = "";
 
-        for(int i = 0; i < attackerDie.length; i++){
-            attackerString += attackerDie[i];
-            if(i!=attackerDie.length-1)
-                attackerString += ", ";
+        for(int i = attackerDie.length-1; i > -1; i--){
+            if(attackerDie[i]!=-1) {
+                attackerString += attackerDie[i];
+                if (i != 1)
+                    attackerString += ", ";
+            }
         }
 
-        for(int i = 0; i < defenderDie.length; i++){
-            defenderString += defenderDie[i];
-            if(i!=attackerDie.length-1)
-                defenderString += ", ";
+        for(int i = defenderDie.length-1; i > -1; i--){
+            if(defenderDie[i]!=-1) {
+                defenderString += defenderDie[i];
+                if (i != 0)
+                    defenderString += ", ";
+            }
         }
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
