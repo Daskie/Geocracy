@@ -105,6 +105,7 @@ public class Game implements Serializable {
 
     private transient Vec2i screenSize;
     private transient Vec2i swipeDelta;
+    private transient float swipeDistance;
     private transient Vec2i tapDownPoint;
     private transient Vec2i tapUpPoint;
     private transient float zoomFactor;
@@ -337,18 +338,25 @@ public class Game implements Serializable {
     public void wasTapDown(Vec2i p) {
         synchronized (this) {
             tapDownPoint = p;
+            tapUpPoint = null;
+            swipeDistance = 0.0f;
         }
     }
 
     public void wasTapUp(Vec2i p) {
         synchronized (this) {
             tapUpPoint = p;
+            swipeDistance = 0.0f;
         }
     }
 
     public void wasSwipe(Vec2i d) {
         synchronized (this) {
             swipeDelta = d;
+            swipeDistance += d.x * d.x + d.y * d.y;
+            if (swipeDistance > TAP_DISTANCE_THRESHOLD) {
+                tapDownPoint = null;
+            }
         }
     }
 
@@ -406,8 +414,8 @@ public class Game implements Serializable {
                     }
                 }
                 tapDownPoint = null;
-                tapUpPoint = null;
             }
+            tapUpPoint = null;
             if (zoomFactor != 0.0f) {
                 cameraController.zoom(zoomFactor);
                 zoomFactor = 0.0f;
