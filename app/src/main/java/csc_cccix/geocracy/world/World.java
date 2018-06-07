@@ -111,7 +111,7 @@ public class World implements Serializable {
         return true;
     }
 
-    public void render(long t, Camera camera, Vec3 lightDir, int cubemapHandle) {
+    public synchronized void render(long t, Camera camera, Vec3 lightDir, int cubemapHandle) {
         terrain.render(t, camera, lightDir, selectionChange, targetChange, highlightChange, ownershipChange);
         oceanRenderer.render(camera, lightDir, cubemapHandle);
         waterways.render(t, camera, lightDir, selectionChange);
@@ -140,48 +140,48 @@ public class World implements Serializable {
         armyRenderer.unload();
     }
 
-    public void selectTerritory(Territory territory) {
+    public synchronized void selectTerritory(Territory territory) {
         if (selectedTerritory != territory) {
             selectedTerritory = territory;
             selectionChange = true;
         }
     }
 
-    public void unselectTerritory() {
+    public synchronized void unselectTerritory() {
         if (selectedTerritory != null) {
             selectedTerritory = null;
             selectionChange = true;
         }
     }
 
-    public void targetTerritory(Territory territory) {
+    public synchronized void targetTerritory(Territory territory) {
         if (targetedTerritory != territory) {
             targetedTerritory = territory;
             targetChange = true;
         }
     }
 
-    public void untargetTerritory() {
+    public synchronized void untargetTerritory() {
         if (targetedTerritory != null) {
             targetedTerritory = null;
             targetChange = true;
         }
     }
 
-    public void highlightTerritory(Territory territory) {
+    public synchronized void highlightTerritory(Territory territory) {
         if (!highlightedTerritories.contains(territory)) {
             highlightedTerritories.add(territory);
             highlightChange = true;
         }
     }
 
-    public void highlightTerritories(Set<Territory> territories) {
+    public synchronized void highlightTerritories(Set<Territory> territories) {
         for (Territory terr : territories) {
             highlightTerritory(terr);
         }
     }
 
-    public void unhighlightTerritories() {
+    public synchronized void unhighlightTerritories() {
         if (!highlightedTerritories.isEmpty()) {
             highlightedTerritories.clear();
             highlightChange = true;
@@ -235,15 +235,15 @@ public class World implements Serializable {
         return continents.length;
     }
 
-    public Territory getSelectedTerritory() {
+    public synchronized Territory getSelectedTerritory() {
         return selectedTerritory;
     }
 
-    public Territory getTargetedTerritory() {
+    public synchronized Territory getTargetedTerritory() {
         return targetedTerritory;
     }
 
-    public Set<Territory> getHighlightedTerritories() {
+    public synchronized Set<Territory> getHighlightedTerritories() {
         return highlightedTerritories;
     }
 
