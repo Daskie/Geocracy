@@ -38,6 +38,7 @@ import glm_.vec3.Vec3;
 import static csc_cccix.geocracy.states.GameAction.CANCEL_ACTION;
 import static csc_cccix.geocracy.states.GameAction.CONFIRM_ACTION;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
+import static glm_.Java.glm;
 
 public class Game implements Serializable {
 
@@ -50,6 +51,7 @@ public class Game implements Serializable {
     public static final int MAX_ARMIES_PER_TERRITORY = 15;
     public static final String USER_ACTION = "USER_ACTION";
     public static final String SAVE_FILE_NAME = "save";
+    public static final float TAP_DISTANCE_THRESHOLD = 10.0f;
 
     public static boolean saveGame(Game game) {
         try {
@@ -103,7 +105,8 @@ public class Game implements Serializable {
 
     private transient Vec2i screenSize;
     private transient Vec2i swipeDelta;
-    private transient Vec2i tappedPoint;
+    private transient Vec2i tapDownPoint;
+    private transient Vec2i tapUpPoint;
     private transient float zoomFactor;
 
     private transient long lastTimestamp;
@@ -331,9 +334,15 @@ public class Game implements Serializable {
         cameraController.getCamera().setAspectRatio((float)screenSize.x / (float)screenSize.y);
     }
 
-    public void wasTap(Vec2i p) {
+    public void wasTapDown(Vec2i p) {
         synchronized (this) {
-            tappedPoint = p;
+            tapDownPoint = p;
+        }
+    }
+
+    public void wasTapUp(Vec2i p) {
+        synchronized (this) {
+            tapUpPoint = p;
         }
     }
 
@@ -380,19 +389,24 @@ public class Game implements Serializable {
                 cameraController.move(delta);
                 swipeDelta = null;
             }
-            if (tappedPoint != null) {
-                GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, idFBHandle);
-                GLES30.glReadPixels(tappedPoint.x, screenSize.y - tappedPoint.y - 1, 1, 1, GLES30.GL_RED_INTEGER, GLES30.GL_UNSIGNED_BYTE, readbackBuffer);
-                GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
-                byte terrId = readbackBuffer.get(0);
-                if (terrId > 0) {
-                    Territory terr = world.getTerritory(terrId);
-                    EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+            if (tapDownPoint != null && tapUpPoint != null) {
+                if (glm.distance(new Vec2(tapDownPoint), new Vec2(tapUpPoint)) <= TAP_DISTANCE_THRESHOLD) {
+                    GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, idFBHandle);
+                    GLES30.glReadPixels(tapDownPoint.x, screenSize.y - tapDownPoint.y - 1, 1, 1, GLES30.GL_RED_INTEGER, GLES30.GL_UNSIGNED_BYTE, readbackBuffer);
+                    int downTerrId = readbackBuffer.get(0);
+                    GLES30.glReadPixels(tapUpPoint.x, screenSize.y - tapUpPoint.y - 1, 1, 1, GLES30.GL_RED_INTEGER, GLES30.GL_UNSIGNED_BYTE, readbackBuffer);
+                    int upTerrId = readbackBuffer.get(0);
+                    GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
+                    if (downTerrId == upTerrId && upTerrId > 0) {
+                        Territory terr = world.getTerritory(upTerrId);
+                        EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+                    }
+                    else {
+                        EventBus.publish(USER_ACTION, new GameEvent(CANCEL_ACTION, null));
+                    }
                 }
-                else {
-                    EventBus.publish(USER_ACTION, new GameEvent(CANCEL_ACTION, null));
-                }
-                tappedPoint = null;
+                tapDownPoint = null;
+                tapUpPoint = null;
             }
             if (zoomFactor != 0.0f) {
                 cameraController.zoom(zoomFactor);
