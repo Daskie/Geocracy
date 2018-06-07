@@ -4,6 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
 public class BattleResultsState implements  GameState {
@@ -37,6 +38,7 @@ public class BattleResultsState implements  GameState {
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
         Log.i(TAG, "INVALID ACTION: -> ALREADY IN BATTLE RESULTS STATE!");
+
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {

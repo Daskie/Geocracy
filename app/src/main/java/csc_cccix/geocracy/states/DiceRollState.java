@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import csc_cccix.geocracy.fragments.DiceRollFragment;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -18,6 +19,9 @@ public class DiceRollState implements  GameState {
     private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
+    private int attackerArmies;
+    private int defenderArmies;
+    private Player[] winners = new Player[3];
 
     public DiceRollState(Game game) {
         this.game = game;
@@ -38,10 +42,19 @@ public class DiceRollState implements  GameState {
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "INVALID ACTION: -> ALREADY PERFORMING DICE ROLL");
+        this.attackerArmies = attackerDetails.unitCount;
+        this.defenderArmies = defenderDetails.unitCount;
         roll(attackerDetails.unitCount, defenderDetails.unitCount);
 
-        this.originTerritory.getOwner().sortDie();
-        this.targetTerritory.getOwner().sortDie();
+        Player attacker = this.originTerritory.getOwner();
+        Player defender = this.targetTerritory.getOwner();
+
+        attacker.sortDie();
+        defender.sortDie();
+
+        for(int i = 2; i > 0; i--){
+            this.winners[2-i] = checkWinner(attacker, defender, i);
+        }
     }
 
     private void roll(int attackerNumDie, int defenderNumDie){
@@ -51,6 +64,17 @@ public class DiceRollState implements  GameState {
         for(int i = 0; i < defenderNumDie; i++)
             this.targetTerritory.getOwner().setDie(i, (int)(Math.random()*6) + 1);
 
+    }
+
+    private Player checkWinner(Player attacker, Player defender, int index){
+        int attackerDie = attacker.getDie()[index];
+        int defenderDie = defender.getDie()[index];
+        if(attackerDie==-1 || defenderDie==-1)
+            return null;
+        else if(attackerDie>defenderDie)
+            return attacker;
+        else
+            return defender;
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
@@ -79,8 +103,7 @@ public class DiceRollState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
-        game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory, this.originTerritory.getOwner().getDie(), this.targetTerritory.getOwner().getDie()));
-        game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory));
+        game.getActivity().showBottomPaneFragment(DiceRollFragment.newInstance(this.originTerritory, this.targetTerritory, this.originTerritory.getOwner().getDie(), this.targetTerritory.getOwner().getDie(), this.winners));
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
@@ -89,13 +112,13 @@ public class DiceRollState implements  GameState {
             game.getActivity().hideAllGameInteractionButtons();
         });
 
-        Completable.timer(6, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        Completable.timer(8, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);
 
     }
 
     private void goToBattleResults() {
-        this.battleCompleted(null);
+        this.battleCompleted(new BattleResultDetails(this.targetTerritory, attackerArmies, this.originTerritory, defenderArmies));
     }
 
 }
