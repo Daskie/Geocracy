@@ -60,7 +60,7 @@ public class Game implements Serializable {
             fos.close();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("", Log.getStackTraceString(e));
             return false;
         }
     }
@@ -74,7 +74,7 @@ public class Game implements Serializable {
             fis.close();
             return game;
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Log.e("", Log.getStackTraceString(e));
             return null;
         }
     }

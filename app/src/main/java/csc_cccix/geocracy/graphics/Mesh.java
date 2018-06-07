@@ -244,10 +244,6 @@ public class Mesh {
     }
 
     private ByteBuffer genIndexBufferData() {
-        if (indices == null) {
-            return null;
-        }
-
         int nIndices = indices.length;
         ByteBuffer indexData = ByteBuffer.allocateDirect(nIndices * 4);
         indexData.order(ByteOrder.nativeOrder());

@@ -25,7 +25,7 @@ public class Player implements Serializable {
     private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
     private int numArmiesAttacking;
-    private int die[];
+    private int[] die;
 
     public Player(int id, Vec3 color) {
         this.id = id;

@@ -362,7 +362,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 EventBus.publish("WORLD_TOUCH_EVENT", e);
             }
         }));
-        new Handler().postDelayed(() -> removeActiveOverlayFragment(), 4000);
+        new Handler().postDelayed(this::removeActiveOverlayFragment, 4000);
     }
 
     @Override

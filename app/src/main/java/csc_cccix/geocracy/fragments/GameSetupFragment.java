@@ -22,6 +22,8 @@ import com.jakewharton.rxbinding2.widget.RxSeekBar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
+import java.util.Random;
+
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.Game;
@@ -47,7 +49,7 @@ public class GameSetupFragment extends Fragment {
         Vec3[] colorPresets = Util.genDistinctColors(25, 0.0f);
         int[] colorIntPresets = new int[colorPresets.length];
         for (int i = 0; i < colorPresets.length; ++i) colorIntPresets[i] = Util.colorToInt(colorPresets[i]);
-        playerColorSelection = colorIntPresets[(int)(Math.random() * colorIntPresets.length)];
+        playerColorSelection = colorIntPresets[new Random().nextInt(colorIntPresets.length)];
         colorPicker = ColorPickerDialog.newBuilder()
                 .setDialogType(ColorPickerDialog.TYPE_PRESETS)
                 .setAllowPresets(true)

@@ -71,9 +71,7 @@ public class BattleResultsState implements  GameState {
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.getCameraController().targetTerritory(this.targetTerritory);
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().hideAllGameInteractionButtons();
-        });
+        game.getActivity().runOnUiThread(() -> game.getActivity().hideAllGameInteractionButtons());
 
         goToBattleResults();
     }

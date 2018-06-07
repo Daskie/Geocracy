@@ -13,8 +13,6 @@ import io.reactivex.disposables.Disposable;
 
 public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetector.OnScaleGestureListener {
 
-    private static final String TAG = "MAIN_SURFACE_VIEW";
-
     MainRenderer renderer;
 
     Disposable touchEventSubscription;
