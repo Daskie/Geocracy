@@ -3,10 +3,12 @@ package csc_cccix.geocracy;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 
@@ -55,7 +57,7 @@ public final class EventBus {
      * <b>Note:</b> Make sure to call {@link EventBus#unregister(Object)} to avoid memory leaks.
      */
     public static void subscribe(String subject, @NonNull Object lifecycle, @NonNull Consumer<Object> action) {
-        Disposable disposable = getSubject(subject).subscribe(action);
+        Disposable disposable = getSubject(subject).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(action);
         getCompositeDisposable(lifecycle).add(disposable);
     }
 
