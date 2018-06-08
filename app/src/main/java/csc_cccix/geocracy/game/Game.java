@@ -42,8 +42,6 @@ import static csc_cccix.geocracy.states.GameAction.CONFIRM_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
-
-    int Falessi;
     
     private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
 
