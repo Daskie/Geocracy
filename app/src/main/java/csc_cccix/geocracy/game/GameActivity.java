@@ -42,7 +42,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public static final SettingsFragment settingsFragment = new SettingsFragment();
 
     public static Game game;
-    public static GameSurfaceView gameSurfaceView;
+    private GameSurfaceView gameSurfaceView;
 
     private FragmentTransaction userInterfaceFT;
     private FragmentManager fragmentManager;
@@ -64,11 +64,10 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FloatingActionButton fortifyButton;
 
 
-    private boolean fromGameLoad;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean fromGameLoad;
 
         disposables = new CompositeDisposable();
 

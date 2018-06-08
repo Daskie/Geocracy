@@ -21,12 +21,10 @@ public class TroopSelectionFragment extends Fragment {
     private View view;
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    private static Player player;
     private Territory originTerritory;
 
-    public static TroopSelectionFragment newInstance(Territory originTerritory, Territory targetTerritory, Player attackingPlayer) {
+    public static TroopSelectionFragment newInstance(Territory originTerritory, Territory targetTerritory) {
         TroopSelectionFragment newFragment = new TroopSelectionFragment();
-        player = attackingPlayer;
         Bundle args = new Bundle();
         args.putSerializable("originTerritory", originTerritory);
         args.putSerializable("targetTerritory", targetTerritory);
