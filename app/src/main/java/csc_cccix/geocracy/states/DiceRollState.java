@@ -101,9 +101,7 @@ public class DiceRollState implements  GameState {
             if(attackerDie[i]!=-1) {
                 this.attackerString += attackerDie[i];
                 attackerStringBuilder.append(attackerDie[i]);
-                if (i!=0)
-                    if(attackerDie[i-1] != -1)
-                        attackerStringBuilder.append(", ");
+                if (i != 0 && attackerDie[i - 1] != -1) attackerStringBuilder.append(", ");
             }
         }
 
@@ -111,9 +109,7 @@ public class DiceRollState implements  GameState {
             if(defenderDie[j]!=-1) {
                 this.defenderString += defenderDie[j];
                 defenderStringBuilder.append(defenderDie[j]);
-                if (j!=0)
-                    if(defenderDie[j-1] != -1)
-                        defenderStringBuilder.append(", ");
+                if (j != 0 && defenderDie[j - 1] != -1) defenderStringBuilder.append(", ");
             }
         }
         this.attackerString = attackerStringBuilder.toString();

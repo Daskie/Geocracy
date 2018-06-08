@@ -23,7 +23,6 @@ public class FortifyTerritoryFragment extends Fragment {
         return newFragment;
     }
 
-    private static final int[] ATTACK_OPTIONS = new int[]{1,2,3};
 
     @Nullable
     @Override

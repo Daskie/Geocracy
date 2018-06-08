@@ -111,15 +111,15 @@ public class Player implements Serializable {
 
     public Territory findTerrWithMaxArmies(){
         int max = 2;
-        Territory max_terr = null;
+        Territory maxTerr = null;
         for(Territory terr: territories){
             if(terr.getNArmies()>=max){
-                max_terr = terr;
+                maxTerr = terr;
                 max = terr.getNArmies();
             }
         }
 
-        return max_terr;
+        return maxTerr;
     }
 
     @Override

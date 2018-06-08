@@ -3,7 +3,6 @@ package csc_cccix.geocracy.states;
 import android.util.Log;
 
 import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
-import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
@@ -15,8 +14,6 @@ public class FortifyTerritoryState implements  GameState {
     private Territory originTerritory;
     private Territory targetTerritory;
     private boolean originTerritoryLock;
-    private boolean targetTerritoryLock;
-    private TroopSelectionFragment troopSelectionFragment;
     private boolean troopHasBeenMoved;
 
     public FortifyTerritoryState(Game game) {
