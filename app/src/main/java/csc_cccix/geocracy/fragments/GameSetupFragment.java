@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -40,11 +42,31 @@ public class GameSetupFragment extends Fragment {
     private ImageView playerColorIcon;
     private int playerColorSelection;
 
+    private EditText playerNameField;
+    private String playerName;
+
+    private EditText worldSeedField;
+    private Long worldSeed;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
+
+        playerName = "ANONYMOUS";
+
+        playerNameField = view.findViewById(R.id.playerNameField);
+        playerNameField.setText(playerName);
+        RxTextView.textChanges(playerNameField).subscribe((value) -> {
+            playerName = value.toString();
+        });
+
+        worldSeedField = view.findViewById(R.id.worldSeedField);
+        worldSeedField.setText("309");
+        RxTextView.textChanges(worldSeedField).subscribe((value) -> {
+            worldSeed = Long.parseLong(value.toString());
+        });
+
 
         Vec3[] colorPresets = Util.genDistinctColors(25, 0.0f);
         int[] colorIntPresets = new int[colorPresets.length];
@@ -103,9 +125,10 @@ public class GameSetupFragment extends Fragment {
                 Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
                 Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mainIntent.putExtra("PLAYER_NAME", playerName);
                 mainIntent.putExtra("NUM_PLAYERS", playerCount);
                 mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
-                mainIntent.putExtra("SEED", 0L); // TODO: implement seed text field or something
+                mainIntent.putExtra("SEED", worldSeed); // TODO: implement seed text field or something
                 startActivity(mainIntent);
             }
         });

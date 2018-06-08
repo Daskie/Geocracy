@@ -53,11 +53,13 @@ public final class EventBus {
     /**
      * Subscribe to the specified subject and listen for updates on that subject. Pass in an object to associate
      * your registration with, so that you can unsubscribe later.
-     * <br/><br/>
-     * <b>Note:</b> Make sure to call {@link EventBus#unregister(Object)} to avoid memory leaks.
      */
     public static void subscribe(String subject, @NonNull Object lifecycle, @NonNull Consumer<Object> action) {
-        Disposable disposable = getSubject(subject).observeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(action);
+        Disposable disposable = getSubject(subject)
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(action);
+
         getCompositeDisposable(lifecycle).add(disposable);
     }
 
