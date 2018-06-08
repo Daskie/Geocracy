@@ -343,7 +343,7 @@ public class Game implements Serializable {
             cooldown = 1.0f;
         }
     }
-    public void setNextPlayer(){currentPlayerIndex=0;}
+    public void setFirstPlayer(){currentPlayerIndex=0;}
 
     public void screenResized(Vec2i size) {
         screenSize = size;
@@ -411,8 +411,8 @@ public class Game implements Serializable {
         if(currState.getClass() == GainArmyUnitsState.class){
             while(getCurrentPlayer().getArmyPool()!=0)
                 for(Territory terr : getCurrentPlayer().getTerritories()) {
-                    EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-                    EventBus.publish(USER_ACTION, new GameEvent(ADD_UNIT_TAPPED, null));
+                    terr.setNArmies(terr.getNArmies()+1);
+                    getCurrentPlayer().addOrRemoveNArmiesToPool(-1);
                 }
 
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
