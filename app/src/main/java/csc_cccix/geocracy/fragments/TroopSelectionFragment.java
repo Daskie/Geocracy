@@ -13,7 +13,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
 public class TroopSelectionFragment extends Fragment {
