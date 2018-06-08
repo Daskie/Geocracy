@@ -18,7 +18,6 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     Disposable touchEventSubscription;
 
     private ScaleGestureDetector scaler;
-    private boolean scaleMode;
 
     public GameSurfaceView(Context context){
         super(context);
@@ -42,8 +41,6 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     }
 
-
-    // TODO: implement a proper input system that works between threads
     public boolean handleTouchEvent(MotionEvent event) {
 
         scaler.onTouchEvent(event);
@@ -81,13 +78,12 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        scaleMode = true;
         return true;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        scaleMode = false;
+        // do nothing
     }
 
 }

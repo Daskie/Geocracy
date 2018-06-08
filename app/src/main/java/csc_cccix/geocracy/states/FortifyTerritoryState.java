@@ -1,14 +1,10 @@
 package csc_cccix.geocracy.states;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.world.Territory;
-import es.dmoral.toasty.Toasty;
 
 public class FortifyTerritoryState implements  GameState {
 
@@ -20,9 +16,11 @@ public class FortifyTerritoryState implements  GameState {
     private boolean originTerritoryLock;
     private boolean targetTerritoryLock;
     private TroopSelectionFragment troopSelectionFragment;
+    private boolean troopHasBeenMoved;
 
     public FortifyTerritoryState(Game game) {
         this.game = game;
+        troopHasBeenMoved = false;
     }
 
     public void selectOriginTerritory(Territory territory) {
@@ -36,9 +34,11 @@ public class FortifyTerritoryState implements  GameState {
         if (game.getCurrentPlayer().getId() == territory.getOwner().getId() && this.originTerritory != territory) {
             this.targetTerritory = territory;
             game.getWorld().unhighlightTerritories();
-            game.getWorld().selectTerritory(this.targetTerritory);
             game.getWorld().highlightTerritory(this.originTerritory);
             game.getWorld().highlightTerritories(this.originTerritory.getAdjacentFriendlyTerritories());
+            game.getWorld().selectTerritory(this.originTerritory);
+            game.getWorld().targetTerritory(this.targetTerritory);
+            game.getCameraController().targetTerritory(this.targetTerritory);
             game.getActivity().runOnUiThread(() -> {
                 game.getActivity().hideAllGameInteractionButtons();
                 game.getActivity().getAddUnitBtn().show();
@@ -55,7 +55,28 @@ public class FortifyTerritoryState implements  GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "CANNOT UPDATE UNIT COUNT");
+        Log.i(TAG, "UPDATING UNIT COUNT BY: " + amount);
+        if (amount == 0) return;
+        else if (amount > 0) {
+            amount = Math.abs(amount);
+            if (this.originTerritory.getNArmies() - amount > 0) {
+                this.originTerritory.setNArmies(this.originTerritory.getNArmies() - amount);
+                this.targetTerritory.setNArmies(this.targetTerritory.getNArmies() + amount);
+            }
+        }
+        else if (amount < 0) {
+            amount = Math.abs(amount);
+            if (this.targetTerritory.getNArmies() - amount > 0) {
+                this.originTerritory.setNArmies(this.originTerritory.getNArmies() + amount);
+                this.targetTerritory.setNArmies(this.targetTerritory.getNArmies() - amount);
+            }
+        }
+        troopHasBeenMoved = true;
+
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().getConfirmButton().show();
+            game.getActivity().getCancelBtn().hide();
+        });
     }
 
 
@@ -64,22 +85,20 @@ public class FortifyTerritoryState implements  GameState {
     public void battleCompleted(BattleResultDetails battleResultDetails) { Log.i(TAG, "INVALID STATE ACCESSED"); }
 
     public void confirmAction() {
-        int numArmiesSelected = troopSelectionFragment.getSelectedNumberOfUnits();
-        if(numArmiesSelected<=originTerritory.getNArmies()) {
-            game.getCurrentPlayer().setNumArmiesAttacking(numArmiesSelected);
-            EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
-        }
-        else
-            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "You do not have enough armies in this territory to attack with the number you selected! ", Toast.LENGTH_LONG).show());
+        Log.i(TAG, "SHOULD END PLAYER TURN");
+        game.setState(new DefaultState(game));
+        game.getState().initState();
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        if (!troopHasBeenMoved) {
+            game.setState(new DefaultState(game));
+            game.getState().initState();
+        }
         originTerritoryLock = false;
-        game.setState(new DefaultState(game));
-        game.getState().initState();
     }
 
     public void fortifyAction() { Log.i(TAG, "CANNOT REENABLE FORTIFY MODE"); }

@@ -21,7 +21,6 @@ public class SelectedTerritoryState implements  GameState {
         if (this.territory == null) {
             Log.i(TAG, "A TERRITORY WAS SELECTED, DISPLAY DETAILS");
             this.territory = territory;
-            if (this.territory == null) return;
         } else {
             Log.i(TAG, "ANOTHER TERRITORY WAS SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
             this.territory = territory;
@@ -93,7 +92,7 @@ public class SelectedTerritoryState implements  GameState {
                 if (this.territory.getNArmies() >= 2) {
                     Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE");
                     game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
-                    if (!this.territory.getAdjacentFriendlyTerritories().isEmpty()) {
+                    if (this.territory.getAdjacentFriendlyTerritories() != null) {
                         game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
                     } else {
                         game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);

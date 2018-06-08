@@ -82,13 +82,9 @@ public class GainArmyUnitsState implements GameState {
         }
 
         if (game.getCurrentPlayer().getArmyPool() == 0) {
-            game.getActivity().runOnUiThread(() -> {
-                game.getActivity().setConfirmButtonVisibilityAndActiveState(true, true);
-            });
+            game.getActivity().runOnUiThread(() -> game.getActivity().setConfirmButtonVisibilityAndActiveState(true, true));
         } else {
-            game.getActivity().runOnUiThread(() -> {
-                game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
-            });
+            game.getActivity().runOnUiThread(() -> game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false));
         }
 
         game.getActivity().removeActiveBottomPaneFragment();

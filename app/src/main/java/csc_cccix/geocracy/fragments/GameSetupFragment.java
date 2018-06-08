@@ -81,7 +81,7 @@ public class GameSetupFragment extends Fragment {
 
             @Override
             public void onDialogDismissed(int dialogId) {
-
+                // Do nothing when dismissed
             }
         });
 
@@ -131,12 +131,16 @@ public class GameSetupFragment extends Fragment {
                 mainIntent.putExtra("PLAYER_NAME", playerName);
                 mainIntent.putExtra("NUM_PLAYERS", playerCount);
                 mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
-                mainIntent.putExtra("SEED", worldSeed); // TODO: implement seed text field or something
+                mainIntent.putExtra("SEED", worldSeed);
                 startActivity(mainIntent);
             }
         });
 
         return view;
+    }
+
+    private void setPlayerName(String name) {
+        this.playerName = name;
     }
 
 }
