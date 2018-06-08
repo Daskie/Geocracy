@@ -112,12 +112,12 @@ public class Game implements Serializable {
 
     private transient long lastTimestamp;
 
-    public Game(int nPlayers, Vec3 mainPlayerColor, long seed) {
+    public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
 
         players = new Player[nPlayers];
         Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
-        players[0] = new HumanPlayer(1, playerColors[0]);
+        players[0] = new HumanPlayer(playerName,1, playerColors[0]);
         for (int i = 1; i < players.length; ++i) {
             players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
@@ -169,7 +169,7 @@ public class Game implements Serializable {
 
             case GAME_INFO_TAPPED:
                 Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
-                activity.showOverlayFragment(GameInfoFragment.newInstance(players));
+                activity.showOverlayFragment(GameInfoFragment.newInstance(players, getWorld().getSeed()));
                 break;
 
             case TERRITORY_SELECTED:
