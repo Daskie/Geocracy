@@ -79,36 +79,36 @@ public class BattleResultsState implements  GameState {
     }
 
     private void goToBattleResults() {
-        Territory originTerritory = this.originTerritory;
-        Territory targetTerritory = this.targetTerritory;
+        Territory oTerritory = this.originTerritory;
+        Territory tTerritory = this.targetTerritory;
 
-        originTerritory.setNArmies(originTerritory.getNArmies()-this.attackerArmiesLost);
-        targetTerritory.setNArmies(targetTerritory.getNArmies()-this.defenderArmiesLost);
+        oTerritory.setNArmies(oTerritory.getNArmies()-this.attackerArmiesLost);
+        tTerritory.setNArmies(tTerritory.getNArmies()-this.defenderArmiesLost);
 
-        Player attacker = originTerritory.getOwner();
-        Player defender = targetTerritory.getOwner();
+        Player attacker = oTerritory.getOwner();
+        Player defender = tTerritory.getOwner();
 
-        if(originTerritory.getNArmies()==0) {
-            attacker.removeTerritory(originTerritory);
-            originTerritory.setOwner(defender);
-            defender.addTerritory(originTerritory);
+        if(oTerritory.getNArmies()==0) {
+            attacker.removeTerritory(oTerritory);
+            oTerritory.setOwner(defender);
+            defender.addTerritory(oTerritory);
 
             int numArmiesToMove = this.defenderDetails.unitCount;
-            if(numArmiesToMove == targetTerritory.getNArmies())
+            if(numArmiesToMove == tTerritory.getNArmies())
                 numArmiesToMove -= 1;
-            originTerritory.setNArmies(numArmiesToMove);
-            targetTerritory.setNArmies(targetTerritory.getNArmies()-numArmiesToMove);
+            oTerritory.setNArmies(numArmiesToMove);
+            tTerritory.setNArmies(tTerritory.getNArmies()-numArmiesToMove);
         }
-        if(targetTerritory.getNArmies()==0) {
-            defender.removeTerritory(targetTerritory);
-            targetTerritory.setOwner(attacker);
-            attacker.addTerritory(targetTerritory);
+        if(tTerritory.getNArmies()==0) {
+            defender.removeTerritory(tTerritory);
+            tTerritory.setOwner(attacker);
+            attacker.addTerritory(tTerritory);
 
             int numArmiesToMove = this.attackerDetails.unitCount;
-            if(numArmiesToMove >= originTerritory.getNArmies())
+            if(numArmiesToMove >= oTerritory.getNArmies())
                 numArmiesToMove -= 1;
-            targetTerritory.setNArmies(numArmiesToMove);
-            originTerritory.setNArmies(originTerritory.getNArmies()-numArmiesToMove);
+            tTerritory.setNArmies(numArmiesToMove);
+            oTerritory.setNArmies(oTerritory.getNArmies()-numArmiesToMove);
         }
 
 

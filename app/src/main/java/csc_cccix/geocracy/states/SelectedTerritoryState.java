@@ -21,7 +21,6 @@ public class SelectedTerritoryState implements  GameState {
         if (this.territory == null) {
             Log.i(TAG, "A TERRITORY WAS SELECTED, DISPLAY DETAILS");
             this.territory = territory;
-            if (this.territory == null) return;
         } else {
             Log.i(TAG, "ANOTHER TERRITORY WAS SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
             this.territory = territory;

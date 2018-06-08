@@ -359,12 +359,12 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {
-
+        // do nothing for now
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        
+        // do nothing for now
     }
 
     public FloatingActionButton getAddUnitBtn() {

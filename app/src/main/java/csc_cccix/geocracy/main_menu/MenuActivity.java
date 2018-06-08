@@ -19,7 +19,7 @@ import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.fragments.TutorialFragment;
 import csc_cccix.geocracy.game.Game;
 
-public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+public class MenuActivity extends AppCompatActivity {
 
     private NonSwipeableViewPager mViewPager;
 
@@ -76,9 +76,8 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
         setViewPager(0);
     }
 
-    private MainMenuFragment mainMenuFragment;
-
     private void setupViewPager(ViewPager vp) {
+        MainMenuFragment mainMenuFragment;
         MenuPagerAdapter adapter = new MenuPagerAdapter(getSupportFragmentManager());
 
         mainMenuFragment = new MainMenuFragment();
@@ -122,21 +121,6 @@ public class MenuActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     public void setViewPager(int fragmentNumber) {
         mViewPager.setCurrentItem(fragmentNumber);
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int frmt, int w, int h) {
-        
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
     }
 
 }

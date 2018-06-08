@@ -3,6 +3,7 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import csc_cccix.geocracy.fragments.DiceRollFragment;
@@ -69,11 +70,12 @@ public class DiceRollState implements  GameState {
     }
 
     private void roll(int attackerNumDie, int defenderNumDie){
+        Random rGen = new Random();
         for(int i = 0; i < attackerNumDie; i++)
-            this.originTerritory.getOwner().setDie(i, (int)(Math.random()*6) + 1);
+            this.originTerritory.getOwner().setDie(i, (rGen.nextInt()*6) + 1);
 
         for(int i = 0; i < defenderNumDie; i++)
-            this.targetTerritory.getOwner().setDie(i, (int)(Math.random()*6) + 1);
+            this.targetTerritory.getOwner().setDie(i, (rGen.nextInt()*6) + 1);
 
     }
 
@@ -93,25 +95,31 @@ public class DiceRollState implements  GameState {
 
         int[] attackerDie = this.originTerritory.getOwner().getDie();
         int[] defenderDie = this.targetTerritory.getOwner().getDie();
+        StringBuilder attackerStringBuilder = new StringBuilder();
+        StringBuilder defenderStringBuilder = new StringBuilder();
+
 
         for(int i = attackerDie.length-1; i > -1; i--){
             if(attackerDie[i]!=-1) {
                 this.attackerString += attackerDie[i];
+                attackerStringBuilder.append(attackerDie[i]);
                 if (i!=0)
                     if(attackerDie[i-1] != -1)
-                        this.attackerString += ", ";
+                        attackerStringBuilder.append(", ");
             }
         }
 
         for(int j = defenderDie.length-1; j > -1; j--){
             if(defenderDie[j]!=-1) {
                 this.defenderString += defenderDie[j];
+                defenderStringBuilder.append(defenderDie[j]);
                 if (j!=0)
                     if(defenderDie[j-1] != -1)
-                        this.defenderString += ", ";
+                        defenderStringBuilder.append(", ");
             }
         }
-
+        this.attackerString = attackerStringBuilder.toString();
+        this.defenderString = defenderStringBuilder.toString();
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
@@ -149,9 +157,7 @@ public class DiceRollState implements  GameState {
         game.getWorld().selectTerritory(this.originTerritory);
         game.getWorld().highlightTerritory(this.targetTerritory);
         game.getCameraController().targetTerritory(this.targetTerritory);
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().hideAllGameInteractionButtons();
-        });
+        game.getActivity().runOnUiThread(() -> game.getActivity().hideAllGameInteractionButtons());
 
         Completable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);

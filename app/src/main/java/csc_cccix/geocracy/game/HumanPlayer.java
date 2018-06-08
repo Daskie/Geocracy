@@ -11,7 +11,6 @@ public class HumanPlayer extends Player {
     private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
 
     private static int fakerSeed = 1;
-    private static Faker faker = new Faker(new Random(fakerSeed));
 
     public HumanPlayer(String name, int id, Vec3 color) {
         super(id, color);
