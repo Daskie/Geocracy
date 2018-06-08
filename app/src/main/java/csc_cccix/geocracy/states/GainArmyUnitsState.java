@@ -97,7 +97,8 @@ public class GainArmyUnitsState implements GameState {
 
     public void confirmAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
-        this.endTurn();
+        game.setState(new DefaultState(game));
+        game.getState().initState();
     }
 
     public void cancelAction() {
