@@ -20,9 +20,11 @@ public class FortifyTerritoryState implements  GameState {
     private boolean originTerritoryLock;
     private boolean targetTerritoryLock;
     private TroopSelectionFragment troopSelectionFragment;
+    private boolean troopHasBeenMoved;
 
     public FortifyTerritoryState(Game game) {
         this.game = game;
+        troopHasBeenMoved = false;
     }
 
     public void selectOriginTerritory(Territory territory) {
@@ -73,6 +75,12 @@ public class FortifyTerritoryState implements  GameState {
                 this.targetTerritory.setNArmies(this.targetTerritory.getNArmies() - amount);
             }
         }
+        troopHasBeenMoved = true;
+
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().getConfirmButton().show();
+            game.getActivity().getCancelBtn().hide();
+        });
     }
 
 
@@ -81,22 +89,20 @@ public class FortifyTerritoryState implements  GameState {
     public void battleCompleted(BattleResultDetails battleResultDetails) { Log.i(TAG, "INVALID STATE ACCESSED"); }
 
     public void confirmAction() {
-        int numArmiesSelected = troopSelectionFragment.getSelectedNumberOfUnits();
-        if(numArmiesSelected<=originTerritory.getNArmies()) {
-            game.getCurrentPlayer().setNumArmiesAttacking(numArmiesSelected);
-            EventBus.publish("USER_ACTION", new GameEvent(GameAction.CONFIRM_UNITS_TAPPED, null));
-        }
-        else
-            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "You do not have enough armies in this territory to attack with the number you selected! ", Toast.LENGTH_LONG).show());
+        Log.i(TAG, "SHOULD END PLAYER TURN");
+        game.setState(new DefaultState(game));
+        game.getState().initState();
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        if (!troopHasBeenMoved) {
+            game.setState(new DefaultState(game));
+            game.getState().initState();
+        }
         originTerritoryLock = false;
-        game.setState(new DefaultState(game));
-        game.getState().initState();
     }
 
     public void fortifyAction() { Log.i(TAG, "CANNOT REENABLE FORTIFY MODE"); }
