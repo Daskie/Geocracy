@@ -57,20 +57,20 @@ public class FortifyTerritoryState implements  GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "UPDATING UNIT COUNT");
+        Log.i(TAG, "UPDATING UNIT COUNT BY: " + amount);
         if (amount == 0) return;
         else if (amount > 0) {
             amount = Math.abs(amount);
             if (this.originTerritory.getNArmies() - amount > 0) {
                 this.originTerritory.setNArmies(this.originTerritory.getNArmies() - amount);
-                this.targetTerritory.setNArmies(this.originTerritory.getNArmies() + amount);
+                this.targetTerritory.setNArmies(this.targetTerritory.getNArmies() + amount);
             }
         }
         else if (amount < 0) {
             amount = Math.abs(amount);
             if (this.targetTerritory.getNArmies() - amount > 0) {
                 this.originTerritory.setNArmies(this.originTerritory.getNArmies() + amount);
-                this.targetTerritory.setNArmies(this.originTerritory.getNArmies() - amount);
+                this.targetTerritory.setNArmies(this.targetTerritory.getNArmies() - amount);
             }
         }
     }
