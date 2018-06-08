@@ -36,18 +36,20 @@ import glm_.vec3.Vec3;
 
 public class GameSetupFragment extends Fragment {
 
-    private EditText playerNameField;
     private Button playerColorButton;
-    private ColorPickerDialog colorPicker;
     private int playerColorSelection;
-    private TextView playerCountText;
-    private SeekBar playerCountSeekBar;
-    private EditText worldSeedField;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
+
+        ColorPickerDialog colorPicker;
+        EditText playerNameField;
+
+        TextView playerCountText;
+        SeekBar playerCountSeekBar;
+        EditText worldSeedField;
 
         playerNameField = view.findViewById(R.id.playerNameField);
         playerNameField.setText((new Faker()).name().firstName());
@@ -99,9 +101,7 @@ public class GameSetupFragment extends Fragment {
         playerCountSeekBar.setMax(Game.MAX_N_PLAYERS - Game.MIN_N_PLAYERS);
         playerCountSeekBar.setProgress(Game.DEFAULT_N_PLAYERS - Game.MIN_N_PLAYERS);
 
-        RxSeekBar.changeEvents(playerCountSeekBar).subscribe(e -> {
-            playerCountText.setText(Integer.toString(e.view().getProgress() + Game.MIN_N_PLAYERS));
-        });
+        RxSeekBar.changeEvents(playerCountSeekBar).subscribe(e -> playerCountText.setText(Integer.toString(e.view().getProgress() + Game.MIN_N_PLAYERS)));
 
         Button confirmGameSettings = view.findViewById(R.id.confirmGameSettingsBtn);
 

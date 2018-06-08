@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.rohitss.uceh.UCEHandler;
+
 import csc_cccix.geocracy.main_menu.MenuActivity;
 import es.dmoral.toasty.Toasty;
 
@@ -19,6 +21,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize UCE_Handler Library
+        new UCEHandler.Builder(this).addCommaSeparatedEmailAddresses("daskie.q@gmail.com,andrewxton373@gmail.com").build();
 
         // 8 bit color format
         getWindow().setFormat(PixelFormat.RGBA_8888);

@@ -124,7 +124,7 @@ public class GainArmyUnitsState implements GameState {
         if(game.getGameStatus())
             currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
 
-        System.out.println(currentPlayer.getArmyPool());
+        Log.i(TAG, "" + currentPlayer.getArmyPool());
 
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();

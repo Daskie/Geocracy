@@ -92,9 +92,7 @@ public class FortifyTerritoryState implements  GameState {
 
     public void confirmAction() {
         Log.i(TAG, "SHOULD END PLAYER TURN");
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().removeActiveBottomPaneFragment();
-        });
+        game.getActivity().runOnUiThread(() ->game.getActivity().removeActiveBottomPaneFragment());
         game.setState(new DefaultState(game));
         game.getState().initState();
     }
@@ -103,9 +101,7 @@ public class FortifyTerritoryState implements  GameState {
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().removeActiveBottomPaneFragment();
-        });
+        game.getActivity().runOnUiThread(() ->game.getActivity().removeActiveBottomPaneFragment());
         if (!troopHasBeenMoved) {
             game.setState(new DefaultState(game));
             game.getState().initState();

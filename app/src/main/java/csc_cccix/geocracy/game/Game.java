@@ -36,7 +36,6 @@ import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc_cccix.geocracy.states.GameAction.ADD_UNIT_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.ATTACK_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.CANCEL_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.CONFIRM_TAPPED;
@@ -410,7 +409,7 @@ public class Game implements Serializable {
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
         if(currState.getClass() == GainArmyUnitsState.class){
-            System.out.println(getCurrentPlayer().getArmyPool());
+            Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
             while(getCurrentPlayer().getArmyPool()!=0)
                 for(Territory terr : getCurrentPlayer().getTerritories()) {
                     terr.setNArmies(terr.getNArmies()+1);
