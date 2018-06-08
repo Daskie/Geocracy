@@ -104,9 +104,11 @@ public class SetUpInitTerritoriesState implements GameState {
             game.getWorld().selectTerritory(this.territory);
             game.getWorld().unhighlightTerritories();
             game.getCameraController().targetTerritory(this.territory);
+            if (this.territory.getOwner() == null) {
+                game.getActivity().runOnUiThread(() -> game.getActivity().getConfirmButton().show());
+            }
             game.getActivity().runOnUiThread(() -> {
                 game.getActivity().removeActiveBottomPaneFragment();
-                if (this.territory.getOwner() == null) game.getActivity().getConfirmButton().show();
                 game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
             });
         } else {

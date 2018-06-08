@@ -1,6 +1,5 @@
 package csc_cccix.geocracy.game;
 
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +16,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -25,6 +23,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.states.DefaultState;
@@ -44,9 +43,9 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public static Game game;
     private GameSurfaceView gameSurfaceView;
 
-    private FragmentTransaction userInterfaceFT;
     private FragmentManager fragmentManager;
 
+    private Fragment activeCurrentPlayerFragment = null;
     private Fragment activeBottomPaneFragment = null;
     private Fragment activeOverlayFragment = null;
 
@@ -112,19 +111,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
         LinearLayout uiLayout = new LinearLayout(this);
         uiLayout.setOrientation(LinearLayout.VERTICAL);
-
-        TextView geocracyHeader = new TextView(this);
-        geocracyHeader.setTextColor(Color.argb(240, 255, 255, 255));
-        geocracyHeader.setText("Geocracy (v0.2)");
-        geocracyHeader.setTextSize(18.0f);
-        geocracyHeader.setPadding(20, 20, 0, 40);
-
-        disposables.add(RxView.touches(geocracyHeader).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("GAME_NAME_TAP_EVENT", e);
-            }
-        }));
-        EventBus.subscribe("GAME_NAME_TAP_EVENT", this, e -> showGameDevelopers());
 
         cancelBtn = findViewById(R.id.cancelBtn);
         cancelBtn.hide();
@@ -206,7 +192,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }));
 
-        uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
         showOverlayFragment(new LoadingFragment());
 
@@ -232,54 +217,69 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
+    public void updateCurrentPlayerFragment() {
+        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(game.getCurrentPlayer());
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        if (activeCurrentPlayerFragment != null) {
+            ft.remove(activeCurrentPlayerFragment);
+        }
+        if (activeCurrentPlayerFragment != currentPlayerFragment) {
+            ft.add(R.id.gameLayout, currentPlayerFragment);
+            activeCurrentPlayerFragment = currentPlayerFragment;
+        }
+        ft.commit();
+    }
 
     public void showOverlayFragment(Fragment overlayFragment) {
         removeActiveBottomPaneFragment();
 
-        userInterfaceFT = fragmentManager.beginTransaction();
-        userInterfaceFT.add(R.id.gameLayout, overlayFragment);
-        userInterfaceFT.commit();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.add(R.id.gameLayout, overlayFragment);
+        ft.commit();
 
         activeOverlayFragment = overlayFragment;
-
-        settingBtn.hide();
-        gameInfoBtn.hide();
-        closeOverlayBtn.show();
+        this.runOnUiThread(() -> {
+            if (overlayFragment.getClass() == CurrentPlayerFragment.class) {
+                closeOverlayBtn.hide();
+                settingBtn.show();
+                gameInfoBtn.show();
+            } else {
+                closeOverlayBtn.show();
+                settingBtn.hide();
+                gameInfoBtn.hide();
+            }
+        });
     }
 
     public void removeActiveOverlayFragment() {
         if (activeOverlayFragment != null) {
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.remove(activeOverlayFragment);
-            userInterfaceFT.commit();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.remove(activeOverlayFragment);
+            ft.commit();
             activeOverlayFragment = null;
         }
-        closeOverlayBtn.hide();
-        settingBtn.show();
-        gameInfoBtn.show();
+        this.runOnUiThread(() -> {
+            closeOverlayBtn.hide();
+            settingBtn.show();
+            gameInfoBtn.show();
+        });
     }
 
      public void showBottomPaneFragment(Fragment bottomPaneFragment) {
         removeActiveBottomPaneFragment();
-
-        userInterfaceFT = fragmentManager.beginTransaction();
-        userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
-        userInterfaceFT.commit();
-
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.add(R.id.gameLayout, bottomPaneFragment);
+        ft.commit();
         activeBottomPaneFragment = bottomPaneFragment;
     }
 
      public void removeActiveBottomPaneFragment() {
         if (activeBottomPaneFragment != null) {
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.remove(activeBottomPaneFragment);
-            userInterfaceFT.commit();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.remove(activeBottomPaneFragment);
+            ft.commit();
             activeBottomPaneFragment = null;
         }
-    }
-
-    void showGameDevelopers() {
-        Toasty.info(this, "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
     }
 
     public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
@@ -295,33 +295,39 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setFABVisibilityAndActiveState(FloatingActionButton fab, boolean isVisible, boolean isActive) {
-        AlphaAnimation alphaChange;
-        if (isActive) { alphaChange = new AlphaAnimation(fab.getAlpha(), 1.0f); }
-        else { alphaChange = new AlphaAnimation(fab.getAlpha(), 0.4f); }
-        alphaChange.setFillAfter(true);
-        fab.startAnimation(alphaChange);
-        if (isVisible) { fab.show(); }
-        else { fab.hide(); }
+        this.runOnUiThread(() -> {
+            AlphaAnimation alphaChange;
+            if (isActive) { alphaChange = new AlphaAnimation(fab.getAlpha(), 1.0f); }
+            else { alphaChange = new AlphaAnimation(fab.getAlpha(), 0.4f); }
+            alphaChange.setFillAfter(true);
+            fab.startAnimation(alphaChange);
+            if (isVisible) { fab.show(); }
+            else { fab.hide(); }
+        });
     }
 
     public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
-        if (isVisible) {
-            addUnitBtn.show();
-            removeUnitBtn.show();
-        } else {
-            addUnitBtn.hide();
-            removeUnitBtn.hide();
-        }
+        this.runOnUiThread(() -> {
+            if (isVisible) {
+                addUnitBtn.show();
+                removeUnitBtn.show();
+            } else {
+                addUnitBtn.hide();
+                removeUnitBtn.hide();
+            }
+        });
     }
 
     public void hideAllGameInteractionButtons() {
-        attackBtn.hide();
-        cancelBtn.hide();
-        addUnitBtn.hide();
-        removeUnitBtn.hide();
-        endTurnButton.hide();
-        confirmButton.hide();
-        fortifyButton.hide();
+        this.runOnUiThread(() -> {
+            attackBtn.hide();
+            cancelBtn.hide();
+            addUnitBtn.hide();
+            removeUnitBtn.hide();
+            endTurnButton.hide();
+            confirmButton.hide();
+            fortifyButton.hide();
+        });
     }
 
 
