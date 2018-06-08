@@ -36,9 +36,11 @@ public class FortifyTerritoryState implements  GameState {
         if (game.getCurrentPlayer().getId() == territory.getOwner().getId() && this.originTerritory != territory) {
             this.targetTerritory = territory;
             game.getWorld().unhighlightTerritories();
-            game.getWorld().selectTerritory(this.targetTerritory);
             game.getWorld().highlightTerritory(this.originTerritory);
             game.getWorld().highlightTerritories(this.originTerritory.getAdjacentFriendlyTerritories());
+            game.getWorld().selectTerritory(this.originTerritory);
+            game.getWorld().targetTerritory(this.targetTerritory);
+            game.getCameraController().targetTerritory(this.targetTerritory);
             game.getActivity().runOnUiThread(() -> {
                 game.getActivity().hideAllGameInteractionButtons();
                 game.getActivity().getAddUnitBtn().show();
@@ -55,7 +57,22 @@ public class FortifyTerritoryState implements  GameState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "CANNOT UPDATE UNIT COUNT");
+        Log.i(TAG, "UPDATING UNIT COUNT");
+        if (amount == 0) return;
+        else if (amount > 0) {
+            amount = Math.abs(amount);
+            if (this.originTerritory.getNArmies() - amount > 0) {
+                this.originTerritory.setNArmies(this.originTerritory.getNArmies() - amount);
+                this.targetTerritory.setNArmies(this.originTerritory.getNArmies() + amount);
+            }
+        }
+        else if (amount < 0) {
+            amount = Math.abs(amount);
+            if (this.targetTerritory.getNArmies() - amount > 0) {
+                this.originTerritory.setNArmies(this.originTerritory.getNArmies() + amount);
+                this.targetTerritory.setNArmies(this.originTerritory.getNArmies() - amount);
+            }
+        }
     }
 
 

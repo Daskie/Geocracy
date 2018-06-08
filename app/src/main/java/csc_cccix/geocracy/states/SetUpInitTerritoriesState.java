@@ -88,7 +88,10 @@ public class SetUpInitTerritoriesState implements GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
-        game.getActivity().removeActiveBottomPaneFragment();
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().removeActiveBottomPaneFragment();
+            game.getActivity().getConfirmButton().hide();
+        });
     }
 
 
