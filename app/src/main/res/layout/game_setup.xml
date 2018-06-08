@@ -18,18 +18,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="World Seed:"
+        android:textSize="14dp"
+        android:textStyle="bold"
         android:labelFor="@id/worldSeedField"/>
 
     <EditText
         android:id="@+id/worldSeedField"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:inputType="number" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player Name:"
+        android:textSize="14dp"
+        android:textStyle="bold"
         android:labelFor="@id/playerNameField"/>
 
     <EditText
@@ -37,11 +42,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
+        android:textAlignment="center"
         android:text="ANONYMOUS"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="14dp"
         android:text="Player Color:"
         android:id="@+id/playerColor"/>
 
@@ -62,6 +70,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player Count:"
+        android:textStyle="bold"
+        android:textSize="14dp"
         android:labelFor="@id/playerCount"/>
 
     <TextView
@@ -75,8 +85,7 @@
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:tickMark="@drawable/tickmark" />
+        android:layout_marginBottom="20dp" />
 
     <Button
         android:layout_width="wrap_content"
