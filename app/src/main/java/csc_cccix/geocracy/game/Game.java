@@ -403,12 +403,13 @@ public class Game implements Serializable {
         GameState currState = getState();
         if(currState.getClass() == SetUpInitTerritoriesState.class){
             Random rand = new Random();
-            int randNum = rand.nextInt(world.getNTerritories());
+            int randNum = rand.nextInt(world.getUnoccupiedTerritories().size()) + 1;
             Territory terr = world.getUnoccTerritory(randNum);
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
         if(currState.getClass() == GainArmyUnitsState.class){
+            System.out.println(getCurrentPlayer().getArmyPool());
             while(getCurrentPlayer().getArmyPool()!=0)
                 for(Territory terr : getCurrentPlayer().getTerritories()) {
                     terr.setNArmies(terr.getNArmies()+1);

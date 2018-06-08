@@ -221,7 +221,9 @@ public class World implements Serializable {
         if (id <= 0 || id > unOccTerrs.size()) {
             return null;
         }
-        return unOccTerrs.remove(id - 1);
+        Territory terr = unOccTerrs.get(id-1);
+        unOccTerrs.remove(id - 1);
+        return terr;
     }
 
     public Territory[] getTerritories() {
