@@ -1,6 +1,7 @@
 package csc_cccix.geocracy.fragments;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,17 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.javafaker.Faker;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 import csc_cccix.R;
@@ -35,41 +36,24 @@ import glm_.vec3.Vec3;
 
 public class GameSetupFragment extends Fragment {
 
-    private int playerCount = Game.DEFAULT_N_PLAYERS;
-    private TextView playerCountView;
-
-    private ColorPickerDialog colorPicker;
-    private ImageView playerColorIcon;
-    private int playerColorSelection;
-
     private EditText playerNameField;
-    private String playerName;
-
+    private Button playerColorButton;
+    private ColorPickerDialog colorPicker;
+    private int playerColorSelection;
+    private TextView playerCountText;
+    private SeekBar playerCountSeekBar;
     private EditText worldSeedField;
-    private Long worldSeed;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
 
-        playerName = "ANONYMOUS";
-
         playerNameField = view.findViewById(R.id.playerNameField);
-        playerNameField.setText(playerName);
-        RxTextView.textChanges(playerNameField).subscribe((value) -> {
-            if (value.length() > 0) {
-                playerName = value.toString();
-            }
-        });
+        playerNameField.setText((new Faker()).name().firstName());
 
         worldSeedField = view.findViewById(R.id.worldSeedField);
-        worldSeedField.setText("309");
-        RxTextView.textChanges(worldSeedField).subscribe((value) -> {
-            if (value.length() > 0) {
-                worldSeed = Long.parseLong(value.toString());
-            }
-        });
+        worldSeedField.setText(Long.toHexString((new Random()).nextLong()));
 
 
         Vec3[] colorPresets = Util.genDistinctColors(25, 0.0f);
@@ -92,7 +76,7 @@ public class GameSetupFragment extends Fragment {
             public void onColorSelected(int dialogId, int color) {
                 Log.i("COLOR_SELECTED", Integer.toHexString((int) color));
                 playerColorSelection = Color.parseColor("#" + Integer.toHexString((int) color));
-                playerColorIcon.setBackgroundColor(playerColorSelection);
+                playerColorButton.setBackgroundTintList(ColorStateList.valueOf(playerColorSelection));
             }
 
             @Override
@@ -101,31 +85,46 @@ public class GameSetupFragment extends Fragment {
             }
         });
 
-        playerCountView = view.findViewById(R.id.playerCount);
+        playerCountText = view.findViewById(R.id.playerCount);
 
-        playerColorIcon = view.findViewById(R.id.playerColorIcon);
-        playerColorIcon.setBackgroundColor(playerColorSelection);
-
-        Button playerColorBtn = view.findViewById(R.id.playerColorBtn);
-        RxView.touches(playerColorBtn).subscribe(e -> {
+        playerColorButton = view.findViewById(R.id.playerColorBtn);
+        playerColorButton.setBackgroundTintList(ColorStateList.valueOf(playerColorSelection));
+        RxView.touches(playerColorButton).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_UP) {
                 colorPicker.show(getActivity().getFragmentManager(), "COLOR_PICKER");
             }
         });
 
-        SeekBar numberofPlayers = view.findViewById(R.id.numberofPlayers);
-        numberofPlayers.setMax(Game.MAX_N_PLAYERS - Game.MIN_N_PLAYERS);
-        numberofPlayers.setProgress(playerCount - Game.MIN_N_PLAYERS);
+        playerCountSeekBar = view.findViewById(R.id.numberofPlayers);
+        playerCountSeekBar.setMax(Game.MAX_N_PLAYERS - Game.MIN_N_PLAYERS);
+        playerCountSeekBar.setProgress(Game.DEFAULT_N_PLAYERS - Game.MIN_N_PLAYERS);
 
-        RxSeekBar.changeEvents(numberofPlayers).subscribe(e -> {
-            playerCount = e.view().getProgress() + Game.MIN_N_PLAYERS;
-            playerCountView.setText(Integer.toString(playerCount));
+        RxSeekBar.changeEvents(playerCountSeekBar).subscribe(e -> {
+            playerCountText.setText(Integer.toString(e.view().getProgress() + Game.MIN_N_PLAYERS));
         });
 
         Button confirmGameSettings = view.findViewById(R.id.confirmGameSettingsBtn);
 
         RxView.touches(confirmGameSettings).subscribe(e -> {
             if (e.getAction() == MotionEvent.ACTION_UP) {
+                String playerName = playerNameField.getText().toString();
+                if (playerName.isEmpty()) {
+                    Toasty.error(this.getContext(), "Please choose a name!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                int playerCount = playerCountSeekBar.getProgress() + Game.MIN_N_PLAYERS;
+                long worldSeed;
+                try {
+                    BigInteger bi = new BigInteger(worldSeedField.getText().toString(), 16);
+                    if (bi.bitLength() > 64) {
+                        throw new NumberFormatException();
+                    }
+                    worldSeed = bi.longValue();
+                } catch (NumberFormatException ex) {
+                    Toasty.error(this.getContext(), "Invalid seed!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 Toasty.warning(this.getContext(), "Your world is being created... hang tight!", Toast.LENGTH_LONG).show();
                 Intent mainIntent = new Intent(this.getContext(), GameActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

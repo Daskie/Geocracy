@@ -26,7 +26,7 @@ public class GameInfoFragment extends Fragment {
 
         Long worldSeed = (Long) getArguments().getLong("worldSeed");
         TextView worldSeedView = view.findViewById(R.id.worldSeed);
-        worldSeedView.setText("World Seed: " + worldSeed.toString());
+        worldSeedView.setText("World Seed: " + Long.toHexString(worldSeed));
 
         Player[] players = (Player[]) getArguments().get("players");
 
