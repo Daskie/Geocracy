@@ -35,9 +35,7 @@ public class TroopSelectionFragment extends Fragment {
         return newFragment;
     }
 
-    private static final int[] ATTACK_OPTIONS = new int[]{2,3,4};
-    private static final int[] DEFEND_OPTIONS = new int[]{1,2};
-
+    private static final int[] ATTACK_OPTIONS = new int[]{1,2,3};
 
     @Nullable
     @Override

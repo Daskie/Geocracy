@@ -153,7 +153,7 @@ public class DiceRollState implements  GameState {
             game.getActivity().hideAllGameInteractionButtons();
         });
 
-        Completable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        Completable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);
 
     }

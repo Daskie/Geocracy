@@ -58,13 +58,17 @@ public class GameSetupFragment extends Fragment {
         playerNameField = view.findViewById(R.id.playerNameField);
         playerNameField.setText(playerName);
         RxTextView.textChanges(playerNameField).subscribe((value) -> {
-            playerName = value.toString();
+            if (value.length() > 0) {
+                playerName = value.toString();
+            }
         });
 
         worldSeedField = view.findViewById(R.id.worldSeedField);
         worldSeedField.setText("309");
         RxTextView.textChanges(worldSeedField).subscribe((value) -> {
-            worldSeed = Long.parseLong(value.toString());
+            if (value.length() > 0) {
+                worldSeed = Long.parseLong(value.toString());
+            }
         });
 
 
