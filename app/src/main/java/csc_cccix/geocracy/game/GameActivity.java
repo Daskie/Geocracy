@@ -224,11 +224,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private void handleSaveEvent(GameEvent event) {
         if (event.action == GameAction.SAVE_GAME_TAPPED) {
             if (Game.saveGame(game)) {
-                Toasty.info(this, "Game Saved!", Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toasty.info(this, "Game Saved!", Toast.LENGTH_LONG).show());
             }
             else {
                 Log.e("", "Failed to save game");
-                Toasty.info(this, "Error saving game", Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toasty.info(this, "Error saving game", Toast.LENGTH_LONG).show());
             }
         }
     }
