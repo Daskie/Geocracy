@@ -43,7 +43,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public static Game game;
     private GameSurfaceView gameSurfaceView;
 
-    private FragmentTransaction userInterfaceFT;
     private FragmentManager fragmentManager;
 
     private Fragment activeCurrentPlayerFragment = null;
@@ -220,25 +219,26 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     public void updateCurrentPlayerFragment() {
         CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(game.getCurrentPlayer());
-        userInterfaceFT = fragmentManager.beginTransaction();
-        if (activeCurrentPlayerFragment != null) userInterfaceFT.remove(activeCurrentPlayerFragment);
-        userInterfaceFT.commit();
-        userInterfaceFT = fragmentManager.beginTransaction();
-        userInterfaceFT.commit();
-        userInterfaceFT.add(R.id.gameLayout, currentPlayerFragment);
-        activeCurrentPlayerFragment = currentPlayerFragment;
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        if (activeCurrentPlayerFragment != null) {
+            ft.remove(activeCurrentPlayerFragment);
+        }
+        if (activeCurrentPlayerFragment != currentPlayerFragment) {
+            ft.add(R.id.gameLayout, currentPlayerFragment);
+            activeCurrentPlayerFragment = currentPlayerFragment;
+        }
+        ft.commit();
     }
 
     public void showOverlayFragment(Fragment overlayFragment) {
+        removeActiveBottomPaneFragment();
+
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.add(R.id.gameLayout, overlayFragment);
+        ft.commit();
+
+        activeOverlayFragment = overlayFragment;
         this.runOnUiThread(() -> {
-            removeActiveBottomPaneFragment();
-
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.add(R.id.gameLayout, overlayFragment);
-            userInterfaceFT.commit();
-
-            activeOverlayFragment = overlayFragment;
-
             if (overlayFragment.getClass() == CurrentPlayerFragment.class) {
                 closeOverlayBtn.hide();
                 settingBtn.show();
@@ -252,14 +252,13 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     public void removeActiveOverlayFragment() {
+        if (activeOverlayFragment != null) {
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.remove(activeOverlayFragment);
+            ft.commit();
+            activeOverlayFragment = null;
+        }
         this.runOnUiThread(() -> {
-            if (activeOverlayFragment != null) {
-                userInterfaceFT = fragmentManager.beginTransaction();
-                userInterfaceFT.remove(activeOverlayFragment);
-                userInterfaceFT.commit();
-                activeOverlayFragment = null;
-            }
-
             closeOverlayBtn.hide();
             settingBtn.show();
             gameInfoBtn.show();
@@ -267,26 +266,20 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
      public void showBottomPaneFragment(Fragment bottomPaneFragment) {
-        this.runOnUiThread(() -> {
-            removeActiveBottomPaneFragment();
-
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
-            userInterfaceFT.commit();
-
-            activeBottomPaneFragment = bottomPaneFragment;
-        });
+        removeActiveBottomPaneFragment();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.add(R.id.gameLayout, bottomPaneFragment);
+        ft.commit();
+        activeBottomPaneFragment = bottomPaneFragment;
     }
 
      public void removeActiveBottomPaneFragment() {
-        this.runOnUiThread(() -> {
-            if (activeBottomPaneFragment != null) {
-                userInterfaceFT = fragmentManager.beginTransaction();
-                userInterfaceFT.remove(activeBottomPaneFragment);
-                userInterfaceFT.commit();
-                activeBottomPaneFragment = null;
-            }
-        });
+        if (activeBottomPaneFragment != null) {
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.remove(activeBottomPaneFragment);
+            ft.commit();
+            activeBottomPaneFragment = null;
+        }
     }
 
     public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
