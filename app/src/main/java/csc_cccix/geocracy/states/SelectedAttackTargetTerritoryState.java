@@ -59,16 +59,18 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
             else
                 numArmiesToDefendWith = 1;
 
-            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking() - 1),
+            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking()),
                     new DiceRollDetails(this.targetTerritory, numArmiesToDefendWith));
         }
 
         else{
+            //deciding how many troops to defend with
             if(this.targetTerritory.getNArmies()>=2)
                 numArmiesToDefendWith = 2;
             else
                 numArmiesToDefendWith = 1;
 
+            //deciding how many dice to roll for ai
             if(this.originTerritory.getNArmies()>=4)
                 numArmiesToAttackWith = 3;
             else if(this.originTerritory.getNArmies()==3)
