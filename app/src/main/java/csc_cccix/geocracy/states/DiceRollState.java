@@ -72,11 +72,9 @@ public class DiceRollState implements  GameState {
     private void roll(int attackerNumDie, int defenderNumDie){
         Random rGen = new Random();
         for(int i = 0; i < attackerNumDie; i++)
-            this.originTerritory.getOwner().setDie(i, (rGen.nextInt()*6) + 1);
-
+            this.originTerritory.getOwner().setDie(i, (rGen.nextInt(6)) + 1);
         for(int i = 0; i < defenderNumDie; i++)
-            this.targetTerritory.getOwner().setDie(i, (rGen.nextInt()*6) + 1);
-
+            this.targetTerritory.getOwner().setDie(i, (rGen.nextInt(6)) + 1);
     }
 
     private boolean checkLosers(Player attacker, Player defender, int index){
