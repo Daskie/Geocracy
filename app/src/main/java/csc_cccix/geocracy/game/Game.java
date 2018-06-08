@@ -410,7 +410,7 @@ public class Game implements Serializable {
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
         if(currState.getClass() == GainArmyUnitsState.class){
-            System.out.println(getCurrentPlayer().getArmyPool());
+            Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
             while(getCurrentPlayer().getArmyPool()!=0)
                 for(Territory terr : getCurrentPlayer().getTerritories()) {
                     terr.setNArmies(terr.getNArmies()+1);
