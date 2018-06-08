@@ -1,14 +1,10 @@
 package csc_cccix.geocracy.states;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.world.Territory;
-import es.dmoral.toasty.Toasty;
 
 public class FortifyTerritoryState implements  GameState {
 

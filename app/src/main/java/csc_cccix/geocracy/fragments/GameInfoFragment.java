@@ -34,7 +34,7 @@ public class GameInfoFragment extends Fragment {
         Long worldSeed = (Long) getArguments().getLong("worldSeed");
         TextView worldSeedView = view.findViewById(R.id.worldSeed);
         worldSeedView.setText("World Seed: " + worldSeed.toString());
-        RxView.touches(worldSeedView).subscribe((seedView) -> {
+        RxView.touches(worldSeedView).subscribe(seedView -> {
             if (seedView.getAction() == MotionEvent.ACTION_UP) {
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("GEOCRACY_WORLD_SEED", "" + worldSeed);

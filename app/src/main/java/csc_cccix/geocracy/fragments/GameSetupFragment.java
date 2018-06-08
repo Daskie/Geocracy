@@ -42,10 +42,7 @@ public class GameSetupFragment extends Fragment {
     private ImageView playerColorIcon;
     private int playerColorSelection;
 
-    private EditText playerNameField;
     private String playerName;
-
-    private EditText worldSeedField;
     private Long worldSeed;
 
     @Nullable
@@ -53,19 +50,22 @@ public class GameSetupFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_setup, container, false);
 
+        EditText playerNameField;
+        EditText worldSeedField;
+
         playerName = "ANONYMOUS";
 
         playerNameField = view.findViewById(R.id.playerNameField);
         playerNameField.setText(playerName);
-        RxTextView.textChanges(playerNameField).subscribe((value) -> {
+        RxTextView.textChanges(playerNameField).subscribe(value -> {
             if (value.length() > 0) {
-                playerName = value.toString();
+                setPlayerName(value.toString());
             }
         });
 
         worldSeedField = view.findViewById(R.id.worldSeedField);
         worldSeedField.setText("309");
-        RxTextView.textChanges(worldSeedField).subscribe((value) -> {
+        RxTextView.textChanges(worldSeedField).subscribe(value -> {
             if (value.length() > 0) {
                 worldSeed = Long.parseLong(value.toString());
             }
@@ -97,7 +97,7 @@ public class GameSetupFragment extends Fragment {
 
             @Override
             public void onDialogDismissed(int dialogId) {
-
+                // Do nothing when dismissed
             }
         });
 
@@ -132,12 +132,16 @@ public class GameSetupFragment extends Fragment {
                 mainIntent.putExtra("PLAYER_NAME", playerName);
                 mainIntent.putExtra("NUM_PLAYERS", playerCount);
                 mainIntent.putExtra("MAIN_PLAYER_COLOR", playerColorSelection);
-                mainIntent.putExtra("SEED", worldSeed); // TODO: implement seed text field or something
+                mainIntent.putExtra("SEED", worldSeed);
                 startActivity(mainIntent);
             }
         });
 
         return view;
+    }
+
+    private void setPlayerName(String name) {
+        this.playerName = name;
     }
 
 }
