@@ -343,6 +343,7 @@ public class Game implements Serializable {
             cooldown = 1.0f;
         }
     }
+    public void setNextPlayer(){currentPlayerIndex=0;}
 
     public void screenResized(Vec2i size) {
         screenSize = size;
