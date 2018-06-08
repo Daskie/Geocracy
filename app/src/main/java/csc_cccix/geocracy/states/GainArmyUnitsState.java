@@ -114,7 +114,7 @@ public class GainArmyUnitsState implements GameState {
         Log.i(TAG, "END TURN ACTION -> N/A");
         game.updateCurrentPlayer();
         if(game.getCurrentPlayer() instanceof HumanPlayer)
-            game.setState(new DefaultState(game));
+            game.setState(new SelectedTerritoryState(game));
     }
 
     public void initState() {
