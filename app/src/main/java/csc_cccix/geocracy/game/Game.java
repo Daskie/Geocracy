@@ -18,7 +18,6 @@ import java.util.Random;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.states.BattleResultsState;

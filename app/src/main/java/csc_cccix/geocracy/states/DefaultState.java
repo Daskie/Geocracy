@@ -2,7 +2,6 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
-import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 

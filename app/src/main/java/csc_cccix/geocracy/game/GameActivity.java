@@ -1,6 +1,5 @@
 package csc_cccix.geocracy.game;
 
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +16,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
