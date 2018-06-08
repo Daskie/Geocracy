@@ -399,6 +399,7 @@ public class Game implements Serializable {
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
+
     }
 
     private void handleInput() {
@@ -517,6 +518,12 @@ public class Game implements Serializable {
 
     public Player getCurrentPlayer() {
         return players[currentPlayerIndex];
+    }
+    public void updateCurrentPlayer() {
+        if(currentPlayerIndex!=players.length-1)
+            currentPlayerIndex++;
+        else
+            currentPlayerIndex = 0;
     }
 
 }

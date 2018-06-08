@@ -113,7 +113,10 @@ public class GainArmyUnitsState implements GameState {
         });
     }
 
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
+    public void endTurn() {
+        Log.i(TAG, "END TURN ACTION -> N/A");
+        game.updateCurrentPlayer();
+    }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
