@@ -1,9 +1,5 @@
 package csc_cccix.geocracy.game;
 
-import com.github.javafaker.Faker;
-
-import java.util.Random;
-
 import glm_.vec3.Vec3;
 
 public class HumanPlayer extends Player {

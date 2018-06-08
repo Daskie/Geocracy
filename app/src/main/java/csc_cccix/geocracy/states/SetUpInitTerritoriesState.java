@@ -54,7 +54,7 @@ public class SetUpInitTerritoriesState implements GameState {
 
         // If all territories occupied, exit state
         if(game.getWorld().allTerritoriesOccupied()) {
-            game.firstPlayer(); // HUMAN PLAYER
+            game.nextPlayer(); // SHOULD BE HUMAN PLAYER
             currentPlayer.setArmyPool(currentPlayer.getBonus()); // WILL NEED TO MOVE
             game.setState(new GainArmyUnitsState(game));
             game.getState().initState();
@@ -108,7 +108,7 @@ public class SetUpInitTerritoriesState implements GameState {
                 game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
             });
         } else {
-            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show());
+            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
         }
 
         game.getWorld().unhighlightTerritories();

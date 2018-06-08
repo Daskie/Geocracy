@@ -139,8 +139,4 @@ public class GameSetupFragment extends Fragment {
         return view;
     }
 
-    private void setPlayerName(String name) {
-        this.playerName = name;
-    }
-
 }

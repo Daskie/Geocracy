@@ -39,7 +39,7 @@ public class GameInfoFragment extends Fragment {
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("GEOCRACY_WORLD_SEED", "" + worldSeed);
                 clipboard.setPrimaryClip(clip);
-                Toasty.info(getContext(), "Copied world seed: " + worldSeed).show();
+                Toasty.info(getContext(), "Copied world seed").show();
             }
         });
 
