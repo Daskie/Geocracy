@@ -82,7 +82,7 @@ public class DiceRollState implements  GameState {
         int defenderDie = defender.getDie()[index];
         if(attackerDie==-1 || defenderDie==-1)
             return true;
-        else if(attackerDie<defenderDie)
+        else if(attackerDie<=defenderDie)
             attackerArmiesLost++;
         else
             defenderArmiesLost++;
@@ -153,7 +153,7 @@ public class DiceRollState implements  GameState {
             game.getActivity().hideAllGameInteractionButtons();
         });
 
-        Completable.timer(8, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        Completable.timer(3, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResults);
 
     }
