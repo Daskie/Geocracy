@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 
 import java.util.Random;
 
+import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
 public class AIPlayer extends Player {
@@ -15,4 +16,5 @@ public class AIPlayer extends Player {
         super(id, color);
         super.name = "CPU: " + faker.name().lastName();
     }
+
 }

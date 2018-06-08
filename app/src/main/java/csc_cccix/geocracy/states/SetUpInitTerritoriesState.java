@@ -55,8 +55,10 @@ public class SetUpInitTerritoriesState implements GameState {
         // If all territories occupied, exit state
         if(game.getWorld().allTerritoriesOccupied()) {
             game.firstPlayer(); // HUMAN PLAYER
-            currentPlayer.setArmyPool(currentPlayer.getBonus()); // WILL NEED TO MOVE
             game.setState(new GainArmyUnitsState(game));
+            for(Player player : game.getPlayers())
+                player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)game.getWorld().getNTerritories() / (float)game.getPlayers().length));
+
             game.getState().initState();
         }
 

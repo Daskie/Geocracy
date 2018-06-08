@@ -108,6 +108,20 @@ public class Player implements Serializable {
     public int getNumArmiesAttacking(){ return this.numArmiesAttacking; }
     public void setNumArmiesAttacking(int num){ this.numArmiesAttacking = num; }
 
+
+    public Territory findTerrWithMaxArmies(){
+        int max = 2;
+        Territory max_terr = null;
+        for(Territory terr: territories){
+            if(terr.getNArmies()>=max){
+                max_terr = terr;
+                max = terr.getNArmies();
+            }
+        }
+
+        return max_terr;
+    }
+
     @Override
     public String toString() {
         return this.name + "\n" + this.territories.size();

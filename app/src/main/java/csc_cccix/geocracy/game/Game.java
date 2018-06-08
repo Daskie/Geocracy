@@ -36,6 +36,8 @@ import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
+import static csc_cccix.geocracy.states.GameAction.ADD_UNIT_TAPPED;
+import static csc_cccix.geocracy.states.GameAction.ATTACK_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.CANCEL_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.CONFIRM_TAPPED;
 import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
@@ -87,6 +89,7 @@ public class Game implements Serializable {
 
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private World world;
+    private boolean outOfGameSetUp = false;
     private Player[] players;
     private int currentPlayerIndex;
     private long lastT; // Time of the previous game update / frame relative to the start of the game
@@ -399,6 +402,20 @@ public class Game implements Serializable {
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
+        if(currState.getClass() == GainArmyUnitsState.class){
+            while(getCurrentPlayer().getArmyPool()!=0)
+                for(Territory terr : getCurrentPlayer().getTerritories()) {
+                    EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+                    EventBus.publish(USER_ACTION, new GameEvent(ADD_UNIT_TAPPED, null));
+                }
+
+            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
+        }
+        if(currState.getClass() == SelectedTerritoryState.class){
+            Territory terr = getCurrentPlayer().findTerrWithMaxArmies();
+            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+            EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
+        }
 
     }
 
@@ -525,5 +542,6 @@ public class Game implements Serializable {
         else
             currentPlayerIndex = 0;
     }
+    public boolean getGameStatus(){ return outOfGameSetUp; }
 
 }

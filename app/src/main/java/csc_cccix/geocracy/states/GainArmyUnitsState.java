@@ -6,6 +6,7 @@ import android.widget.Toast;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DistributeTroopsDetailFragment;
 import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
@@ -100,7 +101,7 @@ public class GainArmyUnitsState implements GameState {
 
     public void confirmAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
-        game.setState(new DefaultState(game));
+        this.endTurn();
     }
 
     public void cancelAction() {
@@ -116,12 +117,17 @@ public class GainArmyUnitsState implements GameState {
     public void endTurn() {
         Log.i(TAG, "END TURN ACTION -> N/A");
         game.updateCurrentPlayer();
+        if(game.getCurrentPlayer() instanceof HumanPlayer)
+            game.setState(new DefaultState(game));
     }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
         Player currentPlayer = game.getCurrentPlayer();
-        currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
+        if(game.getGameStatus())
+            currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
+
+        System.out.println(currentPlayer.getArmyPool());
 
         game.getWorld().unhighlightTerritories();
         game.getWorld().unselectTerritory();
