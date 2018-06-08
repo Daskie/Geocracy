@@ -80,9 +80,7 @@ public class SetUpInitTerritoriesState implements GameState {
         }
 
         addToSelectedTerritoryUnitCount(1);
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().removeActiveBottomPaneFragment();
-        });
+        game.getActivity().runOnUiThread(() -> game.getActivity().removeActiveBottomPaneFragment());
     }
 
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
@@ -100,9 +98,7 @@ public class SetUpInitTerritoriesState implements GameState {
     public void initState() {
         Log.i(TAG, "INIT STATE");
 
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().hideAllGameInteractionButtons();
-        });
+        game.getActivity().runOnUiThread(() -> game.getActivity().hideAllGameInteractionButtons());
 
         if (this.territory != null) {
             game.getWorld().selectTerritory(this.territory);
@@ -114,7 +110,7 @@ public class SetUpInitTerritoriesState implements GameState {
                 game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(this.territory));
             });
         } else {
-            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!.", Toast.LENGTH_LONG).show());
+            game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
         }
 
         game.getWorld().unhighlightTerritories();

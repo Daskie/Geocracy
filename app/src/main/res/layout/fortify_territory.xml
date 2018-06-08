@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:layout_gravity="bottom"
+    android:background="@color/whiteTransparent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/md_orange_500"
+        android:gravity="center"
+        android:text="FORTIFICATION (ENDS TURN!)"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/originTerritoryID"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:text="ORIGIN: "
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/targetTerritoryID"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="TARGET: "
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

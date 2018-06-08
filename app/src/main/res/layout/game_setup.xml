@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -17,22 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="World Seed:"
-        android:textSize="14dp"
-        android:textStyle="bold"
-        android:labelFor="@id/worldSeedField"/>
-
-    <EditText
-        android:id="@+id/worldSeedField"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:inputType="number" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Player Name:"
+        android:text="Name"
         android:textSize="14dp"
         android:textStyle="bold"
         android:labelFor="@id/playerNameField"/>
@@ -42,43 +26,30 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:textAlignment="center"
-        android:text="ANONYMOUS"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="14dp"
-        android:text="Player Color:"
-        android:id="@+id/playerColor"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/account"
-        android:id="@+id/playerColorIcon"/>
+        android:singleLine="true"
+        android:textAlignment="center" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Player Color"
         android:id="@+id/playerColorBtn"
-        android:layout_marginBottom="20dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Color"
+        android:textAllCaps="false" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player Count:"
-        android:textStyle="bold"
+        android:labelFor="@id/playerCount"
+        android:text="Number of Players"
         android:textSize="14dp"
-        android:labelFor="@id/playerCount"/>
+        android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/playerCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/playerCount" />
+        android:text="" />
 
     <SeekBar
         android:id="@+id/numberofPlayers"
@@ -87,12 +58,31 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp" />
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Confirm Game Settings"
-        android:id="@+id/confirmGameSettingsBtn"/>
+        android:labelFor="@id/worldSeedField"
+        android:text="World Seed"
+        android:textSize="14dp"
+        android:textStyle="bold" />
 
+    <EditText
+        android:id="@+id/worldSeedField"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:digits="0123456789ABCDEFabcdef"
+        android:singleLine="true"
+        android:textAlignment="center" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="33dp" />
+
+    <Button
+        android:id="@+id/confirmGameSettingsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="START" />
 
 
 </LinearLayout>

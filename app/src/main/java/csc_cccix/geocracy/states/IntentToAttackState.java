@@ -65,9 +65,7 @@ public class IntentToAttackState implements  GameState {
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         originTerritoryLock = false;
-        game.getActivity().runOnUiThread(() -> {
-            game.getActivity().setAttackModeButtonVisibilityAndActiveState(false, false);
-        });
+        game.getActivity().runOnUiThread(() -> game.getActivity().setAttackModeButtonVisibilityAndActiveState(false, false));
         game.setState(new DefaultState(game));
         game.getState().initState();
 

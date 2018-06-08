@@ -114,6 +114,7 @@ public class Game implements Serializable {
     private transient float zoomFactor;
 
     private transient long lastTimestamp;
+    private transient float cooldown;
 
     public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
@@ -336,11 +337,11 @@ public class Game implements Serializable {
 
     // Increments current player index
     public void nextPlayer() {
+        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    }
-
-    public void firstPlayer() {
-        currentPlayerIndex = 0;
+        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) {
+            cooldown = 1.0f;
+        }
     }
 
     public void screenResized(Vec2i size) {
@@ -383,11 +384,15 @@ public class Game implements Serializable {
 
     // The core game logic
     private void update(long t, float dt) {
-        if(getCurrentPlayer() instanceof HumanPlayer) {
+        if (getCurrentPlayer() instanceof HumanPlayer) {
             handleInput();
         }
         else {
-            handleComputerInput();
+            if (cooldown <= 0.0f) {
+                handleComputerInput();
+                cooldown = 1.0f;
+            }
+            cooldown -= dt;
         }
 
         cameraController.update(dt);

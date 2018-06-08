@@ -1,14 +1,11 @@
 package csc_cccix.geocracy.states;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
 import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.world.Territory;
-import es.dmoral.toasty.Toasty;
 
 public class FortifyTerritoryState implements  GameState {
 
@@ -30,6 +27,11 @@ public class FortifyTerritoryState implements  GameState {
     public void selectOriginTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
         if (!originTerritoryLock) this.originTerritory = territory;
+
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().removeActiveBottomPaneFragment();
+            game.getActivity().showBottomPaneFragment(FortifyTerritoryFragment.newInstance(this.originTerritory, this.targetTerritory));
+        });
     }
 
     public void selectTargetTerritory(Territory territory) {
@@ -44,10 +46,13 @@ public class FortifyTerritoryState implements  GameState {
             game.getWorld().targetTerritory(this.targetTerritory);
             game.getCameraController().targetTerritory(this.targetTerritory);
             game.getActivity().runOnUiThread(() -> {
+                game.getActivity().removeActiveBottomPaneFragment();
+                game.getActivity().showBottomPaneFragment(FortifyTerritoryFragment.newInstance(this.originTerritory, this.targetTerritory));
                 game.getActivity().hideAllGameInteractionButtons();
                 game.getActivity().getAddUnitBtn().show();
                 game.getActivity().getRemoveUnitBtn().show();
                 game.getActivity().getCancelBtn().show();
+                game.getActivity().getConfirmButton().show();
             });
         } else {
             Log.i(TAG, "INVALID TARGET TERRITORY TO FORTIFY");
@@ -90,6 +95,9 @@ public class FortifyTerritoryState implements  GameState {
 
     public void confirmAction() {
         Log.i(TAG, "SHOULD END PLAYER TURN");
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().removeActiveBottomPaneFragment();
+        });
         game.setState(new DefaultState(game));
         game.getState().initState();
     }
@@ -98,6 +106,9 @@ public class FortifyTerritoryState implements  GameState {
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
+        game.getActivity().runOnUiThread(() -> {
+            game.getActivity().removeActiveBottomPaneFragment();
+        });
         if (!troopHasBeenMoved) {
             game.setState(new DefaultState(game));
             game.getState().initState();

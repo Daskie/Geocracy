@@ -110,7 +110,7 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
 
     public void initState() {
         Log.i(TAG, "INIT SELECTED ATTACK TARGET TERRITORY STATE:");
-        troopSelectionFragment = TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory, game.getCurrentPlayer());
+        troopSelectionFragment = TroopSelectionFragment.newInstance(this.originTerritory, this.targetTerritory);
         game.getActivity().showBottomPaneFragment(troopSelectionFragment);
         game.getWorld().unhighlightTerritories();
         game.getWorld().selectTerritory(this.originTerritory);

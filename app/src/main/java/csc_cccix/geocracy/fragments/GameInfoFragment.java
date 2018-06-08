@@ -33,13 +33,13 @@ public class GameInfoFragment extends Fragment {
 
         Long worldSeed = (Long) getArguments().getLong("worldSeed");
         TextView worldSeedView = view.findViewById(R.id.worldSeed);
-        worldSeedView.setText("World Seed: " + worldSeed.toString());
-        RxView.touches(worldSeedView).subscribe((seedView) -> {
+        worldSeedView.setText("World Seed: " + Long.toHexString(worldSeed));
+        RxView.touches(worldSeedView).subscribe(seedView -> {
             if (seedView.getAction() == MotionEvent.ACTION_UP) {
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("GEOCRACY_WORLD_SEED", "" + worldSeed);
                 clipboard.setPrimaryClip(clip);
-                Toasty.info(getContext(), "Copied world seed: " + worldSeed).show();
+                Toasty.info(getContext(), "Copied world seed").show();
             }
         });
 
