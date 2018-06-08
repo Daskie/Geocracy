@@ -2,6 +2,7 @@ package csc_cccix.geocracy.states;
 
 import android.util.Log;
 
+import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
@@ -59,11 +60,14 @@ public class DefaultState implements GameState {
     public void initState() {
         Log.i(TAG, "INIT STATE");
         game.getActivity().removeActiveBottomPaneFragment();
+
         game.getWorld().unselectTerritory();
         game.getWorld().untargetTerritory();
         game.getWorld().unhighlightTerritories();
         game.getWorld().highlightTerritories(game.getCurrentPlayer().getTerritories());
         game.getActivity().runOnUiThread(() -> {
+            game.getActivity().updateCurrentPlayerFragment();
+            game.getActivity().removeActiveOverlayFragment();
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().getEndTurnButton().show();
         });

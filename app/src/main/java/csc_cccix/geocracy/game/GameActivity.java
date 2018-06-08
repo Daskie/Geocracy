@@ -25,6 +25,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.states.DefaultState;
@@ -47,6 +48,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FragmentTransaction userInterfaceFT;
     private FragmentManager fragmentManager;
 
+    private Fragment activeCurrentPlayerFragment = null;
     private Fragment activeBottomPaneFragment = null;
     private Fragment activeOverlayFragment = null;
 
@@ -112,19 +114,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         CoordinatorLayout frame = findViewById(R.id.gameLayout);
         LinearLayout uiLayout = new LinearLayout(this);
         uiLayout.setOrientation(LinearLayout.VERTICAL);
-
-        TextView geocracyHeader = new TextView(this);
-        geocracyHeader.setTextColor(Color.argb(240, 255, 255, 255));
-        geocracyHeader.setText("Geocracy (v0.2)");
-        geocracyHeader.setTextSize(18.0f);
-        geocracyHeader.setPadding(20, 20, 0, 40);
-
-        disposables.add(RxView.touches(geocracyHeader).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                EventBus.publish("GAME_NAME_TAP_EVENT", e);
-            }
-        }));
-        EventBus.subscribe("GAME_NAME_TAP_EVENT", this, e -> showGameDevelopers());
 
         cancelBtn = findViewById(R.id.cancelBtn);
         cancelBtn.hide();
@@ -206,7 +195,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }));
 
-        uiLayout.addView(geocracyHeader);
         frame.addView(uiLayout);
         showOverlayFragment(new LoadingFragment());
 
@@ -232,54 +220,75 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
+    public void updateCurrentPlayerFragment() {
+        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(game.getCurrentPlayer());
+        userInterfaceFT = fragmentManager.beginTransaction();
+        if (activeCurrentPlayerFragment != null) userInterfaceFT.remove(activeCurrentPlayerFragment);
+        userInterfaceFT.commit();
+        userInterfaceFT = fragmentManager.beginTransaction();
+        userInterfaceFT.commit();
+        userInterfaceFT.add(R.id.gameLayout, currentPlayerFragment);
+        activeCurrentPlayerFragment = currentPlayerFragment;
+    }
 
     public void showOverlayFragment(Fragment overlayFragment) {
-        removeActiveBottomPaneFragment();
+        this.runOnUiThread(() -> {
+            removeActiveBottomPaneFragment();
 
-        userInterfaceFT = fragmentManager.beginTransaction();
-        userInterfaceFT.add(R.id.gameLayout, overlayFragment);
-        userInterfaceFT.commit();
+            userInterfaceFT = fragmentManager.beginTransaction();
+            userInterfaceFT.add(R.id.gameLayout, overlayFragment);
+            userInterfaceFT.commit();
 
-        activeOverlayFragment = overlayFragment;
+            activeOverlayFragment = overlayFragment;
 
-        settingBtn.hide();
-        gameInfoBtn.hide();
-        closeOverlayBtn.show();
+            if (overlayFragment.getClass() == CurrentPlayerFragment.class) {
+                closeOverlayBtn.hide();
+                settingBtn.show();
+                gameInfoBtn.show();
+            } else {
+                closeOverlayBtn.show();
+                settingBtn.hide();
+                gameInfoBtn.hide();
+            }
+        });
     }
 
     public void removeActiveOverlayFragment() {
-        if (activeOverlayFragment != null) {
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.remove(activeOverlayFragment);
-            userInterfaceFT.commit();
-            activeOverlayFragment = null;
-        }
-        closeOverlayBtn.hide();
-        settingBtn.show();
-        gameInfoBtn.show();
+        this.runOnUiThread(() -> {
+            if (activeOverlayFragment != null) {
+                userInterfaceFT = fragmentManager.beginTransaction();
+                userInterfaceFT.remove(activeOverlayFragment);
+                userInterfaceFT.commit();
+                activeOverlayFragment = null;
+            }
+
+            closeOverlayBtn.hide();
+            settingBtn.show();
+            gameInfoBtn.show();
+        });
     }
 
      public void showBottomPaneFragment(Fragment bottomPaneFragment) {
-        removeActiveBottomPaneFragment();
+        this.runOnUiThread(() -> {
+            removeActiveBottomPaneFragment();
 
-        userInterfaceFT = fragmentManager.beginTransaction();
-        userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
-        userInterfaceFT.commit();
+            userInterfaceFT = fragmentManager.beginTransaction();
+            userInterfaceFT.add(R.id.gameLayout, bottomPaneFragment);
+            userInterfaceFT.commit();
 
-        activeBottomPaneFragment = bottomPaneFragment;
+            activeBottomPaneFragment = bottomPaneFragment;
+        });
     }
 
      public void removeActiveBottomPaneFragment() {
-        if (activeBottomPaneFragment != null) {
-            userInterfaceFT = fragmentManager.beginTransaction();
-            userInterfaceFT.remove(activeBottomPaneFragment);
-            userInterfaceFT.commit();
-            activeBottomPaneFragment = null;
-        }
-    }
-
-    void showGameDevelopers() {
-        Toasty.info(this, "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
+        this.runOnUiThread(() -> {
+            if (activeBottomPaneFragment != null) {
+                userInterfaceFT = fragmentManager.beginTransaction();
+                userInterfaceFT.remove(activeBottomPaneFragment);
+                userInterfaceFT.commit();
+                activeBottomPaneFragment = null;
+            }
+        });
     }
 
     public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {
@@ -295,33 +304,39 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     private void setFABVisibilityAndActiveState(FloatingActionButton fab, boolean isVisible, boolean isActive) {
-        AlphaAnimation alphaChange;
-        if (isActive) { alphaChange = new AlphaAnimation(fab.getAlpha(), 1.0f); }
-        else { alphaChange = new AlphaAnimation(fab.getAlpha(), 0.4f); }
-        alphaChange.setFillAfter(true);
-        fab.startAnimation(alphaChange);
-        if (isVisible) { fab.show(); }
-        else { fab.hide(); }
+        this.runOnUiThread(() -> {
+            AlphaAnimation alphaChange;
+            if (isActive) { alphaChange = new AlphaAnimation(fab.getAlpha(), 1.0f); }
+            else { alphaChange = new AlphaAnimation(fab.getAlpha(), 0.4f); }
+            alphaChange.setFillAfter(true);
+            fab.startAnimation(alphaChange);
+            if (isVisible) { fab.show(); }
+            else { fab.hide(); }
+        });
     }
 
     public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
-        if (isVisible) {
-            addUnitBtn.show();
-            removeUnitBtn.show();
-        } else {
-            addUnitBtn.hide();
-            removeUnitBtn.hide();
-        }
+        this.runOnUiThread(() -> {
+            if (isVisible) {
+                addUnitBtn.show();
+                removeUnitBtn.show();
+            } else {
+                addUnitBtn.hide();
+                removeUnitBtn.hide();
+            }
+        });
     }
 
     public void hideAllGameInteractionButtons() {
-        attackBtn.hide();
-        cancelBtn.hide();
-        addUnitBtn.hide();
-        removeUnitBtn.hide();
-        endTurnButton.hide();
-        confirmButton.hide();
-        fortifyButton.hide();
+        this.runOnUiThread(() -> {
+            attackBtn.hide();
+            cancelBtn.hide();
+            addUnitBtn.hide();
+            removeUnitBtn.hide();
+            endTurnButton.hide();
+            confirmButton.hide();
+            fortifyButton.hide();
+        });
     }
 
 

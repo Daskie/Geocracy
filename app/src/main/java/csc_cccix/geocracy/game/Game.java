@@ -18,6 +18,7 @@ import java.util.Random;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.states.BattleResultsState;
@@ -339,6 +340,7 @@ public class Game implements Serializable {
         if (wasHuman && getCurrentPlayer() instanceof AIPlayer) {
             cooldown = 1.0f;
         }
+        activity.updateCurrentPlayerFragment();
     }
 
     public void screenResized(Vec2i size) {
