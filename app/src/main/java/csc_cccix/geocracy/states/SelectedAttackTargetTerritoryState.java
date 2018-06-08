@@ -49,18 +49,36 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
         game.getState().selectOriginTerritory(this.originTerritory);
         game.getState().selectTargetTerritory(this.targetTerritory);
 
-        int randNumArmies;
+        int numArmiesToDefendWith;
+        int numArmiesToAttackWith;
+
+
         if(game.getCurrentPlayer() instanceof HumanPlayer) {
-             randNumArmies = (int)(Math.random()*this.targetTerritory.getNArmies()) + 1;
+            if(this.targetTerritory.getNArmies()>=2)
+                numArmiesToDefendWith = 2;
+            else
+                numArmiesToDefendWith = 1;
+
             game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, game.getCurrentPlayer().getNumArmiesAttacking() - 1),
-                    new DiceRollDetails(this.targetTerritory, randNumArmies));
+                    new DiceRollDetails(this.targetTerritory, numArmiesToDefendWith));
         }
 
-//        else{
-//            randNumArmies = (int)(Math.random()*this.originTerritory.getNArmies()) + 1;
-//            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, randNumArmies),
-//                    new DiceRollDetails(this.targetTerritory, game.getCurrentPlayer().getNumArmiesDefending()));
-//        }
+        else{
+            if(this.targetTerritory.getNArmies()>=2)
+                numArmiesToDefendWith = 2;
+            else
+                numArmiesToDefendWith = 1;
+
+            if(this.originTerritory.getNArmies()>=4)
+                numArmiesToAttackWith = 3;
+            else if(this.originTerritory.getNArmies()==3)
+                numArmiesToAttackWith = 2;
+            else
+                numArmiesToAttackWith = 1;
+
+            game.getState().performDiceRoll(new DiceRollDetails(this.originTerritory, numArmiesToAttackWith),
+                    new DiceRollDetails(this.targetTerritory, numArmiesToDefendWith));
+        }
     }
 
     public void battleCompleted(BattleResultDetails battleResultDetails) {
