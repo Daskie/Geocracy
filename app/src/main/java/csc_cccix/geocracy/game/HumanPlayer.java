@@ -13,10 +13,9 @@ public class HumanPlayer extends Player {
     private static int fakerSeed = 1;
     private static Faker faker = new Faker(new Random(fakerSeed));
 
-    public HumanPlayer(int id, Vec3 color) {
+    public HumanPlayer(String name, int id, Vec3 color) {
         super(id, color);
-
-        super.name = faker.name().fullName();
+        super.name = name;
     }
 
 }

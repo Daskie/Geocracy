@@ -12,16 +12,27 @@
         android:layout_height="wrap_content"
         android:text="Game Info"
         android:textSize="28dp"
+        android:textStyle="bold"
         android:paddingBottom="40dp"
         android:labelFor="@+id/gameInfoHeader"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="World Seed:"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        android:paddingBottom="40dp"
+        android:id="@+id/worldSeed"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Players:"
         android:textSize="22dp"
+        android:textStyle="bold"
         android:paddingBottom="40dp"
-        android:labelFor="@+id/gameInfoHeader"/>
+        android:labelFor="@id/playerList"/>
 
     <ListView
         android:layout_width="wrap_content"

@@ -102,10 +102,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
         // Start new game
         else {
+            String playerName = (String)getIntent().getSerializableExtra("PLAYER_NAME");
             int numPlayers = (int)getIntent().getSerializableExtra("NUM_PLAYERS");
             int mainPlayerColor = (int)getIntent().getSerializableExtra("MAIN_PLAYER_COLOR");
             long seed = (long)getIntent().getSerializableExtra(("SEED"));
-            game = new Game(numPlayers, Util.colorToVec3(mainPlayerColor), seed);
+            game = new Game(playerName, numPlayers, Util.colorToVec3(mainPlayerColor), seed);
         }
 
         // Get Layout Frame +
