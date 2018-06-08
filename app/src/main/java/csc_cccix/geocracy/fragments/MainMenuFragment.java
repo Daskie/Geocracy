@@ -10,9 +10,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.view.RxView;
+
 import csc_cccix.R;
+import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.main_menu.MenuActivity;
@@ -28,10 +32,17 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.menu, container, false);
 
+        TextView header = view.findViewById(R.id.mainMenuHeader);
         Button startButton;
         Button tutorialButton;
         Button settingsButton;
         Button exitButton;
+
+        RxView.touches(header).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) showGameDevelopers();
+        });
+
+        EventBus.subscribe("GAME_NAME_TAP_EVENT", this, e -> showGameDevelopers());
 
         continueButton = view.findViewById(R.id.continueButton);
 
@@ -80,6 +91,10 @@ public class MainMenuFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showGameDevelopers() {
+        Toasty.info(getContext(), "OUR DEV TEAM:\n\nAustin Quick\nAndrew Exton\nGuraik Clair\nSydney Baroya\nSamantha Koski\nRyan\n\nThanks for playing!", Toast.LENGTH_LONG).show();
     }
 
     public void enableContinueGameButton() {

@@ -59,11 +59,14 @@ public class DefaultState implements GameState {
     public void initState() {
         Log.i(TAG, "INIT STATE");
         game.getActivity().removeActiveBottomPaneFragment();
+
         game.getWorld().unselectTerritory();
         game.getWorld().untargetTerritory();
         game.getWorld().unhighlightTerritories();
         game.getWorld().highlightTerritories(game.getCurrentPlayer().getTerritories());
         game.getActivity().runOnUiThread(() -> {
+            game.getActivity().updateCurrentPlayerFragment();
+            game.getActivity().removeActiveOverlayFragment();
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().getEndTurnButton().show();
         });

@@ -342,6 +342,7 @@ public class Game implements Serializable {
         if (wasHuman && getCurrentPlayer() instanceof AIPlayer) {
             cooldown = 1.0f;
         }
+        activity.updateCurrentPlayerFragment();
     }
     public void setFirstPlayer(){currentPlayerIndex=0;}
 
