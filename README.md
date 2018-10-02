@@ -6,3 +6,4 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=csc309%3Ageocracy&metric=code_smells)](https://sonarcloud.io)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=csc309%3Ageocracy&metric=ncloc)](https://sonarcloud.io)
 
+[CLICK HERE](https://drive.google.com/open?id=1agM9JeawEYjH6Ebcg8-Nr8_l5r_-ahSM) for showcase and information
