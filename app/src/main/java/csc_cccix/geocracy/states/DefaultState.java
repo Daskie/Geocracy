@@ -17,8 +17,7 @@ public class DefaultState extends GameState {
         if(!game.getWorld().allTerritoriesOccupied())
             game.setState(new SetUpInitTerritoriesState(game));
         else
-            game.setState(new SelectedTerritoryState(game));
-        game.getState().selectPrimaryTerritory(territory);
+            game.setState(new SelectedTerritoryState(game, territory));
         game.getState().initState();
     }
 

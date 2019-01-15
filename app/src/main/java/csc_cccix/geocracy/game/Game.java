@@ -28,6 +28,7 @@ import csc_cccix.geocracy.states.GainArmyUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.GameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
+import csc_cccix.geocracy.states.MoveUnitsState;
 import csc_cccix.geocracy.states.SelectedTerritoryState;
 import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
@@ -196,7 +197,8 @@ public class Game implements Serializable {
                 }
                 else if (
                     stateClass == IntentToAttackState.class ||
-                    stateClass == FortifyTerritoryState.class
+                    stateClass == FortifyTerritoryState.class ||
+                    stateClass == MoveUnitsState.class
                 )
                 {
                     getState().selectSecondaryTerritory(selectedTerritory);

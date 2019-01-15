@@ -13,24 +13,32 @@ public class SelectedTerritoryState extends GameState {
         this.game = game;
     }
 
+    public SelectedTerritoryState(Game game, Territory selectedTerritory) {
+        this(game);
+
+        Log.d(TAG, "A TERRITORY WAS SELECTED, DISPLAY ITS DETAILS");
+        this.territory = selectedTerritory;
+    }
+
     public void selectPrimaryTerritory(Territory territory) {
-        if (this.territory == null) {
-            Log.i(TAG, "A TERRITORY WAS SELECTED, DISPLAY DETAILS");
-            this.territory = territory;
-        } else {
-            Log.i(TAG, "ANOTHER TERRITORY WAS SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
-            this.territory = territory;
+        Log.d(TAG, "ANOTHER TERRITORY WAS SELECTED, SWITCH TO OTHER TERRITORY TO DISPLAY DETAILS");
+
+        // if a different territory was selected, switch to that territory for selection state
+        if (territory != this.territory) {
+            game.setState(new SelectedTerritoryState(game, territory));
+            game.getState().initState();
         }
+
     }
 
     public void enableAttackMode() {
+        // If current player is the owner and the player has enough units to perform an attack
         if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
-            Log.i(TAG, "ENABLE ATTACK MODE -> ENTER INTENT TO ATTACK STATE");
-            game.setState(new IntentToAttackState(game));
-            game.getState().selectPrimaryTerritory(territory);
+            Log.d(TAG, "ENABLE ATTACK MODE ACTION: ENTERING INTENT TO ATTACK STATE");
+            game.setState(new IntentToAttackState(game, territory));
             game.getState().initState();
         } else {
-            Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY TO ENABLE ATTACK MODE ON");
+            Log.d(TAG, "ENABLE ATTACK MODE ACTION: INVALID TERRITORY TO ENABLE ATTACK MODE ON");
         }
     }
 
@@ -38,8 +46,12 @@ public class SelectedTerritoryState extends GameState {
         Log.i(TAG, "FORTIFY ACTION");
         if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
             Log.i(TAG, "ENABLE FORTIFY MODE -> ENTER FORTIFY STATE");
-            game.setState(new FortifyTerritoryState(game));
-            game.getState().selectPrimaryTerritory(territory);
+
+            // TODO: trying new state
+            game.setState(new MoveUnitsState(game, this.territory));
+
+//            game.setState(new FortifyTerritoryState(game));
+//            game.getState().selectPrimaryTerritory(territory);
             game.getState().initState();
         } else {
             Log.i(TAG, "ENABLE FORTIFY MODE: INVALID TERRITORY TO ENABLE FORTIFY MODE ON");
@@ -64,7 +76,6 @@ public class SelectedTerritoryState extends GameState {
             game.getActivity().getEndTurnButton().show();
             if (this.territory.getOwner().getId() == game.getCurrentPlayer().getId()) {
                 if (this.territory.getNArmies() >= 2) {
-                    Log.i(TAG, "ENABLE ATTACK MODE: VALID TERRITORY -> ENABLE ATTACK MODE");
                     game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
                     if (this.territory.getAdjacentFriendlyTerritories() != null) {
                         game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
