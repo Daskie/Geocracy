@@ -5,26 +5,24 @@ import android.util.Log;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class DefaultState implements GameState {
-
-    private static final String TAG = "DEFAULT_STATE";
-    private Game game;
+public class DefaultState extends GameState {
 
     public DefaultState(Game game) {
+        TAG = "DEFAULT_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "TERRITORY SELECTED ACTION -> DISPLAY TERRITORY DETAILS");
         if(!game.getWorld().allTerritoriesOccupied())
             game.setState(new SetUpInitTerritoriesState(game));
         else
             game.setState(new SelectedTerritoryState(game));
-        game.getState().selectOriginTerritory(territory);
+        game.getState().selectPrimaryTerritory(territory);
         game.getState().initState();
     }
 
-    public void selectTargetTerritory(Territory territory) {
+    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "CANNOT SELECT TARGET TERRITORY, NO ORIGIN TERRITORY");
     }
 

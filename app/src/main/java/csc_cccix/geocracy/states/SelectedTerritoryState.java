@@ -6,18 +6,14 @@ import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class SelectedTerritoryState implements  GameState {
-
-    private static final String TAG = "SELECT_TERRITORY_STATE";
-
-    private Game game;
-    private Territory territory;
+public class SelectedTerritoryState extends GameState {
 
     public SelectedTerritoryState(Game game) {
+        TAG = "SELECT_TERRITORY_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         if (this.territory == null) {
             Log.i(TAG, "A TERRITORY WAS SELECTED, DISPLAY DETAILS");
             this.territory = territory;
@@ -27,15 +23,11 @@ public class SelectedTerritoryState implements  GameState {
         }
     }
 
-    public void selectTargetTerritory(Territory territory) {
-        Log.i(TAG, "TARGET TERRITORY ACTION UNAVAILABLE");
-    }
-
     public void enableAttackMode() {
         if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
             Log.i(TAG, "ENABLE ATTACK MODE -> ENTER INTENT TO ATTACK STATE");
             game.setState(new IntentToAttackState(game));
-            game.getState().selectOriginTerritory(territory);
+            game.getState().selectPrimaryTerritory(territory);
             game.getState().initState();
         } else {
             Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY TO ENABLE ATTACK MODE ON");
@@ -59,7 +51,7 @@ public class SelectedTerritoryState implements  GameState {
         if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
             Log.i(TAG, "ENABLE FORTIFY MODE -> ENTER FORTIFY STATE");
             game.setState(new FortifyTerritoryState(game));
-            game.getState().selectOriginTerritory(territory);
+            game.getState().selectPrimaryTerritory(territory);
             game.getState().initState();
         } else {
             Log.i(TAG, "ENABLE FORTIFY MODE: INVALID TERRITORY TO ENABLE FORTIFY MODE ON");

@@ -5,29 +5,27 @@ import android.util.Log;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class IntentToAttackState implements  GameState {
+public class IntentToAttackState extends  GameState {
 
-    private static final String TAG = "INTENT_TO_ATTACK_STATE";
-
-    private Game game;
     private Territory originTerritory;
     private boolean originTerritoryLock;
 
     public IntentToAttackState(Game game) {
+        TAG = "INTENT_TO_ATTACK_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "ALREADY CURRENT STATE");
         if (!originTerritoryLock) this.originTerritory = territory;
     }
 
-    public void selectTargetTerritory(Territory targetTerritory) {
+    public void selectSecondaryTerritory(Territory targetTerritory) {
         Log.i(TAG, "ANOTHER TERRITORY SELECTED -> GO TO SELECTED ATTACK TARGET STATE");
         if (originTerritory.getAdjacentTerritories().contains(targetTerritory)) {
             game.setState(new SelectedAttackTargetTerritoryState(game));
-            game.getState().selectOriginTerritory(this.originTerritory);
-            game.getState().selectTargetTerritory(targetTerritory);
+            game.getState().selectPrimaryTerritory(this.originTerritory);
+            game.getState().selectSecondaryTerritory(targetTerritory);
             game.getState().initState();
         } else {
             cancelAction();
@@ -38,7 +36,7 @@ public class IntentToAttackState implements  GameState {
     public void enableAttackMode() {
         Log.i(TAG, "-> Disable Attack Mode");
         game.setState(new SelectedTerritoryState(game));
-        game.getState().selectOriginTerritory(this.originTerritory);
+        game.getState().selectPrimaryTerritory(this.originTerritory);
         game.getState().initState();
     }
 

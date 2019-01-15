@@ -11,23 +11,18 @@ import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class GainArmyUnitsState implements GameState {
-
-    private static final String TAG = "GAIN_ARMIES_STATE";
-
-    private Game game;
-
-    private Territory territory;
+public class GainArmyUnitsState extends GameState {
 
     public GainArmyUnitsState(Game game) {
+        TAG = "GAIN_ARMIES_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "CANNOT SELECT ORIGIN TERRITORY (USE TARGET)");
     }
 
-    public void selectTargetTerritory(Territory territory) {
+    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
 
         if (territory != null) {

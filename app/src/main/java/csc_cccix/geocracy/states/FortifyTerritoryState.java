@@ -6,22 +6,20 @@ import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class FortifyTerritoryState implements  GameState {
+public class FortifyTerritoryState extends  GameState {
 
-    private static final String TAG = "SELECTED_ATTACK_T_STATE";
-
-    private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
     private boolean originTerritoryLock;
     private boolean troopHasBeenMoved;
 
     public FortifyTerritoryState(Game game) {
+        TAG = "FORTIFY_TERRITORY__STATE";
         this.game = game;
         troopHasBeenMoved = false;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
         if (!originTerritoryLock) this.originTerritory = territory;
 
@@ -31,7 +29,7 @@ public class FortifyTerritoryState implements  GameState {
         });
     }
 
-    public void selectTargetTerritory(Territory territory) {
+    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING TARGET TERRITORY");
 
         if (game.getCurrentPlayer().getId() == territory.getOwner().getId() && this.originTerritory != territory) {

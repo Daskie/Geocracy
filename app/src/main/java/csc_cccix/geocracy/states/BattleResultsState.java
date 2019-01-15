@@ -7,11 +7,8 @@ import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
-public class BattleResultsState implements  GameState {
+public class BattleResultsState extends GameState {
 
-    private static final String TAG = "BATTLE_RESULTS_STATE";
-
-    private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
     private int attackerArmiesLost = 0;
@@ -20,14 +17,15 @@ public class BattleResultsState implements  GameState {
     private DiceRollDetails defenderDetails;
 
     public BattleResultsState(Game game) {
+        TAG = "BATTLE_RESULTS_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
         this.originTerritory = territory;
     }
-    public void selectTargetTerritory(Territory territory) {
+    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING TARGET TERRITORY");
         this.targetTerritory = territory;
     }

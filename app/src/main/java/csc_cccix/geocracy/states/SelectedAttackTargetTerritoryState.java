@@ -10,26 +10,24 @@ import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class SelectedAttackTargetTerritoryState implements  GameState {
+public class SelectedAttackTargetTerritoryState extends  GameState {
 
-    private static final String TAG = "SELECTED_ATTACK_T_STATE";
-
-    private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
     private boolean originTerritoryLock;
     private TroopSelectionFragment troopSelectionFragment;
 
     public SelectedAttackTargetTerritoryState(Game game) {
+        TAG = "SELECTED_ATTACK_TARGET_TERRITORY_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
         if (!originTerritoryLock) this.originTerritory = territory;
     }
 
-    public void selectTargetTerritory(Territory territory) {
+    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING TARGET TERRITORY");
         this.targetTerritory = territory;
     }
@@ -46,8 +44,8 @@ public class SelectedAttackTargetTerritoryState implements  GameState {
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "-> ENTER DICE ROLL STATE");
         game.setState(new DiceRollState(game));
-        game.getState().selectOriginTerritory(this.originTerritory);
-        game.getState().selectTargetTerritory(this.targetTerritory);
+        game.getState().selectPrimaryTerritory(this.originTerritory);
+        game.getState().selectSecondaryTerritory(this.targetTerritory);
 
         int numArmiesToDefendWith;
         int numArmiesToAttackWith;

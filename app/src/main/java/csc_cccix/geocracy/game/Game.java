@@ -185,7 +185,7 @@ public class Game implements Serializable {
                 Class stateClass = getState().getClass();
 
                 if (stateClass == IntentToAttackState.class) {
-                    getState().selectTargetTerritory(selectedTerritory);
+                    getState().selectSecondaryTerritory(selectedTerritory);
                 }
                 else if (
                     stateClass == GainArmyUnitsState.class ||
@@ -193,7 +193,7 @@ public class Game implements Serializable {
                     stateClass == FortifyTerritoryState.class
                 )
                 {
-                    getState().selectTargetTerritory(selectedTerritory);
+                    getState().selectSecondaryTerritory(selectedTerritory);
                 }
                 else if (stateClass == DiceRollState.class) {
                     // do nothing
@@ -202,7 +202,7 @@ public class Game implements Serializable {
                     // do nothing
                 }
                 else {
-                    getState().selectOriginTerritory(selectedTerritory);
+                    getState().selectPrimaryTerritory(selectedTerritory);
                     getState().initState();
                 }
 

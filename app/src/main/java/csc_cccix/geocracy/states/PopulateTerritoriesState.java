@@ -12,20 +12,20 @@ import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class SetUpInitTerritoriesState extends GameState {
+public class PopulateTerritoriesState extends GameState {
 
-    public SetUpInitTerritoriesState(Game game) {
-        TAG = "INIT_TERRITORIES_STATE";
+    public PopulateTerritoriesState(Game game) {
+        TAG = "POPULATE_TERRITORIES_STATE";
         this.game = game;
     }
 
     public void selectPrimaryTerritory(Territory territory) {
-        Log.i(TAG, "PRIMARY TERRITORY SELECTED");
+        Log.i(TAG, "TERRITORY SELECTED");
         this.territory = territory;
     }
 
     public void selectSecondaryTerritory(Territory territory) {
-        Log.i(TAG, "CANNOT SELECT SECONDARY TERRITORY");
+        Log.i(TAG, "CANNOT SELECT TARGET TERRITORY");
     }
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){

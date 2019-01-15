@@ -13,11 +13,8 @@ import csc_cccix.geocracy.world.Territory;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class DiceRollState implements  GameState {
+public class DiceRollState extends GameState {
 
-    private static final String TAG = "DICE_ROLL_STATE";
-
-    private Game game;
     private Territory originTerritory;
     private Territory targetTerritory;
     private int attackerArmiesLost = 0;
@@ -30,14 +27,15 @@ public class DiceRollState implements  GameState {
 
 
     public DiceRollState(Game game) {
+        TAG = "DICE_ROLL_STATE";
         this.game = game;
     }
 
-    public void selectOriginTerritory(Territory territory) {
+    public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING ORIGIN TERRITORY");
         this.originTerritory = territory;
     }
-    public void selectTargetTerritory(Territory territory) {
+    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "SETTING TARGET TERRITORY");
         this.targetTerritory = territory;
     }
@@ -119,8 +117,8 @@ public class DiceRollState implements  GameState {
         game.setState(new BattleResultsState(game));
         this.originTerritory.getOwner().resetDie();
         this.targetTerritory.getOwner().resetDie();
-        game.getState().selectOriginTerritory(this.originTerritory);
-        game.getState().selectTargetTerritory(this.targetTerritory);
+        game.getState().selectPrimaryTerritory(this.originTerritory);
+        game.getState().selectSecondaryTerritory(this.targetTerritory);
         game.getState().performDiceRoll(this.attackerDetails, this.defenderDetails);
         game.getState().battleCompleted(battleResultDetails);
         game.getState().initState();
