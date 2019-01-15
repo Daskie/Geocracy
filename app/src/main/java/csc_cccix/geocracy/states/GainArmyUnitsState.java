@@ -19,10 +19,6 @@ public class GainArmyUnitsState extends GameState {
     }
 
     public void selectPrimaryTerritory(Territory territory) {
-        Log.i(TAG, "CANNOT SELECT ORIGIN TERRITORY (USE TARGET)");
-    }
-
-    public void selectSecondaryTerritory(Territory territory) {
         Log.i(TAG, "SELECTING TARGET TERRITORY TO ADD/REMOVE UNITS");
 
         if (territory != null) {
