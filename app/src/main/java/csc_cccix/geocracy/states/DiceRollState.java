@@ -40,12 +40,6 @@ public class DiceRollState extends GameState {
         this.targetTerritory = territory;
     }
 
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
-
-    public void enableAttackMode() {
-        Log.i(TAG, "INVALID ACTION: -> CANNOT ENABLE ATTACK MODE");
-    }
-
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "PERFORMING DICE ROLL");
         this.attackerDetails = attackerDetails;
@@ -124,16 +118,6 @@ public class DiceRollState extends GameState {
         game.getState().initState();
     }
 
-    public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "INVALID ACTION: CANNOT UPDATE UNIT COUNT");
-    }
-
-    public void confirmAction() {
-        Log.i(TAG, "USER CONFIRM ACTION -> N/A");
-    }
-
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
-
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         game.setState(new DefaultState(game));
@@ -153,7 +137,6 @@ public class DiceRollState extends GameState {
                 .subscribe(this::goToBattleResults);
 
     }
-
 
     private void goToBattleResults() {
         this.battleCompleted(new BattleResultDetails(this.attackerArmiesLost,this.defenderArmiesLost));

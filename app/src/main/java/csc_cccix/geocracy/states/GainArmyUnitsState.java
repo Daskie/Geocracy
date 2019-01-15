@@ -40,18 +40,6 @@ public class GainArmyUnitsState extends GameState {
         }
     }
 
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
-        Log.i(TAG, "GAIN ARMY UNITS STATE: CANNOT PERFORM DICE ROLL");
-
-    }
-    public void battleCompleted(BattleResultDetails battleResultDetails){
-        Log.i(TAG, "GAIN ARMY UNITS STATE: CANNOT BATTLE");
-    }
-
-    public void enableAttackMode() {
-        Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
-    }
-
     public void addToSelectedTerritoryUnitCount(int amount) {
         Player currentPlayer = game.getCurrentPlayer();
 
@@ -88,10 +76,8 @@ public class GainArmyUnitsState extends GameState {
 
     }
 
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
-
     public void confirmAction() {
-        Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE FOR PLAYER");
+        Log.i(TAG, "USER CONFIRM ACTION -> ENTER DEFAULT STATE FOR PLAYER");
         game.setState(new DefaultState(game));
         game.getState().initState();
     }
@@ -106,12 +92,14 @@ public class GainArmyUnitsState extends GameState {
         });
     }
 
-    public void endTurn() {
-        Log.i(TAG, "END TURN ACTION -> N/A");
-        game.updateCurrentPlayer();
-        if(game.getCurrentPlayer() instanceof HumanPlayer)
-            game.setState(new DefaultState(game));
-    }
+    // TODO: NOT SURE IF NEEDED, PRETTY SURE ITS NOT
+
+//    public void endTurn() {
+//        Log.i(TAG, "END TURN ACTION -> N/A");
+//        game.updateCurrentPlayer();
+//        if(game.getCurrentPlayer() instanceof HumanPlayer)
+//            game.setState(new DefaultState(game));
+//    }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");

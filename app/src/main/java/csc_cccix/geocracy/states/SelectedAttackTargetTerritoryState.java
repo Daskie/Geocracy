@@ -32,15 +32,6 @@ public class SelectedAttackTargetTerritoryState extends  GameState {
         this.targetTerritory = territory;
     }
 
-    public void enableAttackMode() {
-        Log.i(TAG, "-> CANNOT ENABLE ATTACK MODE");
-    }
-
-    public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "CANNOT UPDATE UNIT COUNT");
-    }
-
-
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "-> ENTER DICE ROLL STATE");
         game.setState(new DiceRollState(game));
@@ -81,12 +72,6 @@ public class SelectedAttackTargetTerritoryState extends  GameState {
         }
     }
 
-    public void battleCompleted(BattleResultDetails battleResultDetails) {
-        Log.i(TAG, "INVALID STATE ACCESSED");
-    }
-
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
-
     public void confirmAction() {
         int numArmiesSelected = troopSelectionFragment.getSelectedNumberOfUnits();
         if(numArmiesSelected<=originTerritory.getNArmies()) {
@@ -96,8 +81,6 @@ public class SelectedAttackTargetTerritoryState extends  GameState {
         else
             game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "You do not have enough armies in this territory to attack with the number you selected! ", Toast.LENGTH_LONG).show());
     }
-
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");

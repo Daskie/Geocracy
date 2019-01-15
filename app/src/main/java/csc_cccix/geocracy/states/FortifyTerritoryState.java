@@ -54,10 +54,6 @@ public class FortifyTerritoryState extends  GameState {
         }
     }
 
-    public void enableAttackMode() {
-        Log.i(TAG, "-> CANNOT ENABLE ATTACK MODE");
-    }
-
     public void addToSelectedTerritoryUnitCount(int amount) {
         Log.i(TAG, "UPDATING UNIT COUNT BY: " + amount);
         if (amount == 0) return;
@@ -83,19 +79,12 @@ public class FortifyTerritoryState extends  GameState {
         });
     }
 
-
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) { Log.i(TAG, "CANNOT PERFORM DICE ROLL"); }
-
-    public void battleCompleted(BattleResultDetails battleResultDetails) { Log.i(TAG, "INVALID STATE ACCESSED"); }
-
     public void confirmAction() {
         Log.i(TAG, "SHOULD END PLAYER TURN");
         game.getActivity().runOnUiThread(() ->game.getActivity().removeActiveBottomPaneFragment());
         game.setState(new DefaultState(game));
         game.getState().initState();
     }
-
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
@@ -107,6 +96,7 @@ public class FortifyTerritoryState extends  GameState {
         originTerritoryLock = false;
     }
 
+    // TODO: maybe this should disable fortify?
     public void fortifyAction() { Log.i(TAG, "CANNOT REENABLE FORTIFY MODE"); }
 
     public void initState() {

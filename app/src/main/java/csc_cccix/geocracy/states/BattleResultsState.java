@@ -30,9 +30,7 @@ public class BattleResultsState extends GameState {
         this.targetTerritory = territory;
     }
 
-    public void enableAttackMode() {
-        Log.i(TAG, "INVALID ACTION: -> CANNOT ENABLE ATTACK MODE");
-    }
+    // TODO: confused why these are here but invalid? (needed for units to update after attack phase)
 
     public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
         Log.i(TAG, "INVALID ACTION: -> CANNOT PERFORM DICE ROLL");
@@ -45,18 +43,6 @@ public class BattleResultsState extends GameState {
         this.attackerArmiesLost = battleResultDetails.attackerArmiesLost;
         this.defenderArmiesLost = battleResultDetails.defenderArmiesLost;
     }
-
-    public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "INVALID ACTION: -> CANNOT UPDATE UNIT COUNT");
-    }
-
-    public void confirmAction() {
-        Log.i(TAG, "USER CANCELED ACTION -> N/A");
-    }
-
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
-
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");

@@ -34,18 +34,6 @@ public class SelectedTerritoryState extends GameState {
         }
     }
 
-    public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "INVALID ACTION: CANNOT UPDATE UNIT COUNT");
-    }
-
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        Log.i(TAG, "INVALID ACTION: CANNOT PERFORM DICE ROLL");
-    }
-
-    public void battleCompleted(BattleResultDetails battleResultDetails) {
-        Log.i(TAG, "INVALID ACTION: BATTLE COMPLETED");
-    }
-
     public void fortifyAction() {
         Log.i(TAG, "FORTIFY ACTION");
         if (this.territory.getOwner() == game.getCurrentPlayer() && this.territory.getNArmies() >= 2) {
@@ -57,12 +45,6 @@ public class SelectedTerritoryState extends GameState {
             Log.i(TAG, "ENABLE FORTIFY MODE: INVALID TERRITORY TO ENABLE FORTIFY MODE ON");
         }
     }
-
-    public void confirmAction() {
-        Log.i(TAG, "INVALID ACTION: USER CANCELED ACTION");
-    }
-
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");

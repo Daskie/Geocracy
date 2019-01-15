@@ -15,25 +15,13 @@ import es.dmoral.toasty.Toasty;
 public class SetUpInitTerritoriesState extends GameState {
 
     public SetUpInitTerritoriesState(Game game) {
-        TAG = "INIT_TERRITORIES_STATE";
+        TAG = "SET_UP_INIT_TERRITORIES_STATE";
         this.game = game;
     }
 
     public void selectPrimaryTerritory(Territory territory) {
         Log.i(TAG, "PRIMARY TERRITORY SELECTED");
         this.territory = territory;
-    }
-
-    public void selectSecondaryTerritory(Territory territory) {
-        Log.i(TAG, "CANNOT SELECT SECONDARY TERRITORY");
-    }
-
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
-        Log.i(TAG, "INVALID ACTION: CANNOT PERFORM DICE ROLL");
-    }
-
-    public void battleCompleted(BattleResultDetails battleResultDetails){
-        Log.i(TAG, "INVALID ACTION: CANNOT PERFORM BATTLE COMPLETED");
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
@@ -59,11 +47,6 @@ public class SetUpInitTerritoriesState extends GameState {
 
     }
 
-    public void enableAttackMode() {
-        Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
-    }
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
-
     public void confirmAction() {
 
         //illegal territory selection for setting up territories
@@ -77,8 +60,6 @@ public class SetUpInitTerritoriesState extends GameState {
         addToSelectedTerritoryUnitCount(1);
         game.getActivity().runOnUiThread(() -> game.getActivity().removeActiveBottomPaneFragment());
     }
-
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
 
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");

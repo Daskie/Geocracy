@@ -22,37 +22,9 @@ public class DefaultState extends GameState {
         game.getState().initState();
     }
 
-    public void selectSecondaryTerritory(Territory territory) {
-        Log.i(TAG, "CANNOT SELECT TARGET TERRITORY, NO ORIGIN TERRITORY");
-    }
-
-    public void enableAttackMode() {
-        Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
-    }
-
-    public void addToSelectedTerritoryUnitCount(int amount) {
-        Log.i(TAG, "CANNOT UPDATE UNIT COUNT");
-    }
-
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-        Log.i(TAG, "CANNOT PERFORM DICE ROLL");
-    }
-
-    public void battleCompleted(BattleResultDetails battleResultDetails) {
-        Log.i(TAG, "INVALID STATE ACCESSED");
-    }
-
     public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE, SELECT A TERRITORY FIRST"); }
 
-    public void confirmAction() {
-        Log.i(TAG, "INVALID ACTION: CONFRIM NOT AVAILIBLE");
-    }
-
     public void endTurn() { Log.i(TAG, "END TURN ACTION -> END PLAYER TURN"); }
-
-    public void cancelAction() {
-        Log.i(TAG, "USER CANCELED ACTION -> NULL ACTION");
-    }
 
     public void initState() {
         Log.i(TAG, "INIT STATE");

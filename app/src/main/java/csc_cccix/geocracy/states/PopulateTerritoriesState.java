@@ -24,18 +24,6 @@ public class PopulateTerritoriesState extends GameState {
         this.territory = territory;
     }
 
-    public void selectSecondaryTerritory(Territory territory) {
-        Log.i(TAG, "CANNOT SELECT TARGET TERRITORY");
-    }
-
-    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails){
-        Log.i(TAG, "INVALID ACTION: CANNOT PERFORM DICE ROLL");
-    }
-
-    public void battleCompleted(BattleResultDetails battleResultDetails){
-        Log.i(TAG, "INVALID ACTION: CANNOT PERFORM BATTLE COMPLETED");
-    }
-
     public void addToSelectedTerritoryUnitCount(int amount) {
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
         Player currentPlayer = game.getCurrentPlayer();
@@ -59,11 +47,6 @@ public class PopulateTerritoriesState extends GameState {
 
     }
 
-    public void enableAttackMode() {
-        Log.i(TAG, "CANNOT ENABLE ATTACK MODE");
-    }
-    public void fortifyAction() { Log.i(TAG, "CANNOT ENABLE FORTIFY MODE"); }
-
     public void confirmAction() {
 
         //illegal territory selection for setting up territories
@@ -78,8 +61,6 @@ public class PopulateTerritoriesState extends GameState {
         game.getActivity().runOnUiThread(() -> game.getActivity().removeActiveBottomPaneFragment());
     }
 
-    public void endTurn() { Log.i(TAG, "END TURN ACTION -> N/A"); }
-
     public void cancelAction() {
         Log.i(TAG, "USER CANCELED ACTION -> ENTER DEFAULT STATE");
         this.territory = null;
@@ -88,7 +69,6 @@ public class PopulateTerritoriesState extends GameState {
             game.getActivity().getConfirmButton().hide();
         });
     }
-
 
     public void initState() {
         Log.i(TAG, "INIT STATE");
