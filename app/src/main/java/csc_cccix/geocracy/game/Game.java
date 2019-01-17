@@ -24,9 +24,9 @@ import csc_cccix.geocracy.states.BattleResultsState;
 import csc_cccix.geocracy.states.DefaultState;
 import csc_cccix.geocracy.states.DiceRollState;
 import csc_cccix.geocracy.states.FortifyTerritoryState;
-import csc_cccix.geocracy.states.GainArmyUnitsState;
+import csc_cccix.geocracy.states.GainUnitsState;
 import csc_cccix.geocracy.states.GameEvent;
-import csc_cccix.geocracy.states.GameState;
+import csc_cccix.geocracy.states.IGameState;
 import csc_cccix.geocracy.states.IntentToAttackState;
 import csc_cccix.geocracy.states.MoveUnitsState;
 import csc_cccix.geocracy.states.SelectedTerritoryState;
@@ -96,7 +96,7 @@ public class Game implements Serializable {
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
 
     private transient GameActivity activity;
-    private transient GameState state;
+    private transient IGameState state;
 
     private transient SpaceRenderer spaceRenderer;
     private transient CameraController cameraController;
@@ -156,7 +156,7 @@ public class Game implements Serializable {
     }
 
     // Must be called once after Game is either newly constructed or loaded
-    public void setActivityAndState(GameActivity activity, GameState state) {
+    public void setActivityAndState(GameActivity activity, IGameState state) {
         this.activity = activity;
         setState(state);
         getState().initState();
@@ -192,7 +192,7 @@ public class Game implements Serializable {
                     return; // do nothing
                 }
 
-                if (stateClass == GainArmyUnitsState.class) {
+                if (stateClass == GainUnitsState.class) {
                     getState().selectPrimaryTerritory(selectedTerritory);
                 }
                 else if (
@@ -245,7 +245,7 @@ public class Game implements Serializable {
                 break;
 
             case CONFIRM_UNITS_TAPPED:
-                if(getState().getClass() == GainArmyUnitsState.class)
+                if(getState().getClass() == GainUnitsState.class)
                     setState(new DefaultState(this));
                 Log.i(TAG, "CONFIRM UNITS TAPPED");
                 getState().performDiceRoll(null, null);
@@ -277,10 +277,10 @@ public class Game implements Serializable {
 
     }
 
-    public void setState(GameState state) {
+    public void setState(IGameState state) {
         this.state = state;
     }
-    public GameState getState() {
+    public IGameState getState() {
         return this.state;
     }
 
@@ -402,7 +402,7 @@ public class Game implements Serializable {
     }
 
     private void handleComputerInput() {
-        GameState currState = getState();
+        IGameState currState = getState();
         if(currState.getClass() == SetUpInitTerritoriesState.class){
             Random rand = new Random();
             int randNum = rand.nextInt(world.getUnoccupiedTerritories().size()) + 1;
@@ -410,7 +410,7 @@ public class Game implements Serializable {
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
         }
-        if(currState.getClass() == GainArmyUnitsState.class){
+        if(currState.getClass() == GainUnitsState.class){
             Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
             while(getCurrentPlayer().getArmyPool()!=0)
                 for(Territory terr : getCurrentPlayer().getTerritories()) {

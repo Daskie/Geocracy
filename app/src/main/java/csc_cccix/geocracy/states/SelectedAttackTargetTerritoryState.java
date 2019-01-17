@@ -10,7 +10,7 @@ import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class SelectedAttackTargetTerritoryState extends  GameState {
+public class SelectedAttackTargetTerritoryState extends IGameState {
 
     private Territory originTerritory;
     private Territory targetTerritory;

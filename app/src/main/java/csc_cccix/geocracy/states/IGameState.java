@@ -6,7 +6,7 @@ import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
 
-public abstract class GameState {
+public abstract class IGameState {
 
     protected Game game;
     protected Territory territory;

@@ -13,7 +13,7 @@ import csc_cccix.geocracy.world.Territory;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class DiceRollState extends GameState {
+public class DiceRollState extends IGameState {
 
     private Territory originTerritory;
     private Territory targetTerritory;

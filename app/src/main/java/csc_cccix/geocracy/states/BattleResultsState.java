@@ -7,7 +7,7 @@ import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
-public class BattleResultsState extends GameState {
+public class BattleResultsState extends IGameState {
 
     private Territory originTerritory;
     private Territory targetTerritory;

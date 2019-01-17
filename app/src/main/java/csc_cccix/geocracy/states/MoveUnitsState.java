@@ -6,7 +6,7 @@ import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class MoveUnitsState extends  GameState {
+public class MoveUnitsState extends IGameState {
 
     private Territory originTerritory;
     private Territory targetTerritory;

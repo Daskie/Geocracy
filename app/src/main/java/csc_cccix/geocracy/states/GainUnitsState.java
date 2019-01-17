@@ -6,14 +6,13 @@ import android.widget.Toast;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DistributeTroopsDetailFragment;
 import csc_cccix.geocracy.game.Game;
-import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class GainArmyUnitsState extends GameState {
+public class GainUnitsState extends IGameState {
 
-    public GainArmyUnitsState(Game game) {
+    public GainUnitsState(Game game) {
         TAG = "GAIN_ARMIES_STATE";
         this.game = game;
     }
@@ -23,7 +22,7 @@ public class GainArmyUnitsState extends GameState {
 
         if (territory != null) {
             //illegal territory selection for assigning units
-            if(territory.getOwner() != game.getCurrentPlayer()){
+            if (territory.getOwner() != game.getCurrentPlayer()){
                 game.getActivity().runOnUiThread(() -> Toasty.info(game.getActivity().getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show());
                 return;
             }

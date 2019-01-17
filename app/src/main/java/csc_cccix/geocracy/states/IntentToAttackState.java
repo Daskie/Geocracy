@@ -5,7 +5,7 @@ import android.util.Log;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class IntentToAttackState extends  GameState {
+public class IntentToAttackState extends IGameState {
 
     private Territory originTerritory;
 

@@ -6,7 +6,7 @@ import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class SelectedTerritoryState extends GameState {
+public class SelectedTerritoryState extends IGameState {
 
     public SelectedTerritoryState(Game game) {
         TAG = "SELECT_TERRITORY_STATE";

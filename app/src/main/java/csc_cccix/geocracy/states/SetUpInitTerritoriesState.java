@@ -12,7 +12,7 @@ import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class SetUpInitTerritoriesState extends GameState {
+public class SetUpInitTerritoriesState extends IGameState {
 
     public SetUpInitTerritoriesState(Game game) {
         TAG = "SET_UP_INIT_TERRITORIES_STATE";
@@ -38,7 +38,7 @@ public class SetUpInitTerritoriesState extends GameState {
         // If all territories occupied, exit state
         if(game.getWorld().allTerritoriesOccupied()) {
             game.setFirstPlayer(); // HUMAN PLAYER
-            game.setState(new GainArmyUnitsState(game));
+            game.setState(new GainUnitsState(game));
             for(Player player : game.getPlayers())
                 player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)game.getWorld().getNTerritories() / (float)game.getPlayers().length));
 

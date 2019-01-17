@@ -5,7 +5,7 @@ import android.util.Log;
 import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.world.Territory;
 
-public class DefaultState extends GameState {
+public class DefaultState extends IGameState {
 
     public DefaultState(Game game) {
         TAG = "DEFAULT_STATE";
