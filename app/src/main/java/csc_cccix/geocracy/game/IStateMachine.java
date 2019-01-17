@@ -5,12 +5,13 @@ import csc_cccix.geocracy.states.GameAction;
 
 public abstract class IStateMachine {
 
-    public GameActivity Activity;
+    public Game Game;
+
     IState currentState;
     IState previousState;
 
-    public IStateMachine(GameActivity activity) {
-        this.Activity = activity;
+    public IStateMachine(Game game) {
+        this.Game = game;
     }
 
     public abstract IState CurrentState();

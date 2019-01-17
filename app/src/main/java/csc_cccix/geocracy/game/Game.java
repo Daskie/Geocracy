@@ -98,6 +98,8 @@ public class Game implements Serializable {
     private transient GameActivity activity;
     private transient IGameState state;
 
+    private GameStateMachine StateMachine;
+
     private transient SpaceRenderer spaceRenderer;
     private transient CameraController cameraController;
 
@@ -129,7 +131,12 @@ public class Game implements Serializable {
 
         lastT = 0;
 
+        // Create New State Machine Implementation and Start it
+        StateMachine = new GameStateMachine(this);
+        StateMachine.Start();
+
         constructTransient();
+
     }
 
     // Called during deserialization

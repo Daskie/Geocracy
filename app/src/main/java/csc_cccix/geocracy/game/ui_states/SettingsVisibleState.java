@@ -23,13 +23,13 @@ public class SettingsVisibleState extends IState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-        SM.Activity.showOverlayFragment(GameActivity.settingsFragment);
+        SM.Game.getActivity().showOverlayFragment(GameActivity.settingsFragment);
     }
 
     @Override
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
-        SM.Activity.removeActiveOverlayFragment();
+        SM.Game.getActivity().removeActiveOverlayFragment();
     }
 
     @Override

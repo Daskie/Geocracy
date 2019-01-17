@@ -9,10 +9,8 @@ import csc_cccix.geocracy.states.IGameState;
 
 public class GameStateMachine extends IStateMachine {
 
-    GameActivity Activity;
-
-    public GameStateMachine(GameActivity activity) {
-        super(activity);
+    public GameStateMachine(Game game) {
+        super(game);
 
         // Create and link all the states here...
     }
