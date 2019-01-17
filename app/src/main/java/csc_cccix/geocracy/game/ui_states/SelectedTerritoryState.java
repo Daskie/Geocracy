@@ -35,9 +35,11 @@ public class SelectedTerritoryState extends IState {
 
         // TODO: need to fix race condition causing crash (actually might be due to not assigning territories to players as of yet)
 
-//        SM.Game.getActivity().runOnUiThread(() -> {
-//            SM.Game.getActivity().hideAllGameInteractionButtons();
-//            SM.Game.getActivity().getEndTurnButton().show();
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.getActivity().hideAllGameInteractionButtons();
+            SM.Game.getActivity().getEndTurnButton().show();
+            SM.Game.getActivity().getCancelBtn().show();
+
 //            if (this.selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
 //                if (this.selectedTerritory.getNArmies() >= 2) {
 //                    SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
@@ -53,8 +55,7 @@ public class SelectedTerritoryState extends IState {
 //                    SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
 //                }
 //            }
-//            SM.Game.getActivity().getCancelBtn().show();
-//        });
+        });
 
     }
 
@@ -62,6 +63,10 @@ public class SelectedTerritoryState extends IState {
     public void DeinitializeState() {
         SM.Game.removeActiveBottomPaneFragment();
         SM.Game.getWorld().unhighlightTerritories();
+
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.getActivity().hideAllGameInteractionButtons();
+        });
     }
 
     @Override
@@ -70,8 +75,14 @@ public class SelectedTerritoryState extends IState {
         switch (event.action) {
 
             case CANCEL_TAPPED:
-                Log.d(TAG, "CLOSE OVERLAY BTN TAPPED!");
+                Log.d(TAG, "CANCELED!");
                 SM.Advance(new DefaultState(SM));
+
+            case TERRITORY_SELECTED:
+                Log.d(TAG, "TERRITORY SELECTED");
+                if (((Territory) event.payload) != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
+
+                break;
 
             default:
                 Log.d(TAG, "UNREGISTERED ACTION TRIGGERED (DEFAULT)");

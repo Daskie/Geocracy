@@ -64,7 +64,7 @@ public class DefaultState extends IState {
 
             case TERRITORY_SELECTED:
                 Log.d(TAG, "TERRITORY SELECTED");
-                SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
+                if (((Territory) event.payload) != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
                 break;
 
             default:

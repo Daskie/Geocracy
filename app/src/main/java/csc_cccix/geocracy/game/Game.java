@@ -226,39 +226,39 @@ public class Game implements Serializable {
 //                activity.showOverlayFragment(GameInfoFragment.newInstance(players, getWorld().getSeed()));
 //                break;
 
-            case TERRITORY_SELECTED:
-                Territory selectedTerritory = (Territory) event.payload;
-                if(selectedTerritory == null)
-                    return;
-
-                Log.i(TAG, "USER SELECTED TERRITORY:" + selectedTerritory.getId());
-
-                Class stateClass = getState().getClass();
-
-                if (
-                        stateClass == DiceRollState.class ||
-                        stateClass == BattleResultsState.class
-                ) {
-                    return; // do nothing
-                }
-
-                if (stateClass == GainUnitsState.class) {
-                    getState().selectPrimaryTerritory(selectedTerritory);
-                }
-                else if (
-                    stateClass == IntentToAttackState.class ||
-                    stateClass == FortifyTerritoryState.class ||
-                    stateClass == MoveUnitsState.class
-                )
-                {
-                    getState().selectSecondaryTerritory(selectedTerritory);
-                }
-                else {
-                    getState().selectPrimaryTerritory(selectedTerritory);
-                    getState().initState();
-                }
-
-                break;
+//            case TERRITORY_SELECTED:
+//                Territory selectedTerritory = (Territory) event.payload;
+//                if(selectedTerritory == null)
+//                    return;
+//
+//                Log.i(TAG, "USER SELECTED TERRITORY:" + selectedTerritory.getId());
+//
+//                Class stateClass = getState().getClass();
+//
+//                if (
+//                        stateClass == DiceRollState.class ||
+//                        stateClass == BattleResultsState.class
+//                ) {
+//                    return; // do nothing
+//                }
+//
+//                if (stateClass == GainUnitsState.class) {
+//                    getState().selectPrimaryTerritory(selectedTerritory);
+//                }
+//                else if (
+//                    stateClass == IntentToAttackState.class ||
+//                    stateClass == FortifyTerritoryState.class ||
+//                    stateClass == MoveUnitsState.class
+//                )
+//                {
+//                    getState().selectSecondaryTerritory(selectedTerritory);
+//                }
+//                else {
+//                    getState().selectPrimaryTerritory(selectedTerritory);
+//                    getState().initState();
+//                }
+//
+//                break;
 
             case ATTACK_TAPPED:
 
