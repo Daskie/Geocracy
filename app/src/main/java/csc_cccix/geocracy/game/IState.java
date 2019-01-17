@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import java.util.List;
 
-import csc_cccix.geocracy.states.GameAction;
+import csc_cccix.geocracy.states.GameEvent;
 
 public abstract class IState {
 
@@ -18,7 +18,7 @@ public abstract class IState {
     public abstract String GetName();
     public abstract void InitializeState();
     public abstract void DeinitializeState();
-    public abstract boolean HandleAction(GameAction action);
+    public abstract boolean HandleEvent(GameEvent event);
 
     @Override
     public String toString()  {

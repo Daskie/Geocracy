@@ -35,7 +35,7 @@ public class DefaultState extends IGameState {
         game.getWorld().highlightTerritories(game.getCurrentPlayer().getTerritories());
         game.getActivity().runOnUiThread(() -> {
             game.getActivity().updateCurrentPlayerFragment();
-            game.getActivity().removeActiveOverlayFragment();
+//            game.getActivity().removeActiveOverlayFragment();
             game.getActivity().hideAllGameInteractionButtons();
             game.getActivity().getEndTurnButton().show();
         });

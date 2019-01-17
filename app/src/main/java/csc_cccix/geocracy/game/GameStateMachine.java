@@ -5,6 +5,7 @@ import java.util.List;
 
 import csc_cccix.geocracy.game.ui_states.DefaultState;
 import csc_cccix.geocracy.states.GameAction;
+import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.IGameState;
 
 public class GameStateMachine extends IStateMachine {
@@ -33,13 +34,6 @@ public class GameStateMachine extends IStateMachine {
         }
 
         return (String[]) result.toArray();
-    }
-
-    @Override
-    public boolean HandleAction(GameAction action) {
-
-
-        return false;
     }
 
     @Override

@@ -2,17 +2,17 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 
-public class SettingsVisibleState extends IState {
+public class GameInfoVisibleState extends IState {
 
-    private final String TAG = "SETTINGS_VISIBLE_STATE";
+    private final String TAG = "GAME_INFO_VISIBLE_STATE";
 
-    public SettingsVisibleState(IStateMachine SM) {
+    public GameInfoVisibleState(IStateMachine SM) {
         super(SM);
     }
 
@@ -24,7 +24,7 @@ public class SettingsVisibleState extends IState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-        SM.Game.showOverlayFragment(GameActivity.settingsFragment);
+        SM.Game.showOverlayFragment(GameInfoFragment.newInstance(SM.Game));
     }
 
     @Override

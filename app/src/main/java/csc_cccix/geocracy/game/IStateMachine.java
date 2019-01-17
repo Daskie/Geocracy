@@ -1,7 +1,7 @@
 package csc_cccix.geocracy.game;
 
-import csc_cccix.geocracy.game.ui_states.DefaultState;
 import csc_cccix.geocracy.states.GameAction;
+import csc_cccix.geocracy.states.GameEvent;
 
 public abstract class IStateMachine {
 
@@ -37,8 +37,8 @@ public abstract class IStateMachine {
     }
 
     // Pass action handler to current state
-    public boolean HandleAction(GameAction action) {
-        return currentState.HandleAction(action);
+    public boolean HandleEvent(GameEvent event) {
+        return currentState.HandleEvent(event);
     }
 
 }

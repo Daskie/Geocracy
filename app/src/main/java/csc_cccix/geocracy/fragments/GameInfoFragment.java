@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.adapters.PlayerAdapter;
+import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import es.dmoral.toasty.Toasty;
 
@@ -61,6 +62,17 @@ public class GameInfoFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable("worldSeed", worldSeed);
         args.putSerializable("players", players);
+        newFragment.setArguments(args);
+
+        return newFragment;
+    }
+
+    public static GameInfoFragment newInstance(Game game) {
+        GameInfoFragment newFragment = new GameInfoFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable("worldSeed", game.getWorld().getSeed());
+        args.putSerializable("players", game.getPlayers());
         newFragment.setArguments(args);
 
         return newFragment;

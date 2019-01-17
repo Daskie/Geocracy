@@ -43,7 +43,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     public static Game game;
     private GameSurfaceView gameSurfaceView;
 
-    private FragmentManager fragmentManager;
+    FragmentManager fragmentManager;
 
     private Fragment activeCurrentPlayerFragment = null;
     private Fragment activeBottomPaneFragment = null;
@@ -51,16 +51,16 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private CompositeDisposable disposables;
 
-    private FloatingActionButton endTurnButton;
-    private FloatingActionButton attackBtn;
-    private FloatingActionButton addUnitBtn;
-    private FloatingActionButton removeUnitBtn;
-    private FloatingActionButton cancelBtn;
-    private FloatingActionButton gameInfoBtn;
-    private FloatingActionButton settingBtn;
-    private FloatingActionButton closeOverlayBtn;
-    private FloatingActionButton confirmButton;
-    private FloatingActionButton fortifyButton;
+    public FloatingActionButton endTurnButton;
+    public FloatingActionButton attackBtn;
+    public FloatingActionButton addUnitBtn;
+    public FloatingActionButton removeUnitBtn;
+    public FloatingActionButton cancelBtn;
+    public FloatingActionButton gameInfoBtn;
+    public FloatingActionButton settingBtn;
+    public FloatingActionButton closeOverlayBtn;
+    public FloatingActionButton confirmButton;
+    public FloatingActionButton fortifyButton;
 
 
     @Override
@@ -104,7 +104,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
             int numPlayers = (int)getIntent().getSerializableExtra("NUM_PLAYERS");
             int mainPlayerColor = (int)getIntent().getSerializableExtra("MAIN_PLAYER_COLOR");
             long seed = (long)getIntent().getSerializableExtra(("SEED"));
-            game = new Game(playerName, numPlayers, Util.colorToVec3(mainPlayerColor), seed);
+            game = new Game(this, playerName, numPlayers, Util.colorToVec3(mainPlayerColor), seed);
         }
 
         // Get Layout Frame +
@@ -186,14 +186,15 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         closeOverlayBtn = findViewById(R.id.closeOverlayBtn);
         closeOverlayBtn.hide();
-        disposables.add(RxView.touches(closeOverlayBtn).subscribe(e -> {
-            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                removeActiveOverlayFragment();
-            }
-        }));
+
+//        disposables.add(RxView.touches(closeOverlayBtn).subscribe(e -> {
+//            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+//                removeActiveOverlayFragment();
+//            }
+//        }));
 
         frame.addView(uiLayout);
-        showOverlayFragment(new LoadingFragment());
+        game.showOverlayFragment(new LoadingFragment());
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
 
@@ -230,40 +231,40 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ft.commit();
     }
 
-    public void showOverlayFragment(Fragment overlayFragment) {
-        removeActiveBottomPaneFragment();
-
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(R.id.gameLayout, overlayFragment);
-        ft.commit();
-
-        activeOverlayFragment = overlayFragment;
-        this.runOnUiThread(() -> {
-            if (overlayFragment.getClass() == CurrentPlayerFragment.class) {
-                closeOverlayBtn.hide();
-                settingBtn.show();
-                gameInfoBtn.show();
-            } else {
-                closeOverlayBtn.show();
-                settingBtn.hide();
-                gameInfoBtn.hide();
-            }
-        });
-    }
-
-    public void removeActiveOverlayFragment() {
-        if (activeOverlayFragment != null) {
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-            ft.remove(activeOverlayFragment);
-            ft.commit();
-            activeOverlayFragment = null;
-        }
-        this.runOnUiThread(() -> {
-            closeOverlayBtn.hide();
-            settingBtn.show();
-            gameInfoBtn.show();
-        });
-    }
+//    public void showOverlayFragment(Fragment overlayFragment) {
+//        removeActiveBottomPaneFragment();
+//
+//        FragmentTransaction ft = fragmentManager.beginTransaction();
+//        ft.add(R.id.gameLayout, overlayFragment);
+//        ft.commit();
+//
+//        activeOverlayFragment = overlayFragment;
+//        this.runOnUiThread(() -> {
+//            if (overlayFragment.getClass() == CurrentPlayerFragment.class) {
+//                closeOverlayBtn.hide();
+//                settingBtn.show();
+//                gameInfoBtn.show();
+//            } else {
+//                closeOverlayBtn.show();
+//                settingBtn.hide();
+//                gameInfoBtn.hide();
+//            }
+//        });
+//    }
+//
+//    public void removeActiveOverlayFragment() {
+//        if (activeOverlayFragment != null) {
+//            FragmentTransaction ft = fragmentManager.beginTransaction();
+//            ft.remove(activeOverlayFragment);
+//            ft.commit();
+//            activeOverlayFragment = null;
+//        }
+//        this.runOnUiThread(() -> {
+//            closeOverlayBtn.hide();
+//            settingBtn.show();
+//            gameInfoBtn.show();
+//        });
+//    }
 
      public void showBottomPaneFragment(Fragment bottomPaneFragment) {
         removeActiveBottomPaneFragment();
@@ -360,7 +361,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 EventBus.publish("WORLD_TOUCH_EVENT", e);
             }
         }));
-        new Handler().postDelayed(this::removeActiveOverlayFragment, 4000);
+        new Handler().postDelayed(game::removeOverlayFragment, 4000);
     }
 
     @Override

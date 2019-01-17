@@ -1,8 +1,12 @@
 package csc_cccix.geocracy.game;
 
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -15,9 +19,11 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
+import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.states.BattleResultsState;
@@ -118,6 +124,8 @@ public class Game implements Serializable {
     private transient long lastTimestamp;
     private transient float cooldown;
 
+    FragmentManager manager;
+
     public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
 
@@ -131,12 +139,44 @@ public class Game implements Serializable {
 
         lastT = 0;
 
+        manager = activity.getSupportFragmentManager();
+
         // Create New State Machine Implementation and Start it
         StateMachine = new GameStateMachine(this);
         StateMachine.Start();
 
         constructTransient();
 
+    }
+
+    public Game(GameActivity activity, String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
+        world = new World(this, seed);
+
+        players = new Player[nPlayers];
+        Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
+        players[0] = new HumanPlayer(playerName,1, playerColors[0]);
+        for (int i = 1; i < players.length; ++i) {
+            players[i] = new AIPlayer(i + 1, playerColors[i]);
+        }
+        currentPlayerIndex = 0;
+
+        lastT = 0;
+
+        this.activity = activity;
+        manager = activity.getSupportFragmentManager();
+
+        // Create New State Machine Implementation and Start it
+        StateMachine = new GameStateMachine(this);
+        StateMachine.Start();
+
+        constructTransient();
+
+
+
+    }
+
+    public void StartGame() {
+        StateMachine.Start();
     }
 
     // Called during deserialization
@@ -157,7 +197,8 @@ public class Game implements Serializable {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-        EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
+//        EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
+        EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
 
         lastTimestamp = System.nanoTime();
     }
@@ -173,15 +214,17 @@ public class Game implements Serializable {
 
         switch (event.action) {
 
-            case SETTINGS_TAPPED:
-                Log.i("", "TOGGLE SETTINGS VISIBILITY ACTION");
-                activity.showOverlayFragment(GameActivity.settingsFragment);
-                break;
+            // TODO: remove after refactor
 
-            case GAME_INFO_TAPPED:
-                Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
-                activity.showOverlayFragment(GameInfoFragment.newInstance(players, getWorld().getSeed()));
-                break;
+//            case SETTINGS_TAPPED:
+//                Log.i("", "TOGGLE SETTINGS VISIBILITY ACTION");
+//                activity.showOverlayFragment(GameActivity.settingsFragment);
+//                break;
+
+//            case GAME_INFO_TAPPED:
+//                Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
+//                activity.showOverlayFragment(GameInfoFragment.newInstance(players, getWorld().getSeed()));
+//                break;
 
             case TERRITORY_SELECTED:
                 Territory selectedTerritory = (Territory) event.payload;
@@ -265,10 +308,12 @@ public class Game implements Serializable {
                 getState().initState();
                 break;
 
-            case CANCEL_TAPPED:
-                Log.i(TAG, "CANCEL ACTION TAPPED");
-                getState().cancelAction();
-                break;
+                // TODO: more from ^^^^ todo
+
+//            case CANCEL_TAPPED:
+//                Log.i(TAG, "CANCEL ACTION TAPPED");
+//                getState().cancelAction();
+//                break;
 
             case END_TURN_TAPPED:
 
@@ -559,5 +604,69 @@ public class Game implements Serializable {
             currentPlayerIndex = 0;
     }
     public boolean getGameStatus(){ return outOfGameSetUp; }
+
+
+
+    private Fragment activeOverlayFragment;
+    private Fragment activeBottomPaneFragment;
+
+    // TODO: ui overlay with new state machine
+    public void showOverlayFragment(Fragment overlayFragment) {
+        FragmentTransaction ft = manager.beginTransaction();
+
+        if (activeOverlayFragment != null) ft.remove(activeOverlayFragment); // If old overlay fragment is active, remove it
+        ft.add(R.id.gameLayout, overlayFragment); // Add new overlay fragment to gui
+        ft.commit();
+
+        activeOverlayFragment = overlayFragment;
+
+        activity.runOnUiThread(() -> {
+            activity.closeOverlayBtn.show();
+            activity.settingBtn.hide();
+            activity.gameInfoBtn.hide();
+        });
+    }
+
+    public void removeOverlayFragment() {
+        FragmentTransaction ft = manager.beginTransaction();
+
+        if (activeOverlayFragment != null) {
+            ft.remove(activeOverlayFragment); // If old overlay fragment is active, remove it
+            activeOverlayFragment = null;
+        }
+
+        ft.commit();
+
+        activity.runOnUiThread(() -> {
+                activity.closeOverlayBtn.hide();
+                activity.settingBtn.show();
+                activity.gameInfoBtn.show();
+        });
+    }
+
+
+    public void showBottomPaneFragment(Fragment bottomPaneFragment) {
+        FragmentTransaction ft = manager.beginTransaction();
+
+        if (activeBottomPaneFragment != null) {
+            ft.remove(activeBottomPaneFragment);
+            activeBottomPaneFragment = null;
+        }
+
+        ft.add(R.id.gameLayout, bottomPaneFragment);
+        ft.commit();
+
+        activeBottomPaneFragment = bottomPaneFragment;
+    }
+
+    public void removeActiveBottomPaneFragment() {
+        if (activeBottomPaneFragment != null) {
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.remove(activeBottomPaneFragment);
+            activeBottomPaneFragment = null;
+            ft.commit();
+        }
+    }
+
 
 }
