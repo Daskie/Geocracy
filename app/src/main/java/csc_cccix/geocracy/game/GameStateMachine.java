@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import csc_cccix.geocracy.game.ui_states.DefaultState;
+import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
 import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.states.IGameState;
@@ -17,7 +18,8 @@ public class GameStateMachine extends IStateMachine {
     }
 
     public void Start() {
-        Advance(new DefaultState(this));
+        Advance(new DistributeTerritoriesState(this));
+//        Advance(new DefaultState(this));
     }
 
     @Override

@@ -54,12 +54,12 @@ public class DefaultState extends IState {
         switch(event.action) {
             case SETTINGS_TAPPED:
                 Log.d(TAG, "SETTINGS BTN TAPPED!");
-                SM.Advance(new SettingsVisibleState(SM));
+                SM.Advance(new SettingsVisibleState(SM, this));
                 break;
 
             case GAME_INFO_TAPPED:
                 Log.d(TAG, "GAME INFO BTN TAPPED!");
-                SM.Advance(new GameInfoVisibleState(SM));
+                SM.Advance(new GameInfoVisibleState(SM, this));
                 break;
 
             case TERRITORY_SELECTED:

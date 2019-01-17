@@ -5,15 +5,16 @@ import android.util.Log;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 
 public class SettingsVisibleState extends IState {
 
     private final String TAG = "SETTINGS_VISIBLE_STATE";
+    private IState previousState;
 
-    public SettingsVisibleState(IStateMachine SM) {
+    public SettingsVisibleState(IStateMachine SM, IState prev) {
         super(SM);
+        previousState = prev;
     }
 
     @Override
@@ -40,7 +41,8 @@ public class SettingsVisibleState extends IState {
 
             case CANCEL_TAPPED:
                 Log.d(TAG, "CLOSE OVERLAY BTN TAPPED!");
-                SM.Advance(new DefaultState(SM));
+                SM.Advance(previousState);
+//                SM.Advance(new DefaultState(SM));
 
             default:
                 Log.d(TAG, "UNREGISTERED ACTION TRIGGERED (DEFAULT)");
