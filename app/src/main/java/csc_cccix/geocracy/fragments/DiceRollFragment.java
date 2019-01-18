@@ -12,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.game.ui_states.DiceRoll;
 import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
@@ -27,6 +31,34 @@ public class DiceRollFragment extends Fragment {
         args.putSerializable("targetTerritory", targetTerritory);
         args.putSerializable("attackerString", attackerString);
         args.putSerializable("defenderString", defenderString);
+        newFragment.setArguments(args);
+
+        return newFragment;
+    }
+
+    public static DiceRollFragment newInstance(DiceRoll attackerDiceRoll, DiceRoll defenderDiceRoll) {
+        DiceRollFragment newFragment = new DiceRollFragment();
+
+        Set<Integer> attackerDiceValues = attackerDiceRoll.getRolledDiceValues();
+        Set<Integer> defenderDiceValues = defenderDiceRoll.getRolledDiceValues();
+
+        String attackerDiceString = "";
+        String defenderDiceString = "";
+
+
+        for (Integer roll: attackerDiceValues) {
+            attackerDiceString += (roll + ", ");
+        }
+
+        for (Integer roll: defenderDiceValues) {
+            defenderDiceString += (roll + ", ");
+        }
+
+        Bundle args = new Bundle();
+        args.putSerializable("originTerritory", attackerDiceRoll.territory);
+        args.putSerializable("targetTerritory", defenderDiceRoll.territory);
+        args.putSerializable("attackerString", attackerDiceString);
+        args.putSerializable("defenderString", defenderDiceString);
         newFragment.setArguments(args);
 
         return newFragment;

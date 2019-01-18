@@ -48,6 +48,7 @@ public class SelectedAttackTargetState extends IGameplayState {
     @Override
     public void DeinitializeState() {
         Log.d(TAG, "DEINIT STATE");
+        SM.Game.removeActiveBottomPaneFragment();
     }
 
     @Override
@@ -57,6 +58,13 @@ public class SelectedAttackTargetState extends IGameplayState {
         switch (event.action) {
 
             case CONFIRM_TAPPED:
+
+                if (attackingTerritory != null && defendingTerritory != null) {
+                    DiceRoll attackerDiceRoll = new DiceRoll(attackingTerritory, 2, true);
+                    DiceRoll defenderDiceRoll = new DiceRoll(defendingTerritory, 2, false);
+
+                    SM.Advance(new BattleInitiatedState(SM, attackerDiceRoll, defenderDiceRoll));
+                }
 
                 break;
 

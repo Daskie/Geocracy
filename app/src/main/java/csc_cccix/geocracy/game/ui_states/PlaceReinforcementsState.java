@@ -49,8 +49,8 @@ public class PlaceReinforcementsState extends IGameplayState {
         SM.Game.getWorld().highlightTerritories(currentPlayer.getTerritories());
         SM.Game.getActivity().runOnUiThread(() -> {
             SM.Game.getActivity().hideAllGameInteractionButtons();
-            SM.Game.getActivity().removeActiveBottomPaneFragment();
-            SM.Game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+            SM.Game.removeActiveBottomPaneFragment();
+            SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
             SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(false);
             SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
         });
