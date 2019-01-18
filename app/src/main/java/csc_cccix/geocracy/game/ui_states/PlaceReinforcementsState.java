@@ -63,6 +63,9 @@ public class PlaceReinforcementsState extends IGameplayState {
     @Override
     public void DeinitializeState() {
         Log.d(TAG, "DEINIT STATE");
+
+        SM.Game.setFirstPlayer();
+
         SM.Game.removeActiveBottomPaneFragment();
         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
     }

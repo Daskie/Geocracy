@@ -46,16 +46,20 @@ public class SelectedTerritoryState extends IGameplayState {
                 // If the territory contains enough units to perform an attack
                 if (selectedTerritory.getNArmies() >= 2) {
                     SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+
+                    // If the territory has adjacent friendly territories to fortify from
+                    if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
+                        SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
+                    } else {
+                        SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
+                    }
+
                 } else {
                     SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
-                }
-
-                // If the territory has adjacent friendly territories to fortify from
-                if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
-                    SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
-                } else {
                     SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
                 }
+
+
 
             }
         });

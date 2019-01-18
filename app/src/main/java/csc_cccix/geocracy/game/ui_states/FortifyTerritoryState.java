@@ -3,6 +3,9 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Set;
+
+import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
@@ -31,9 +34,12 @@ public class FortifyTerritoryState extends IGameplayState {
         Log.i(TAG, "INIT STATE");
 
         SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(this.originTerritory);
-        SM.Game.getWorld().highlightTerritory(this.originTerritory);
-        SM.Game.getWorld().highlightTerritories(this.originTerritory.getAdjacentFriendlyTerritories());
+        SM.Game.getWorld().selectTerritory(originTerritory);
+        SM.Game.getWorld().highlightTerritory(originTerritory);
+
+        if (originTerritory.getAdjacentFriendlyTerritories() != null) {
+            SM.Game.getWorld().highlightTerritories(originTerritory.getAdjacentFriendlyTerritories());
+        }
 
         SM.Game.getActivity().runOnUiThread(() -> {
             SM.Game.getActivity().hideAllGameInteractionButtons();
@@ -63,16 +69,14 @@ public class FortifyTerritoryState extends IGameplayState {
 
                 if (event.payload != null) {
                     destinationTerritory = (Territory) event.payload;
-
-
+                    
                     // If current player owns the selected territory
                     if (destinationTerritory.getOwner() == SM.Game.getCurrentPlayer()){
-                        SM.Game.getWorld().selectTerritory(destinationTerritory);
+                        SM.Game.getWorld().selectTerritory(originTerritory);
                         SM.Game.getWorld().targetTerritory(destinationTerritory);
                         SM.Game.getCameraController().targetTerritory(destinationTerritory);
-                        SM.Game.getCameraController().targetTerritory(destinationTerritory);
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(true));
-//                        SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(destinationTerritory, SM.Game.getCurrentPlayer()));
+                        SM.Game.showBottomPaneFragment(FortifyTerritoryFragment.newInstance(originTerritory, destinationTerritory));
                     } else {
                         SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot move units to another players territory!.", Toast.LENGTH_LONG).show());
                     }
@@ -82,11 +86,11 @@ public class FortifyTerritoryState extends IGameplayState {
                 break;
 
             case ADD_UNIT_TAPPED:
-//                addToSelectedTerritoryUnitCount(1);
+                addToSelectedTerritoryUnitCount(1);
                 break;
 
             case REMOVE_UNIT_TAPPED:
-//                addToSelectedTerritoryUnitCount(-1);
+                addToSelectedTerritoryUnitCount(-1);
                 break;
 
             case CONFIRM_TAPPED:
@@ -95,13 +99,35 @@ public class FortifyTerritoryState extends IGameplayState {
 
             case CANCEL_TAPPED:
                 Log.d(TAG, "CANCELED!");
-//                SM.Game.getWorld().unselectTerritory();
-//                destinationTerritory = null;
                 SM.Advance(new DefaultState(SM));
                 break;
 
         }
 
         return false;
+    }
+
+    public void addToSelectedTerritoryUnitCount(int amount) {
+        Log.i(TAG, "UPDATING UNIT COUNT BY: " + amount);
+        if (amount == 0) return;
+        else if (amount > 0) {
+            amount = Math.abs(amount);
+            if (originTerritory.getNArmies() - amount > 0) {
+                originTerritory.setNArmies(originTerritory.getNArmies() - amount);
+                destinationTerritory.setNArmies(destinationTerritory.getNArmies() + amount);
+            }
+        }
+        else if (amount < 0) {
+            amount = Math.abs(amount);
+            if (destinationTerritory.getNArmies() - amount > 0) {
+                originTerritory.setNArmies(originTerritory.getNArmies() + amount);
+                destinationTerritory.setNArmies(destinationTerritory.getNArmies() - amount);
+            }
+        }
+
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.getActivity().getConfirmButton().show();
+            SM.Game.getActivity().getCancelBtn().hide();
+        });
     }
 }

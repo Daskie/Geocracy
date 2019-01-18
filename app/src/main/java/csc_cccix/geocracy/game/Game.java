@@ -22,12 +22,15 @@ import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
+import csc_cccix.geocracy.game.ui_states.IGameplayState;
+import csc_cccix.geocracy.game.ui_states.PlaceReinforcementsState;
+import csc_cccix.geocracy.game.ui_states.SelectedTerritoryState;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.old_states.DefaultState;
 import csc_cccix.geocracy.old_states.GainUnitsState;
 import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.old_states.IGameState;
-import csc_cccix.geocracy.old_states.SelectedTerritoryState;
 import csc_cccix.geocracy.old_states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
@@ -163,12 +166,6 @@ public class Game implements Serializable {
 
         constructTransient();
 
-
-
-    }
-
-    public void StartGame() {
-        StateMachine.Start();
     }
 
     // Called during deserialization
@@ -189,7 +186,6 @@ public class Game implements Serializable {
 
         readbackBuffer = ByteBuffer.allocateDirect(1);
 
-//        EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
         EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
 
         lastTimestamp = System.nanoTime();
@@ -200,125 +196,6 @@ public class Game implements Serializable {
         this.activity = activity;
         setState(state);
         getState().initState();
-    }
-
-    private void handleUserAction(GameEvent event) {
-
-        switch (event.action) {
-
-            // TODO: remove after refactor
-
-//            case SETTINGS_TAPPED:
-//                Log.i("", "TOGGLE SETTINGS VISIBILITY ACTION");
-//                activity.showOverlayFragment(GameActivity.settingsFragment);
-//                break;
-
-//            case GAME_INFO_TAPPED:
-//                Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
-//                activity.showOverlayFragment(GameInfoFragment.newInstance(players, getWorld().getSeed()));
-//                break;
-
-//            case TERRITORY_SELECTED:
-//                Territory selectedTerritory = (Territory) event.payload;
-//                if(selectedTerritory == null)
-//                    return;
-//
-//                Log.i(TAG, "USER SELECTED TERRITORY:" + selectedTerritory.getId());
-//
-//                Class stateClass = getState().getClass();
-//
-//                if (
-//                        stateClass == DiceRollState.class ||
-//                        stateClass == BattleResultsState.class
-//                ) {
-//                    return; // do nothing
-//                }
-//
-//                if (stateClass == GainUnitsState.class) {
-//                    getState().selectPrimaryTerritory(selectedTerritory);
-//                }
-//                else if (
-//                    stateClass == IntentToAttackState.class ||
-//                    stateClass == FortifyTerritoryState.class ||
-//                    stateClass == MoveUnitsState.class
-//                )
-//                {
-//                    getState().selectSecondaryTerritory(selectedTerritory);
-//                }
-//                else {
-//                    getState().selectPrimaryTerritory(selectedTerritory);
-//                    getState().initState();
-//                }
-//
-//                break;
-
-            case ATTACK_TAPPED:
-
-                if (getState().getClass() == SelectedTerritoryState.class) {
-                    Log.i(TAG, "USER TAPPED ATTACK");
-                    getState().enableAttackMode();
-                    getState().initState();
-                } else {
-                    Log.i(TAG, "ATTACK BUTTON UNAVAILIBLE");
-                }
-
-                break;
-
-            case FORTIFY_TAPPED:
-
-                if (getState().getClass() == SelectedTerritoryState.class) {
-                    Log.i(TAG, "USER TAPPED FORTIFY TERRITORY");
-                    getState().fortifyAction();
-                    getState().initState();
-                } else {
-                    Log.i(TAG, "FORTIFY BUTTON UNAVAILIBLE");
-                }
-
-                break;
-
-            case ADD_UNIT_TAPPED:
-                Log.i(TAG, "ADD UNIT TAPPED");
-                getState().addToSelectedTerritoryUnitCount(1);
-                break;
-
-            case REMOVE_UNIT_TAPPED:
-                Log.i(TAG, "REMOVE UNIT TAPPED");
-                getState().addToSelectedTerritoryUnitCount(-1);
-                break;
-
-            case CONFIRM_UNITS_TAPPED:
-                if(getState().getClass() == GainUnitsState.class)
-                    setState(new DefaultState(this));
-                Log.i(TAG, "CONFIRM UNITS TAPPED");
-                getState().performDiceRoll(null, null);
-                getState().initState();
-                break;
-
-            case CONFIRM_TAPPED:
-                Log.i(TAG, "CONFIRM TAPPED");
-                getState().confirmAction();
-                getState().initState();
-                break;
-
-                // TODO: more from ^^^^ todo
-
-//            case CANCEL_TAPPED:
-//                Log.i(TAG, "CANCEL ACTION TAPPED");
-//                getState().cancelAction();
-//                break;
-
-            case END_TURN_TAPPED:
-
-                Log.i(TAG, "END TURN TAPPED");
-                getState().endTurn();
-
-                break;
-
-            default:
-                break;
-
-        }
-
     }
 
     public void setState(IGameState state) {
@@ -389,7 +266,10 @@ public class Game implements Serializable {
         }
         activity.updateCurrentPlayerFragment();
     }
-    public void setFirstPlayer(){currentPlayerIndex=0;}
+    public void setFirstPlayer(){
+        currentPlayerIndex=0;
+        activity.updateCurrentPlayerFragment();
+    }
 
     public void screenResized(Vec2i size) {
         screenSize = size;
@@ -446,30 +326,29 @@ public class Game implements Serializable {
     }
 
     private void handleComputerInput() {
-        IGameState currState = getState();
-        if(currState.getClass() == SetUpInitTerritoriesState.class){
+        IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
+
+        if (currentState instanceof DistributeTerritoriesState) {
             Random rand = new Random();
             int randNum = rand.nextInt(world.getUnoccupiedTerritories().size()) + 1;
             Territory terr = world.getUnoccTerritory(randNum);
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-        }
-        if(currState.getClass() == GainUnitsState.class){
+
+        } else if (currentState instanceof PlaceReinforcementsState) {
             Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
             while(getCurrentPlayer().getArmyPool()!=0)
                 for(Territory terr : getCurrentPlayer().getTerritories()) {
                     terr.setNArmies(terr.getNArmies()+1);
                     getCurrentPlayer().addOrRemoveNArmiesToPool(-1);
                 }
-
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-        }
-        if(currState.getClass() == SelectedTerritoryState.class){
+
+        } else if (currentState instanceof SelectedTerritoryState) {
             Territory terr = getCurrentPlayer().findTerrWithMaxArmies();
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
         }
-
     }
 
     private void handleInput() {

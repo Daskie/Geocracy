@@ -58,6 +58,8 @@ public class DistributeTerritoriesState extends IGameplayState {
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
 
+        SM.Game.setFirstPlayer();
+
         SM.Game.removeActiveBottomPaneFragment();
         SM.Game.getActivity().runOnUiThread(() ->  SM.Game.getActivity().getConfirmButton().hide());
 
@@ -142,10 +144,7 @@ public class DistributeTerritoriesState extends IGameplayState {
 
         // If all territories occupied, exit state
         if(SM.Game.getWorld().allTerritoriesOccupied()) {
-            SM.Game.setFirstPlayer(); // HUMAN PLAYER
-
             SM.Advance(new PlaceReinforcementsState(SM));
-//            SM.Advance(new DefaultState(SM));
 
         } else {
             SM.Game.getWorld().unhighlightTerritories();
