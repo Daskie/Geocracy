@@ -3,11 +3,8 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.Set;
-
 import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 

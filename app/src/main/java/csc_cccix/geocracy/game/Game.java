@@ -29,19 +29,18 @@ import csc_cccix.geocracy.game.ui_states.IntentToAttackState;
 import csc_cccix.geocracy.game.ui_states.PlaceReinforcementsState;
 import csc_cccix.geocracy.game.ui_states.SelectedTerritoryState;
 import csc_cccix.geocracy.space.SpaceRenderer;
-import csc_cccix.geocracy.old_states.GameEvent;
-import csc_cccix.geocracy.old_states.IGameState;
+import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc_cccix.geocracy.old_states.GameAction.ADD_UNIT_TAPPED;
-import static csc_cccix.geocracy.old_states.GameAction.ATTACK_TAPPED;
-import static csc_cccix.geocracy.old_states.GameAction.CANCEL_TAPPED;
-import static csc_cccix.geocracy.old_states.GameAction.CONFIRM_TAPPED;
-import static csc_cccix.geocracy.old_states.GameAction.TERRITORY_SELECTED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.ADD_UNIT_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.ATTACK_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.CANCEL_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.CONFIRM_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
     
@@ -97,7 +96,6 @@ public class Game implements Serializable {
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
 
     private transient GameActivity activity;
-    private transient IGameState state;
 
     private GameStateMachine StateMachine;
 
@@ -189,20 +187,6 @@ public class Game implements Serializable {
         EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
 
         lastTimestamp = System.nanoTime();
-    }
-
-    // Must be called once after Game is either newly constructed or loaded
-    public void setActivityAndState(GameActivity activity, IGameState state) {
-        this.activity = activity;
-        setState(state);
-        getState().initState();
-    }
-
-    public void setState(IGameState state) {
-        this.state = state;
-    }
-    public IGameState getState() {
-        return this.state;
     }
 
     public CameraController getCameraController() {

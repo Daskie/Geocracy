@@ -5,7 +5,6 @@ import android.util.Log;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.old_states.GameEvent;
 
 public class SettingsVisibleState extends IGameplayState {
 

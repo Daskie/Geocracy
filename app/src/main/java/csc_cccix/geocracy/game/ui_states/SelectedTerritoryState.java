@@ -4,7 +4,6 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedTerritoryState extends IGameplayState {

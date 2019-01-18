@@ -26,10 +26,8 @@ import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
-import csc_cccix.geocracy.old_states.DefaultState;
-import csc_cccix.geocracy.old_states.GameAction;
-import csc_cccix.geocracy.old_states.GameEvent;
-import csc_cccix.geocracy.old_states.SetUpInitTerritoriesState;
+import csc_cccix.geocracy.game.ui_states.GameAction;
+import csc_cccix.geocracy.game.ui_states.GameEvent;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -198,11 +196,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
 
-        if (fromGameLoad) {
-            game.setActivityAndState(this, new DefaultState(game));
-        } else {
-            game.setActivityAndState(this, new SetUpInitTerritoriesState(game));
-        }
+//        if (fromGameLoad) {
+//            game.setActivityAndState(this, new DefaultState(game));
+//        } else {
+//            game.setActivityAndState(this, new SetUpInitTerritoriesState(game));
+//        }
 
     }
 

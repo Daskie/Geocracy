@@ -2,7 +2,7 @@ package csc_cccix.geocracy.game;
 
 import java.util.List;
 
-import csc_cccix.geocracy.old_states.GameEvent;
+import csc_cccix.geocracy.game.ui_states.GameEvent;
 
 public abstract class IState {
 

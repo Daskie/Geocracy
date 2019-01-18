@@ -4,7 +4,6 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.old_states.GameEvent;
 
 public class BattleResultsState extends IGameplayState {
 

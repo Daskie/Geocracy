@@ -1,4 +1,4 @@
-package csc_cccix.geocracy.old_states;
+package csc_cccix.geocracy.game.ui_states;
 
 public enum GameAction {
     SETTINGS_TAPPED,

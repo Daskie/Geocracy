@@ -1,4 +1,6 @@
-package csc_cccix.geocracy.old_states;
+package csc_cccix.geocracy.game.ui_states;
+
+import csc_cccix.geocracy.game.ui_states.GameAction;
 
 public class GameEvent {
 

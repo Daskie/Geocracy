@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DiceRollFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.old_states.GameEvent;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
