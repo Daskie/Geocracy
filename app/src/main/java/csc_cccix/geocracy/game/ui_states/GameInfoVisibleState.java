@@ -8,7 +8,7 @@ import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.states.GameEvent;
 
-public class GameInfoVisibleState extends IState {
+public class GameInfoVisibleState extends IGameplayState {
 
     private IState previousState;
     private final String TAG = "GAME_INFO_VISIBLE_STATE";
@@ -37,17 +37,10 @@ public class GameInfoVisibleState extends IState {
 
     @Override
     public boolean HandleEvent(GameEvent event) {
+        super.HandleEvent(event);
 
         switch (event.action) {
 
-            case CANCEL_TAPPED:
-                Log.d(TAG, "CLOSE OVERLAY BTN TAPPED!");
-                SM.Advance(previousState);
-//                SM.Advance(new DefaultState(SM));
-
-            default:
-                Log.d(TAG, "UNREGISTERED ACTION TRIGGERED (DEFAULT)");
-                break;
         }
 
         return false;

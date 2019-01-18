@@ -4,11 +4,10 @@ import android.util.Log;
 
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameAction;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
-public class DefaultState extends IState {
+public class DefaultState extends IGameplayState {
 
     private final String TAG = "DEFAULT_STATE";
 
@@ -50,26 +49,15 @@ public class DefaultState extends IState {
 
     @Override
     public boolean HandleEvent(GameEvent event) {
+        super.HandleEvent(event);
 
         switch(event.action) {
-            case SETTINGS_TAPPED:
-                Log.d(TAG, "SETTINGS BTN TAPPED!");
-                SM.Advance(new SettingsVisibleState(SM, this));
-                break;
-
-            case GAME_INFO_TAPPED:
-                Log.d(TAG, "GAME INFO BTN TAPPED!");
-                SM.Advance(new GameInfoVisibleState(SM, this));
-                break;
 
             case TERRITORY_SELECTED:
                 Log.d(TAG, "TERRITORY SELECTED");
                 if (((Territory) event.payload) != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
                 break;
 
-            default:
-                Log.d(TAG, "UNREGISTERED ACTION TRIGGERED (DEFAULT)");
-                break;
         }
 
         return false;

@@ -7,8 +7,8 @@ public abstract class IStateMachine {
 
     public Game Game;
 
-    IState currentState;
-    IState previousState;
+    public IState currentState;
+    public IState previousState;
 
     public IStateMachine(Game game) {
         this.Game = game;

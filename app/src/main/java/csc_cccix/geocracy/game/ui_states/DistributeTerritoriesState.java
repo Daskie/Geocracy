@@ -7,14 +7,13 @@ import java.util.HashSet;
 
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
-import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
-public class DistributeTerritoriesState extends IState {
+public class DistributeTerritoriesState extends IGameplayState {
 
     private final String TAG = "DISTRIBUTE_TERRITORIES_STATE";
 
@@ -65,20 +64,9 @@ public class DistributeTerritoriesState extends IState {
 
     @Override
     public boolean HandleEvent(GameEvent event) {
-
-        Log.d(TAG, "EVENT TRIGGERED: " + event.action + " | " + event.payload);
+        super.HandleEvent(event);
 
         switch (event.action) {
-
-            case SETTINGS_TAPPED:
-                Log.d(TAG, "SETTINGS BTN TAPPED!");
-                SM.Advance(new SettingsVisibleState(SM, this));
-                break;
-
-            case GAME_INFO_TAPPED:
-                Log.d(TAG, "GAME INFO BTN TAPPED!");
-                SM.Advance(new GameInfoVisibleState(SM, this));
-                break;
 
             case CONFIRM_TAPPED:
 
@@ -131,12 +119,6 @@ public class DistributeTerritoriesState extends IState {
 
                 break;
 
-
-            default:
-
-                Log.d(TAG, "UNREGISTERED ACTION TRIGGERED (DEFAULT)");
-
-                break;
         }
 
         return false;

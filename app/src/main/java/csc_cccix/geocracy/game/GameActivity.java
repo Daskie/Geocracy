@@ -187,11 +187,11 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         closeOverlayBtn = findViewById(R.id.closeOverlayBtn);
         closeOverlayBtn.hide();
 
-//        disposables.add(RxView.touches(closeOverlayBtn).subscribe(e -> {
-//            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
-//                removeActiveOverlayFragment();
-//            }
-//        }));
+        disposables.add(RxView.touches(closeOverlayBtn).subscribe(e -> {
+            if (e.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                EventBus.publish(USER_ACTION, new GameEvent(GameAction.CLOSE_OVERLAY_TAPPED, null));
+            }
+        }));
 
         frame.addView(uiLayout);
         game.showOverlayFragment(new LoadingFragment());
