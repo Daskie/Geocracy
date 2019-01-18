@@ -55,38 +55,6 @@ public class Game implements Serializable {
     public static final String SAVE_FILE_NAME = "save";
     public static final float TAP_DISTANCE_THRESHOLD = 10.0f;
 
-    public static boolean saveGame(Game game) {
-        try {
-            FileOutputStream fos = Global.getContext().openFileOutput(SAVE_FILE_NAME, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(game);
-            oos.close();
-            fos.close();
-            return true;
-        } catch (IOException e) {
-            Log.e("", Log.getStackTraceString(e));
-            return false;
-        }
-    }
-
-    public static Game loadGame() {
-        try {
-            FileInputStream fis = Global.getContext().openFileInput(SAVE_FILE_NAME);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            Game game = (Game)ois.readObject();
-            ois.close();
-            fis.close();
-            return game;
-        } catch (IOException | ClassNotFoundException e) {
-            Log.e("", Log.getStackTraceString(e));
-            return null;
-        }
-    }
-
-    public static boolean isSavedGame() {
-        return Arrays.binarySearch(Global.getContext().fileList(), SAVE_FILE_NAME) >= 0;
-    }
-
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private World world;
     private boolean outOfGameSetUp = false;
@@ -94,7 +62,6 @@ public class Game implements Serializable {
     private int currentPlayerIndex;
     private long lastT; // Time of the previous game update / frame relative to the start of the game
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
-
     private transient GameActivity activity;
 
     private GameStateMachine StateMachine;
@@ -163,7 +130,56 @@ public class Game implements Serializable {
         StateMachine.Start();
 
         constructTransient();
+    }
 
+    private void constructTransient() {
+        spaceRenderer = new SpaceRenderer();
+        cameraController = new CameraController();
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
+        readbackBuffer = ByteBuffer.allocateDirect(1);
+        EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
+        lastTimestamp = System.nanoTime();
+    }
+
+    // GETTERS
+    public GameActivity getActivity() { return activity; }
+    public CameraController getCameraController() { return cameraController; }
+    public World getWorld() { return world; }
+    public Player[] getPlayers() { return players; }
+    public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
+    public boolean getGameStatus(){ return outOfGameSetUp; }
+
+
+    public static boolean saveGame(Game game) {
+        try {
+            FileOutputStream fos = Global.getContext().openFileOutput(SAVE_FILE_NAME, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(game);
+            oos.close();
+            fos.close();
+            return true;
+        } catch (IOException e) {
+            Log.e("", Log.getStackTraceString(e));
+            return false;
+        }
+    }
+
+    public static Game loadGame() {
+        try {
+            FileInputStream fis = Global.getContext().openFileInput(SAVE_FILE_NAME);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Game game = (Game)ois.readObject();
+            ois.close();
+            fis.close();
+            return game;
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("", Log.getStackTraceString(e));
+            return null;
+        }
+    }
+
+    public static boolean isSavedGame() {
+        return Arrays.binarySearch(Global.getContext().fileList(), SAVE_FILE_NAME) >= 0;
     }
 
     // Called during deserialization
@@ -176,26 +192,7 @@ public class Game implements Serializable {
         out.defaultWriteObject();
     }
 
-    private void constructTransient() {
-        spaceRenderer = new SpaceRenderer();
 
-        cameraController = new CameraController();
-        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
-
-        readbackBuffer = ByteBuffer.allocateDirect(1);
-
-        EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
-
-        lastTimestamp = System.nanoTime();
-    }
-
-    public CameraController getCameraController() {
-        return cameraController;
-    }
-
-    public GameActivity getActivity() {
-        return activity;
-    }
 
     // May be called more than once during app execution (waking from sleep, for instance)
     // In this method we need to create/recreate any GPU resources
@@ -266,6 +263,8 @@ public class Game implements Serializable {
         cameraController.getCamera().setAspectRatio((float)screenSize.x / (float)screenSize.y);
     }
 
+    /* TOUCH INPUT HANDLING */
+
     public void wasTapDown(Vec2i p) {
         synchronized (this) {
             tapDownPoint = p;
@@ -311,6 +310,7 @@ public class Game implements Serializable {
 
     Territory currentlySelectedTerritory = null;
 
+    // Handles AI Input
     private void handleComputerInput() {
         IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
 
@@ -356,6 +356,8 @@ public class Game implements Serializable {
         }
     }
 
+
+    // Handles User Input
     private void handleInput() {
         synchronized (this) {
             if (swipeDelta != null && (swipeDelta.x != 0 || swipeDelta.y != 0)) {
@@ -462,27 +464,6 @@ public class Game implements Serializable {
         return !Util.isGLError();
     }
 
-    public World getWorld() {
-        return world;
-    }
-
-    public Player[] getPlayers() {
-        return players;
-    }
-
-    public Player getCurrentPlayer() {
-        return players[currentPlayerIndex];
-    }
-    public void updateCurrentPlayer() {
-        if(currentPlayerIndex!=players.length-1)
-            currentPlayerIndex++;
-        else
-            currentPlayerIndex = 0;
-    }
-    public boolean getGameStatus(){ return outOfGameSetUp; }
-
-
-
     private Fragment activeOverlayFragment;
     private Fragment activeBottomPaneFragment;
 
@@ -536,9 +517,6 @@ public class Game implements Serializable {
     }
 
     public void removeActiveBottomPaneFragment() {
-
-
-
         if (activeBottomPaneFragment != null) {
             FragmentTransaction ft = manager.beginTransaction();
             ft.remove(activeBottomPaneFragment);
