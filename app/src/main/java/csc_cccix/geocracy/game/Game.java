@@ -660,11 +660,14 @@ public class Game implements Serializable {
     }
 
     public void removeActiveBottomPaneFragment() {
+
+
+
         if (activeBottomPaneFragment != null) {
             FragmentTransaction ft = manager.beginTransaction();
             ft.remove(activeBottomPaneFragment);
-            activeBottomPaneFragment = null;
             ft.commit();
+            activeBottomPaneFragment = null;
         }
     }
 

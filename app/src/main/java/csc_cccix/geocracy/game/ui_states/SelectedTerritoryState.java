@@ -36,6 +36,7 @@ public class SelectedTerritoryState extends IState {
         // TODO: need to fix race condition causing crash (actually might be due to not assigning territories to players as of yet)
 
         SM.Game.getActivity().runOnUiThread(() -> {
+
             SM.Game.getActivity().hideAllGameInteractionButtons();
             SM.Game.getActivity().getEndTurnButton().show();
             SM.Game.getActivity().getCancelBtn().show();

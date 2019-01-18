@@ -43,8 +43,8 @@ public class DistributeTerritoriesState extends IState {
                 SM.Game.getActivity().runOnUiThread(() ->  SM.Game.getActivity().getConfirmButton().show());
             }
             SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.getActivity().removeActiveBottomPaneFragment();
-                SM.Game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+                SM.Game.removeActiveBottomPaneFragment();
+                SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
             });
         } else {
             SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
@@ -65,6 +65,8 @@ public class DistributeTerritoriesState extends IState {
 
     @Override
     public boolean HandleEvent(GameEvent event) {
+
+        Log.d(TAG, "EVENT TRIGGERED: " + event.action + " | " + event.payload);
 
         switch (event.action) {
 
@@ -91,7 +93,7 @@ public class DistributeTerritoriesState extends IState {
 
                     } else {
                         addToSelectedTerritoryUnitCount(1);
-                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.removeActiveBottomPaneFragment());
+//                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.removeActiveBottomPaneFragment());
                     }
 
                 }
@@ -110,11 +112,22 @@ public class DistributeTerritoriesState extends IState {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().getConfirmButton().show());
                     }
                     SM.Game.getActivity().runOnUiThread(() -> {
-                        SM.Game.getActivity().removeActiveBottomPaneFragment();
-                        SM.Game.getActivity().showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+                        SM.Game.removeActiveBottomPaneFragment();
+                        SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
                     });
 
                 }
+
+                break;
+
+            case CANCEL_TAPPED:
+
+                selectedTerritory = null;
+                SM.Game.getWorld().unselectTerritory();
+                SM.Game.getActivity().runOnUiThread(() -> {
+                    SM.Game.removeActiveBottomPaneFragment();
+                    SM.Game.getActivity().getConfirmButton().hide();
+                });
 
                 break;
 
