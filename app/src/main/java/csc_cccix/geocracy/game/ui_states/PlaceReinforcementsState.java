@@ -149,8 +149,8 @@ public class PlaceReinforcementsState extends IGameplayState {
             SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false));
         }
 
-        SM.Game.getActivity().removeActiveBottomPaneFragment();
-        SM.Game.getActivity().showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
+        SM.Game.removeActiveBottomPaneFragment();
+        SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
 
     }
 
