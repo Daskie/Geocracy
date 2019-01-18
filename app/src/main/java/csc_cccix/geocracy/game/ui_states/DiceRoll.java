@@ -2,9 +2,13 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import csc_cccix.geocracy.world.Territory;
 
@@ -14,7 +18,7 @@ public class DiceRoll {
     public int unitCount;
     public boolean isAttacker;
 
-    public Set<Integer> diceValues = null;
+    private List<Integer> diceValues = null;
 
     public DiceRoll(Territory territory, int unitCount, boolean isAttacker) {
         Log.d("", "" + territory.getId());
@@ -27,7 +31,7 @@ public class DiceRoll {
 
     private void calculateRoll() {
 
-        diceValues = new HashSet<>();
+        diceValues = Arrays.asList(-1, -1, -1);
 
         int numberOfDice;
         if (isAttacker) {
@@ -39,12 +43,14 @@ public class DiceRoll {
         Random rGen = new Random();
 
         for (int i = 0; i < numberOfDice; i++) {
-            diceValues.add(rGen.nextInt(6) + 1);
+            diceValues.set(i, rGen.nextInt(6) + 1);
         }
+
+        diceValues.sort((o1, o2) -> o1 - o2);
 
     }
 
-    public Set<Integer> getRolledDiceValues() {
+    public List<Integer> getRolledDiceValues() {
 
         if (diceValues == null) {
             calculateRoll();

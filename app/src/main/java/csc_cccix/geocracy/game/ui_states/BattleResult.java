@@ -5,10 +5,17 @@ import csc_cccix.geocracy.world.Territory;
 
 public class BattleResult {
 
-    public Player attackingPlayer;
-    public Player defendingPlayer;
-
     public Territory attackingTerritory;
     public Territory defendingTerritory;
+
+    public int attackingUnitLoss;
+    public int defendingUnitLoss;
+
+    public BattleResult(Territory attackingTerritory, int attackingUnitLoss, Territory defendingTerritory, int defendingUnitLoss) {
+        this.attackingTerritory = attackingTerritory;
+        this.defendingTerritory = defendingTerritory;
+        this.attackingUnitLoss = attackingUnitLoss;
+        this.defendingUnitLoss = defendingUnitLoss;
+    }
 
 }

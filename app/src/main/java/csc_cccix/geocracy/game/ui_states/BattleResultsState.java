@@ -10,8 +10,11 @@ public class BattleResultsState extends IGameplayState {
 
     private final String TAG = "BATTLE_RESULTS_STATE";
 
-    public BattleResultsState(IStateMachine SM) {
+    private BattleResult result;
+
+    public BattleResultsState(IStateMachine SM, BattleResult result) {
         super(SM);
+        this.result = result;
     }
 
     @Override
@@ -23,17 +26,21 @@ public class BattleResultsState extends IGameplayState {
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
 
-//        SM.Game.showBottomPaneFragment(BattleResultsFragment.newInstance(this.originTerritory, this.targetTerritory, this.attackerArmiesLost, this.defenderArmiesLost));
-//        game.getWorld().unhighlightTerritories();
-//        game.getWorld().selectTerritory(this.originTerritory);
-//        game.getWorld().highlightTerritory(this.targetTerritory);
-//        game.getCameraController().targetTerritory(this.targetTerritory);
-//        game.getActivity().runOnUiThread(() -> game.getActivity().hideAllGameInteractionButtons());
+        result.attackingTerritory.setNArmies(result.attackingTerritory.getNArmies()-result.attackingUnitLoss);
+        result.defendingTerritory.setNArmies(result.defendingTerritory.getNArmies()-result.defendingUnitLoss);
+
+        SM.Game.showBottomPaneFragment(BattleResultsFragment.newInstance(result.attackingTerritory, result.defendingTerritory, result.attackingUnitLoss, result.defendingUnitLoss));
+        SM.Game.getWorld().unhighlightTerritories();
+        SM.Game.getWorld().selectTerritory(result.attackingTerritory);
+        SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
+        SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
+        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
     }
 
     @Override
     public void DeinitializeState() {
-
+        SM.Game.removeActiveBottomPaneFragment();
+        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
     }
 
     @Override

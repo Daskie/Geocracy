@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
@@ -39,19 +38,30 @@ public class DiceRollFragment extends Fragment {
     public static DiceRollFragment newInstance(DiceRoll attackerDiceRoll, DiceRoll defenderDiceRoll) {
         DiceRollFragment newFragment = new DiceRollFragment();
 
-        Set<Integer> attackerDiceValues = attackerDiceRoll.getRolledDiceValues();
-        Set<Integer> defenderDiceValues = defenderDiceRoll.getRolledDiceValues();
+        List<Integer> attackerDiceValues = attackerDiceRoll.getRolledDiceValues();
+        List<Integer> defenderDiceValues = defenderDiceRoll.getRolledDiceValues();
 
         String attackerDiceString = "";
         String defenderDiceString = "";
 
+        // Format attacker roll string
+        for (int i = 0; i < attackerDiceValues.size(); i++) {
+            int diceValue = attackerDiceValues.get(i);
 
-        for (Integer roll: attackerDiceValues) {
-            attackerDiceString += (roll + ", ");
+            if (diceValue > 0) {
+                attackerDiceString += diceValue;
+                if (i < attackerDiceValues.size()-1) attackerDiceString += ", ";
+            }
         }
 
-        for (Integer roll: defenderDiceValues) {
-            defenderDiceString += (roll + ", ");
+        // Format defender roll string
+        for (int i = 0; i < defenderDiceValues.size(); i++) {
+            int diceValue = defenderDiceValues.get(i);
+
+            if (diceValue > 0) {
+                defenderDiceString += diceValue;
+                if (i < defenderDiceValues.size()-1) defenderDiceString += ", ";
+            }
         }
 
         Bundle args = new Bundle();

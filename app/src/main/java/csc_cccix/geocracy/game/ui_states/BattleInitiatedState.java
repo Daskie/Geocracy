@@ -2,8 +2,10 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DiceRollFragment;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.old_states.GameEvent;
@@ -16,6 +18,8 @@ public class BattleInitiatedState extends IGameplayState {
 
     private DiceRoll attackingDiceRoll;
     private DiceRoll defendingDiceRoll;
+
+    private BattleResult result = null;
 
     public BattleInitiatedState(IStateMachine SM, DiceRoll attackingDiceRoll, DiceRoll defendingDiceRoll) {
         super(SM);
@@ -41,6 +45,8 @@ public class BattleInitiatedState extends IGameplayState {
         SM.Game.getCameraController().targetTerritory(defendingDiceRoll.territory);
         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
 
+        this.result = performDiceRoll();
+
         Completable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::goToBattleResultsState);
 
@@ -59,47 +65,33 @@ public class BattleInitiatedState extends IGameplayState {
     }
 
     private void goToBattleResultsState() {
-        SM.Advance(new BattleResultsState(SM));
+        SM.Advance(new BattleResultsState(SM, result));
     }
 
-//    public void performDiceRoll(DiceRollDetails attackerDetails, DiceRollDetails defenderDetails) {
-//        Log.i(TAG, "PERFORMING DICE ROLL");
-//        this.attackerDetails = attackerDetails;
-//        this.defenderDetails = defenderDetails;
-//        roll(attackerDetails.unitCount, defenderDetails.unitCount);
-//
-//        Player attacker = this.originTerritory.getOwner();
-//        Player defender = this.targetTerritory.getOwner();
-//
-//        attacker.sortDie();
-//        defender.sortDie();
-//
-//        for(int i = 2; i > 0; i--) {
-//            boolean end = checkLosers(attacker, defender, i);
-//            if(end)
-//                break;
-//        }
-//
-//        resultsToString();
-//    }
-//
-//    private void roll(int attackerNumDie, int defenderNumDie){
-//        Random rGen = new Random();
-//        for(int i = 0; i < attackerNumDie; i++)
-//            this.originTerritory.getOwner().setDie(i, (rGen.nextInt(6)) + 1);
-//        for(int i = 0; i < defenderNumDie; i++)
-//            this.targetTerritory.getOwner().setDie(i, (rGen.nextInt(6)) + 1);
-//    }
-//
-//    private boolean checkLosers(Player attacker, Player defender, int index){
-//        int attackerDie = attacker.getDie()[index];
-//        int defenderDie = defender.getDie()[index];
-//        if(attackerDie==-1 || defenderDie==-1)
-//            return true;
-//        else if(attackerDie<=defenderDie)
-//            attackerArmiesLost++;
-//        else
-//            defenderArmiesLost++;
-//        return false;
-//    }
+    public BattleResult performDiceRoll() {
+        Log.i(TAG, "PERFORMING DICE ROLL");
+
+        List<Integer> attackingDiceRolls = attackingDiceRoll.getRolledDiceValues();
+        List<Integer> defendingDiceRolls = defendingDiceRoll.getRolledDiceValues();
+
+        int attackerUnitLoss = 0;
+        int defenderUnitLoss = 0;
+
+        // for each pair of dice rolled (or default -1)
+        for (int i = 0; i < 3; i++) {
+
+            if (attackingDiceRolls.get(i) <= defendingDiceRolls.get(i)) {
+                attackerUnitLoss++;
+            } else {
+                defenderUnitLoss++;
+            }
+
+        }
+
+        Util.clamp(attackerUnitLoss, 0, attackingDiceRoll.unitCount);
+        Util.clamp(defenderUnitLoss, 0, defendingDiceRoll.unitCount);
+
+        return new BattleResult(attackingDiceRoll.territory, attackerUnitLoss, defendingDiceRoll.territory, defenderUnitLoss);
+    }
+
 }
