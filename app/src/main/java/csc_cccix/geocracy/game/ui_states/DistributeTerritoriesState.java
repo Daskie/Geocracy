@@ -9,7 +9,7 @@ import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
@@ -37,6 +37,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         if (selectedTerritory != null) {
             SM.Game.getWorld().selectTerritory(selectedTerritory);
             SM.Game.getWorld().unhighlightTerritories();
+
             SM.Game.getCameraController().targetTerritory(selectedTerritory);
             if (selectedTerritory.getOwner() == null) {
                 SM.Game.getActivity().runOnUiThread(() ->  SM.Game.getActivity().getConfirmButton().show());
@@ -117,6 +118,9 @@ public class DistributeTerritoriesState extends IGameplayState {
                     SM.Game.getActivity().getConfirmButton().hide();
                 });
 
+                SM.Game.getWorld().unhighlightTerritories();
+                SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
+
                 break;
 
         }
@@ -139,12 +143,13 @@ public class DistributeTerritoriesState extends IGameplayState {
         // If all territories occupied, exit state
         if(SM.Game.getWorld().allTerritoriesOccupied()) {
             SM.Game.setFirstPlayer(); // HUMAN PLAYER
-            SM.Advance(new DefaultState(SM));
 
-//            for(Player player : game.getPlayers())
-//                player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)game.getWorld().getNTerritories() / (float)game.getPlayers().length));
+            SM.Advance(new PlaceReinforcementsState(SM));
+//            SM.Advance(new DefaultState(SM));
 
-//            game.getState().initState();
+        } else {
+            SM.Game.getWorld().unhighlightTerritories();
+            SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
         }
 
     }

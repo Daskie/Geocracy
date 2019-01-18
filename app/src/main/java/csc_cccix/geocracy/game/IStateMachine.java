@@ -1,7 +1,6 @@
 package csc_cccix.geocracy.game;
 
-import csc_cccix.geocracy.states.GameAction;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 
 public abstract class IStateMachine {
 

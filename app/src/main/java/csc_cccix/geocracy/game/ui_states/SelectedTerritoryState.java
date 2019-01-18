@@ -4,7 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedTerritoryState extends IGameplayState {
@@ -27,8 +27,9 @@ public class SelectedTerritoryState extends IGameplayState {
     public void InitializeState() {
 
         Log.i(TAG, "INIT STATE");
-        SM.Game.getWorld().selectTerritory(selectedTerritory);
+
         SM.Game.getWorld().unhighlightTerritories();
+        SM.Game.getWorld().selectTerritory(selectedTerritory);
         SM.Game.getCameraController().targetTerritory(selectedTerritory);
 
         SM.Game.getActivity().runOnUiThread(() -> {
@@ -39,20 +40,23 @@ public class SelectedTerritoryState extends IGameplayState {
             SM.Game.getActivity().getEndTurnButton().show();
             SM.Game.getActivity().getCancelBtn().show();
 
+            // If current player is the owner of selected territory
             if (selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
+
+                // If the territory contains enough units to perform an attack
                 if (selectedTerritory.getNArmies() >= 2) {
                     SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
-                    if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
-                        SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
-                    } else {
-                        SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
-                    }
-
                 } else {
-                    Log.i(TAG, "ENABLE ATTACK MODE: INVALID TERRITORY -> DISABLE ATTACK BUTTON");
                     SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
+                }
+
+                // If the territory has adjacent friendly territories to fortify from
+                if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
+                    SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
+                } else {
                     SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
                 }
+
             }
         });
 

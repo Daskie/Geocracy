@@ -18,8 +18,8 @@ import com.jakewharton.rxbinding2.widget.RxSeekBar;
 import csc_cccix.R;
 import csc_cccix.geocracy.AudioService;
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.states.GameAction;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameAction;
+import csc_cccix.geocracy.old_states.GameEvent;
 
 public class SettingsFragment extends Fragment {
 

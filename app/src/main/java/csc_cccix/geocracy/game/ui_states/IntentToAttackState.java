@@ -3,7 +3,7 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class IntentToAttackState extends IGameplayState {
@@ -25,6 +25,15 @@ public class IntentToAttackState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
+
+        SM.Game.getWorld().highlightTerritories(attackingTerritory.getAdjacentEnemyTerritories());
+
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.getActivity().hideAllGameInteractionButtons();
+            SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+            SM.Game.getActivity().getCancelBtn().show();
+
+        });
     }
 
     @Override

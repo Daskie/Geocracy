@@ -3,10 +3,9 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 
 import csc_cccix.geocracy.fragments.GameInfoFragment;
-import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 
 public class GameInfoVisibleState extends IGameplayState {
 

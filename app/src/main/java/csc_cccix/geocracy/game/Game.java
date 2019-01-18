@@ -1,6 +1,5 @@
 package csc_cccix.geocracy.game;
 
-import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
@@ -23,30 +22,23 @@ import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
-import csc_cccix.geocracy.fragments.GameInfoFragment;
 import csc_cccix.geocracy.space.SpaceRenderer;
-import csc_cccix.geocracy.states.BattleResultsState;
-import csc_cccix.geocracy.states.DefaultState;
-import csc_cccix.geocracy.states.DiceRollState;
-import csc_cccix.geocracy.states.FortifyTerritoryState;
-import csc_cccix.geocracy.states.GainUnitsState;
-import csc_cccix.geocracy.states.GameEvent;
-import csc_cccix.geocracy.states.IGameState;
-import csc_cccix.geocracy.states.IntentToAttackState;
-import csc_cccix.geocracy.states.MoveUnitsState;
-import csc_cccix.geocracy.states.SelectedTerritoryState;
-import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
+import csc_cccix.geocracy.old_states.DefaultState;
+import csc_cccix.geocracy.old_states.GainUnitsState;
+import csc_cccix.geocracy.old_states.GameEvent;
+import csc_cccix.geocracy.old_states.IGameState;
+import csc_cccix.geocracy.old_states.SelectedTerritoryState;
+import csc_cccix.geocracy.old_states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc_cccix.geocracy.states.GameAction.ATTACK_TAPPED;
-import static csc_cccix.geocracy.states.GameAction.CANCEL_TAPPED;
-import static csc_cccix.geocracy.states.GameAction.CONFIRM_TAPPED;
-import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
+import static csc_cccix.geocracy.old_states.GameAction.ATTACK_TAPPED;
+import static csc_cccix.geocracy.old_states.GameAction.CANCEL_TAPPED;
+import static csc_cccix.geocracy.old_states.GameAction.CONFIRM_TAPPED;
+import static csc_cccix.geocracy.old_states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
     

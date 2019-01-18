@@ -2,8 +2,9 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import csc_cccix.geocracy.fragments.TroopSelectionFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedAttackTargetState extends IGameplayState {
@@ -27,6 +28,21 @@ public class SelectedAttackTargetState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
+
+        TroopSelectionFragment troopSelectionFragment = TroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
+        SM.Game.showBottomPaneFragment(troopSelectionFragment);
+        SM.Game.getWorld().unhighlightTerritories();
+        SM.Game.getWorld().selectTerritory(attackingTerritory);
+        SM.Game.getWorld().targetTerritory(defendingTerritory);
+        SM.Game.getCameraController().targetTerritory(defendingTerritory);
+
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.getActivity().hideAllGameInteractionButtons();
+            SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+            SM.Game.getActivity().getConfirmButton().show();
+            SM.Game.getActivity().getCancelBtn().show();
+        });
+
     }
 
     @Override

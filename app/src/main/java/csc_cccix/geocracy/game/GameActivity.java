@@ -26,10 +26,10 @@ import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
-import csc_cccix.geocracy.states.DefaultState;
-import csc_cccix.geocracy.states.GameAction;
-import csc_cccix.geocracy.states.GameEvent;
-import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
+import csc_cccix.geocracy.old_states.DefaultState;
+import csc_cccix.geocracy.old_states.GameAction;
+import csc_cccix.geocracy.old_states.GameEvent;
+import csc_cccix.geocracy.old_states.SetUpInitTerritoriesState;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.disposables.CompositeDisposable;
 

@@ -1,5 +1,5 @@
 
-package csc_cccix.geocracy.states;
+package csc_cccix.geocracy.old_states;
 
 import android.util.Log;
 

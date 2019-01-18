@@ -1,10 +1,8 @@
 package csc_cccix.geocracy.game;
 
-import android.app.Activity;
-
 import java.util.List;
 
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.old_states.GameEvent;
 
 public abstract class IState {
 
