@@ -69,7 +69,7 @@ public class FortifyTerritoryState extends IGameplayState {
 
                 if (event.payload != null) {
                     destinationTerritory = (Territory) event.payload;
-                    
+
                     // If current player owns the selected territory
                     if (destinationTerritory.getOwner() == SM.Game.getCurrentPlayer()){
                         SM.Game.getWorld().selectTerritory(originTerritory);

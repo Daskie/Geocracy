@@ -27,17 +27,15 @@ import csc_cccix.geocracy.game.ui_states.IGameplayState;
 import csc_cccix.geocracy.game.ui_states.PlaceReinforcementsState;
 import csc_cccix.geocracy.game.ui_states.SelectedTerritoryState;
 import csc_cccix.geocracy.space.SpaceRenderer;
-import csc_cccix.geocracy.old_states.DefaultState;
-import csc_cccix.geocracy.old_states.GainUnitsState;
 import csc_cccix.geocracy.old_states.GameEvent;
 import csc_cccix.geocracy.old_states.IGameState;
-import csc_cccix.geocracy.old_states.SetUpInitTerritoriesState;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
+import static csc_cccix.geocracy.old_states.GameAction.ADD_UNIT_TAPPED;
 import static csc_cccix.geocracy.old_states.GameAction.ATTACK_TAPPED;
 import static csc_cccix.geocracy.old_states.GameAction.CANCEL_TAPPED;
 import static csc_cccix.geocracy.old_states.GameAction.CONFIRM_TAPPED;
@@ -328,23 +326,28 @@ public class Game implements Serializable {
     private void handleComputerInput() {
         IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
 
-        if (currentState instanceof DistributeTerritoriesState) {
+        if (currentState.getClass() == DistributeTerritoriesState.class) {
             Random rand = new Random();
             int randNum = rand.nextInt(world.getUnoccupiedTerritories().size()) + 1;
             Territory terr = world.getUnoccTerritory(randNum);
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
 
-        } else if (currentState instanceof PlaceReinforcementsState) {
+        } else if (currentState.getClass() == PlaceReinforcementsState.class) {
             Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
-            while(getCurrentPlayer().getArmyPool()!=0)
-                for(Territory terr : getCurrentPlayer().getTerritories()) {
-                    terr.setNArmies(terr.getNArmies()+1);
-                    getCurrentPlayer().addOrRemoveNArmiesToPool(-1);
-                }
+
+            RandomSet<Territory> randomSet = new RandomSet<>(getCurrentPlayer().getTerritories());
+            Random gen = new Random();
+
+            while (getCurrentPlayer().getArmyPool() > 0) {
+                Territory terr = randomSet.pollRandom(gen);
+                EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+                EventBus.publish(USER_ACTION, new GameEvent(ADD_UNIT_TAPPED, 1));
+            }
+
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
 
-        } else if (currentState instanceof SelectedTerritoryState) {
+        } else if (currentState.getClass() == SelectedTerritoryState.class) {
             Territory terr = getCurrentPlayer().findTerrWithMaxArmies();
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
