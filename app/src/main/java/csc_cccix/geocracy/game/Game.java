@@ -22,8 +22,10 @@ import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.game.ui_states.DefaultState;
 import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
 import csc_cccix.geocracy.game.ui_states.IGameplayState;
+import csc_cccix.geocracy.game.ui_states.IntentToAttackState;
 import csc_cccix.geocracy.game.ui_states.PlaceReinforcementsState;
 import csc_cccix.geocracy.game.ui_states.SelectedTerritoryState;
 import csc_cccix.geocracy.space.SpaceRenderer;
@@ -323,6 +325,8 @@ public class Game implements Serializable {
         cameraController.update(dt);
     }
 
+    Territory currentlySelectedTerritory = null;
+
     private void handleComputerInput() {
         IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
 
@@ -347,10 +351,24 @@ public class Game implements Serializable {
 
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
 
-        } else if (currentState.getClass() == SelectedTerritoryState.class) {
+        } else if (currentState.getClass() == DefaultState.class) {
             Territory terr = getCurrentPlayer().findTerrWithMaxArmies();
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
+            currentlySelectedTerritory = terr;
+
+        } else if (currentState.getClass() == SelectedTerritoryState.class) {
+            if (currentlySelectedTerritory != null) {
+                EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
+            }
+        } else if (currentState.getClass() == IntentToAttackState.class) {
+            if (currentlySelectedTerritory != null) {
+                
+                RandomSet<Territory> randomSet = new RandomSet<>(currentlySelectedTerritory.getAdjacentEnemyTerritories());
+                Random rand = new Random();
+
+                EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, randomSet.pollRandom(rand)));
+                EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
+            }
         }
     }
 

@@ -28,16 +28,14 @@ public class DefaultState extends IGameplayState {
         SM.Game.getWorld().unselectTerritory();
         SM.Game.getWorld().untargetTerritory();
         SM.Game.getWorld().unhighlightTerritories();
-//        SM.Game.getWorld().highlightTerritories(SM.Game.getCurrentPlayer().getTerritories());
+        SM.Game.getWorld().highlightTerritories(SM.Game.getCurrentPlayer().getTerritories());
 
-
-
-//        SM.Game.getActivity().runOnUiThread(() -> {
-//            SM.Game.getActivity().updateCurrentPlayerFragment();
-//            SM.Game.removeOverlayFragment();
-//            SM.Game.getActivity().hideAllGameInteractionButtons();
-//            SM.Game.getActivity().getEndTurnButton().show();
-//        });
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.getActivity().updateCurrentPlayerFragment();
+            SM.Game.removeOverlayFragment();
+            SM.Game.getActivity().hideAllGameInteractionButtons();
+            SM.Game.getActivity().getEndTurnButton().show();
+        });
 
     }
 
@@ -57,6 +55,11 @@ public class DefaultState extends IGameplayState {
                 if (((Territory) event.payload) != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
                 break;
 
+            case END_TURN_TAPPED:
+                Log.d(TAG, "PLAYER ENDED THEIR TURN");
+                SM.Game.nextPlayer();
+                SM.Advance(new DefaultState(SM));
+                break;
         }
 
         return false;

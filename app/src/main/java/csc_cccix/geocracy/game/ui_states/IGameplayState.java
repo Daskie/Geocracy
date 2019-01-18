@@ -1,5 +1,7 @@
 package csc_cccix.geocracy.game.ui_states;
 
+import android.util.Log;
+
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.old_states.GameEvent;
@@ -27,6 +29,7 @@ public abstract class IGameplayState extends IState {
                 SM.Advance(SM.previousState);
 
             default:
+                Log.d("I_GAMEPLAY_STATE", "UNRECOGNIZED ACTION TRIGGERED");
                 break;
         }
 
