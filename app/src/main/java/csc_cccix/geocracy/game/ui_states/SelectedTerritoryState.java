@@ -81,17 +81,24 @@ public class SelectedTerritoryState extends IGameplayState {
             case CANCEL_TAPPED:
                 Log.d(TAG, "CANCELED!");
                 SM.Advance(new DefaultState(SM));
+                break;
 
             case TERRITORY_SELECTED:
                 Log.d(TAG, "TERRITORY SELECTED");
                 if (((Territory) event.payload) != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
-
                 break;
 
             case ATTACK_TAPPED:
                 Log.d(TAG, "ATTACK TAPPED -> PROCEED TO INTENT TO ATTACK STATE");
                 if (selectedTerritory != null) {
                     SM.Advance(new IntentToAttackState(SM, selectedTerritory));
+                }
+                break;
+
+            case FORTIFY_TAPPED:
+                Log.d(TAG, "FORTIFY TAPPED -> PROCEED TO FORTIFY TERRITORY STATE");
+                if (selectedTerritory != null) {
+                    SM.Advance(new FortifyTerritoryState(SM, selectedTerritory));
                 }
 
             default:
