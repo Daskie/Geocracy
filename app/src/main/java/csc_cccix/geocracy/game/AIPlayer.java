@@ -7,6 +7,7 @@ import com.github.javafaker.Faker;
 import java.util.Random;
 
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.game.ui_states.BattleResultsState;
 import csc_cccix.geocracy.game.ui_states.DefaultState;
 import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
@@ -20,7 +21,9 @@ import glm_.vec3.Vec3;
 import static csc_cccix.geocracy.game.Game.USER_ACTION;
 import static csc_cccix.geocracy.game.ui_states.GameAction.ADD_UNIT_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.ATTACK_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.CANCEL_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.CONFIRM_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.END_TURN_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.TERRITORY_SELECTED;
 
 public class AIPlayer extends Player {
@@ -38,6 +41,8 @@ public class AIPlayer extends Player {
     }
 
     private static Territory currentlySelectedTerritory = null;
+
+    private static IGameplayState previousState = null;
 
     public static void handleComputerInputWithState(Game game, IGameplayState state) {
         if (state.getClass() == DistributeTerritoriesState.class) {
@@ -60,9 +65,15 @@ public class AIPlayer extends Player {
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
 
         } else if (state.getClass() == DefaultState.class) {
-            Territory terr = game.getCurrentPlayer().findTerrWithMaxArmies();
-            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            currentlySelectedTerritory = terr;
+
+            // If AI just performed an attack, lets finish their turn for now... (definitely can be handled better lol)
+            if (previousState != null && previousState.getClass() == BattleResultsState.class) {
+                EventBus.publish(USER_ACTION, new GameEvent(END_TURN_TAPPED, null));
+            } else {
+                Territory terr = game.getCurrentPlayer().findTerrWithMaxArmies();
+                EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
+                currentlySelectedTerritory = terr;
+            }
 
         } else if (state.getClass() == SelectedTerritoryState.class) {
             if (currentlySelectedTerritory != null) {
@@ -77,6 +88,10 @@ public class AIPlayer extends Player {
                 EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, randomSet.pollRandom(rand)));
                 EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
             }
+        } else if (state.getClass() == BattleResultsState.class) {
+            EventBus.publish(USER_ACTION, new GameEvent(CANCEL_TAPPED, null));
         }
+
+        previousState = state;
     }
 }

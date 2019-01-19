@@ -3,6 +3,7 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 
 public class BattleResultsState extends IGameplayState {
@@ -45,6 +46,10 @@ public class BattleResultsState extends IGameplayState {
         SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
         SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
+
+        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+            SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, true));
+        }
 
     }
 
