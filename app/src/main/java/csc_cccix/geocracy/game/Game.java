@@ -22,12 +22,7 @@ import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.game.ui_states.DefaultState;
-import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
 import csc_cccix.geocracy.game.ui_states.IGameplayState;
-import csc_cccix.geocracy.game.ui_states.IntentToAttackState;
-import csc_cccix.geocracy.game.ui_states.PlaceReinforcementsState;
-import csc_cccix.geocracy.game.ui_states.SelectedTerritoryState;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
@@ -36,10 +31,7 @@ import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc_cccix.geocracy.game.ui_states.GameAction.ADD_UNIT_TAPPED;
-import static csc_cccix.geocracy.game.ui_states.GameAction.ATTACK_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.CANCEL_TAPPED;
-import static csc_cccix.geocracy.game.ui_states.GameAction.CONFIRM_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
@@ -308,55 +300,12 @@ public class Game implements Serializable {
         cameraController.update(dt);
     }
 
-    Territory currentlySelectedTerritory = null;
-
     // Handles AI Input
     private void handleComputerInput() {
         IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
-
-        if (currentState.getClass() == DistributeTerritoriesState.class) {
-            Random rand = new Random();
-            int randNum = rand.nextInt(world.getUnoccupiedTerritories().size()) + 1;
-            Territory terr = world.getUnoccTerritory(randNum);
-            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-
-        } else if (currentState.getClass() == PlaceReinforcementsState.class) {
-            Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
-
-            RandomSet<Territory> randomSet = new RandomSet<>(getCurrentPlayer().getTerritories());
-            Random gen = new Random();
-
-            while (getCurrentPlayer().getArmyPool() > 0) {
-                Territory terr = randomSet.pollRandom(gen);
-                EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-                EventBus.publish(USER_ACTION, new GameEvent(ADD_UNIT_TAPPED, 1));
-            }
-
-            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-
-        } else if (currentState.getClass() == DefaultState.class) {
-            Territory terr = getCurrentPlayer().findTerrWithMaxArmies();
-            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            currentlySelectedTerritory = terr;
-
-        } else if (currentState.getClass() == SelectedTerritoryState.class) {
-            if (currentlySelectedTerritory != null) {
-                EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
-            }
-        } else if (currentState.getClass() == IntentToAttackState.class) {
-            if (currentlySelectedTerritory != null) {
-                
-                RandomSet<Territory> randomSet = new RandomSet<>(currentlySelectedTerritory.getAdjacentEnemyTerritories());
-                Random rand = new Random();
-
-                EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, randomSet.pollRandom(rand)));
-                EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-            }
-        }
+        AIPlayer.handleComputerInputWithState(this, currentState); // TODO: will probably want to change this to non static method as different AI could have different behaviors then...
     }
-
-
+    
     // Handles User Input
     private void handleInput() {
         synchronized (this) {
