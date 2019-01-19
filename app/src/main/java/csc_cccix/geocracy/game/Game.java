@@ -16,7 +16,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
@@ -305,7 +304,7 @@ public class Game implements Serializable {
         IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
         AIPlayer.handleComputerInputWithState(this, currentState); // TODO: will probably want to change this to non static method as different AI could have different behaviors then...
     }
-    
+
     // Handles User Input
     private void handleInput() {
         synchronized (this) {

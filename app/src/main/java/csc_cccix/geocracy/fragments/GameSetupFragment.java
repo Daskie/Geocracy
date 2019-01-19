@@ -76,8 +76,8 @@ public class GameSetupFragment extends Fragment {
         colorPicker.setColorPickerDialogListener(new ColorPickerDialogListener() {
             @Override
             public void onColorSelected(int dialogId, int color) {
-                Log.i("COLOR_SELECTED", Integer.toHexString((int) color));
-                playerColorSelection = Color.parseColor("#" + Integer.toHexString((int) color));
+                Log.i("COLOR_SELECTED", Integer.toHexString(color));
+                playerColorSelection = Color.parseColor("#" + Integer.toHexString(color));
                 playerColorButton.setBackgroundTintList(ColorStateList.valueOf(playerColorSelection));
             }
 

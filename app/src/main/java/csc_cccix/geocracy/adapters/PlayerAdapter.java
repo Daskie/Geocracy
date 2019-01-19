@@ -39,16 +39,16 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
 
         Player currentPlayer = playerList.get(position);
 
-        ImageView image = (ImageView)listItem.findViewById(R.id.playerIcon);
+        ImageView image = listItem.findViewById(R.id.playerIcon);
         image.setImageResource(R.drawable.account);
 
         Vec3 color = currentPlayer.getColor();
         image.setBackgroundColor(Util.colorToInt(color));
 
-        TextView details = (TextView) listItem.findViewById(R.id.playerName);
+        TextView details = listItem.findViewById(R.id.playerName);
         details.setText(currentPlayer.getName());
 
-        TextView unitCount = (TextView) listItem.findViewById(R.id.playerDetails);
+        TextView unitCount = listItem.findViewById(R.id.playerDetails);
         unitCount.setText("Armies: " + currentPlayer.getNArmies() + " | Territories: " + currentPlayer.getNTerritories());
 
         return listItem;

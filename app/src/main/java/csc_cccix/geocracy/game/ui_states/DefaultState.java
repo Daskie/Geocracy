@@ -51,7 +51,7 @@ public class DefaultState extends IGameplayState {
 
             case TERRITORY_SELECTED:
                 Log.d(TAG, "TERRITORY SELECTED");
-                if (((Territory) event.payload) != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
+                if (event.payload != null) SM.Advance(new SelectedTerritoryState(SM, (Territory) event.payload));
                 break;
 
             case END_TURN_TAPPED:

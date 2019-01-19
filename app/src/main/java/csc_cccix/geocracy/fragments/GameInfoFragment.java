@@ -32,7 +32,7 @@ public class GameInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_info, container, false);
 
-        Long worldSeed = (Long) getArguments().getLong("worldSeed");
+        Long worldSeed = getArguments().getLong("worldSeed");
         TextView worldSeedView = view.findViewById(R.id.worldSeed);
         worldSeedView.setText("World Seed: " + Long.toHexString(worldSeed));
         RxView.touches(worldSeedView).subscribe(seedView -> {

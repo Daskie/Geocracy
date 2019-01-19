@@ -49,7 +49,7 @@ public class MenuActivity extends AppCompatActivity {
 
         setContentView(R.layout.menu_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,7 +62,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        mViewPager = (NonSwipeableViewPager) findViewById(R.id.menuContainer);
+        mViewPager = findViewById(R.id.menuContainer);
         Log.d("MENU", mViewPager.toString());
         setupViewPager(mViewPager);
 

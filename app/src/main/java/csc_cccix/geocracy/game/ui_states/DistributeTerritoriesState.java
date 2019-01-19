@@ -69,7 +69,7 @@ public class DistributeTerritoriesState extends IGameplayState {
 
             case TERRITORY_SELECTED:
 
-                if (((Territory) event.payload) != null) {
+                if (event.payload != null) {
                     selectedTerritory = (Territory) event.payload;
 
                     SM.Game.getWorld().selectTerritory(selectedTerritory);
