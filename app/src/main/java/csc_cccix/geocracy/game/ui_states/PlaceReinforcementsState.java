@@ -49,10 +49,10 @@ public class PlaceReinforcementsState extends IGameplayState {
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
             SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.getActivity().hideAllGameInteractionButtons();
-                SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
-                SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(false);
-                SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
+                SM.Game.UI.hideAllGameInteractionButtons();
+                SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+                SM.Game.UI.setUpdateUnitCountButtonsVisibility(false);
+                SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, false);
             });
 
         }
@@ -68,8 +68,8 @@ public class PlaceReinforcementsState extends IGameplayState {
 
         SM.Game.setFirstPlayer();
 
-        SM.Game.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
+        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
     }
 
     @Override
@@ -93,8 +93,8 @@ public class PlaceReinforcementsState extends IGameplayState {
                         // If current player owns the selected territory
                         if (selectedTerritory.getOwner() == SM.Game.getCurrentPlayer()){
                             SM.Game.getCameraController().targetTerritory(selectedTerritory);
-                            SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(true));
-                            SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getCurrentPlayer()));
+                            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true));
+                            SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getCurrentPlayer()));
                         } else {
                             SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show());
                         }
@@ -115,7 +115,7 @@ public class PlaceReinforcementsState extends IGameplayState {
 
             case CONFIRM_TAPPED:
 
-                SM.Game.removeActiveBottomPaneFragment();
+                SM.Game.UI.removeActiveBottomPaneFragment();
 
                 // Loop through next players
                 SM.Game.nextPlayer();
@@ -170,12 +170,12 @@ public class PlaceReinforcementsState extends IGameplayState {
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
             if (SM.Game.getCurrentPlayer().getArmyPool() == 0) {
-                SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, true));
+                SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
             } else {
-                SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false));
+                SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, false));
             }
 
-            SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
+            SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
         }
 
     }

@@ -40,23 +40,23 @@ public class BattleResultsState extends IGameplayState {
 
         }
 
-        SM.Game.showBottomPaneFragment(BattleResultsFragment.newInstance(result.attackingTerritory, result.defendingTerritory, result.attackingUnitLoss, result.defendingUnitLoss));
+        SM.Game.UI.showBottomPaneFragment(BattleResultsFragment.newInstance(result.attackingTerritory, result.defendingTerritory, result.attackingUnitLoss, result.defendingUnitLoss));
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(result.attackingTerritory);
         SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
         SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
+        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
 
         if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
-            SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, true));
+            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
         }
 
     }
 
     @Override
     public void DeinitializeState() {
-        SM.Game.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
+        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
     }
 
     @Override

@@ -22,7 +22,7 @@ public class DefaultState extends IGameplayState {
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
 
-        SM.Game.removeActiveBottomPaneFragment();
+        SM.Game.UI.removeActiveBottomPaneFragment();
 
         SM.Game.getWorld().unselectTerritory();
         SM.Game.getWorld().untargetTerritory();
@@ -30,10 +30,10 @@ public class DefaultState extends IGameplayState {
         SM.Game.getWorld().highlightTerritories(SM.Game.getCurrentPlayer().getTerritories());
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.getActivity().updateCurrentPlayerFragment();
-            SM.Game.removeOverlayFragment();
-            SM.Game.getActivity().hideAllGameInteractionButtons();
-            SM.Game.getActivity().getEndTurnButton().show();
+            SM.Game.UI.updateCurrentPlayerFragment();
+            SM.Game.UI.removeOverlayFragment();
+            SM.Game.UI.hideAllGameInteractionButtons();
+            SM.Game.UI.getEndTurnButton().show();
         });
 
     }

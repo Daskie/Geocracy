@@ -33,29 +33,29 @@ public class SelectedTerritoryState extends IGameplayState {
 
         SM.Game.getActivity().runOnUiThread(() -> {
 
-            SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
 
-            SM.Game.getActivity().hideAllGameInteractionButtons();
-            SM.Game.getActivity().getEndTurnButton().show();
-            SM.Game.getActivity().getCancelBtn().show();
+            SM.Game.UI.hideAllGameInteractionButtons();
+            SM.Game.UI.getEndTurnButton().show();
+            SM.Game.UI.getCancelBtn().show();
 
             // If current player is the owner of selected territory
             if (selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
 
                 // If the territory contains enough units to perform an attack
                 if (selectedTerritory.getNArmies() >= 2) {
-                    SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
+                    SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
 
                     // If the territory has adjacent friendly territories to fortify from
                     if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
-                        SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, true);
+                        SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, true);
                     } else {
-                        SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
+                        SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, false);
                     }
 
                 } else {
-                    SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(false, false);
-                    SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(false, false);
+                    SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(false, false);
+                    SM.Game.UI.setFortifyButtonVisibilityAndActiveState(false, false);
                 }
 
 
@@ -67,11 +67,11 @@ public class SelectedTerritoryState extends IGameplayState {
 
     @Override
     public void DeinitializeState() {
-        SM.Game.removeActiveBottomPaneFragment();
+        SM.Game.UI.removeActiveBottomPaneFragment();
         SM.Game.getWorld().unhighlightTerritories();
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.getActivity().hideAllGameInteractionButtons();
+            SM.Game.UI.hideAllGameInteractionButtons();
         });
     }
 

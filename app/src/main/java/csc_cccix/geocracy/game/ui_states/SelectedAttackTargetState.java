@@ -29,17 +29,17 @@ public class SelectedAttackTargetState extends IGameplayState {
         Log.d(TAG, "INIT STATE");
 
         TroopSelectionFragment troopSelectionFragment = TroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
-        SM.Game.showBottomPaneFragment(troopSelectionFragment);
+        SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(attackingTerritory);
         SM.Game.getWorld().targetTerritory(defendingTerritory);
         SM.Game.getCameraController().targetTerritory(defendingTerritory);
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.getActivity().hideAllGameInteractionButtons();
-            SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
-            SM.Game.getActivity().getConfirmButton().show();
-            SM.Game.getActivity().getCancelBtn().show();
+            SM.Game.UI.hideAllGameInteractionButtons();
+            SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+            SM.Game.UI.getConfirmButton().show();
+            SM.Game.UI.getCancelBtn().show();
         });
 
     }
@@ -47,7 +47,7 @@ public class SelectedAttackTargetState extends IGameplayState {
     @Override
     public void DeinitializeState() {
         Log.d(TAG, "DEINIT STATE");
-        SM.Game.removeActiveBottomPaneFragment();
+        SM.Game.UI.removeActiveBottomPaneFragment();
     }
 
     @Override

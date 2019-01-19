@@ -3,12 +3,8 @@ package csc_cccix.geocracy.game;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,8 +13,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-
-import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
@@ -35,7 +29,8 @@ import static csc_cccix.geocracy.game.ui_states.GameAction.CANCEL_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
-    
+
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
 
     public static final String TAG = "GAME";
@@ -53,10 +48,11 @@ public class Game implements Serializable {
     private Player[] players;
     private int currentPlayerIndex;
     private long lastT; // Time of the previous game update / frame relative to the start of the game
-    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
-    private transient GameActivity activity;
 
     private GameStateMachine StateMachine;
+
+    private transient GameActivity activity;
+    public transient GameUI UI; // User Interface
 
     private transient SpaceRenderer spaceRenderer;
     private transient CameraController cameraController;
@@ -78,6 +74,7 @@ public class Game implements Serializable {
 
     private transient FragmentManager manager;
 
+
     public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
 
@@ -92,6 +89,7 @@ public class Game implements Serializable {
         lastT = 0;
 
         manager = activity.getSupportFragmentManager();
+        UI = new GameUI(activity, manager);
 
         // Create New State Machine Implementation and Start it
         StateMachine = new GameStateMachine(this);
@@ -116,6 +114,8 @@ public class Game implements Serializable {
 
         this.activity = activity;
         manager = activity.getSupportFragmentManager();
+
+        UI = new GameUI(activity, manager);
 
         // Create New State Machine Implementation and Start it
         StateMachine = new GameStateMachine(this);
@@ -146,6 +146,7 @@ public class Game implements Serializable {
     public void setupFromLoad(GameActivity activity) {
         this.activity = activity;
         this.manager = activity.getSupportFragmentManager();
+        StateMachine.currentState.InitializeState();
     }
 
     public static boolean saveGame(Game game) {
@@ -243,11 +244,11 @@ public class Game implements Serializable {
         if (wasHuman && getCurrentPlayer() instanceof AIPlayer) {
             cooldown = 1.0f;
         }
-        activity.updateCurrentPlayerFragment();
+        UI.updateCurrentPlayerFragment();
     }
     public void setFirstPlayer(){
         currentPlayerIndex=0;
-        activity.updateCurrentPlayerFragment();
+        UI.updateCurrentPlayerFragment();
     }
 
     public void screenResized(Vec2i size) {
@@ -418,67 +419,5 @@ public class Game implements Serializable {
         // Check for OpenGL errors
         return !Util.isGLError();
     }
-
-    private Fragment activeOverlayFragment;
-    private Fragment activeBottomPaneFragment;
-
-    // TODO: ui overlay with new state machine
-    public void showOverlayFragment(Fragment overlayFragment) {
-        FragmentTransaction ft = manager.beginTransaction();
-
-        if (activeOverlayFragment != null) ft.remove(activeOverlayFragment); // If old overlay fragment is active, remove it
-        ft.add(R.id.gameLayout, overlayFragment); // Add new overlay fragment to gui
-        ft.commit();
-
-        activeOverlayFragment = overlayFragment;
-
-        activity.runOnUiThread(() -> {
-            activity.closeOverlayBtn.show();
-            activity.settingBtn.hide();
-            activity.gameInfoBtn.hide();
-        });
-    }
-
-    public void removeOverlayFragment() {
-        FragmentTransaction ft = manager.beginTransaction();
-
-        if (activeOverlayFragment != null) {
-            ft.remove(activeOverlayFragment); // If old overlay fragment is active, remove it
-            activeOverlayFragment = null;
-        }
-
-        ft.commit();
-
-        activity.runOnUiThread(() -> {
-                activity.closeOverlayBtn.hide();
-                activity.settingBtn.show();
-                activity.gameInfoBtn.show();
-        });
-    }
-
-
-    public void showBottomPaneFragment(Fragment bottomPaneFragment) {
-        FragmentTransaction ft = manager.beginTransaction();
-
-        if (activeBottomPaneFragment != null) {
-            ft.remove(activeBottomPaneFragment);
-            activeBottomPaneFragment = null;
-        }
-
-        ft.add(R.id.gameLayout, bottomPaneFragment);
-        ft.commit();
-
-        activeBottomPaneFragment = bottomPaneFragment;
-    }
-
-    public void removeActiveBottomPaneFragment() {
-        if (activeBottomPaneFragment != null) {
-            FragmentTransaction ft = manager.beginTransaction();
-            ft.remove(activeBottomPaneFragment);
-            ft.commit();
-            activeBottomPaneFragment = null;
-        }
-    }
-
 
 }

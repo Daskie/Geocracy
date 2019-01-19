@@ -38,8 +38,8 @@ public class DistributeTerritoriesState extends IGameplayState {
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
         SM.Game.setFirstPlayer();
-        SM.Game.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() ->  SM.Game.getActivity().getConfirmButton().hide());
+        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.Game.getActivity().runOnUiThread(() ->  SM.Game.UI.getConfirmButton().hide());
     }
 
     @Override
@@ -76,10 +76,10 @@ public class DistributeTerritoriesState extends IGameplayState {
                     SM.Game.getWorld().unhighlightTerritories();
                     SM.Game.getCameraController().targetTerritory(selectedTerritory);
                     if (selectedTerritory.getOwner() == null && SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
-                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().getConfirmButton().show());
+                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
                     }
                     SM.Game.getActivity().runOnUiThread(() -> {
-                        SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+                        SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
                     });
 
                 }
@@ -91,8 +91,8 @@ public class DistributeTerritoriesState extends IGameplayState {
                 selectedTerritory = null;
                 SM.Game.getWorld().unselectTerritory();
                 SM.Game.getActivity().runOnUiThread(() -> {
-                    SM.Game.removeActiveBottomPaneFragment();
-                    SM.Game.getActivity().getConfirmButton().hide();
+                    SM.Game.UI.removeActiveBottomPaneFragment();
+                    SM.Game.UI.getConfirmButton().hide();
                 });
 
                 highlightUnoccupiedTerritories();
@@ -113,7 +113,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         currentPlayer.addOrRemoveNArmies(1);
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
         });
 
         Log.i(TAG, currentPlayer.getName() + " ADDED " + selectedTerritory.getTerritoryName());

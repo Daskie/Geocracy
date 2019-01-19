@@ -36,13 +36,13 @@ public class BattleInitiatedState extends IGameplayState {
 
         Log.i(TAG, "INIT STATE");
 
-        SM.Game.showBottomPaneFragment(DiceRollFragment.newInstance(attackingDiceRoll, defendingDiceRoll));
+        SM.Game.UI.showBottomPaneFragment(DiceRollFragment.newInstance(attackingDiceRoll, defendingDiceRoll));
 
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(attackingDiceRoll.territory);
         SM.Game.getWorld().highlightTerritory(defendingDiceRoll.territory);
         SM.Game.getCameraController().targetTerritory(defendingDiceRoll.territory);
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
+        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
 
         this.result = performDiceRoll();
 
@@ -53,7 +53,7 @@ public class BattleInitiatedState extends IGameplayState {
 
     @Override
     public void DeinitializeState() {
-        SM.Game.removeActiveBottomPaneFragment();
+        SM.Game.UI.removeActiveBottomPaneFragment();
     }
 
     // TODO: probably don't need to do anything here... will remove if so

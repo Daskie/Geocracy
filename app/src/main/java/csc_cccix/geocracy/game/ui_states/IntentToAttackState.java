@@ -28,9 +28,9 @@ public class IntentToAttackState extends IGameplayState {
         SM.Game.getWorld().highlightTerritories(attackingTerritory.getAdjacentEnemyTerritories());
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.getActivity().hideAllGameInteractionButtons();
-            SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, true);
-            SM.Game.getActivity().getCancelBtn().show();
+            SM.Game.UI.hideAllGameInteractionButtons();
+            SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+            SM.Game.UI.getCancelBtn().show();
 
         });
     }

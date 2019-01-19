@@ -25,13 +25,13 @@ public class SettingsVisibleState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-        SM.Game.showOverlayFragment(new SettingsFragment());
+        SM.Game.UI.showOverlayFragment(new SettingsFragment());
     }
 
     @Override
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
-        SM.Game.removeOverlayFragment();
+        SM.Game.UI.removeOverlayFragment();
     }
 
     @Override
