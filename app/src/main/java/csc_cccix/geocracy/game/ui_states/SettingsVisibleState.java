@@ -2,6 +2,7 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
@@ -24,7 +25,7 @@ public class SettingsVisibleState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-        SM.Game.showOverlayFragment(GameActivity.settingsFragment);
+        SM.Game.showOverlayFragment(new SettingsFragment());
     }
 
     @Override

@@ -25,7 +25,6 @@ import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.fragments.LoadingFragment;
-import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.game.ui_states.GameAction;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import es.dmoral.toasty.Toasty;
@@ -35,8 +34,6 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private static final String TAG = "GAME_ACTIVITY";
     public static final transient String USER_ACTION = "USER_ACTION";
-
-    public static final SettingsFragment settingsFragment = new SettingsFragment();
 
     public static Game game;
     private GameSurfaceView gameSurfaceView;
@@ -89,6 +86,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // Load game
         if (load != null && load) {
             game = Game.loadGame();
+            game.setupFromLoad(this);
             if (game == null) {
                 Log.e("", "Failed to load game");
                 Util.exit();

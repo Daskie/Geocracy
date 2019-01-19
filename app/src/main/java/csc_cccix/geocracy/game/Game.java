@@ -6,6 +6,7 @@ import android.opengl.GLES30;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -75,7 +76,7 @@ public class Game implements Serializable {
     private transient long lastTimestamp;
     private transient float cooldown;
 
-    FragmentManager manager;
+    private transient FragmentManager manager;
 
     public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
@@ -140,6 +141,12 @@ public class Game implements Serializable {
     public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
     public boolean getGameStatus(){ return outOfGameSetUp; }
 
+    // SETTERS
+
+    public void setupFromLoad(GameActivity activity) {
+        this.activity = activity;
+        this.manager = activity.getSupportFragmentManager();
+    }
 
     public static boolean saveGame(Game game) {
         try {

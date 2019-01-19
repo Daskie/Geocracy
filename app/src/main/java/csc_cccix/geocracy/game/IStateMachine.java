@@ -1,8 +1,10 @@
 package csc_cccix.geocracy.game;
 
+import java.io.Serializable;
+
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 
-public abstract class IStateMachine {
+public abstract class IStateMachine implements Serializable {
 
     public Game Game;
 
