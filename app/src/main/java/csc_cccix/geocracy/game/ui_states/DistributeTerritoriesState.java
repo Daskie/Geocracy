@@ -137,6 +137,11 @@ public class DistributeTerritoriesState extends IGameplayState {
         selectedTerritory.setNArmies(amount);
         currentPlayer.addOrRemoveNArmies(1);
 
+        SM.Game.getActivity().runOnUiThread(() -> {
+            SM.Game.removeActiveBottomPaneFragment();
+            SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+        });
+
         Log.i(TAG, currentPlayer.getName() + " ADDED " + selectedTerritory.getTerritoryName());
 
         SM.Game.nextPlayer();

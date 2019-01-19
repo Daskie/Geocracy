@@ -80,9 +80,9 @@ public class BattleInitiatedState extends IGameplayState {
         for (int i = 0; i < 3; i++) {
 
             if (attackingDiceRolls.get(i) <= defendingDiceRolls.get(i)) {
-                attackerUnitLoss++;
+                if (attackingDiceRolls.get(i) != -1) attackerUnitLoss++;
             } else {
-                defenderUnitLoss++;
+                if (attackingDiceRolls.get(i) != -1) defenderUnitLoss++;
             }
 
         }

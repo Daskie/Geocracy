@@ -46,13 +46,17 @@ public class PlaceReinforcementsState extends IGameplayState {
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().unselectTerritory();
         SM.Game.getWorld().highlightTerritories(currentPlayer.getTerritories());
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.getActivity().hideAllGameInteractionButtons();
-            SM.Game.removeActiveBottomPaneFragment();
-            SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
-            SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(false);
-            SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
-        });
+
+        if (currentPlayer.getClass() == HumanPlayer.class) {
+            SM.Game.getActivity().runOnUiThread(() -> {
+                SM.Game.getActivity().hideAllGameInteractionButtons();
+                SM.Game.removeActiveBottomPaneFragment();
+                SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+                SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(false);
+                SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
+            });
+
+        }
 
         Log.i(TAG, "" + currentPlayer.getId());
         Log.i(TAG, "HAS " + currentPlayer.getArmyPool() + " UNITS TO DISTRIBUTE");
@@ -112,8 +116,9 @@ public class PlaceReinforcementsState extends IGameplayState {
 
             case CONFIRM_TAPPED:
 
-                // Loop through next players
+                SM.Game.removeActiveBottomPaneFragment();
 
+                // Loop through next players
                 SM.Game.nextPlayer();
 
                 // If all players have placed reinforcements (is human players turn again)
