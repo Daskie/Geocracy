@@ -54,8 +54,8 @@ public class SelectedTerritoryState extends IGameplayState {
                     }
 
                 } else {
-                    SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(true, false);
-                    SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(true, false);
+                    SM.Game.getActivity().setAttackModeButtonVisibilityAndActiveState(false, false);
+                    SM.Game.getActivity().setFortifyButtonVisibilityAndActiveState(false, false);
                 }
 
 

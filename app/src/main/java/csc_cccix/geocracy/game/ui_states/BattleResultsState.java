@@ -28,12 +28,24 @@ public class BattleResultsState extends IGameplayState {
         result.attackingTerritory.setNArmies(result.attackingTerritory.getNArmies()-result.attackingUnitLoss);
         result.defendingTerritory.setNArmies(result.defendingTerritory.getNArmies()-result.defendingUnitLoss);
 
+        // If the defending territory now has 0 units, attacking territory takes over
+        if (result.defendingTerritory.getNArmies() < 1) {
+
+            result.defendingTerritory.getOwner().removeTerritory(result.defendingTerritory);
+            result.defendingTerritory.setOwner(result.attackingTerritory.getOwner());
+            result.defendingTerritory.getOwner().addTerritory(result.defendingTerritory);
+
+            result.defendingTerritory.setNArmies(result.attackingUnitCount - result.attackingUnitLoss);
+
+        }
+
         SM.Game.showBottomPaneFragment(BattleResultsFragment.newInstance(result.attackingTerritory, result.defendingTerritory, result.attackingUnitLoss, result.defendingUnitLoss));
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(result.attackingTerritory);
         SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
         SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
+
     }
 
     @Override

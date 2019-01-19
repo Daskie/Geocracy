@@ -50,7 +50,6 @@ public class PlaceReinforcementsState extends IGameplayState {
         if (currentPlayer.getClass() == HumanPlayer.class) {
             SM.Game.getActivity().runOnUiThread(() -> {
                 SM.Game.getActivity().hideAllGameInteractionButtons();
-                SM.Game.removeActiveBottomPaneFragment();
                 SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
                 SM.Game.getActivity().setUpdateUnitCountButtonsVisibility(false);
                 SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false);
@@ -145,12 +144,16 @@ public class PlaceReinforcementsState extends IGameplayState {
 
         if (selectedTerritory != null) {
 
-            if (currentPlayer.getArmyPool() - amount < 0 && currentPlayer.getClass() == HumanPlayer.class) {
-                SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "You don't have enough units to add to this territory.", Toast.LENGTH_LONG).show());
+            if (currentPlayer.getArmyPool() - amount < 0) {
+                if (currentPlayer.getClass() == HumanPlayer.class) {
+                    SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "You don't have enough units to add to this territory.", Toast.LENGTH_LONG).show());
+                }
                 return;
-
-            } else if (amount < 0 && selectedTerritory.getNArmies() <= 1 && currentPlayer.getClass() == HumanPlayer.class) {
-                SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot remove units from territory.", Toast.LENGTH_LONG).show());
+            }
+            else if (amount < 0 && selectedTerritory.getNArmies() <= 1) {
+                if (currentPlayer.getClass() == HumanPlayer.class) {
+                    SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot remove units from territory.", Toast.LENGTH_LONG).show());
+                }
                 return;
             }
             else {
@@ -172,7 +175,6 @@ public class PlaceReinforcementsState extends IGameplayState {
                 SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().setConfirmButtonVisibilityAndActiveState(true, false));
             }
 
-            SM.Game.removeActiveBottomPaneFragment();
             SM.Game.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
         }
 

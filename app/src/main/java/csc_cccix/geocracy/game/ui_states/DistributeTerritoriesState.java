@@ -30,38 +30,16 @@ public class DistributeTerritoriesState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-
-//        SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().hideAllGameInteractionButtons());
-
-        if (selectedTerritory != null) {
-            SM.Game.getWorld().selectTerritory(selectedTerritory);
-            SM.Game.getWorld().unhighlightTerritories();
-
-            SM.Game.getCameraController().targetTerritory(selectedTerritory);
-            if (selectedTerritory.getOwner() == null) {
-                SM.Game.getActivity().runOnUiThread(() ->  SM.Game.getActivity().getConfirmButton().show());
-            }
-            SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.removeActiveBottomPaneFragment();
-                SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
-            });
-        } else {
-            SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
-        }
-
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
+        highlightUnoccupiedTerritories();
+        SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
     }
 
     @Override
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
-
         SM.Game.setFirstPlayer();
-
         SM.Game.removeActiveBottomPaneFragment();
         SM.Game.getActivity().runOnUiThread(() ->  SM.Game.getActivity().getConfirmButton().hide());
-
     }
 
     @Override
@@ -83,7 +61,6 @@ public class DistributeTerritoriesState extends IGameplayState {
 
                     } else {
                         addToSelectedTerritoryUnitCount(1);
-//                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.removeActiveBottomPaneFragment());
                     }
 
                 }
@@ -98,11 +75,10 @@ public class DistributeTerritoriesState extends IGameplayState {
                     SM.Game.getWorld().selectTerritory(selectedTerritory);
                     SM.Game.getWorld().unhighlightTerritories();
                     SM.Game.getCameraController().targetTerritory(selectedTerritory);
-                    if (selectedTerritory.getOwner() == null) {
+                    if (selectedTerritory.getOwner() == null && SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.getActivity().getConfirmButton().show());
                     }
                     SM.Game.getActivity().runOnUiThread(() -> {
-                        SM.Game.removeActiveBottomPaneFragment();
                         SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
                     });
 
@@ -119,8 +95,7 @@ public class DistributeTerritoriesState extends IGameplayState {
                     SM.Game.getActivity().getConfirmButton().hide();
                 });
 
-                SM.Game.getWorld().unhighlightTerritories();
-                SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
+                highlightUnoccupiedTerritories();
 
                 break;
 
@@ -138,7 +113,6 @@ public class DistributeTerritoriesState extends IGameplayState {
         currentPlayer.addOrRemoveNArmies(1);
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.removeActiveBottomPaneFragment();
             SM.Game.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
         });
 
@@ -156,5 +130,11 @@ public class DistributeTerritoriesState extends IGameplayState {
         }
 
     }
+
+    private void highlightUnoccupiedTerritories() {
+        SM.Game.getWorld().unhighlightTerritories();
+        SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
+    }
+
 
 }

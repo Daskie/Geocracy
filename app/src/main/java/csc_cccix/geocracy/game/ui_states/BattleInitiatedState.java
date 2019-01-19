@@ -90,7 +90,7 @@ public class BattleInitiatedState extends IGameplayState {
         Util.clamp(attackerUnitLoss, 0, attackingDiceRoll.unitCount);
         Util.clamp(defenderUnitLoss, 0, defendingDiceRoll.unitCount);
 
-        return new BattleResult(attackingDiceRoll.territory, attackerUnitLoss, defendingDiceRoll.territory, defenderUnitLoss);
+        return new BattleResult(attackingDiceRoll.territory, attackingDiceRoll.unitCount, attackerUnitLoss, defendingDiceRoll.territory, defendingDiceRoll.unitCount, defenderUnitLoss);
     }
 
 }
