@@ -31,7 +31,11 @@ public class DistributeTerritoriesState extends IGameplayState {
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
         highlightUnoccupiedTerritories();
-        SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
+
+        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+            SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
+        }
+
     }
 
     @Override
@@ -77,6 +81,8 @@ public class DistributeTerritoriesState extends IGameplayState {
                     SM.Game.getCameraController().targetTerritory(selectedTerritory);
                     if (selectedTerritory.getOwner() == null && SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
+                    } else {
+                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().hide());
                     }
                     SM.Game.getActivity().runOnUiThread(() -> {
                         SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
@@ -125,6 +131,11 @@ public class DistributeTerritoriesState extends IGameplayState {
             SM.Advance(new PlaceReinforcementsState(SM));
 
         } else {
+
+            if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+                SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
+            }
+
             SM.Game.getWorld().unhighlightTerritories();
             SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
         }

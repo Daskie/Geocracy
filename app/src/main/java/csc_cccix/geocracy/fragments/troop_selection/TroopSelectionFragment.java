@@ -32,14 +32,23 @@ public abstract class TroopSelectionFragment extends Fragment {
         attackingTerritory = (Territory) getArguments().get("attackingTerritory");
         defendingTerritory = (Territory) getArguments().get("defendingTerritory");
 
+        radioGroup = view.findViewById(R.id.troopSelection);
+        radioGroup.setOrientation(LinearLayout.HORIZONTAL);
+
         return view;
     }
 
-    // Is this even needed?
     public int getSelectedNumberOfUnits() {
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        radioButton = view.findViewById(selectedId);
-        return Integer.parseInt(radioButton.getText().toString());
+        if (radioGroup != null) {
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            radioButton = view.findViewById(selectedId);
+
+            if (radioButton != null) {
+                return Integer.parseInt(radioButton.getText().toString());
+            }
+        }
+
+        return -1;
     }
 
 }

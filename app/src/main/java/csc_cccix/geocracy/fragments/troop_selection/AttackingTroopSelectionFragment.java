@@ -11,6 +11,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 import csc_cccix.R;
 import csc_cccix.geocracy.world.Territory;
 
@@ -39,28 +41,29 @@ public class AttackingTroopSelectionFragment extends TroopSelectionFragment {
         TextView defendingTerritoryTextView = view.findViewById(R.id.targetTerritoryID);
         defendingTerritoryTextView.setText("TO ATTACK TERRITORY: " + defendingTerritory.getTerritoryName());
 
-        radioGroup = view.findViewById(R.id.troopSelection);
         addRadioButtons(ATTACK_OPTIONS);
 
         return view;
     }
 
     private void addRadioButtons(int[] values) {
-        RadioGroup ll = radioGroup;
-        ll.setOrientation(LinearLayout.HORIZONTAL);
         boolean first = true;
 
         for (int i = 0; i < values.length && i + 1 < this.attackingTerritory.getNArmies() - 1; i++) {
-            RadioButton rdbtn = new RadioButton(getContext());
+            RadioButton radioButton = new RadioButton(getContext());
             if (first) {
-                rdbtn.setChecked(true);
+                radioButton.setChecked(true);
                 first = false;
             }
 
-            rdbtn.setId(i);
-            rdbtn.setText("" + values[i]);
-            ll.addView(rdbtn);
+            radioButton.setId(i);
+            radioButton.setText("" + values[i]);
+            radioGroup.addView(radioButton);
         }
+    }
+
+    public void selectUnitCount(int unitCount) {
+        radioGroup.check(Arrays.binarySearch(ATTACK_OPTIONS, unitCount));
     }
 
 }

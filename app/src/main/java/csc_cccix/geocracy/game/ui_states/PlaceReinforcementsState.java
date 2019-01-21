@@ -122,6 +122,7 @@ public class PlaceReinforcementsState extends IGameplayState {
 
                 // Loop through next players
                 SM.Game.nextPlayer();
+                SM.Game.UI.hideAllGameInteractionButtons();
 
                 // If all players have placed reinforcements (is human players turn again)
                 if(SM.Game.getCurrentPlayer().getClass() == HumanPlayer.class) {

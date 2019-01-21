@@ -7,6 +7,7 @@ import com.github.javafaker.Faker;
 import java.util.Random;
 
 import csc_cccix.geocracy.EventBus;
+import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.ui_states.BattleResultsState;
 import csc_cccix.geocracy.game.ui_states.DefaultState;
 import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
@@ -14,6 +15,8 @@ import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.game.ui_states.IGameplayState;
 import csc_cccix.geocracy.game.ui_states.IntentToAttackState;
 import csc_cccix.geocracy.game.ui_states.PlaceReinforcementsState;
+import csc_cccix.geocracy.game.ui_states.SelectDefenseState;
+import csc_cccix.geocracy.game.ui_states.SelectedAttackTargetState;
 import csc_cccix.geocracy.game.ui_states.SelectedTerritoryState;
 import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
@@ -25,6 +28,7 @@ import static csc_cccix.geocracy.game.ui_states.GameAction.CANCEL_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.CONFIRM_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.END_TURN_TAPPED;
 import static csc_cccix.geocracy.game.ui_states.GameAction.TERRITORY_SELECTED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.UNIT_COUNT_SELECTED;
 
 public class AIPlayer extends Player {
 
@@ -40,6 +44,7 @@ public class AIPlayer extends Player {
         super.name = "CPU: " + faker.name().lastName();
     }
 
+    private static Territory attackingTerritory = null;
     private static Territory currentlySelectedTerritory = null;
 
     private static IGameplayState previousState = null;
@@ -87,7 +92,27 @@ public class AIPlayer extends Player {
 
                 EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, randomSet.pollRandom(rand)));
                 EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
+
+                attackingTerritory = currentlySelectedTerritory;
             }
+        } else if (state.getClass() == SelectedAttackTargetState.class) {
+
+            int randomAttackUnits = (new Random().nextInt() % 3) + 2;
+            int randomBoundAttackWithUnits = Util.clamp(randomAttackUnits,2,attackingTerritory.getNArmies() - 2);
+
+            EventBus.publish(USER_ACTION, new GameEvent(UNIT_COUNT_SELECTED, randomBoundAttackWithUnits));
+            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
+
+
+        } else if (state.getClass() == SelectDefenseState.class) {
+
+            SelectDefenseState selectDefenseState = (SelectDefenseState) state;
+            int randomDefendUnits = (new Random().nextInt() % 2) + 1;
+            int randomBoundDefendWithUnits = Util.clamp(randomDefendUnits,1,selectDefenseState.getDefendingTerritory().getNArmies());
+
+            EventBus.publish(USER_ACTION, new GameEvent(UNIT_COUNT_SELECTED, randomBoundDefendWithUnits));
+            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
+
         } else if (state.getClass() == BattleResultsState.class) {
             EventBus.publish(USER_ACTION, new GameEvent(CANCEL_TAPPED, null));
         }

@@ -11,7 +11,7 @@ public class SelectDefenseState extends IGameplayState {
 
     private final String TAG = "SELECT_DEFENSE_STATE";
 
-    TroopSelectionFragment troopSelectionFragment;
+    DefendingTroopSelectionFragment troopSelectionFragment;
 
     private Territory attackingTerritory;
     private Territory defendingTerritory;
@@ -65,8 +65,19 @@ public class SelectDefenseState extends IGameplayState {
             case CONFIRM_TAPPED:
 
                 if (attackingTerritory != null && defendingTerritory != null) {
-                    DiceRoll defenderDiceRoll = new DiceRoll(defendingTerritory, troopSelectionFragment.getSelectedNumberOfUnits(), false);
-                    SM.Advance(new BattleInitiatedState(SM, attackerDiceRoll, defenderDiceRoll));
+                    int selectedNumberOfUnits = troopSelectionFragment.getSelectedNumberOfUnits();
+                    if (selectedNumberOfUnits > 0) {
+                        DiceRoll defenderDiceRoll = new DiceRoll(defendingTerritory, selectedNumberOfUnits, false);
+                        SM.Advance(new BattleInitiatedState(SM, attackerDiceRoll, defenderDiceRoll));
+                    }
+                }
+
+                break;
+
+            case UNIT_COUNT_SELECTED:
+
+                if (event.payload != null) {
+                    troopSelectionFragment.selectUnitCount((int) event.payload);
                 }
 
                 break;
@@ -79,5 +90,9 @@ public class SelectDefenseState extends IGameplayState {
         }
 
         return false;
+    }
+
+    public Territory getDefendingTerritory() {
+        return defendingTerritory;
     }
 }
