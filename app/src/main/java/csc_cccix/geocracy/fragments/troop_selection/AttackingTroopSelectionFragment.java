@@ -26,7 +26,7 @@ public class AttackingTroopSelectionFragment extends TroopSelectionFragment {
         return newFragment;
     }
 
-    private static final int[] ATTACK_OPTIONS = new int[]{1,2,3};
+    private static final int[] ATTACK_OPTIONS = new int[]{2,3,4};
 
     @Nullable
     @Override
@@ -50,7 +50,7 @@ public class AttackingTroopSelectionFragment extends TroopSelectionFragment {
         ll.setOrientation(LinearLayout.HORIZONTAL);
         boolean first = true;
 
-        for (int i = 0; i < values.length && i + 1 < this.attackingTerritory.getNArmies(); i++) {
+        for (int i = 0; i < values.length && i + 1 < this.attackingTerritory.getNArmies() - 1; i++) {
             RadioButton rdbtn = new RadioButton(getContext());
             if (first) {
                 rdbtn.setChecked(true);

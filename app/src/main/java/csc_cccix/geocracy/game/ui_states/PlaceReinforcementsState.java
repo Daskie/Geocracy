@@ -96,7 +96,10 @@ public class PlaceReinforcementsState extends IGameplayState {
                             SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true));
                             SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getCurrentPlayer()));
                         } else {
-                            SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show());
+                            SM.Game.getActivity().runOnUiThread(() -> {
+                                SM.Game.UI.hideAllGameInteractionButtons();
+                                Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show();
+                            });
                         }
 
                     }
@@ -142,7 +145,7 @@ public class PlaceReinforcementsState extends IGameplayState {
     public void addToSelectedTerritoryUnitCount(int amount) {
         Player currentPlayer = SM.Game.getCurrentPlayer();
 
-        if (selectedTerritory != null) {
+        if (selectedTerritory != null && selectedTerritory.getOwner() == currentPlayer) {
 
             if (currentPlayer.getArmyPool() - amount < 0) {
                 if (currentPlayer.getClass() == HumanPlayer.class) {
@@ -165,7 +168,7 @@ public class PlaceReinforcementsState extends IGameplayState {
             }
 
         } else {
-            Log.d(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED");
+            Log.d(TAG, "CANNOT UPDATE UNIT COUNT, NO TERRITORY SELECTED OR CURRENT PLAYER IS NOT THE TERRITORIES OWNER!");
         }
 
         if (currentPlayer.getClass() == HumanPlayer.class) {

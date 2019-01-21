@@ -26,7 +26,7 @@ public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
         return newFragment;
     }
 
-    private static final int[] DEFFEND_OPTIONS = new int[]{1,2,};
+    private static final int[] DEFFEND_OPTIONS = new int[]{1,2};
 
     @Nullable
     @Override

@@ -91,6 +91,7 @@ public class FortifyTerritoryState extends IGameplayState {
                 break;
 
             case CONFIRM_TAPPED:
+                SM.Game.nextPlayer();
                 SM.Advance(new DefaultState(SM));
                 break;
 
