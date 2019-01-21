@@ -2,24 +2,27 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
-import csc_cccix.geocracy.fragments.troop_selection.AttackingTroopSelectionFragment;
+import csc_cccix.geocracy.fragments.troop_selection.DefendingTroopSelectionFragment;
 import csc_cccix.geocracy.fragments.troop_selection.TroopSelectionFragment;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 
-public class SelectedAttackTargetState extends IGameplayState {
+public class SelectDefenseState extends IGameplayState {
 
-    private final String TAG = "SELECTED_ATTACK_TARGET_STATE";
+    private final String TAG = "SELECT_DEFENSE_STATE";
 
     TroopSelectionFragment troopSelectionFragment;
 
     private Territory attackingTerritory;
     private Territory defendingTerritory;
 
-    public SelectedAttackTargetState(IStateMachine SM, Territory attackingTerritory, Territory defendingTerritory) {
+    private DiceRoll attackerDiceRoll;
+
+    public SelectDefenseState(IStateMachine SM, Territory attackingTerritory, Territory defendingTerritory, DiceRoll attackerDiceRoll) {
         super(SM);
         this.attackingTerritory = attackingTerritory;
         this.defendingTerritory = defendingTerritory;
+        this.attackerDiceRoll = attackerDiceRoll;
     }
 
     @Override
@@ -31,11 +34,11 @@ public class SelectedAttackTargetState extends IGameplayState {
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
 
-        troopSelectionFragment = AttackingTroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
+        troopSelectionFragment = DefendingTroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
         SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(attackingTerritory);
-        SM.Game.getWorld().targetTerritory(defendingTerritory);
+//        SM.Game.getWorld().unhighlightTerritories();
+//        SM.Game.getWorld().selectTerritory(attackingTerritory);
+//        SM.Game.getWorld().targetTerritory(defendingTerritory);
         SM.Game.getCameraController().targetTerritory(defendingTerritory);
 
         SM.Game.getActivity().runOnUiThread(() -> {
@@ -62,12 +65,8 @@ public class SelectedAttackTargetState extends IGameplayState {
             case CONFIRM_TAPPED:
 
                 if (attackingTerritory != null && defendingTerritory != null) {
-                    DiceRoll attackerDiceRoll = new DiceRoll(attackingTerritory, troopSelectionFragment.getSelectedNumberOfUnits(), true);
-//                    DiceRoll defenderDiceRoll = new DiceRoll(defendingTerritory, 2, false);
-
-                    SM.Advance(new SelectDefenseState(SM, attackingTerritory, defendingTerritory, attackerDiceRoll));
-
-//                    SM.Advance(new BattleInitiatedState(SM, attackerDiceRoll, defenderDiceRoll));
+                    DiceRoll defenderDiceRoll = new DiceRoll(defendingTerritory, troopSelectionFragment.getSelectedNumberOfUnits(), false);
+                    SM.Advance(new BattleInitiatedState(SM, attackerDiceRoll, defenderDiceRoll));
                 }
 
                 break;
