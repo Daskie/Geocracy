@@ -64,7 +64,7 @@ public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
     }
 
     public void selectUnitCount(int unitCount) {
-        radioGroup.check(Arrays.binarySearch(DEFFEND_OPTIONS, unitCount));
+        if (radioGroup != null) radioGroup.check(Arrays.binarySearch(DEFFEND_OPTIONS, unitCount));
     }
 
 }

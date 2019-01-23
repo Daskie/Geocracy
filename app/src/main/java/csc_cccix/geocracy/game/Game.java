@@ -161,7 +161,18 @@ public class Game implements Serializable {
     public void setupFromLoad(GameActivity activity) {
         this.activity = activity;
         this.manager = activity.getSupportFragmentManager();
-        StateMachine.currentState.InitializeState();
+        this.UI = new GameUI(this.activity, this.manager);
+        this.spaceRenderer = new SpaceRenderer();
+        this.cameraController = new CameraController();
+        this.readbackBuffer = ByteBuffer.allocateDirect(1);
+
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
+        EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
+
+        this.lastTimestamp = System.nanoTime();
+
+        StateMachine.Advance(StateMachine.previousState);
+//        StateMachine.currentState.InitializeState();
     }
 
     public static boolean saveGame(Game game) {
