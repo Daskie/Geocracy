@@ -17,6 +17,7 @@ import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.ui_states.IGameplayState;
+import csc_cccix.geocracy.game.ui_states.SelectDefenseState;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
@@ -75,30 +76,6 @@ public class Game implements Serializable {
     private transient FragmentManager manager;
 
 
-    public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
-        world = new World(this, seed);
-
-        players = new Player[nPlayers];
-        Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
-        players[0] = new HumanPlayer(playerName,1, playerColors[0]);
-        for (int i = 1; i < players.length; ++i) {
-            players[i] = new AIPlayer(i + 1, playerColors[i]);
-        }
-        currentPlayerIndex = 0;
-
-        lastT = 0;
-
-        manager = activity.getSupportFragmentManager();
-        UI = new GameUI(activity, manager);
-
-        // Create New State Machine Implementation and Start it
-        StateMachine = new GameStateMachine(this);
-        StateMachine.Start();
-
-        constructTransient();
-
-    }
-
     public Game(GameActivity activity, String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
 
@@ -121,17 +98,17 @@ public class Game implements Serializable {
         StateMachine = new GameStateMachine(this);
         StateMachine.Start();
 
-        constructTransient();
-    }
-
-    private void constructTransient() {
         spaceRenderer = new SpaceRenderer();
         cameraController = new CameraController();
-        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
         readbackBuffer = ByteBuffer.allocateDirect(1);
+
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
         EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
+
         lastTimestamp = System.nanoTime();
+
     }
+
 
     // GETTERS
     public GameActivity getActivity() { return activity; }
@@ -141,7 +118,45 @@ public class Game implements Serializable {
     public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
     public boolean getGameStatus(){ return outOfGameSetUp; }
 
-    // SETTERS
+    public Player getControllingPlayer() {
+        if (StateMachine.CurrentState() instanceof SelectDefenseState) {
+            SelectDefenseState selectDefenseState = (SelectDefenseState) StateMachine.CurrentState();
+            return selectDefenseState.getDefendingTerritory().getOwner();
+        } else {
+            return getCurrentPlayer();
+        }
+    }
+
+    // Increments current player index
+    public void nextPlayer() {
+        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        UI.updateCurrentPlayerFragment();
+
+        //  if that last player was a human player and the new current player is an AI, set cooldown time... (is this neeeded?)
+        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
+    }
+
+    public void setFirstPlayer(){
+        currentPlayerIndex=0;
+        UI.updateCurrentPlayerFragment();
+    }
+
+    // The core game logic
+    private void update(long t, float dt) {
+        if (getControllingPlayer() instanceof HumanPlayer) {
+            handleInput();
+        }
+        else {
+            if (cooldown <= 0.0f) {
+                handleComputerInput();
+                cooldown = 1.0f;
+            }
+            cooldown -= dt;
+        }
+
+        cameraController.update(dt);
+    }
 
     public void setupFromLoad(GameActivity activity) {
         this.activity = activity;
@@ -184,7 +199,7 @@ public class Game implements Serializable {
     // Called during deserialization
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        constructTransient();
+//        constructTransient();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -237,20 +252,6 @@ public class Game implements Serializable {
         lastTimestamp = currentTimestamp;
     }
 
-    // Increments current player index
-    public void nextPlayer() {
-        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) {
-            cooldown = 1.0f;
-        }
-        UI.updateCurrentPlayerFragment();
-    }
-    public void setFirstPlayer(){
-        currentPlayerIndex=0;
-        UI.updateCurrentPlayerFragment();
-    }
-
     public void screenResized(Vec2i size) {
         screenSize = size;
 
@@ -289,22 +290,6 @@ public class Game implements Serializable {
         synchronized (this) {
             zoomFactor = factor;
         }
-    }
-
-    // The core game logic
-    private void update(long t, float dt) {
-        if (getCurrentPlayer() instanceof HumanPlayer) {
-            handleInput();
-        }
-        else {
-            if (cooldown <= 0.0f) {
-                handleComputerInput();
-                cooldown = 1.0f;
-            }
-            cooldown -= dt;
-        }
-
-        cameraController.update(dt);
     }
 
     // Handles AI Input
