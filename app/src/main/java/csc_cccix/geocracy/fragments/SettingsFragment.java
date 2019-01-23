@@ -15,13 +15,15 @@ import android.widget.SeekBar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
 
+import java.io.Serializable;
+
 import csc_cccix.R;
 import csc_cccix.geocracy.AudioService;
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.states.GameAction;
-import csc_cccix.geocracy.states.GameEvent;
+import csc_cccix.geocracy.game.ui_states.GameAction;
+import csc_cccix.geocracy.game.ui_states.GameEvent;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements Serializable {
 
     @Nullable
     @Override

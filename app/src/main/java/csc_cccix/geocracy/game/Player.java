@@ -22,7 +22,7 @@ public class Player implements Serializable {
     private SerializableVec3 color;
     private int armyPool;
     private int armies;
-    private transient Set<Continent> ownedContinents; // which continents the player owns all territories of
+    private Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
     private int numArmiesAttacking;
     private int[] die;
@@ -48,7 +48,7 @@ public class Player implements Serializable {
     // Called by Territory.setOwner
     public void removeTerritory(Territory territory) {
         this.territories.remove(territory);
-        ownedContinents.remove(territory.getContinent());
+        this.ownedContinents.remove(territory.getContinent());
         calcBonus();
     }
 

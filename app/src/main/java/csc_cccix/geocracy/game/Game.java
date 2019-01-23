@@ -3,8 +3,8 @@ package csc_cccix.geocracy.game;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,36 +13,25 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
-
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.fragments.GameInfoFragment;
+import csc_cccix.geocracy.game.ui_states.IGameplayState;
+import csc_cccix.geocracy.game.ui_states.SelectDefenseState;
 import csc_cccix.geocracy.space.SpaceRenderer;
-import csc_cccix.geocracy.states.BattleResultsState;
-import csc_cccix.geocracy.states.DefaultState;
-import csc_cccix.geocracy.states.DiceRollState;
-import csc_cccix.geocracy.states.FortifyTerritoryState;
-import csc_cccix.geocracy.states.GainArmyUnitsState;
-import csc_cccix.geocracy.states.GameEvent;
-import csc_cccix.geocracy.states.GameState;
-import csc_cccix.geocracy.states.IntentToAttackState;
-import csc_cccix.geocracy.states.SelectedTerritoryState;
-import csc_cccix.geocracy.states.SetUpInitTerritoriesState;
+import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
 import csc_cccix.geocracy.world.World;
 import glm_.vec2.Vec2;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3;
 
-import static csc_cccix.geocracy.states.GameAction.ATTACK_TAPPED;
-import static csc_cccix.geocracy.states.GameAction.CANCEL_TAPPED;
-import static csc_cccix.geocracy.states.GameAction.CONFIRM_TAPPED;
-import static csc_cccix.geocracy.states.GameAction.TERRITORY_SELECTED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.CANCEL_TAPPED;
+import static csc_cccix.geocracy.game.ui_states.GameAction.TERRITORY_SELECTED;
 
 public class Game implements Serializable {
-    
+
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
 
     public static final String TAG = "GAME";
@@ -53,6 +42,138 @@ public class Game implements Serializable {
     public static final String USER_ACTION = "USER_ACTION";
     public static final String SAVE_FILE_NAME = "save";
     public static final float TAP_DISTANCE_THRESHOLD = 10.0f;
+
+    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
+    private World world;
+    private boolean outOfGameSetUp = false;
+    private Player[] players;
+    private int currentPlayerIndex;
+    private long lastT; // Time of the previous game update / frame relative to the start of the game
+
+    private GameStateMachine StateMachine;
+
+    private transient GameActivity activity;
+    public transient GameUI UI; // User Interface
+
+    private transient SpaceRenderer spaceRenderer;
+    private transient CameraController cameraController;
+
+    private transient int idFBHandle;
+    private transient int idValueTexHandle;
+    private transient int idDepthRBHandle;
+    private transient ByteBuffer readbackBuffer;
+
+    private transient Vec2i screenSize;
+    private transient Vec2i swipeDelta;
+    private transient float swipeDistance;
+    private transient Vec2i tapDownPoint;
+    private transient Vec2i tapUpPoint;
+    private transient float zoomFactor;
+
+    private transient long lastTimestamp;
+    private transient float cooldown;
+
+    private transient FragmentManager manager;
+
+
+    public Game(GameActivity activity, String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
+        world = new World(this, seed);
+
+        players = new Player[nPlayers];
+        Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
+        players[0] = new HumanPlayer(playerName,1, playerColors[0]);
+        for (int i = 1; i < players.length; ++i) {
+            players[i] = new AIPlayer(i + 1, playerColors[i]);
+        }
+        currentPlayerIndex = 0;
+
+        lastT = 0;
+
+        this.activity = activity;
+        manager = activity.getSupportFragmentManager();
+
+        UI = new GameUI(activity, manager);
+
+        // Create New State Machine Implementation and Start it
+        StateMachine = new GameStateMachine(this);
+        StateMachine.Start();
+
+        spaceRenderer = new SpaceRenderer();
+        cameraController = new CameraController();
+        readbackBuffer = ByteBuffer.allocateDirect(1);
+
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
+        EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
+
+        lastTimestamp = System.nanoTime();
+
+    }
+
+
+    // GETTERS
+    public GameActivity getActivity() { return activity; }
+    public CameraController getCameraController() { return cameraController; }
+    public World getWorld() { return world; }
+    public Player[] getPlayers() { return players; }
+    public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
+    public boolean getGameStatus(){ return outOfGameSetUp; }
+
+    public Player getControllingPlayer() {
+        if (StateMachine.CurrentState() instanceof SelectDefenseState) {
+            SelectDefenseState selectDefenseState = (SelectDefenseState) StateMachine.CurrentState();
+            return selectDefenseState.getDefendingTerritory().getOwner();
+        } else {
+            return getCurrentPlayer();
+        }
+    }
+
+    // Increments current player index
+    public void nextPlayer() {
+        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        UI.updateCurrentPlayerFragment();
+
+        //  if that last player was a human player and the new current player is an AI, set cooldown time... (is this neeeded?)
+        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
+    }
+
+    public void setFirstPlayer(){
+        currentPlayerIndex=0;
+        UI.updateCurrentPlayerFragment();
+    }
+
+    // The core game logic
+    private void update(long t, float dt) {
+        if (getControllingPlayer() instanceof HumanPlayer) {
+            handleInput();
+        }
+        else {
+            if (cooldown <= 0.0f) {
+                handleComputerInput();
+                cooldown = 1.0f;
+            }
+            cooldown -= dt;
+        }
+
+        cameraController.update(dt);
+    }
+
+    public void setupFromLoad(GameActivity activity) {
+        this.activity = activity;
+        this.manager = activity.getSupportFragmentManager();
+        this.UI = new GameUI(this.activity, this.manager);
+        this.spaceRenderer = new SpaceRenderer();
+        this.cameraController = new CameraController();
+        this.readbackBuffer = ByteBuffer.allocateDirect(1);
+
+        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
+        EventBus.subscribe(USER_ACTION, this, event -> StateMachine.HandleEvent((GameEvent) event));
+
+        this.lastTimestamp = System.nanoTime();
+
+        StateMachine.Advance(StateMachine.previousState);
+//        StateMachine.currentState.InitializeState();
+    }
 
     public static boolean saveGame(Game game) {
         try {
@@ -86,209 +207,17 @@ public class Game implements Serializable {
         return Arrays.binarySearch(Global.getContext().fileList(), SAVE_FILE_NAME) >= 0;
     }
 
-    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
-    private World world;
-    private boolean outOfGameSetUp = false;
-    private Player[] players;
-    private int currentPlayerIndex;
-    private long lastT; // Time of the previous game update / frame relative to the start of the game
-    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
-
-    private transient GameActivity activity;
-    private transient GameState state;
-
-    private transient SpaceRenderer spaceRenderer;
-    private transient CameraController cameraController;
-
-    private transient int idFBHandle;
-    private transient int idValueTexHandle;
-    private transient int idDepthRBHandle;
-    private transient ByteBuffer readbackBuffer;
-
-    private transient Vec2i screenSize;
-    private transient Vec2i swipeDelta;
-    private transient float swipeDistance;
-    private transient Vec2i tapDownPoint;
-    private transient Vec2i tapUpPoint;
-    private transient float zoomFactor;
-
-    private transient long lastTimestamp;
-    private transient float cooldown;
-
-    public Game(String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
-        world = new World(this, seed);
-
-        players = new Player[nPlayers];
-        Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
-        players[0] = new HumanPlayer(playerName,1, playerColors[0]);
-        for (int i = 1; i < players.length; ++i) {
-            players[i] = new AIPlayer(i + 1, playerColors[i]);
-        }
-        currentPlayerIndex = 0;
-
-        lastT = 0;
-
-        constructTransient();
-    }
-
     // Called during deserialization
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        constructTransient();
+//        constructTransient();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
     }
 
-    private void constructTransient() {
-        spaceRenderer = new SpaceRenderer();
 
-        cameraController = new CameraController();
-        EventBus.subscribe("CAMERA_ZOOM_EVENT", this, e -> wasZoom((float)e));
-
-        readbackBuffer = ByteBuffer.allocateDirect(1);
-
-        EventBus.subscribe(USER_ACTION, this, event -> handleUserAction((GameEvent) event));
-
-        lastTimestamp = System.nanoTime();
-    }
-
-    // Must be called once after Game is either newly constructed or loaded
-    public void setActivityAndState(GameActivity activity, GameState state) {
-        this.activity = activity;
-        setState(state);
-        getState().initState();
-    }
-
-    private void handleUserAction(GameEvent event) {
-
-        switch (event.action) {
-
-            case SETTINGS_TAPPED:
-                Log.i("", "TOGGLE SETTINGS VISIBILITY ACTION");
-                activity.showOverlayFragment(GameActivity.settingsFragment);
-                break;
-
-            case GAME_INFO_TAPPED:
-                Log.i(TAG, "TOGGLE GAME INFO VISIBILITY ACTION");
-                activity.showOverlayFragment(GameInfoFragment.newInstance(players, getWorld().getSeed()));
-                break;
-
-            case TERRITORY_SELECTED:
-                Territory selectedTerritory = (Territory) event.payload;
-                if(selectedTerritory == null)
-                    return;
-
-                Log.i(TAG, "USER SELECTED TERRITORY:" + selectedTerritory.getId());
-
-                Class stateClass = getState().getClass();
-
-                if (stateClass == IntentToAttackState.class) {
-                    getState().selectTargetTerritory(selectedTerritory);
-                }
-                else if (
-                    stateClass == GainArmyUnitsState.class ||
-                    stateClass == IntentToAttackState.class ||
-                    stateClass == FortifyTerritoryState.class
-                )
-                {
-                    getState().selectTargetTerritory(selectedTerritory);
-                }
-                else if (stateClass == DiceRollState.class) {
-                    // do nothing
-                }
-                else if (stateClass == BattleResultsState.class) {
-                    // do nothing
-                }
-                else {
-                    getState().selectOriginTerritory(selectedTerritory);
-                    getState().initState();
-                }
-
-                break;
-
-            case ATTACK_TAPPED:
-
-                if (getState().getClass() == SelectedTerritoryState.class) {
-                    Log.i(TAG, "USER TAPPED ATTACK");
-                    getState().enableAttackMode();
-                    getState().initState();
-                } else {
-                    Log.i(TAG, "ATTACK BUTTON UNAVAILIBLE");
-                }
-
-                break;
-
-            case FORTIFY_TAPPED:
-
-                if (getState().getClass() == SelectedTerritoryState.class) {
-                    Log.i(TAG, "USER TAPPED FORTIFY TERRITORY");
-                    getState().fortifyAction();
-                    getState().initState();
-                } else {
-                    Log.i(TAG, "FORTIFY BUTTON UNAVAILIBLE");
-                }
-
-                break;
-
-            case ADD_UNIT_TAPPED:
-                Log.i(TAG, "ADD UNIT TAPPED");
-                getState().addToSelectedTerritoryUnitCount(1);
-                break;
-
-            case REMOVE_UNIT_TAPPED:
-                Log.i(TAG, "REMOVE UNIT TAPPED");
-                getState().addToSelectedTerritoryUnitCount(-1);
-                break;
-
-            case CONFIRM_UNITS_TAPPED:
-                if(getState().getClass() == GainArmyUnitsState.class)
-                    setState(new DefaultState(this));
-                Log.i(TAG, "CONFIRM UNITS TAPPED");
-                getState().performDiceRoll(null, null);
-                getState().initState();
-                break;
-
-            case CONFIRM_TAPPED:
-                Log.i(TAG, "CONFIRM TAPPED");
-                getState().confirmAction();
-                getState().initState();
-                break;
-
-            case CANCEL_TAPPED:
-                Log.i(TAG, "CANCEL ACTION TAPPED");
-                getState().cancelAction();
-                break;
-
-            case END_TURN_TAPPED:
-
-                Log.i(TAG, "END TURN TAPPED");
-                getState().endTurn();
-
-                break;
-
-            default:
-                break;
-
-        }
-
-    }
-
-    public void setState(GameState state) {
-        this.state = state;
-    }
-    public GameState getState() {
-        return this.state;
-    }
-
-    public CameraController getCameraController() {
-        return cameraController;
-    }
-
-    public GameActivity getActivity() {
-        return activity;
-    }
 
     // May be called more than once during app execution (waking from sleep, for instance)
     // In this method we need to create/recreate any GPU resources
@@ -334,17 +263,6 @@ public class Game implements Serializable {
         lastTimestamp = currentTimestamp;
     }
 
-    // Increments current player index
-    public void nextPlayer() {
-        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) {
-            cooldown = 1.0f;
-        }
-        activity.updateCurrentPlayerFragment();
-    }
-    public void setFirstPlayer(){currentPlayerIndex=0;}
-
     public void screenResized(Vec2i size) {
         screenSize = size;
 
@@ -355,6 +273,8 @@ public class Game implements Serializable {
         GLES30.glViewport(0, 0, screenSize.x, screenSize.y);
         cameraController.getCamera().setAspectRatio((float)screenSize.x / (float)screenSize.y);
     }
+
+    /* TOUCH INPUT HANDLING */
 
     public void wasTapDown(Vec2i p) {
         synchronized (this) {
@@ -383,49 +303,13 @@ public class Game implements Serializable {
         }
     }
 
-    // The core game logic
-    private void update(long t, float dt) {
-        if (getCurrentPlayer() instanceof HumanPlayer) {
-            handleInput();
-        }
-        else {
-            if (cooldown <= 0.0f) {
-                handleComputerInput();
-                cooldown = 1.0f;
-            }
-            cooldown -= dt;
-        }
-
-        cameraController.update(dt);
-    }
-
+    // Handles AI Input
     private void handleComputerInput() {
-        GameState currState = getState();
-        if(currState.getClass() == SetUpInitTerritoriesState.class){
-            Random rand = new Random();
-            int randNum = rand.nextInt(world.getUnoccupiedTerritories().size()) + 1;
-            Territory terr = world.getUnoccTerritory(randNum);
-            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-        }
-        if(currState.getClass() == GainArmyUnitsState.class){
-            Log.i(TAG, "" + getCurrentPlayer().getArmyPool());
-            while(getCurrentPlayer().getArmyPool()!=0)
-                for(Territory terr : getCurrentPlayer().getTerritories()) {
-                    terr.setNArmies(terr.getNArmies()+1);
-                    getCurrentPlayer().addOrRemoveNArmiesToPool(-1);
-                }
-
-            EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
-        }
-        if(currState.getClass() == SelectedTerritoryState.class){
-            Territory terr = getCurrentPlayer().findTerrWithMaxArmies();
-            EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
-            EventBus.publish(USER_ACTION, new GameEvent(ATTACK_TAPPED, null));
-        }
-
+        IGameplayState currentState = (IGameplayState) StateMachine.CurrentState();
+        AIPlayer.handleComputerInputWithState(this, currentState); // TODO: will probably want to change this to non static method as different AI could have different behaviors then...
     }
 
+    // Handles User Input
     private void handleInput() {
         synchronized (this) {
             if (swipeDelta != null && (swipeDelta.x != 0 || swipeDelta.y != 0)) {
@@ -531,24 +415,5 @@ public class Game implements Serializable {
         // Check for OpenGL errors
         return !Util.isGLError();
     }
-
-    public World getWorld() {
-        return world;
-    }
-
-    public Player[] getPlayers() {
-        return players;
-    }
-
-    public Player getCurrentPlayer() {
-        return players[currentPlayerIndex];
-    }
-    public void updateCurrentPlayer() {
-        if(currentPlayerIndex!=players.length-1)
-            currentPlayerIndex++;
-        else
-            currentPlayerIndex = 0;
-    }
-    public boolean getGameStatus(){ return outOfGameSetUp; }
 
 }

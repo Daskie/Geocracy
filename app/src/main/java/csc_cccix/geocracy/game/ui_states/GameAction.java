@@ -1,4 +1,4 @@
-package csc_cccix.geocracy.states;
+package csc_cccix.geocracy.game.ui_states;
 
 public enum GameAction {
     SETTINGS_TAPPED,
@@ -7,6 +7,7 @@ public enum GameAction {
     TERRITORY_SELECTED,
     ATTACK_TAPPED,
     FORTIFY_TAPPED,
+    UNIT_COUNT_SELECTED,
     ADD_UNIT_TAPPED,
     REMOVE_UNIT_TAPPED,
     CONFIRM_UNITS_TAPPED,

@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.adapters.PlayerAdapter;
+import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import es.dmoral.toasty.Toasty;
 
@@ -31,7 +32,7 @@ public class GameInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.game_info, container, false);
 
-        Long worldSeed = (Long) getArguments().getLong("worldSeed");
+        Long worldSeed = getArguments().getLong("worldSeed");
         TextView worldSeedView = view.findViewById(R.id.worldSeed);
         worldSeedView.setText("World Seed: " + Long.toHexString(worldSeed));
         RxView.touches(worldSeedView).subscribe(seedView -> {
@@ -61,6 +62,17 @@ public class GameInfoFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable("worldSeed", worldSeed);
         args.putSerializable("players", players);
+        newFragment.setArguments(args);
+
+        return newFragment;
+    }
+
+    public static GameInfoFragment newInstance(Game game) {
+        GameInfoFragment newFragment = new GameInfoFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable("worldSeed", game.getWorld().getSeed());
+        args.putSerializable("players", game.getPlayers());
         newFragment.setArguments(args);
 
         return newFragment;
