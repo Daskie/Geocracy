@@ -4,6 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.troop_selection.DefendingTroopSelectionFragment;
 import csc_cccix.geocracy.fragments.troop_selection.TroopSelectionFragment;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 
@@ -36,16 +37,13 @@ public class SelectDefenseState extends IGameplayState {
 
         troopSelectionFragment = DefendingTroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
         SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
-//        SM.Game.getWorld().unhighlightTerritories();
-//        SM.Game.getWorld().selectTerritory(attackingTerritory);
-//        SM.Game.getWorld().targetTerritory(defendingTerritory);
         SM.Game.getCameraController().targetTerritory(defendingTerritory);
 
         SM.Game.getActivity().runOnUiThread(() -> {
             SM.Game.UI.hideAllGameInteractionButtons();
-            SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
-            SM.Game.UI.getConfirmButton().show();
-            SM.Game.UI.getCancelBtn().show();
+            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+                SM.Game.UI.getConfirmButton().show();
+            }
         });
 
     }
@@ -83,8 +81,7 @@ public class SelectDefenseState extends IGameplayState {
                 break;
 
             case CANCEL_TAPPED:
-                Log.d(TAG, "CANCELED!");
-                SM.Advance(new DefaultState(SM));
+                Log.d(TAG, "CAN NOT CANCEL A DEFENSE STATE!");
                 break;
 
         }

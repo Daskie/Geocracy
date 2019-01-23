@@ -3,6 +3,7 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 
@@ -34,33 +35,34 @@ public class SelectedTerritoryState extends IGameplayState {
         SM.Game.getActivity().runOnUiThread(() -> {
 
             SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
-
             SM.Game.UI.hideAllGameInteractionButtons();
-            SM.Game.UI.getEndTurnButton().show();
-            SM.Game.UI.getCancelBtn().show();
 
-            // If current player is the owner of selected territory
-            if (selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
+            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+                SM.Game.UI.getEndTurnButton().show();
+                SM.Game.UI.getCancelBtn().show();
 
-                // If the territory contains enough units to perform an attack
-                if (selectedTerritory.getNArmies() >= 2) {
-                    SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+                // If current player is the owner of selected territory
+                if (selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
 
-                    // If the territory has adjacent friendly territories to fortify from
-                    if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
-                        SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, true);
+                    // If the territory contains enough units to perform an attack
+                    if (selectedTerritory.getNArmies() >= 2) {
+                        SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+
+                        // If the territory has adjacent friendly territories to fortify from
+                        if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
+                            SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, true);
+                        } else {
+                            SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, false);
+                        }
+
                     } else {
-                        SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, false);
+                        SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(false, false);
+                        SM.Game.UI.setFortifyButtonVisibilityAndActiveState(false, false);
                     }
 
-                } else {
-                    SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(false, false);
-                    SM.Game.UI.setFortifyButtonVisibilityAndActiveState(false, false);
                 }
-
-
-
             }
+
         });
 
     }
@@ -103,6 +105,12 @@ public class SelectedTerritoryState extends IGameplayState {
                 if (selectedTerritory != null) {
                     SM.Advance(new FortifyTerritoryState(SM, selectedTerritory));
                 }
+
+            case END_TURN_TAPPED:
+                Log.d(TAG, "PLAYER ENDED THEIR TURN");
+                SM.Game.nextPlayer();
+                SM.Advance(new DefaultState(SM));
+                break;
 
             default:
                 Log.d(TAG, "UNREGISTERED ACTION TRIGGERED (DEFAULT)");

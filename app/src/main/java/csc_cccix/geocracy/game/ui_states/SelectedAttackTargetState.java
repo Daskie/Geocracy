@@ -4,6 +4,7 @@ import android.util.Log;
 
 import csc_cccix.geocracy.fragments.troop_selection.AttackingTroopSelectionFragment;
 import csc_cccix.geocracy.fragments.troop_selection.TroopSelectionFragment;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 
@@ -40,9 +41,11 @@ public class SelectedAttackTargetState extends IGameplayState {
 
         SM.Game.getActivity().runOnUiThread(() -> {
             SM.Game.UI.hideAllGameInteractionButtons();
-            SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
-            SM.Game.UI.getConfirmButton().show();
-            SM.Game.UI.getCancelBtn().show();
+            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+                SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+                SM.Game.UI.getConfirmButton().show();
+                SM.Game.UI.getCancelBtn().show();
+            }
         });
 
     }

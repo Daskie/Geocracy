@@ -2,6 +2,7 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 
@@ -28,11 +29,15 @@ public class IntentToAttackState extends IGameplayState {
         SM.Game.getWorld().highlightTerritories(attackingTerritory.getAdjacentEnemyTerritories());
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
-            SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
-            SM.Game.UI.getCancelBtn().show();
 
+            SM.Game.UI.hideAllGameInteractionButtons();
+
+            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+                    SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+                    SM.Game.UI.getCancelBtn().show();
+            }
         });
+
     }
 
     @Override

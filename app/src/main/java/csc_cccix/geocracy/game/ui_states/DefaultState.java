@@ -2,6 +2,7 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 
@@ -29,13 +30,15 @@ public class DefaultState extends IGameplayState {
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().highlightTerritories(SM.Game.getCurrentPlayer().getTerritories());
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.updateCurrentPlayerFragment();
-            SM.Game.UI.removeOverlayFragment();
-            SM.Game.UI.hideAllGameInteractionButtons();
-            SM.Game.UI.getEndTurnButton().show();
-        });
+        SM.Game.UI.updateCurrentPlayerFragment();
+        SM.Game.UI.removeOverlayFragment();
+        SM.Game.UI.hideAllGameInteractionButtons();
 
+        if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+            SM.Game.getActivity().runOnUiThread(() -> {
+                SM.Game.UI.getEndTurnButton().show();
+            });
+        }
     }
 
     @Override
