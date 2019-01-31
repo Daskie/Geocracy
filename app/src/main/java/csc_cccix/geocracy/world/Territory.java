@@ -71,13 +71,13 @@ public class Territory implements Serializable {
 
     public void setNArmies(int n) {
 
-        int clampedNArmies = Util.clamp(n, 1, Game.MAX_ARMIES_PER_TERRITORY);
+        int clampedNArmies = Util.clamp(n, 0, Game.MAX_ARMIES_PER_TERRITORY);
 
-        if (n == clampedNArmies) {
+        if (n > clampedNArmies) {
+            throw new TerritoryUnitCountRuntimeException("UNIT COUNT: " + n + " was above the Games Boundary (" + Game.MAX_ARMIES_PER_TERRITORY + ")");
+        } else {
             nArmies = clampedNArmies;
             world.setArmyChange();
-        } else {
-            throw new TerritoryUnitCountRuntimeException("UNIT COUNT: " + n + " was above/below the Games Boundaries (1/" + Game.MAX_ARMIES_PER_TERRITORY + ")");
         }
 
     }
