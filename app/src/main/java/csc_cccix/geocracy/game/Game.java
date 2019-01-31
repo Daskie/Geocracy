@@ -54,6 +54,7 @@ public class Game implements Serializable {
 
     private transient GameActivity activity;
     public transient GameUI UI; // User Interface
+    public transient Notifications Notifications;
 
     private transient SpaceRenderer spaceRenderer;
     private transient CameraController cameraController;
@@ -93,6 +94,7 @@ public class Game implements Serializable {
         manager = activity.getSupportFragmentManager();
 
         UI = new GameUI(activity, manager);
+        Notifications = new Notifications(this);
 
         // Create New State Machine Implementation and Start it
         StateMachine = new GameStateMachine(this);

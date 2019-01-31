@@ -49,7 +49,7 @@ public class PlayerAdapter extends ArrayAdapter<Player> {
         details.setText(currentPlayer.getName());
 
         TextView unitCount = listItem.findViewById(R.id.playerDetails);
-        unitCount.setText("Armies: " + currentPlayer.getNArmies() + " | Territories: " + currentPlayer.getNTerritories());
+        unitCount.setText("Armies: " + currentPlayer.getDeployedArmyCount() + " | Territories: " + currentPlayer.getNTerritories());
 
         return listItem;
     }

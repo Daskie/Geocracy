@@ -1,12 +1,15 @@
 package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import csc_cccix.geocracy.fragments.troop_selection.DefendingTroopSelectionFragment;
 import csc_cccix.geocracy.fragments.troop_selection.TroopSelectionFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
+import es.dmoral.toasty.Toasty;
 
 public class SelectDefenseState extends IGameplayState {
 
@@ -38,14 +41,12 @@ public class SelectDefenseState extends IGameplayState {
         troopSelectionFragment = DefendingTroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
         SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
         SM.Game.getCameraController().targetTerritory(defendingTerritory);
+        SM.Game.UI.hideAllGameInteractionButtons();
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
-            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-                SM.Game.UI.getConfirmButton().show();
-            }
-        });
-
+        if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+            SM.Game.Notifications.showDefendNotification();
+            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
+        }
     }
 
     @Override

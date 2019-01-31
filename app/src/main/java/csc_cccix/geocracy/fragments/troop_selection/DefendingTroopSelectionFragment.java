@@ -36,7 +36,7 @@ public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         TextView attackingTerritoryTextView = view.findViewById(R.id.originTerritoryID);
-        attackingTerritoryTextView.setText("SELECT NUMBER OF UNITS FROM: " + defendingTerritory.getTerritoryName());
+        attackingTerritoryTextView.setText("SELECT NUMBER OF UNITS");
 
         TextView defendingTerritoryTextView = view.findViewById(R.id.targetTerritoryID);
         defendingTerritoryTextView.setText("TO DEFEND TERRITORY: " + defendingTerritory.getTerritoryName());

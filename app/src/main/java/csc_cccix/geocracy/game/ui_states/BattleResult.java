@@ -1,9 +1,11 @@
 package csc_cccix.geocracy.game.ui_states;
 
+import java.io.Serializable;
+
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
 
-public class BattleResult {
+public class BattleResult implements Serializable {
 
     public Territory attackingTerritory;
     public Territory defendingTerritory;

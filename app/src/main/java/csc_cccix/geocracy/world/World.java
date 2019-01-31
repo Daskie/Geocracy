@@ -196,8 +196,10 @@ public class World implements Serializable {
     }
 
     public synchronized void highlightTerritories(Set<Territory> territories) {
-        for (Territory terr : territories) {
-            highlightTerritory(terr);
+        if (territories != null) {
+            for (Territory terr : territories) {
+                highlightTerritory(terr);
+            }
         }
     }
 

@@ -89,6 +89,14 @@ public class Player implements Serializable {
         }
     }
 
+    public int getDeployedArmyCount() {
+        int count = 0;
+        for (Territory territory: getOwnedTerritories()) {
+            count += territory.getNArmies();
+        }
+        return count;
+    }
+
     // Returns the owners territory that contains the most units
     public Territory findTerrWithMaxArmies(){
         int max = 2;
