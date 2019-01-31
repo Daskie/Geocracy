@@ -105,6 +105,7 @@ public class SelectedTerritoryState extends IGameplayState {
                 if (selectedTerritory != null) {
                     SM.Advance(new FortifyTerritoryState(SM, selectedTerritory));
                 }
+                break;
 
             case END_TURN_TAPPED:
                 Log.d(TAG, "PLAYER ENDED THEIR TURN");
