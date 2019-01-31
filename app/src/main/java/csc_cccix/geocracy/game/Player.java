@@ -24,8 +24,6 @@ public class Player implements Serializable {
     private int armies;
     private Set<Continent> ownedContinents; // which continents the player owns all territories of
     private int bonus;
-    private int numArmiesAttacking;
-    private int[] die;
 
     public Player(int id, Vec3 color) {
         this.id = id;
@@ -33,7 +31,6 @@ public class Player implements Serializable {
         this.territories = new HashSet<>();
         this.armies = 0;
         this.ownedContinents = new HashSet<>();
-        this.die = new int[] {-1,-1,-1};
     }
 
     // Called by Territory.setOwner
@@ -59,7 +56,7 @@ public class Player implements Serializable {
         return name;
     }
     public Vec3 getColor() { return color.get(); }
-    public Set<Territory> getTerritories() {
+    public Set<Territory> getOwnedTerritories() {
         return territories;
     }
     public int getNTerritories() {return territories.size();}

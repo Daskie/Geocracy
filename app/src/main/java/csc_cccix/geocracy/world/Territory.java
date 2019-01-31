@@ -8,6 +8,9 @@ import java.util.Random;
 import java.util.Set;
 
 import csc_cccix.geocracy.SerializableVec3;
+import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.exceptions.TerritoryUnitCountRuntimeException;
+import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.Player;
 import glm_.vec3.Vec3;
 
@@ -67,9 +70,16 @@ public class Territory implements Serializable {
     }
 
     public void setNArmies(int n) {
-        nArmies = n;
 
-        world.setArmyChange();
+        int clampedNArmies = Util.clamp(n, 1, Game.MAX_ARMIES_PER_TERRITORY);
+
+        if (n == clampedNArmies) {
+            nArmies = clampedNArmies;
+            world.setArmyChange();
+        } else {
+            throw new TerritoryUnitCountRuntimeException("UNIT COUNT: " + n + " was above/below the Games Boundaries (1/" + Game.MAX_ARMIES_PER_TERRITORY + ")");
+        }
+
     }
 
     public boolean isSelected() {

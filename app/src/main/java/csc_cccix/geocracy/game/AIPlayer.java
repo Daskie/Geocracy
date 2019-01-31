@@ -1,7 +1,5 @@
 package csc_cccix.geocracy.game;
 
-import android.util.Log;
-
 import com.github.javafaker.Faker;
 
 import java.util.Random;
@@ -51,14 +49,12 @@ public class AIPlayer extends Player {
 
     public static void handleComputerInputWithState(Game game, IGameplayState state) {
         if (state.getClass() == DistributeTerritoriesState.class) {
-            Random rand = new Random();
-            int randNum = rand.nextInt(game.getWorld().getUnoccupiedTerritories().size()) + 1;
-            Territory terr = game.getWorld().getUnoccTerritory(randNum);
+            Territory terr = game.getWorld().getRandomUnoccTerritory();
             EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
 
         } else if (state.getClass() == PlaceReinforcementsState.class) {
-            RandomSet<Territory> randomSet = new RandomSet<>(game.getCurrentPlayer().getTerritories());
+            RandomSet<Territory> randomSet = new RandomSet<>(game.getCurrentPlayer().getOwnedTerritories());
             Random gen = new Random();
 
             while (game.getCurrentPlayer().getArmyPool() > 0) {

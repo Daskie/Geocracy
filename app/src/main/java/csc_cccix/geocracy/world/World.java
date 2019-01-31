@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import csc_cccix.geocracy.Util;
@@ -223,6 +224,18 @@ public class World implements Serializable {
         }
         Territory terr = unOccTerrs.get(id-1);
         unOccTerrs.remove(id - 1);
+        return terr;
+    }
+
+    public Territory getRandomUnoccTerritory(){
+        List<Territory> unOccTerrs = getUnoccupiedTerritories();
+        if (unOccTerrs.isEmpty()) {
+            return null;
+        }
+        Random rand = new Random();
+        int id = rand.nextInt(unOccTerrs.size());
+        Territory terr = unOccTerrs.get(id);
+        unOccTerrs.remove(id);
         return terr;
     }
 

@@ -72,7 +72,7 @@ public class FortifyTerritoryState extends IGameplayState {
                         SM.Game.getWorld().selectTerritory(originTerritory);
                         SM.Game.getWorld().targetTerritory(destinationTerritory);
                         SM.Game.getCameraController().targetTerritory(destinationTerritory);
-                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true));
+                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true, true));
                         SM.Game.UI.showBottomPaneFragment(FortifyTerritoryFragment.newInstance(originTerritory, destinationTerritory));
                     } else {
                         SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot move units to another players territory!.", Toast.LENGTH_LONG).show());

@@ -18,7 +18,7 @@ public class PlayerTest {
         assertEquals(id, player.getId());
         assertEquals(color, player.getColor());
         assertEquals(0, player.getNArmies());
-        assertTrue(player.getTerritories().isEmpty());
+        assertTrue(player.getOwnedTerritories().isEmpty());
     }
 
     @Test

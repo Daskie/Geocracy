@@ -230,13 +230,17 @@ public class GameUI {
         });
     }
 
-    public void setUpdateUnitCountButtonsVisibility(boolean isVisible) {
+    public void setUpdateUnitCountButtonsVisibility(boolean addIsVisible, boolean removeIsVisible) {
         activity.runOnUiThread(() -> {
-            if (isVisible) {
+            if (addIsVisible) {
                 addUnitBtn.show();
-                removeUnitBtn.show();
             } else {
                 addUnitBtn.hide();
+            }
+
+            if (removeIsVisible) {
+                removeUnitBtn.show();
+            } else {
                 removeUnitBtn.hide();
             }
         });
