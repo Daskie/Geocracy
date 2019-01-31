@@ -14,14 +14,14 @@ public class RandomSet<E> extends AbstractSet<E> {
         List<E> dta = new ArrayList<E>();
         Map<E, Integer> idx = new HashMap<E, Integer>();
 
-        public RandomSet() {
-        }
-
         public RandomSet(Collection<E> items) {
-            for (E item : items) {
-                idx.put(item, dta.size());
-                dta.add(item);
+            if (items != null) {
+                for (E item : items) {
+                    idx.put(item, dta.size());
+                    dta.add(item);
+                }
             }
+
         }
 
         @Override
