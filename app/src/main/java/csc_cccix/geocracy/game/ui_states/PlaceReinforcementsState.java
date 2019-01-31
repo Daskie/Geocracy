@@ -45,14 +45,13 @@ public class PlaceReinforcementsState extends IGameplayState {
 
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().unselectTerritory();
-        SM.Game.getWorld().highlightTerritories(currentPlayer.getTerritories());
+        SM.Game.getWorld().highlightTerritories(currentPlayer.getOwnedTerritories());
+        SM.Game.UI.hideAllGameInteractionButtons();
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
             SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.UI.hideAllGameInteractionButtons();
                 SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
-                SM.Game.UI.setUpdateUnitCountButtonsVisibility(false);
-                SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, false);
+                SM.Game.UI.setUpdateUnitCountButtonsVisibility(false, false);
             });
 
         }
@@ -92,8 +91,7 @@ public class PlaceReinforcementsState extends IGameplayState {
 
                         // If current player owns the selected territory
                         if (selectedTerritory.getOwner() == SM.Game.getCurrentPlayer()){
-                            SM.Game.getCameraController().targetTerritory(selectedTerritory);
-                            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true));
+                            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true, true));
                             SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getCurrentPlayer()));
                         } else {
                             SM.Game.getActivity().runOnUiThread(() -> {
@@ -118,15 +116,18 @@ public class PlaceReinforcementsState extends IGameplayState {
 
             case CONFIRM_TAPPED:
 
-                SM.Game.UI.removeActiveBottomPaneFragment();
+                // Verify player has placed all their reinforcements
+                if (SM.Game.getCurrentPlayer().getArmyPool() <= 0) {
+                    SM.Game.UI.removeActiveBottomPaneFragment();
 
-                // Loop through next players
-                SM.Game.nextPlayer();
-                SM.Game.UI.hideAllGameInteractionButtons();
+                    // Loop through next players
+                    SM.Game.nextPlayer();
+                    SM.Game.UI.hideAllGameInteractionButtons();
 
-                // If all players have placed reinforcements (is human players turn again)
-                if(SM.Game.getCurrentPlayer().getClass() == HumanPlayer.class) {
-                    SM.Advance(new DefaultState(SM));
+                    // If all players have placed reinforcements (is human players turn again)
+                    if(SM.Game.getCurrentPlayer().getClass() == HumanPlayer.class) {
+                        SM.Advance(new DefaultState(SM));
+                    }
                 }
 
                 break;
@@ -162,10 +163,9 @@ public class PlaceReinforcementsState extends IGameplayState {
             }
             else {
                 Log.d(TAG, "GAIN ARMIES STATE: UPDATING UNITS IN TERRITORY BY " + amount);
-                int clampedNArmies = Util.clamp(selectedTerritory.getNArmies() + amount, 1, Game.MAX_ARMIES_PER_TERRITORY);
-                selectedTerritory.setNArmies(clampedNArmies);
-                currentPlayer.addOrRemoveNArmiesToPool(-amount);
-                Log.d(TAG, "PLAYER " + currentPlayer.getId() + " UPDATED UNITS AT " + selectedTerritory.getTerritoryName());
+                if (currentPlayer.placeUnitsInOwnedTerritory(selectedTerritory, amount)) {
+                    Log.d(TAG, "PLAYER " + currentPlayer.getId() + " UPDATED UNITS AT " + selectedTerritory.getTerritoryName());
+                }
             }
 
         } else {
@@ -173,7 +173,7 @@ public class PlaceReinforcementsState extends IGameplayState {
         }
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
-            if (SM.Game.getCurrentPlayer().getArmyPool() == 0) {
+            if (SM.Game.getCurrentPlayer().getArmyPool() <= 0) {
                 SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
             } else {
                 SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, false));

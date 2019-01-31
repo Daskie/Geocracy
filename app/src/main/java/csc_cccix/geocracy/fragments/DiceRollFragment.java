@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,53 +23,14 @@ import glm_.vec3.Vec3;
 
 public class DiceRollFragment extends Fragment {
 
-    public static DiceRollFragment newInstance(Territory originTerritory, Territory targetTerritory, String attackerString, String defenderString) {
-        DiceRollFragment newFragment = new DiceRollFragment();
-
-        Bundle args = new Bundle();
-        args.putSerializable("originTerritory", originTerritory);
-        args.putSerializable("targetTerritory", targetTerritory);
-        args.putSerializable("attackerString", attackerString);
-        args.putSerializable("defenderString", defenderString);
-        newFragment.setArguments(args);
-
-        return newFragment;
-    }
-
     public static DiceRollFragment newInstance(DiceRoll attackerDiceRoll, DiceRoll defenderDiceRoll) {
         DiceRollFragment newFragment = new DiceRollFragment();
 
-        List<Integer> attackerDiceValues = attackerDiceRoll.getRolledDiceValues();
-        List<Integer> defenderDiceValues = defenderDiceRoll.getRolledDiceValues();
-
-        String attackerDiceString = "";
-        String defenderDiceString = "";
-
-        // Format attacker roll string
-        for (int i = 0; i < attackerDiceValues.size(); i++) {
-            int diceValue = attackerDiceValues.get(i);
-
-            if (diceValue > 0) {
-                attackerDiceString += diceValue;
-                if (i < attackerDiceValues.size()-1) attackerDiceString += ", ";
-            }
-        }
-
-        // Format defender roll string
-        for (int i = 0; i < defenderDiceValues.size(); i++) {
-            int diceValue = defenderDiceValues.get(i);
-
-            if (diceValue > 0) {
-                defenderDiceString += diceValue;
-                if (i < defenderDiceValues.size()-1) defenderDiceString += ", ";
-            }
-        }
-
         Bundle args = new Bundle();
-        args.putSerializable("originTerritory", attackerDiceRoll.territory);
-        args.putSerializable("targetTerritory", defenderDiceRoll.territory);
-        args.putSerializable("attackerString", attackerDiceString);
-        args.putSerializable("defenderString", defenderDiceString);
+        
+        args.putSerializable("attackerDiceRoll", attackerDiceRoll);
+        args.putSerializable("defenderDiceRoll", defenderDiceRoll);
+
         newFragment.setArguments(args);
 
         return newFragment;
@@ -78,29 +40,51 @@ public class DiceRollFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dice_roll, container, false);
+        
+        DiceRoll attackerDiceRoll = (DiceRoll) getArguments().get("attackerDiceRoll");
+        DiceRoll defenderDiceRoll = (DiceRoll) getArguments().get("defenderDiceRoll"); 
 
-        Territory originTerritory = (Territory) getArguments().get("originTerritory");
-        Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
-        String attackerString = (String) getArguments().get("attackerString");
-        String defenderString  = (String) getArguments().get("defenderString");
+        Territory attackingTerritory = attackerDiceRoll.territory;
+        Territory defendingTerritory = defenderDiceRoll.territory;
 
         TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("ATTACKER ROLLS -> " + attackerString);
-
-        TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("DEFENDER ROLLS -> " + defenderString);
+        attackingPlayer.setText("ATTACKER " + attackingTerritory.getOwner().getName() + " ROLLS:");
 
         ImageView attackerIcon = view.findViewById(R.id.attackingPlayerIcon);
         attackerIcon.setImageResource(R.drawable.account);
 
-        Vec3 color = originTerritory.getOwner().getColor();
+        Vec3 color = attackingTerritory.getOwner().getColor();
         attackerIcon.setBackgroundColor(Util.colorToInt(color));
+
+        LinearLayout attackerDiceRolls = view.findViewById(R.id.attackingDiceRollFaces);
+        attackerDiceRolls.removeAllViews();
+
+        for (Integer faceValue: attackerDiceRoll.getRolledDiceValues()) {
+            if (faceValue > 0) {
+                DiceFaceImageView diceFace = new DiceFaceImageView(getContext(), faceValue);
+                attackerDiceRolls.addView(diceFace);
+            }
+        }
+
+
+        TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
+        defendingPlayer.setText("DEFENDER " + defendingTerritory.getOwner().getName() + " ROLLS:");
 
         ImageView defenderIcon = view.findViewById(R.id.defendingPlayerIcon);
         defenderIcon.setImageResource(R.drawable.account);
 
-        Vec3 color2 = targetTerritory.getOwner().getColor();
+        Vec3 color2 = defendingTerritory.getOwner().getColor();
         defenderIcon.setBackgroundColor(Util.colorToInt(color2));
+
+        LinearLayout defenderDiceRolls = view.findViewById(R.id.defendingDiceRollFaces);
+        defenderDiceRolls.removeAllViews();
+
+        for (Integer faceValue: defenderDiceRoll.getRolledDiceValues()) {
+            if (faceValue > 0) {
+                DiceFaceImageView diceFace = new DiceFaceImageView(getContext(), faceValue);
+                defenderDiceRolls.addView(diceFace);
+            }
+        }
 
         return view;
     }
