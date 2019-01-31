@@ -4,6 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
+import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
@@ -40,8 +41,10 @@ public class FortifyTerritoryState extends IGameplayState {
 
         SM.Game.getActivity().runOnUiThread(() -> {
             SM.Game.UI.hideAllGameInteractionButtons();
-            SM.Game.UI.getConfirmButton().show();
-            SM.Game.UI.getCancelBtn().show();
+
+            if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+                SM.Game.UI.getCancelBtn().show();
+            }
         });
 
     }
@@ -123,9 +126,12 @@ public class FortifyTerritoryState extends IGameplayState {
             }
         }
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.getConfirmButton().show();
-            SM.Game.UI.getCancelBtn().hide();
-        });
+        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+            SM.Game.getActivity().runOnUiThread(() -> {
+                SM.Game.UI.getConfirmButton().show();
+                SM.Game.UI.getCancelBtn().hide();
+            });
+        }
+
     }
 }

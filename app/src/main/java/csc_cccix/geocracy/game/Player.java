@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import csc_cccix.geocracy.SerializableVec3;
+import csc_cccix.geocracy.exceptions.PlayerNotOwnerRuntimeException;
 import csc_cccix.geocracy.world.Continent;
 import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
@@ -103,12 +104,14 @@ public class Player implements Serializable {
     }
 
     public boolean placeUnitsInOwnedTerritory(Territory territory, int unitCount) {
-        if (this.territories.contains(territory)) {
+        if (getOwnedTerritories().contains(territory)) {
             if (getArmyPool() >= unitCount ) {
                 setArmyPool(getArmyPool() - unitCount);
                 territory.setNArmies(territory.getNArmies() + unitCount);
                 return true;
             }
+        } else {
+            throw new PlayerNotOwnerRuntimeException("PLAYER: " + this + " does not own TERRITORY: " + territory);
         }
         return false;
     }
