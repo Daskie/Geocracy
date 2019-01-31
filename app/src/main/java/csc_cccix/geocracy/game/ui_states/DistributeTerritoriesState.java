@@ -33,7 +33,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         highlightUnoccupiedTerritories();
 
         if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
-            SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
+            SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
         }
 
     }
@@ -60,7 +60,7 @@ public class DistributeTerritoriesState extends IGameplayState {
                     if(selectedTerritory.getOwner() != null){
 
                         if(SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
-                            SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "This territory is already taken! Choose another territory.", Toast.LENGTH_LONG).show());
+                            SM.Game.Notifications.showTerritoryAlreadyAcquiredNotification();
                         }
 
                     } else {
@@ -133,7 +133,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         } else {
 
             if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
-                SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Please select a territory to acquire!", Toast.LENGTH_LONG).show());
+                SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
             }
 
             SM.Game.getWorld().unhighlightTerritories();
