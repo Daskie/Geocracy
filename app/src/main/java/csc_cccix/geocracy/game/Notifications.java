@@ -15,7 +15,7 @@ public class Notifications {
 
     public void showDefendNotification() {
         game.getActivity().runOnUiThread(() -> {
-                Toast toast = Toasty.info(game.getActivity(), "You are being attacked, select your defense!", Toast.LENGTH_LONG);
+                Toast toast = Toasty.info(game.getActivity().getBaseContext(), "You are being attacked, select your defense!", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM, 0, 360);
                 toast.show();
         });

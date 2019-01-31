@@ -41,15 +41,12 @@ public class SelectDefenseState extends IGameplayState {
         troopSelectionFragment = DefendingTroopSelectionFragment.newInstance(attackingTerritory, defendingTerritory);
         SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
         SM.Game.getCameraController().targetTerritory(defendingTerritory);
+        SM.Game.UI.hideAllGameInteractionButtons();
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
-            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-                SM.Game.Notifications.showDefendNotification();
-                SM.Game.UI.getConfirmButton().show();
-            }
-        });
-
+        if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
+            SM.Game.Notifications.showDefendNotification();
+            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
+        }
     }
 
     @Override
