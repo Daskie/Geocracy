@@ -40,7 +40,7 @@ public class BattleResultsState extends IGameplayState {
 
         }
 
-        SM.Game.UI.showBottomPaneFragment(BattleResultsFragment.newInstance(result.attackingTerritory, result.defendingTerritory, result.attackingUnitLoss, result.defendingUnitLoss));
+        SM.Game.UI.showBottomPaneFragment(BattleResultsFragment.newInstance(result));
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(result.attackingTerritory);
         SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
