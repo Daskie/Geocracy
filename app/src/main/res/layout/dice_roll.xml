@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="121dp"
@@ -16,17 +17,50 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:foregroundGravity="center_vertical" />
-        <TextView
-            android:id="@+id/attackingPlayer"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/whiteTransparent"
-            android:gravity="center_vertical"
-            android:text="TERRITORY:"
-            android:textColor="@android:color/black"
+            android:layout_height="match_parent"
             android:layout_toRightOf="@id/attackingPlayerIcon"
-            android:paddingLeft="8dp"
-            android:textStyle="bold"/>
+            >
+            <TextView
+                android:id="@+id/attackingPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/whiteTransparent"
+                android:text="TERRITORY:"
+                android:textColor="@android:color/black"
+                android:paddingLeft="8dp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/attackingDiceRollFaces"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/attackingPlayer"
+                >
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:paddingLeft="8dp"
+                    app:srcCompat="@drawable/ic_dice_six_faces_one"/>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="8dp"
+                    app:srcCompat="@drawable/ic_dice_six_faces_one"/>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="8dp"
+                    app:srcCompat="@drawable/ic_dice_six_faces_one"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <View
@@ -43,28 +77,50 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:foregroundGravity="center_vertical" />
-        <TextView
-            android:id="@+id/defendingPlayer"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/whiteTransparent"
-            android:gravity="center_vertical"
-            android:text="TERRITORY:"
-            android:textColor="@android:color/black"
-            android:layout_toRightOf="@id/defendingPlayerIcon"
-            android:paddingLeft="8dp"
-            android:textStyle="bold"/>
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/defendingPlayerIcon">
+
+            <TextView
+                android:id="@+id/defendingPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/whiteTransparent"
+                android:gravity="center_vertical"
+                android:text="TERRITORY:"
+                android:textColor="@android:color/black"
+                android:paddingLeft="8dp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/defendingDiceRollFaces"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/defendingPlayer"
+                >
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:paddingLeft="8dp"
+                    app:srcCompat="@drawable/ic_dice_six_faces_one"/>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="8dp"
+                    app:srcCompat="@drawable/ic_dice_six_faces_one"/>
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="8dp"
+                    app:srcCompat="@drawable/ic_dice_six_faces_one"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+
     </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/battleResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:padding="12dp"
-        android:text="Result:"/>
 
 
 </LinearLayout>
