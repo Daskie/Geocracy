@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/attackingPlayer"
+                android:background="@color/whiteTransparent"
                 >
                 <ImageView
                     android:layout_width="40dp"
@@ -98,6 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/defendingPlayer"
+                android:background="@color/whiteTransparent"
                 >
                 <ImageView
                     android:layout_width="40dp"
