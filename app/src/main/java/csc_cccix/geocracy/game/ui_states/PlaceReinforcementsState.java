@@ -1,16 +1,12 @@
 package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DistributeTroopsDetailFragment;
-import csc_cccix.geocracy.game.Game;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.Player;
 import csc_cccix.geocracy.world.Territory;
-import es.dmoral.toasty.Toasty;
 
 public class PlaceReinforcementsState extends IGameplayState {
 
@@ -96,7 +92,7 @@ public class PlaceReinforcementsState extends IGameplayState {
                         } else {
                             SM.Game.getActivity().runOnUiThread(() -> {
                                 SM.Game.UI.hideAllGameInteractionButtons();
-                                Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot assign units to another players territory!.", Toast.LENGTH_LONG).show();
+                                SM.Game.Notifications.showCannotAssignUnitsToAnothersTerritoryNotification();
                             });
                         }
 
@@ -136,7 +132,6 @@ public class PlaceReinforcementsState extends IGameplayState {
                 Log.d(TAG, "CANCELED!");
                 SM.Game.getWorld().unselectTerritory();
                 selectedTerritory = null;
-//                SM.Advance(new DefaultState(SM));
                 break;
 
         }
@@ -151,13 +146,13 @@ public class PlaceReinforcementsState extends IGameplayState {
 
             if (currentPlayer.getArmyPool() - amount < 0) {
                 if (currentPlayer.getClass() == HumanPlayer.class) {
-                    SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "You don't have enough units to add to this territory.", Toast.LENGTH_LONG).show());
+                    SM.Game.Notifications.showInsufficentUnitPoolNotification();
                 }
                 return;
             }
             else if (amount < 0 && selectedTerritory.getNArmies() <= 1) {
                 if (currentPlayer.getClass() == HumanPlayer.class) {
-                    SM.Game.getActivity().runOnUiThread(() -> Toasty.info(SM.Game.getActivity().getBaseContext(), "Cannot remove units from territory.", Toast.LENGTH_LONG).show());
+                    SM.Game.Notifications.showInsufficentTerritoryUnitsNotification();
                 }
                 return;
             }

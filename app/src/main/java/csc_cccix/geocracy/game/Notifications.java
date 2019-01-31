@@ -37,4 +37,28 @@ public class Notifications {
         });
     }
 
+    public void showCannotAssignUnitsToAnothersTerritoryNotification() {
+        game.getActivity().runOnUiThread(() -> {
+            Toast toast = Toasty.info(game.getActivity().getBaseContext(), "Cannot assign units to another players territory!", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, 180);
+            toast.show();
+        });
+    }
+
+    public void showInsufficentUnitPoolNotification() {
+        game.getActivity().runOnUiThread(() -> {
+            Toast toast = Toasty.info(game.getActivity().getBaseContext(), "You don't have enough units to add to this territory.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, 180);
+            toast.show();
+        });
+    }
+
+    public void showInsufficentTerritoryUnitsNotification() {
+        game.getActivity().runOnUiThread(() -> {
+            Toast toast = Toasty.info(game.getActivity().getBaseContext(), "Cannot remove units from territory.", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, 180);
+            toast.show();
+        });
+    }
+
 }
