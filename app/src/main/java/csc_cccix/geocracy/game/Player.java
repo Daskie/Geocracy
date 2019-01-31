@@ -55,43 +55,33 @@ public class Player implements Serializable {
     public int getId() {
         return id;
     }
-
     public String getName() {
         return name;
     }
-
+    public Vec3 getColor() { return color.get(); }
     public Set<Territory> getTerritories() {
         return territories;
     }
-
     public int getNTerritories() {return territories.size();}
-
-    public Vec3 getColor() {
-        return color.get();
-    }
-
-    public void addOrRemoveNArmies(int numArmies){
-        this.armies += numArmies;
-    }
-
     public int getNArmies(){
         return this.armies;
     }
-
-    public void addOrRemoveNArmiesToPool(int numArmies){
-        this.armyPool += numArmies;
+    public int getArmyPool(){
+        return this.armyPool;
+    }
+    public int getBonus() {
+        return bonus;
     }
 
     public void setArmyPool(int poolSize){
         this.armyPool = poolSize;
     }
 
-    public int getArmyPool(){
-        return this.armyPool;
+    public void addOrRemoveNArmies(int numArmies){
+        this.armies += numArmies;
     }
-
-    public int getBonus() {
-        return bonus;
+    public void addOrRemoveNArmiesToPool(int numArmies){
+        this.armyPool += numArmies;
     }
 
     private void calcBonus() {
@@ -101,14 +91,7 @@ public class Player implements Serializable {
         }
     }
 
-    public int[] getDie(){ return this.die; }
-    public void setDie(int index, int value){ this.die[index] = value; }
-    public void resetDie(){ this.die = new int[] {-1,-1,-1}; }
-    public void sortDie(){ Arrays.sort(this.die); }
-    public int getNumArmiesAttacking(){ return this.numArmiesAttacking; }
-    public void setNumArmiesAttacking(int num){ this.numArmiesAttacking = num; }
-
-
+    // Returns the owners territory that contains the most units
     public Territory findTerrWithMaxArmies(){
         int max = 2;
         Territory maxTerr = null;
@@ -120,6 +103,17 @@ public class Player implements Serializable {
         }
 
         return maxTerr;
+    }
+
+    public boolean placeUnitsInOwnedTerritory(Territory territory, int unitCount) {
+        if (this.territories.contains(territory)) {
+            if (getArmyPool() >= unitCount ) {
+                setArmyPool(getArmyPool() - unitCount);
+                territory.setNArmies(territory.getNArmies() + unitCount);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
