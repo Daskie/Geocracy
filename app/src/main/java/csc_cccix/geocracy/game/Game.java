@@ -3,7 +3,7 @@ package csc_cccix.geocracy.game;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.util.Log;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

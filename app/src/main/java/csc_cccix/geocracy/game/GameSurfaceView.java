@@ -14,6 +14,7 @@ import io.reactivex.disposables.Disposable;
 public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetector.OnScaleGestureListener {
 
     MainRenderer renderer;
+    GameActivity activity;
 
     Disposable touchEventSubscription;
 
@@ -32,7 +33,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     private void init() {
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 24, 0);
-        renderer = new MainRenderer();
+        renderer = new MainRenderer(activity);
         setRenderer(renderer);
         setRenderMode(RENDERMODE_CONTINUOUSLY);
         scaler = new ScaleGestureDetector(getContext(), this);
@@ -48,18 +49,18 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
         switch (event.getActionMasked()) {
 
             case MotionEvent.ACTION_DOWN:
-                if (event.getPointerCount() == 1) GameActivity.game.wasTapDown(new Vec2i(event.getX(), event.getY()));
+                if (event.getPointerCount() == 1) activity.game.wasTapDown(new Vec2i(event.getX(), event.getY()));
                 return true;
 
             case MotionEvent.ACTION_UP:
                 // just here so we get the move action
-                if (event.getPointerCount() == 1) GameActivity.game.wasTapUp(new Vec2i(event.getX(), event.getY()));
+                if (event.getPointerCount() == 1) activity.game.wasTapUp(new Vec2i(event.getX(), event.getY()));
                 return true;
 
             case MotionEvent.ACTION_MOVE:
                 // Rotate camera
                 if (event.getHistorySize() >= 1) {
-                    GameActivity.game.wasSwipe(new Vec2i(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0))));
+                    activity.game.wasSwipe(new Vec2i(event.getX() - event.getHistoricalX(0), -(event.getY() - event.getHistoricalY(0))));
                 }
                 return true;
 
@@ -84,6 +85,10 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
         // do nothing
+    }
+
+    public void setActivity(GameActivity activity) {
+        this.activity = activity;
     }
 
 }

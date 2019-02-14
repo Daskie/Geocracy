@@ -1,10 +1,10 @@
 package csc_cccix.geocracy.game;
 
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
@@ -194,7 +194,7 @@ public class GameUI {
     }
 
     public void updateCurrentPlayerFragment() {
-        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(GameActivity.game.getCurrentPlayer());
+        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(activity.game.getCurrentPlayer());
         FragmentTransaction ft = manager.beginTransaction();
         if (activeCurrentPlayerFragment != null) {
             ft.remove(activeCurrentPlayerFragment);

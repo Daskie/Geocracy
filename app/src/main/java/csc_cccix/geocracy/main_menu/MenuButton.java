@@ -2,7 +2,7 @@ package csc_cccix.geocracy.main_menu;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatButton;
 
 public class MenuButton extends AppCompatButton {
 

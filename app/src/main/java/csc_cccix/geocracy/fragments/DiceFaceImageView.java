@@ -1,9 +1,7 @@
 package csc_cccix.geocracy.fragments;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatImageView;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import csc_cccix.R;
 

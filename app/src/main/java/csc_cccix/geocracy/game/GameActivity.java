@@ -3,7 +3,7 @@ package csc_cccix.geocracy.game;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.fragments.LoadingFragment;
 import csc_cccix.geocracy.game.ui_states.GameAction;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import es.dmoral.toasty.Toasty;
@@ -25,7 +24,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "GAME_ACTIVITY";
     public static final transient String USER_ACTION = "USER_ACTION";
 
-    public static Game game;
+    public Game game;
     private GameSurfaceView gameSurfaceView;
 
     public CompositeDisposable disposables;
@@ -48,6 +47,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // Initialize Surface View
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
+        gameSurfaceView.setActivity(this);
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
 
