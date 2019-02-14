@@ -24,7 +24,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "GAME_ACTIVITY";
     public static final transient String USER_ACTION = "USER_ACTION";
 
-    public static Game game;
+    public Game game;
     private GameSurfaceView gameSurfaceView;
 
     public CompositeDisposable disposables;
@@ -47,6 +47,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // Initialize Surface View
         gameSurfaceView = findViewById(R.id.gameplaySurfaceView);
         gameSurfaceView.getHolder().addCallback(this);
+        gameSurfaceView.setActivity(this);
 
         EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
 
