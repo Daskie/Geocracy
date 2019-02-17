@@ -114,6 +114,7 @@ public class Game implements Serializable {
 
     // GETTERS
     public GameActivity getActivity() { return activity; }
+    public GameStateMachine getStateMachine() { return StateMachine; }
     public CameraController getCameraController() { return cameraController; }
     public World getWorld() { return world; }
     public Player[] getPlayers() { return players; }
