@@ -1,6 +1,7 @@
 package csc_cccix.geocracy.graphics;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -23,6 +24,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // May be called more than once during app execution (waking from sleep, for instance)
         // In this method we need to create/recreate any GPU resources
+        Log.i("TEST", "BREAK HERE");
         if (!activity.game.loadOpenGL()) {
             Util.exit();
         }
