@@ -12,8 +12,10 @@ import glm_.vec2.Vec2i;
 public class MainRenderer implements GLSurfaceView.Renderer {
 
     Vec2i size;
+    GameActivity activity;
 
-    public MainRenderer() {
+    public MainRenderer(GameActivity activity) {
+        this.activity = activity;
         size = new Vec2i();
     }
 
@@ -21,7 +23,7 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // May be called more than once during app execution (waking from sleep, for instance)
         // In this method we need to create/recreate any GPU resources
-        if (!GameActivity.game.loadOpenGL()) {
+        if (!activity.game.loadOpenGL()) {
             Util.exit();
         }
     }
@@ -29,13 +31,13 @@ public class MainRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 unused) {
         // Called ~60x a second from a render thread which we'll use as main game thread
-        GameActivity.game.step();
+        activity.game.step();
     }
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         size.x = width; size.y = height;
-        GameActivity.game.screenResized(size);
+        activity.game.screenResized(size);
     }
 
 }

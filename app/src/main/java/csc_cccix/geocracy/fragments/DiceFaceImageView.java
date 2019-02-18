@@ -1,17 +1,15 @@
 package csc_cccix.geocracy.fragments;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import csc_cccix.R;
 
 public class DiceFaceImageView extends AppCompatImageView {
     public DiceFaceImageView(Context context, Integer faceValue) {
         super(context);
-        setLayoutParams(new LinearLayoutCompat.LayoutParams(80, ViewGroup.LayoutParams.MATCH_PARENT));
+        setMinimumWidth(40);
+        setMinimumHeight(40);
         setPadding(8,0,0,0);
         requestLayout();
         initResouceWithFaceValue(faceValue);
