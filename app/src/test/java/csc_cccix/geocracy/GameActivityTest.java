@@ -39,7 +39,7 @@ public class GameActivityTest {
         assertNotNull(activity.game.UI);
         assertNotNull(activity.game.Notifications);
 
-        assertEquals(activity.game.getPlayers().length, PLAYER_COUNT);
+        assertEquals(activity.game.getGameData().getPlayers().length, PLAYER_COUNT);
 
         assertTrue(activity.game.getStateMachine().CurrentState() instanceof DistributeTerritoriesState);
 

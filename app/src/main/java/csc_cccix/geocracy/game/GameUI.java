@@ -193,16 +193,10 @@ public class GameUI {
         }
     }
 
-    public void updateCurrentPlayerFragment() {
-        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(activity.game.getGameData().getCurrentPlayer());
+    public void showCurrentPlayerFragment() {
+        if (activeCurrentPlayerFragment == null) activeCurrentPlayerFragment = CurrentPlayerFragment.newInstance();
         FragmentTransaction ft = manager.beginTransaction();
-        if (activeCurrentPlayerFragment != null) {
-            ft.remove(activeCurrentPlayerFragment);
-        }
-        if (activeCurrentPlayerFragment != currentPlayerFragment) {
-            ft.add(R.id.gameLayout, currentPlayerFragment);
-            activeCurrentPlayerFragment = currentPlayerFragment;
-        }
+        ft.add(R.id.gameLayout, activeCurrentPlayerFragment);
         ft.commit();
     }
 

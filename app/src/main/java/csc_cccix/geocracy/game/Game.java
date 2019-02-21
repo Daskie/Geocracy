@@ -13,6 +13,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
@@ -53,6 +56,7 @@ public class Game implements Serializable {
 
     private transient GameActivity activity;
     public transient GameUI UI; // User Interface
+    private GameViewModel gameViewModel;
     public transient Notifications Notifications;
 
     private transient SpaceRenderer spaceRenderer;
@@ -86,7 +90,8 @@ public class Game implements Serializable {
             players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
 
-        gameData = new GameData(players);
+        gameViewModel = ViewModelProviders.of(activity).get(GameViewModel.class);
+        gameData = new GameData(this, players);
 
         lastT = 0;
 
@@ -109,6 +114,8 @@ public class Game implements Serializable {
 
         lastTimestamp = System.nanoTime();
 
+        UI.showCurrentPlayerFragment();
+
     }
 
 
@@ -118,6 +125,7 @@ public class Game implements Serializable {
     public CameraController getCameraController() { return cameraController; }
     public World getWorld() { return world; }
     public GameData getGameData() { return gameData; }
+    public GameViewModel getGameViewModel() { return gameViewModel; }
 
 
     public Player getControllingPlayer() {
@@ -138,7 +146,7 @@ public class Game implements Serializable {
     public void nextPlayer() {
         boolean wasHuman = currentPlayerIsHuman();
         gameData.nextPlayerIndex();
-        UI.updateCurrentPlayerFragment();
+//        UI.updateCurrentPlayerFragment();
 
         //  if that last player was a human player and the new current player is an AI, set cooldown time... (is this neeeded?)
         if (wasHuman && gameData.getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
@@ -146,7 +154,8 @@ public class Game implements Serializable {
 
     public void setFirstPlayer(){
         gameData.setFirstPlayer();
-        UI.updateCurrentPlayerFragment();
+//        UI.showCurrentPlayerFragment();
+//        UI.updateCurrentPlayerFragment();
     }
 
     // The core game logic

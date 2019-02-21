@@ -1,16 +1,21 @@
 package csc_cccix.geocracy.game;
 
+import androidx.lifecycle.ViewModelProviders;
+
 public class GameData {
+
+    private Game game;
 
     private boolean outOfGameSetUp;
 
     final private Player[] players;
     private int currentPlayerIndex;
 
-    public GameData(Player[] players) {
+    public GameData(Game game, Player[] players) {
+        this.game = game;
         this.players = players;
         this.outOfGameSetUp = false;
-        setFirstPlayer();
+        this.currentPlayerIndex = 0;
     }
 
     public Player[] getPlayers() { return players; }
@@ -22,6 +27,8 @@ public class GameData {
     public void setCurrentPlayerIndex(int idx) {
         if (idx < 0 || idx >= players.length) return;
         this.currentPlayerIndex = idx;
+        ViewModelProviders.of(game.getActivity()).get(GameViewModel.class).setCurrentPlayer(getCurrentPlayer());
+//        game.getGameViewModel().setCurrentPlayer(getCurrentPlayer());
     }
 
     public void setFirstPlayer() {
