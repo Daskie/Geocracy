@@ -32,7 +32,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         Log.i(TAG, "INIT STATE");
         highlightUnoccupiedTerritories();
 
-        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+        if (SM.Game.currentPlayerIsHuman()) {
             SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
         }
 
@@ -57,9 +57,9 @@ public class DistributeTerritoriesState extends IGameplayState {
                 if (selectedTerritory != null) {
 
                     //illegal territory selection for setting up territories
-                    if(selectedTerritory.getOwner() != null){
+                    if (selectedTerritory.getOwner() != null){
 
-                        if(SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+                        if (SM.Game.currentPlayerIsHuman()) {
                             SM.Game.Notifications.showTerritoryAlreadyAcquiredNotification();
                         }
 
@@ -79,7 +79,7 @@ public class DistributeTerritoriesState extends IGameplayState {
                     SM.Game.getWorld().selectTerritory(selectedTerritory);
                     SM.Game.getWorld().unhighlightTerritories();
                     SM.Game.getCameraController().targetTerritory(selectedTerritory);
-                    if (selectedTerritory.getOwner() == null && SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+                    if (selectedTerritory.getOwner() == null && SM.Game.currentPlayerIsHuman()) {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
                     } else {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().hide());
@@ -113,7 +113,7 @@ public class DistributeTerritoriesState extends IGameplayState {
     public void addToSelectedTerritoryUnitCount(int amount) {
 
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        Player currentPlayer = SM.Game.getCurrentPlayer();
+        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
         selectedTerritory.setOwner(currentPlayer);
         selectedTerritory.setNArmies(amount);
         currentPlayer.addOrRemoveNArmies(1);
@@ -132,7 +132,7 @@ public class DistributeTerritoriesState extends IGameplayState {
 
         } else {
 
-            if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+            if (SM.Game.currentPlayerIsHuman()) {
                 SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
             }
 

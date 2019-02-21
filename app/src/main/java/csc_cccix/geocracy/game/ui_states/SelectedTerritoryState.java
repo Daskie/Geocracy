@@ -42,7 +42,7 @@ public class SelectedTerritoryState extends IGameplayState {
                 SM.Game.UI.getCancelBtn().show();
 
                 // If current player is the owner of selected territory
-                if (selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
+                if (selectedTerritory.getOwner().getId() == SM.Game.getGameData().getCurrentPlayer().getId()) {
 
                     // If the territory contains enough units to perform an attack
                     if (selectedTerritory.getNArmies() >= 2) {

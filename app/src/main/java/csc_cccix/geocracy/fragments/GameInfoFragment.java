@@ -72,7 +72,7 @@ public class GameInfoFragment extends Fragment {
 
         Bundle args = new Bundle();
         args.putSerializable("worldSeed", game.getWorld().getSeed());
-        args.putSerializable("players", game.getPlayers());
+        args.putSerializable("players", game.getGameData().getPlayers());
         newFragment.setArguments(args);
 
         return newFragment;

@@ -47,7 +47,7 @@ public class BattleResultsState extends IGameplayState {
         SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
 
-        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+        if (SM.Game.currentPlayerIsHuman()) {
             SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
         }
 

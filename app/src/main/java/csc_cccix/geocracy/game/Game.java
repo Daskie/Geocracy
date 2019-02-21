@@ -45,9 +45,8 @@ public class Game implements Serializable {
 
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private World world;
-    private boolean outOfGameSetUp = false;
-    private Player[] players;
-    private int currentPlayerIndex;
+    public GameData gameData;
+
     private long lastT; // Time of the previous game update / frame relative to the start of the game
 
     private GameStateMachine StateMachine;
@@ -80,13 +79,14 @@ public class Game implements Serializable {
     public Game(GameActivity activity, String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
         world = new World(this, seed);
 
-        players = new Player[nPlayers];
+        Player[] players = new Player[nPlayers];
         Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
         players[0] = new HumanPlayer(playerName,1, playerColors[0]);
         for (int i = 1; i < players.length; ++i) {
             players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
-        currentPlayerIndex = 0;
+
+        gameData = new GameData(players);
 
         lastT = 0;
 
@@ -117,31 +117,35 @@ public class Game implements Serializable {
     public GameStateMachine getStateMachine() { return StateMachine; }
     public CameraController getCameraController() { return cameraController; }
     public World getWorld() { return world; }
-    public Player[] getPlayers() { return players; }
-    public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
-    public boolean getGameStatus(){ return outOfGameSetUp; }
+    public GameData getGameData() { return gameData; }
+
 
     public Player getControllingPlayer() {
+        // If a defense needs to be selected, set controlling player to defending territory owner
         if (StateMachine.CurrentState() instanceof SelectDefenseState) {
             SelectDefenseState selectDefenseState = (SelectDefenseState) StateMachine.CurrentState();
             return selectDefenseState.getDefendingTerritory().getOwner();
         } else {
-            return getCurrentPlayer();
+            return gameData.getCurrentPlayer();
         }
+    }
+
+    public boolean currentPlayerIsHuman() {
+        return gameData.getCurrentPlayer() instanceof HumanPlayer;
     }
 
     // Increments current player index
     public void nextPlayer() {
-        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        boolean wasHuman = currentPlayerIsHuman();
+        gameData.nextPlayerIndex();
         UI.updateCurrentPlayerFragment();
 
         //  if that last player was a human player and the new current player is an AI, set cooldown time... (is this neeeded?)
-        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
+        if (wasHuman && gameData.getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
     }
 
     public void setFirstPlayer(){
-        currentPlayerIndex=0;
+        gameData.setFirstPlayer();
         UI.updateCurrentPlayerFragment();
     }
 

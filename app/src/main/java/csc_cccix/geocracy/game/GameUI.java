@@ -194,7 +194,7 @@ public class GameUI {
     }
 
     public void updateCurrentPlayerFragment() {
-        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(activity.game.getCurrentPlayer());
+        CurrentPlayerFragment currentPlayerFragment = CurrentPlayerFragment.newInstance(activity.game.getGameData().getCurrentPlayer());
         FragmentTransaction ft = manager.beginTransaction();
         if (activeCurrentPlayerFragment != null) {
             ft.remove(activeCurrentPlayerFragment);
