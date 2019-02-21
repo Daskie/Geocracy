@@ -73,9 +73,7 @@ public class Territory implements Serializable {
 
         int clampedNArmies = Util.clamp(n, 0, Game.MAX_ARMIES_PER_TERRITORY);
 
-        if (n > clampedNArmies) {
-            throw new TerritoryUnitCountRuntimeException("UNIT COUNT: " + n + " was above the Games Boundary (" + Game.MAX_ARMIES_PER_TERRITORY + ")");
-        } else {
+        if (n <= clampedNArmies) {
             nArmies = clampedNArmies;
             world.setArmyChange();
         }
