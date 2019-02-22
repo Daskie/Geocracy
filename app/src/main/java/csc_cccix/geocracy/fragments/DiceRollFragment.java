@@ -13,76 +13,72 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.ui_states.DiceRoll;
+import csc_cccix.geocracy.game.view_models.DiceRollViewModel;
 import csc_cccix.geocracy.world.Territory;
 import glm_.vec3.Vec3;
 
 public class DiceRollFragment extends Fragment {
 
-    public static DiceRollFragment newInstance(DiceRoll attackerDiceRoll, DiceRoll defenderDiceRoll) {
-        DiceRollFragment newFragment = new DiceRollFragment();
-
-        Bundle args = new Bundle();
-        
-        args.putSerializable("attackerDiceRoll", attackerDiceRoll);
-        args.putSerializable("defenderDiceRoll", defenderDiceRoll);
-
-        newFragment.setArguments(args);
-
-        return newFragment;
+    public static DiceRollFragment newInstance() {
+        return new DiceRollFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dice_roll, container, false);
-        
-        DiceRoll attackerDiceRoll = (DiceRoll) getArguments().get("attackerDiceRoll");
-        DiceRoll defenderDiceRoll = (DiceRoll) getArguments().get("defenderDiceRoll"); 
 
-        Territory attackingTerritory = attackerDiceRoll.territory;
-        Territory defendingTerritory = defenderDiceRoll.territory;
+        DiceRollViewModel viewModel = ViewModelProviders.of(getActivity()).get(DiceRollViewModel.class);
 
-        TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
-        attackingPlayer.setText("ATTACKER " + attackingTerritory.getOwner().getName() + " ROLLS:");
+        viewModel.getAttackerDiceRoll().observe(this, aRoll -> {
+            Territory attackingTerritory = aRoll.territory;
 
-        ImageView attackerIcon = view.findViewById(R.id.attackingPlayerIcon);
-        attackerIcon.setImageResource(R.drawable.account);
+            TextView attackingPlayer = view.findViewById(R.id.attackingPlayer);
+            attackingPlayer.setText("ATTACKER " + attackingTerritory.getOwner().getName() + " ROLLS:");
 
-        Vec3 color = attackingTerritory.getOwner().getColor();
-        attackerIcon.setBackgroundColor(Util.colorToInt(color));
+            ImageView attackerIcon = view.findViewById(R.id.attackingPlayerIcon);
+            attackerIcon.setImageResource(R.drawable.account);
 
-        LinearLayout attackerDiceRolls = view.findViewById(R.id.attackingDiceRollFaces);
-        attackerDiceRolls.removeAllViews();
+            Vec3 color = attackingTerritory.getOwner().getColor();
+            attackerIcon.setBackgroundColor(Util.colorToInt(color));
 
-        for (Integer faceValue: attackerDiceRoll.getRolledDiceValues()) {
-            if (faceValue > 0) {
-                DiceFaceImageView diceFace = new DiceFaceImageView(getContext(), faceValue);
-                attackerDiceRolls.addView(diceFace);
+            LinearLayout attackerDiceRolls = view.findViewById(R.id.attackingDiceRollFaces);
+            attackerDiceRolls.removeAllViews();
+
+            for (Integer faceValue: aRoll.getRolledDiceValues()) {
+                if (faceValue > 0) {
+                    DiceFaceImageView diceFace = new DiceFaceImageView(getContext(), faceValue);
+                    attackerDiceRolls.addView(diceFace);
+                }
             }
-        }
+        });
 
+        viewModel.getDefenderDiceRoll().observe(this, dRoll -> {
+            Territory defendingTerritory = dRoll.territory;
 
-        TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
-        defendingPlayer.setText("DEFENDER " + defendingTerritory.getOwner().getName() + " ROLLS:");
+            TextView defendingPlayer = view.findViewById(R.id.defendingPlayer);
+            defendingPlayer.setText("DEFENDER " + defendingTerritory.getOwner().getName() + " ROLLS:");
 
-        ImageView defenderIcon = view.findViewById(R.id.defendingPlayerIcon);
-        defenderIcon.setImageResource(R.drawable.account);
+            ImageView defenderIcon = view.findViewById(R.id.defendingPlayerIcon);
+            defenderIcon.setImageResource(R.drawable.account);
 
-        Vec3 color2 = defendingTerritory.getOwner().getColor();
-        defenderIcon.setBackgroundColor(Util.colorToInt(color2));
+            Vec3 color2 = defendingTerritory.getOwner().getColor();
+            defenderIcon.setBackgroundColor(Util.colorToInt(color2));
 
-        LinearLayout defenderDiceRolls = view.findViewById(R.id.defendingDiceRollFaces);
-        defenderDiceRolls.removeAllViews();
+            LinearLayout defenderDiceRolls = view.findViewById(R.id.defendingDiceRollFaces);
+            defenderDiceRolls.removeAllViews();
 
-        for (Integer faceValue: defenderDiceRoll.getRolledDiceValues()) {
-            if (faceValue > 0) {
-                DiceFaceImageView diceFace = new DiceFaceImageView(getContext(), faceValue);
-                defenderDiceRolls.addView(diceFace);
+            for (Integer faceValue: dRoll.getRolledDiceValues()) {
+                if (faceValue > 0) {
+                    DiceFaceImageView diceFace = new DiceFaceImageView(getContext(), faceValue);
+                    defenderDiceRolls.addView(diceFace);
+                }
             }
-        }
+        });
 
         return view;
     }

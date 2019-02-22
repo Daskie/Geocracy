@@ -11,25 +11,30 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
+import csc_cccix.geocracy.game.view_models.TroopSelectionViewModel;
 import csc_cccix.geocracy.world.Territory;
 
 public abstract class TroopSelectionFragment extends Fragment {
 
     View view;
+    TroopSelectionViewModel viewModel;
     RadioGroup radioGroup;
     RadioButton radioButton;
 
-    Territory attackingTerritory;
-    Territory defendingTerritory;
+    LiveData<Territory> attackingTerritory;
+    LiveData<Territory> defendingTerritory;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.troop_selection, container, false);
 
-        attackingTerritory = (Territory) getArguments().get("attackingTerritory");
-        defendingTerritory = (Territory) getArguments().get("defendingTerritory");
+        viewModel = ViewModelProviders.of(getActivity()).get(TroopSelectionViewModel.class);
+        attackingTerritory = viewModel.getAttackingTerritory();
+        defendingTerritory = viewModel.getDefendingTerritory();
 
         radioGroup = view.findViewById(R.id.troopSelection);
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
