@@ -1,6 +1,7 @@
 package csc_cccix.geocracy.game;
 
 import androidx.lifecycle.ViewModelProviders;
+import csc_cccix.geocracy.game.view_models.GameViewModel;
 
 public class GameData {
 

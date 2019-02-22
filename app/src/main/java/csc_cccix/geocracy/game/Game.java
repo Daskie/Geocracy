@@ -14,13 +14,13 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.ui_states.IGameplayState;
 import csc_cccix.geocracy.game.ui_states.SelectDefenseState;
+import csc_cccix.geocracy.game.view_models.GameViewModel;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;

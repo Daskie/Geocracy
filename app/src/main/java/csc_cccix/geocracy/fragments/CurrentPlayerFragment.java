@@ -14,7 +14,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.game.GameViewModel;
+import csc_cccix.geocracy.game.view_models.GameViewModel;
 import csc_cccix.geocracy.game.Player;
 import glm_.vec3.Vec3;
 

@@ -5,10 +5,12 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.Player;
+import csc_cccix.geocracy.game.view_models.TerritoryDetailViewModel;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
@@ -75,6 +77,7 @@ public class DistributeTerritoriesState extends IGameplayState {
 
                 if (event.payload != null) {
                     selectedTerritory = (Territory) event.payload;
+                    ViewModelProviders.of(SM.Game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
 
                     SM.Game.getWorld().selectTerritory(selectedTerritory);
                     SM.Game.getWorld().unhighlightTerritories();
@@ -84,8 +87,9 @@ public class DistributeTerritoriesState extends IGameplayState {
                     } else {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().hide());
                     }
+
                     SM.Game.getActivity().runOnUiThread(() -> {
-                        SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+                        SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
                     });
 
                 }
@@ -119,7 +123,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         currentPlayer.addOrRemoveNArmies(1);
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
         });
 
         Log.i(TAG, currentPlayer.getName() + " ADDED " + selectedTerritory.getTerritoryName());
