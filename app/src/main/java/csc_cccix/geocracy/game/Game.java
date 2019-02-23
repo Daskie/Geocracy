@@ -81,7 +81,9 @@ public class Game implements Serializable {
 
 
     public Game(GameActivity activity, String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
+        this.activity = activity;
         world = new World(this, seed);
+
 
         Player[] players = new Player[nPlayers];
         Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
@@ -95,7 +97,6 @@ public class Game implements Serializable {
 
         lastT = 0;
 
-        this.activity = activity;
         manager = activity.getSupportFragmentManager();
 
         UI = new GameUI(activity, manager);

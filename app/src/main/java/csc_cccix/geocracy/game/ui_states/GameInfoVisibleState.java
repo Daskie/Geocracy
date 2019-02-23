@@ -24,7 +24,7 @@ public class GameInfoVisibleState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-        SM.Game.UI.showOverlayFragment(GameInfoFragment.newInstance(SM.Game));
+        SM.Game.UI.showOverlayFragment(GameInfoFragment.newInstance());
     }
 
     @Override
