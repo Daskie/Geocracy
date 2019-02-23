@@ -38,7 +38,7 @@ public class ArmyRenderer {
             Log.e("", "Failed to load shader");
         }
         shader.setActive();
-        shader.setPlayerColors(world.game.getPlayers());
+        shader.setPlayerColors(world.game.getGameData().getPlayers());
 
         if (!mesh.load()) {
             Log.e("", "Failed to load mesh");

@@ -40,7 +40,7 @@ public class FortifyTerritoryState extends IGameplayState {
         SM.Game.getActivity().runOnUiThread(() -> {
             SM.Game.UI.hideAllGameInteractionButtons();
 
-            if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+            if (SM.Game.currentPlayerIsHuman()) {
                 SM.Game.UI.getCancelBtn().show();
             }
         });
@@ -69,7 +69,7 @@ public class FortifyTerritoryState extends IGameplayState {
                     destinationTerritory = (Territory) event.payload;
 
                     // If current player owns the selected territory
-                    if (destinationTerritory.getOwner() == SM.Game.getCurrentPlayer()){
+                    if (destinationTerritory.getOwner() == SM.Game.getGameData().getCurrentPlayer()){
                         SM.Game.getWorld().selectTerritory(originTerritory);
                         SM.Game.getWorld().targetTerritory(destinationTerritory);
                         SM.Game.getCameraController().targetTerritory(destinationTerritory);
@@ -124,12 +124,11 @@ public class FortifyTerritoryState extends IGameplayState {
             }
         }
 
-        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+        if (SM.Game.currentPlayerIsHuman()) {
             SM.Game.getActivity().runOnUiThread(() -> {
                 SM.Game.UI.getConfirmButton().show();
                 SM.Game.UI.getCancelBtn().hide();
             });
         }
-
     }
 }

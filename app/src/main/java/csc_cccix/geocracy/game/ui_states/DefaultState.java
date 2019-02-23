@@ -28,9 +28,9 @@ public class DefaultState extends IGameplayState {
         SM.Game.getWorld().unselectTerritory();
         SM.Game.getWorld().untargetTerritory();
         SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().highlightTerritories(SM.Game.getCurrentPlayer().getOwnedTerritories());
+        SM.Game.getWorld().highlightTerritories(SM.Game.getGameData().getCurrentPlayer().getOwnedTerritories());
 
-        SM.Game.UI.updateCurrentPlayerFragment();
+//        SM.Game.UI.updateCurrentPlayerFragment();
         SM.Game.UI.removeOverlayFragment();
         SM.Game.UI.hideAllGameInteractionButtons();
 

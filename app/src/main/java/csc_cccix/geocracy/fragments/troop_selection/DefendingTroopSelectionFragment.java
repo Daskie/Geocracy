@@ -17,39 +17,37 @@ import csc_cccix.geocracy.world.Territory;
 
 public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
 
-    public static DefendingTroopSelectionFragment newInstance(Territory attackingTerritory, Territory defendingTerritory) {
-        DefendingTroopSelectionFragment newFragment = new DefendingTroopSelectionFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("attackingTerritory", attackingTerritory);
-        args.putSerializable("defendingTerritory", defendingTerritory);
-        newFragment.setArguments(args);
+    private static final int[] DEFEND_OPTIONS = new int[]{1,2};
 
-        return newFragment;
+    public static DefendingTroopSelectionFragment newInstance() {
+        return new DefendingTroopSelectionFragment();
     }
 
-    private static final int[] DEFFEND_OPTIONS = new int[]{1,2};
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        TextView attackingTerritoryTextView = view.findViewById(R.id.originTerritoryID);
-        attackingTerritoryTextView.setText("SELECT NUMBER OF UNITS");
+//        viewModel.getAttackingTerritory().observe(this, aT -> {
+            TextView attackingTerritoryTextView = view.findViewById(R.id.originTerritoryID);
+            attackingTerritoryTextView.setText("SELECT NUMBER OF UNITS");
+//        });
 
-        TextView defendingTerritoryTextView = view.findViewById(R.id.targetTerritoryID);
-        defendingTerritoryTextView.setText("TO DEFEND TERRITORY: " + defendingTerritory.getTerritoryName());
-
-        addRadioButtons(DEFFEND_OPTIONS);
+        viewModel.getDefendingTerritory().observe(this, dT -> {
+            TextView defendingTerritoryTextView = view.findViewById(R.id.targetTerritoryID);
+            defendingTerritoryTextView.setText("TO DEFEND TERRITORY: " + dT.getTerritoryName());
+            addRadioButtons(DEFEND_OPTIONS, dT.getNArmies());
+        });
 
         return view;
     }
 
-    private void addRadioButtons(int[] values) {
+    private void addRadioButtons(int[] values, int defenderArmies) {
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
         boolean first = true;
 
-        for (int i = 0; i < values.length && i  < this.defendingTerritory.getNArmies(); i++) {
+        for (int i = 0; i < values.length && i  < defenderArmies; i++) {
             RadioButton radioButton = new RadioButton(getContext());
             if (first) {
                 radioButton.setChecked(true);
@@ -63,7 +61,7 @@ public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
     }
 
     public void selectUnitCount(int unitCount) {
-        if (radioGroup != null) radioGroup.check(Arrays.binarySearch(DEFFEND_OPTIONS, unitCount));
+        if (radioGroup != null) radioGroup.check(Arrays.binarySearch(DEFEND_OPTIONS, unitCount));
     }
 
 }

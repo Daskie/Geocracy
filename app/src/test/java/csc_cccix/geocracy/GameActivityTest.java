@@ -10,9 +10,12 @@ import org.robolectric.RobolectricTestRunner;
 import java.util.Random;
 
 import csc_cccix.geocracy.game.GameActivity;
+import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
+
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -36,7 +39,9 @@ public class GameActivityTest {
         assertNotNull(activity.game.UI);
         assertNotNull(activity.game.Notifications);
 
-        assertEquals(activity.game.getPlayers().length, PLAYER_COUNT);
+        assertEquals(activity.game.getGameData().getPlayers().length, PLAYER_COUNT);
+
+        assertTrue(activity.game.getStateMachine().CurrentState() instanceof DistributeTerritoriesState);
 
     }
 }

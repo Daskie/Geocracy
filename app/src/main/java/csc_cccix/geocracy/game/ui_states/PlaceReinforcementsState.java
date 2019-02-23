@@ -26,15 +26,15 @@ public class PlaceReinforcementsState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
-        Player currentPlayer = SM.Game.getCurrentPlayer();
+        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
 
         // TODO: rename get game status (or make enum)
         //  Out of Game Setup
-        if(SM.Game.getGameStatus())
+        if(SM.Game.getGameData().getGameStatus())
             currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
         else {
-            for(Player player : SM.Game.getPlayers())
-                player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)SM.Game.getWorld().getNTerritories() / (float)SM.Game.getPlayers().length));
+            for(Player player : SM.Game.getGameData().getPlayers())
+                player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)SM.Game.getWorld().getNTerritories() / (float)SM.Game.getGameData().getPlayers().length));
         }
 
         Log.i(TAG, "" + currentPlayer.getArmyPool());
@@ -79,16 +79,16 @@ public class PlaceReinforcementsState extends IGameplayState {
                     selectedTerritory = (Territory) event.payload;
 
                     // Show changes only for human player
-                    if (SM.Game.getCurrentPlayer().getClass() == HumanPlayer.class) {
+                    if (SM.Game.getGameData().getCurrentPlayer().getClass() == HumanPlayer.class) {
 
                         SM.Game.getWorld().selectTerritory(selectedTerritory);
                         SM.Game.getWorld().targetTerritory(selectedTerritory);
                         SM.Game.getCameraController().targetTerritory(selectedTerritory);
 
                         // If current player owns the selected territory
-                        if (selectedTerritory.getOwner() == SM.Game.getCurrentPlayer()){
+                        if (selectedTerritory.getOwner() == SM.Game.getGameData().getCurrentPlayer()){
                             SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true, true));
-                            SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getCurrentPlayer()));
+                            SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getGameData().getCurrentPlayer()));
                         } else {
                             SM.Game.getActivity().runOnUiThread(() -> {
                                 SM.Game.UI.hideAllGameInteractionButtons();
@@ -113,7 +113,7 @@ public class PlaceReinforcementsState extends IGameplayState {
             case CONFIRM_TAPPED:
 
                 // Verify player has placed all their reinforcements
-                if (SM.Game.getCurrentPlayer().getArmyPool() <= 0) {
+                if (SM.Game.getGameData().getCurrentPlayer().getArmyPool() <= 0) {
                     SM.Game.UI.removeActiveBottomPaneFragment();
 
                     // Loop through next players
@@ -121,7 +121,7 @@ public class PlaceReinforcementsState extends IGameplayState {
                     SM.Game.UI.hideAllGameInteractionButtons();
 
                     // If all players have placed reinforcements (is human players turn again)
-                    if(SM.Game.getCurrentPlayer().getClass() == HumanPlayer.class) {
+                    if(SM.Game.getGameData().getCurrentPlayer().getClass() == HumanPlayer.class) {
                         SM.Advance(new DefaultState(SM));
                     }
                 }
@@ -140,7 +140,7 @@ public class PlaceReinforcementsState extends IGameplayState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        Player currentPlayer = SM.Game.getCurrentPlayer();
+        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
 
         if (selectedTerritory != null && selectedTerritory.getOwner() == currentPlayer) {
 
@@ -168,7 +168,7 @@ public class PlaceReinforcementsState extends IGameplayState {
         }
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
-            if (SM.Game.getCurrentPlayer().getArmyPool() <= 0) {
+            if (SM.Game.getGameData().getCurrentPlayer().getArmyPool() <= 0) {
                 SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
             } else {
                 SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, false));

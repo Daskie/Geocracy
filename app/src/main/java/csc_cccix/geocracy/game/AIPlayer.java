@@ -54,10 +54,10 @@ public class AIPlayer extends Player {
             EventBus.publish(USER_ACTION, new GameEvent(CONFIRM_TAPPED, null));
 
         } else if (state.getClass() == PlaceReinforcementsState.class) {
-            RandomSet<Territory> randomSet = new RandomSet<>(game.getCurrentPlayer().getOwnedTerritories());
+            RandomSet<Territory> randomSet = new RandomSet<>(game.getGameData().getCurrentPlayer().getOwnedTerritories());
             Random gen = new Random();
 
-            while (game.getCurrentPlayer().getArmyPool() > 0) {
+            while (game.getGameData().getCurrentPlayer().getArmyPool() > 0) {
                 Territory terr = randomSet.pollRandom(gen);
                 EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
                 EventBus.publish(USER_ACTION, new GameEvent(ADD_UNIT_TAPPED, 1));
@@ -71,7 +71,7 @@ public class AIPlayer extends Player {
             if (previousState != null && previousState.getClass() == BattleResultsState.class) {
                 EventBus.publish(USER_ACTION, new GameEvent(END_TURN_TAPPED, null));
             } else {
-                Territory terr = game.getCurrentPlayer().findTerrWithMaxArmies();
+                Territory terr = game.getGameData().getCurrentPlayer().findTerrWithMaxArmies();
                 EventBus.publish(USER_ACTION, new GameEvent(TERRITORY_SELECTED, terr));
                 currentlySelectedTerritory = terr;
             }

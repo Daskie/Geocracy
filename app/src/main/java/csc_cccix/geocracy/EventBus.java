@@ -56,7 +56,7 @@ public final class EventBus {
      */
     public static void subscribe(String subject, @NonNull Object lifecycle, @NonNull Consumer<Object> action) {
         Disposable disposable = getSubject(subject)
-                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(action);
 

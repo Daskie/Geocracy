@@ -31,6 +31,7 @@ public class GameSurfaceView extends GLSurfaceView implements ScaleGestureDetect
     }
 
     private void init() {
+        activity = (GameActivity) getContext();
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 24, 0);
         renderer = new MainRenderer(activity);

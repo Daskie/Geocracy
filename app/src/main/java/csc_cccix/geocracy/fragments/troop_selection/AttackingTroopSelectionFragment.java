@@ -16,38 +16,36 @@ import csc_cccix.geocracy.world.Territory;
 
 public class AttackingTroopSelectionFragment extends TroopSelectionFragment {
 
-    public static AttackingTroopSelectionFragment newInstance(Territory attackingTerritory, Territory defendingTerritory) {
-        AttackingTroopSelectionFragment newFragment = new AttackingTroopSelectionFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("attackingTerritory", attackingTerritory);
-        args.putSerializable("defendingTerritory", defendingTerritory);
-        newFragment.setArguments(args);
+    private static final int[] ATTACK_OPTIONS = new int[]{2,3,4};
 
-        return newFragment;
+    public static AttackingTroopSelectionFragment newInstance() {
+        return new AttackingTroopSelectionFragment();
     }
 
-    private static final int[] ATTACK_OPTIONS = new int[]{2,3,4};
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        TextView attackingTerritoryTextView = view.findViewById(R.id.originTerritoryID);
-        attackingTerritoryTextView.setText("SELECT NUMBER OF UNITS FROM: " + attackingTerritory.getTerritoryName());
+        viewModel.getAttackingTerritory().observe(this, aT -> {
+            TextView attackingTerritoryTextView = view.findViewById(R.id.originTerritoryID);
+            attackingTerritoryTextView.setText("SELECT NUMBER OF UNITS FROM: " + aT.getTerritoryName());
+            addRadioButtons(ATTACK_OPTIONS, aT.getNArmies());
+        });
 
-        TextView defendingTerritoryTextView = view.findViewById(R.id.targetTerritoryID);
-        defendingTerritoryTextView.setText("TO ATTACK TERRITORY: " + defendingTerritory.getTerritoryName());
-
-        addRadioButtons(ATTACK_OPTIONS);
+        viewModel.getDefendingTerritory().observe(this, dT -> {
+            TextView defendingTerritoryTextView = view.findViewById(R.id.targetTerritoryID);
+            defendingTerritoryTextView.setText("TO ATTACK TERRITORY: " + dT.getTerritoryName());
+        });
 
         return view;
     }
 
-    private void addRadioButtons(int[] values) {
+    private void addRadioButtons(int[] values, int attackerArmies) {
         boolean first = true;
 
-        for (int i = 0; i < values.length && i + 1 < this.attackingTerritory.getNArmies() - 1; i++) {
+        for (int i = 0; i < values.length && i + 1 < attackerArmies - 1; i++) {
             RadioButton radioButton = new RadioButton(getContext());
             if (first) {
                 radioButton.setChecked(true);

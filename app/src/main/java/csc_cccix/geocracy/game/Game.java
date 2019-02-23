@@ -13,11 +13,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Global;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.ui_states.IGameplayState;
 import csc_cccix.geocracy.game.ui_states.SelectDefenseState;
+import csc_cccix.geocracy.game.view_models.GameViewModel;
 import csc_cccix.geocracy.space.SpaceRenderer;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import csc_cccix.geocracy.world.Territory;
@@ -38,22 +41,22 @@ public class Game implements Serializable {
     public static final int MAX_N_PLAYERS = 8;
     public static final int MIN_N_PLAYERS = 2;
     public static final int DEFAULT_N_PLAYERS = 4;
-    public static final int MAX_ARMIES_PER_TERRITORY = 15;
+    public static final int MAX_ARMIES_PER_TERRITORY = 25;
     public static final String USER_ACTION = "USER_ACTION";
     public static final String SAVE_FILE_NAME = "save";
     public static final float TAP_DISTANCE_THRESHOLD = 10.0f;
 
     // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     private World world;
-    private boolean outOfGameSetUp = false;
-    private Player[] players;
-    private int currentPlayerIndex;
+    public GameData gameData;
+
     private long lastT; // Time of the previous game update / frame relative to the start of the game
 
     private GameStateMachine StateMachine;
 
     private transient GameActivity activity;
     public transient GameUI UI; // User Interface
+    private GameViewModel gameViewModel;
     public transient Notifications Notifications;
 
     private transient SpaceRenderer spaceRenderer;
@@ -78,19 +81,22 @@ public class Game implements Serializable {
 
 
     public Game(GameActivity activity, String playerName, int nPlayers, Vec3 mainPlayerColor, long seed) {
+        this.activity = activity;
         world = new World(this, seed);
 
-        players = new Player[nPlayers];
+
+        Player[] players = new Player[nPlayers];
         Vec3[] playerColors = Util.genDistinctColors(players.length, Util.getHue(mainPlayerColor));
         players[0] = new HumanPlayer(playerName,1, playerColors[0]);
         for (int i = 1; i < players.length; ++i) {
             players[i] = new AIPlayer(i + 1, playerColors[i]);
         }
-        currentPlayerIndex = 0;
+
+        gameViewModel = ViewModelProviders.of(activity).get(GameViewModel.class);
+        gameData = new GameData(this, players);
 
         lastT = 0;
 
-        this.activity = activity;
         manager = activity.getSupportFragmentManager();
 
         UI = new GameUI(activity, manager);
@@ -109,39 +115,48 @@ public class Game implements Serializable {
 
         lastTimestamp = System.nanoTime();
 
+        UI.showCurrentPlayerFragment();
+
     }
 
 
     // GETTERS
     public GameActivity getActivity() { return activity; }
+    public GameStateMachine getStateMachine() { return StateMachine; }
     public CameraController getCameraController() { return cameraController; }
     public World getWorld() { return world; }
-    public Player[] getPlayers() { return players; }
-    public Player getCurrentPlayer() { return players[currentPlayerIndex]; }
-    public boolean getGameStatus(){ return outOfGameSetUp; }
+    public GameData getGameData() { return gameData; }
+    public GameViewModel getGameViewModel() { return gameViewModel; }
+
 
     public Player getControllingPlayer() {
+        // If a defense needs to be selected, set controlling player to defending territory owner
         if (StateMachine.CurrentState() instanceof SelectDefenseState) {
             SelectDefenseState selectDefenseState = (SelectDefenseState) StateMachine.CurrentState();
             return selectDefenseState.getDefendingTerritory().getOwner();
         } else {
-            return getCurrentPlayer();
+            return gameData.getCurrentPlayer();
         }
+    }
+
+    public boolean currentPlayerIsHuman() {
+        return gameData.getCurrentPlayer() instanceof HumanPlayer;
     }
 
     // Increments current player index
     public void nextPlayer() {
-        boolean wasHuman = getCurrentPlayer() instanceof HumanPlayer;
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        UI.updateCurrentPlayerFragment();
+        boolean wasHuman = currentPlayerIsHuman();
+        gameData.nextPlayerIndex();
+//        UI.updateCurrentPlayerFragment();
 
         //  if that last player was a human player and the new current player is an AI, set cooldown time... (is this neeeded?)
-        if (wasHuman && getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
+        if (wasHuman && gameData.getCurrentPlayer() instanceof AIPlayer) cooldown = 1.0f;
     }
 
     public void setFirstPlayer(){
-        currentPlayerIndex=0;
-        UI.updateCurrentPlayerFragment();
+        gameData.setFirstPlayer();
+//        UI.showCurrentPlayerFragment();
+//        UI.updateCurrentPlayerFragment();
     }
 
     // The core game logic

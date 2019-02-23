@@ -2,9 +2,11 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
+import csc_cccix.geocracy.game.view_models.TerritoryDetailViewModel;
 import csc_cccix.geocracy.world.Territory;
 
 public class SelectedTerritoryState extends IGameplayState {
@@ -32,9 +34,11 @@ public class SelectedTerritoryState extends IGameplayState {
         SM.Game.getWorld().selectTerritory(selectedTerritory);
         SM.Game.getCameraController().targetTerritory(selectedTerritory);
 
+        ViewModelProviders.of(SM.Game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
+
         SM.Game.getActivity().runOnUiThread(() -> {
 
-            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
             SM.Game.UI.hideAllGameInteractionButtons();
 
             if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
@@ -42,7 +46,7 @@ public class SelectedTerritoryState extends IGameplayState {
                 SM.Game.UI.getCancelBtn().show();
 
                 // If current player is the owner of selected territory
-                if (selectedTerritory.getOwner().getId() == SM.Game.getCurrentPlayer().getId()) {
+                if (selectedTerritory.getOwner().getId() == SM.Game.getGameData().getCurrentPlayer().getId()) {
 
                     // If the territory contains enough units to perform an attack
                     if (selectedTerritory.getNArmies() >= 2) {

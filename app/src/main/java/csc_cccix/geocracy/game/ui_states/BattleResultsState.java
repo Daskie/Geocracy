@@ -2,9 +2,11 @@ package csc_cccix.geocracy.game.ui_states;
 
 import android.util.Log;
 
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
+import csc_cccix.geocracy.game.view_models.BattleResultsViewModel;
 
 public class BattleResultsState extends IGameplayState {
 
@@ -40,14 +42,16 @@ public class BattleResultsState extends IGameplayState {
 
         }
 
-        SM.Game.UI.showBottomPaneFragment(BattleResultsFragment.newInstance(result));
+        ViewModelProviders.of(SM.Game.getActivity()).get(BattleResultsViewModel.class).setBattleResult(result);
+
+        SM.Game.UI.showBottomPaneFragment(BattleResultsFragment.newInstance());
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(result.attackingTerritory);
         SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
         SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
 
-        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+        if (SM.Game.currentPlayerIsHuman()) {
             SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
         }
 

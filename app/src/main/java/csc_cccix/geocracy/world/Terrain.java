@@ -120,7 +120,7 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
-        shader.setPlayerColors(world.game.getPlayers());
+        shader.setPlayerColors(world.game.getGameData().getPlayers());
         shader.setTerritoryPlayers(world.getTerritories());
         float[] invMaxInlandDists = new float[64];
         for (int ti = 1; ti < territorySpecs.length; ++ti) {

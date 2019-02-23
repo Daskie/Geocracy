@@ -5,10 +5,12 @@ import android.widget.Toast;
 
 import java.util.HashSet;
 
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.Player;
+import csc_cccix.geocracy.game.view_models.TerritoryDetailViewModel;
 import csc_cccix.geocracy.world.Territory;
 import es.dmoral.toasty.Toasty;
 
@@ -32,7 +34,7 @@ public class DistributeTerritoriesState extends IGameplayState {
         Log.i(TAG, "INIT STATE");
         highlightUnoccupiedTerritories();
 
-        if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+        if (SM.Game.currentPlayerIsHuman()) {
             SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
         }
 
@@ -57,9 +59,9 @@ public class DistributeTerritoriesState extends IGameplayState {
                 if (selectedTerritory != null) {
 
                     //illegal territory selection for setting up territories
-                    if(selectedTerritory.getOwner() != null){
+                    if (selectedTerritory.getOwner() != null){
 
-                        if(SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+                        if (SM.Game.currentPlayerIsHuman()) {
                             SM.Game.Notifications.showTerritoryAlreadyAcquiredNotification();
                         }
 
@@ -75,17 +77,19 @@ public class DistributeTerritoriesState extends IGameplayState {
 
                 if (event.payload != null) {
                     selectedTerritory = (Territory) event.payload;
+                    ViewModelProviders.of(SM.Game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
 
                     SM.Game.getWorld().selectTerritory(selectedTerritory);
                     SM.Game.getWorld().unhighlightTerritories();
                     SM.Game.getCameraController().targetTerritory(selectedTerritory);
-                    if (selectedTerritory.getOwner() == null && SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+                    if (selectedTerritory.getOwner() == null && SM.Game.currentPlayerIsHuman()) {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
                     } else {
                         SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().hide());
                     }
+
                     SM.Game.getActivity().runOnUiThread(() -> {
-                        SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+                        SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
                     });
 
                 }
@@ -113,13 +117,13 @@ public class DistributeTerritoriesState extends IGameplayState {
     public void addToSelectedTerritoryUnitCount(int amount) {
 
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        Player currentPlayer = SM.Game.getCurrentPlayer();
+        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
         selectedTerritory.setOwner(currentPlayer);
         selectedTerritory.setNArmies(amount);
         currentPlayer.addOrRemoveNArmies(1);
 
         SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance(selectedTerritory));
+            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
         });
 
         Log.i(TAG, currentPlayer.getName() + " ADDED " + selectedTerritory.getTerritoryName());
@@ -132,7 +136,7 @@ public class DistributeTerritoriesState extends IGameplayState {
 
         } else {
 
-            if (SM.Game.getCurrentPlayer() instanceof HumanPlayer) {
+            if (SM.Game.currentPlayerIsHuman()) {
                 SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
             }
 

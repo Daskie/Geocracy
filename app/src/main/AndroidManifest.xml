@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name="csc_cccix.geocracy.AudioService"></service>
-        <activity android:name="csc_cccix.geocracy.MainActivity" android:screenOrientation="portrait">
+        <activity android:name="csc_cccix.geocracy.MainActivity" android:screenOrientation="portrait" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="csc_cccix.geocracy.MainActivity" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

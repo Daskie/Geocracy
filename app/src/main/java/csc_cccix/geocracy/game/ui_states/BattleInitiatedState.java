@@ -5,9 +5,11 @@ import android.util.Log;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.fragments.DiceRollFragment;
 import csc_cccix.geocracy.game.IStateMachine;
+import csc_cccix.geocracy.game.view_models.DiceRollViewModel;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -36,7 +38,11 @@ public class BattleInitiatedState extends IGameplayState {
 
         Log.i(TAG, "INIT STATE");
 
-        SM.Game.UI.showBottomPaneFragment(DiceRollFragment.newInstance(attackingDiceRoll, defendingDiceRoll));
+        DiceRollViewModel viewModel = ViewModelProviders.of(SM.Game.getActivity()).get(DiceRollViewModel.class);
+        viewModel.setAttackerDiceRoll(attackingDiceRoll);
+        viewModel.setDefenderDiceRoll(defendingDiceRoll);
+
+        SM.Game.UI.showBottomPaneFragment(DiceRollFragment.newInstance());
 
         SM.Game.getWorld().unhighlightTerritories();
         SM.Game.getWorld().selectTerritory(attackingDiceRoll.territory);

@@ -28,7 +28,7 @@ public abstract class IGameplayState extends IState {
                 SM.Advance(SM.previousState);
 
             default:
-                Log.d("I_GAMEPLAY_STATE", "UNRECOGNIZED ACTION TRIGGERED");
+//                Log.d("I_GAMEPLAY_STATE", "UNRECOGNIZED ACTION TRIGGERED"); NOT A TRUE STATEMENT
                 break;
         }
 
