@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import csc_cccix.geocracy.game.Player;
+import csc_cccix.geocracy.backend.game.Player;
 
 public class GameViewModel extends AndroidViewModel {
     private MutableLiveData<Player> currentPlayer = new MutableLiveData<>();

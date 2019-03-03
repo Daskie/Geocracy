@@ -15,7 +15,7 @@ import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.game.ui_states.GameAction;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 
-import static csc_cccix.geocracy.game.Game.USER_ACTION;
+import static csc_cccix.geocracy.backend.game.Game.USER_ACTION;
 
 public class GameUI {
 

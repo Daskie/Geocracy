@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.BattleResultsFragment;
-import csc_cccix.geocracy.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.BattleResultsViewModel;
 

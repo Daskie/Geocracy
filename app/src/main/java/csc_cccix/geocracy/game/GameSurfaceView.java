@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.graphics.MainRenderer;
+import csc_cccix.geocracy.backend.graphics.MainRenderer;
 import glm_.vec2.Vec2i;
 import io.reactivex.disposables.Disposable;
 

@@ -2,8 +2,7 @@ package csc_cccix.geocracy.game.ui_states;
 
 import java.io.Serializable;
 
-import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public class BattleResult implements Serializable {
 

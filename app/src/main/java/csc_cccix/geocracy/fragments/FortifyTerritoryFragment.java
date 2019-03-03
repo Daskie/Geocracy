@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public class FortifyTerritoryFragment extends Fragment {
 

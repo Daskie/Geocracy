@@ -29,7 +29,7 @@ import java.util.Random;
 
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.backend.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import es.dmoral.toasty.Toasty;
 import glm_.vec3.Vec3;

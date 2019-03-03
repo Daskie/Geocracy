@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public class DiceRoll implements Serializable {
 

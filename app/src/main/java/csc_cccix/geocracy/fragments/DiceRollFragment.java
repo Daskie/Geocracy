@@ -16,9 +16,8 @@ import android.widget.TextView;
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.game.ui_states.DiceRoll;
 import csc_cccix.geocracy.game.view_models.DiceRollViewModel;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.world.Territory;
 import glm_.vec3.Vec3;
 
 public class DiceRollFragment extends Fragment {

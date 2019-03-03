@@ -4,10 +4,10 @@ import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
-import csc_cccix.geocracy.game.HumanPlayer;
+import csc_cccix.geocracy.backend.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.TerritoryDetailViewModel;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public class SelectedTerritoryState extends IGameplayState {
 

@@ -15,7 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
 import csc_cccix.geocracy.game.view_models.TroopSelectionViewModel;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public abstract class TroopSelectionFragment extends Fragment {
 

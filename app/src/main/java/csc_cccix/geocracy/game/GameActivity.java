@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
+import csc_cccix.geocracy.backend.game.Game;
 import csc_cccix.geocracy.game.ui_states.GameAction;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 import es.dmoral.toasty.Toasty;

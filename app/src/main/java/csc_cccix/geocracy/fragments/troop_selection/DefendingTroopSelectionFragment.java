@@ -13,7 +13,6 @@ import android.widget.TextView;
 import java.util.Arrays;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.world.Territory;
 
 public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
 

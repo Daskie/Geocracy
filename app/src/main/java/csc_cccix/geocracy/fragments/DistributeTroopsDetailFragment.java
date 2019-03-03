@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public class DistributeTroopsDetailFragment extends Fragment {
 

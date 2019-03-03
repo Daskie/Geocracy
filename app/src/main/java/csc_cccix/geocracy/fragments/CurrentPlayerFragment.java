@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.view_models.GameViewModel;
-import csc_cccix.geocracy.game.Player;
+import csc_cccix.geocracy.backend.game.Player;
 import glm_.vec3.Vec3;
 
 public class CurrentPlayerFragment extends Fragment {

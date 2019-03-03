@@ -16,7 +16,7 @@ import csc_cccix.geocracy.fragments.GameSetupFragment;
 import csc_cccix.geocracy.fragments.MainMenuFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.fragments.TutorialFragment;
-import csc_cccix.geocracy.game.Game;
+import csc_cccix.geocracy.backend.game.Game;
 
 public class MenuActivity extends AppCompatActivity {
 

@@ -3,10 +3,10 @@ package csc_cccix.geocracy.game.ui_states;
 import android.util.Log;
 
 import csc_cccix.geocracy.fragments.DistributeTroopsDetailFragment;
-import csc_cccix.geocracy.game.HumanPlayer;
+import csc_cccix.geocracy.backend.game.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.game.Player;
-import csc_cccix.geocracy.world.Territory;
+import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.world.Territory;
 
 public class PlaceReinforcementsState extends IGameplayState {
 
