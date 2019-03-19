@@ -1,15 +1,14 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import csc_cccix.geocracy.backend.world.Territory;
 
-public class DiceRoll implements Serializable {
+public class DiceRoll {
 
     public Territory territory;
     public int unitCount;
@@ -57,4 +56,4 @@ public class DiceRoll implements Serializable {
 
     }
 
-}
+}*/

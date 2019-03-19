@@ -2,7 +2,7 @@ package csc_cccix.geocracy;
 
 import org.junit.Test;
 
-import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.Player;
 import glm_.vec3.Vec3;
 
 import static org.junit.Assert.assertEquals;

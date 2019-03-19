@@ -1,8 +1,8 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
-import csc_cccix.geocracy.backend.game.HumanPlayer;
+import csc_cccix.geocracy.backend.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.backend.world.Territory;
 
@@ -23,20 +23,20 @@ public class DefaultState extends IGameplayState {
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
 
-        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.game.UI.removeActiveBottomPaneFragment();
 
-        SM.Game.getWorld().unselectTerritory();
-        SM.Game.getWorld().untargetTerritory();
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().highlightTerritories(SM.Game.getGameData().getCurrentPlayer().getOwnedTerritories());
+        SM.game.getWorld().unselectTerritory();
+        SM.game.getWorld().untargetTerritory();
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().highlightTerritories(SM.game.getGameData().getCurrentPlayer().getOwnedTerritories());
 
-//        SM.Game.UI.updateCurrentPlayerFragment();
-        SM.Game.UI.removeOverlayFragment();
-        SM.Game.UI.hideAllGameInteractionButtons();
+//        SM.game.UI.updateCurrentPlayerFragment();
+        SM.game.UI.removeOverlayFragment();
+        SM.game.UI.hideAllGameInteractionButtons();
 
-        if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-            SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.UI.getEndTurnButton().show();
+        if (SM.game.getControllingPlayer() instanceof HumanPlayer) {
+            SM.game.getActivity().runOnUiThread(() -> {
+                SM.game.UI.getEndTurnButton().show();
             });
         }
     }
@@ -59,11 +59,11 @@ public class DefaultState extends IGameplayState {
 
             case END_TURN_TAPPED:
                 Log.d(TAG, "PLAYER ENDED THEIR TURN");
-                SM.Game.nextPlayer();
+                SM.game.nextPlayer();
                 SM.Advance(new DefaultState(SM));
                 break;
         }
 
         return false;
     }
-}
+}*/

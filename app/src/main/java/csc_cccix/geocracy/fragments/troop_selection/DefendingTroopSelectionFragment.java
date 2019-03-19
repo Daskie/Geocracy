@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.fragments.troop_selection;
 
-import android.os.Bundle;
+/*import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -63,4 +63,4 @@ public class DefendingTroopSelectionFragment extends TroopSelectionFragment {
         if (radioGroup != null) radioGroup.check(Arrays.binarySearch(DEFEND_OPTIONS, unitCount));
     }
 
-}
+}*/

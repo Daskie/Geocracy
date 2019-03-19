@@ -1,4 +1,4 @@
-package csc_cccix.geocracy.backend.game;
+package csc_cccix.geocracy.backend;
 
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.backend.graphics.OrbitCamera;

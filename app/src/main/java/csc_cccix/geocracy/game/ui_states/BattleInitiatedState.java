@@ -1,13 +1,12 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.fragments.DiceRollFragment;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.DiceRollViewModel;
 import io.reactivex.Completable;
@@ -38,17 +37,17 @@ public class BattleInitiatedState extends IGameplayState {
 
         Log.i(TAG, "INIT STATE");
 
-        DiceRollViewModel viewModel = ViewModelProviders.of(SM.Game.getActivity()).get(DiceRollViewModel.class);
+        DiceRollViewModel viewModel = ViewModelProviders.of(SM.game.getActivity()).get(DiceRollViewModel.class);
         viewModel.setAttackerDiceRoll(attackingDiceRoll);
         viewModel.setDefenderDiceRoll(defendingDiceRoll);
 
-        SM.Game.UI.showBottomPaneFragment(DiceRollFragment.newInstance());
+        SM.game.UI.showBottomPaneFragment(DiceRollFragment.newInstance());
 
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(attackingDiceRoll.territory);
-        SM.Game.getWorld().highlightTerritory(defendingDiceRoll.territory);
-        SM.Game.getCameraController().targetTerritory(defendingDiceRoll.territory);
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().selectTerritory(attackingDiceRoll.territory);
+        SM.game.getWorld().highlightTerritory(defendingDiceRoll.territory);
+        SM.game.getCameraController().targetTerritory(defendingDiceRoll.territory);
+        SM.game.getActivity().runOnUiThread(() -> SM.game.UI.hideAllGameInteractionButtons());
 
         this.result = performDiceRoll();
 
@@ -59,7 +58,7 @@ public class BattleInitiatedState extends IGameplayState {
 
     @Override
     public void DeinitializeState() {
-        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.game.UI.removeActiveBottomPaneFragment();
     }
 
     // TODO: probably don't need to do anything here... will remove if so
@@ -99,4 +98,4 @@ public class BattleInitiatedState extends IGameplayState {
         return new BattleResult(attackingDiceRoll.territory, attackingDiceRoll.unitCount, attackerUnitLoss, defendingDiceRoll.territory, defendingDiceRoll.unitCount, defenderUnitLoss);
     }
 
-}
+}*/

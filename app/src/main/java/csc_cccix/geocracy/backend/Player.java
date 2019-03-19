@@ -1,25 +1,21 @@
-package csc_cccix.geocracy.backend.game;
+package csc_cccix.geocracy.backend;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import csc_cccix.geocracy.SerializableVec3;
-import csc_cccix.geocracy.exceptions.PlayerNotOwnerRuntimeException;
 import csc_cccix.geocracy.backend.world.Continent;
 import csc_cccix.geocracy.backend.world.Territory;
+import csc_cccix.geocracy.exceptions.PlayerNotOwnerRuntimeException;
 import glm_.vec3.Vec3;
 
 import static glm_.Java.glm;
 
-public class Player implements Serializable {
-
-    private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
+public class Player {
 
     private int id; // starts at 1. 0 indicates no player
     public String name;
     private Set<Territory> territories;
-    private SerializableVec3 color;
+    private Vec3 color;
     private int armyPool;
     private int armies;
     private Set<Continent> ownedContinents; // which continents the player owns all territories of
@@ -27,7 +23,7 @@ public class Player implements Serializable {
 
     public Player(int id, Vec3 color) {
         this.id = id;
-        this.color = new SerializableVec3(new Vec3(color));
+        this.color = new Vec3(color);
         this.territories = new HashSet<>();
         this.armies = 0;
         this.ownedContinents = new HashSet<>();
@@ -55,7 +51,7 @@ public class Player implements Serializable {
     public String getName() {
         return name;
     }
-    public Vec3 getColor() { return color.get(); }
+    public Vec3 getColor() { return color; }
     public Set<Territory> getOwnedTerritories() {
         return territories;
     }

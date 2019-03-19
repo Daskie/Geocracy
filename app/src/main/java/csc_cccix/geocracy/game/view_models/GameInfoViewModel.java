@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.game.view_models;
 
-import android.app.Application;
+/*import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import csc_cccix.geocracy.backend.game.Player;
 import es.dmoral.toasty.Toasty;
 
 public class GameInfoViewModel extends AndroidViewModel {
@@ -45,4 +44,4 @@ public class GameInfoViewModel extends AndroidViewModel {
         clipboard.setPrimaryClip(clip);
         Toasty.info(getApplication(), "Copied world seed").show();
     }
-}
+}*/

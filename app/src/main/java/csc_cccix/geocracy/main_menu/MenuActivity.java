@@ -3,20 +3,20 @@ package csc_cccix.geocracy.main_menu;
 import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 import csc_cccix.R;
+import csc_cccix.geocracy.backend.Game;
 import csc_cccix.geocracy.fragments.GameSetupFragment;
 import csc_cccix.geocracy.fragments.MainMenuFragment;
 import csc_cccix.geocracy.fragments.SettingsFragment;
 import csc_cccix.geocracy.fragments.TutorialFragment;
-import csc_cccix.geocracy.backend.game.Game;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -82,7 +82,7 @@ public class MenuActivity extends AppCompatActivity {
         mainMenuFragment = new MainMenuFragment();
 
         adapter.addFragment(mainMenuFragment, "Main Menu");
-        adapter.addFragment(new GameSetupFragment(), "Game Setup");
+        adapter.addFragment(new GameSetupFragment(), "game Setup");
         adapter.addFragment(new TutorialFragment(), "Tutorial");
         adapter.addFragment(new SettingsFragment(), "Settings");
         vp.setAdapter(adapter);

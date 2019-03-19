@@ -1,9 +1,9 @@
 package csc_cccix.geocracy.game;
 
-import android.view.Gravity;
+/*import android.view.Gravity;
 import android.widget.Toast;
 
-import csc_cccix.geocracy.backend.game.Game;
+import csc_cccix.geocracy.backend.Game;
 import es.dmoral.toasty.Toasty;
 
 public class Notifications {
@@ -62,4 +62,4 @@ public class Notifications {
         });
     }
 
-}
+}*/

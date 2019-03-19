@@ -1,4 +1,4 @@
-package csc_cccix.geocracy.backend.game;
+package csc_cccix.geocracy.backend;
 
 import java.util.AbstractSet;
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.troop_selection.DefendingTroopSelectionFragment;
-import csc_cccix.geocracy.backend.game.HumanPlayer;
+import csc_cccix.geocracy.backend.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.TroopSelectionViewModel;
 import csc_cccix.geocracy.backend.world.Territory;
@@ -36,25 +36,25 @@ public class SelectDefenseState extends IGameplayState {
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
 
-        TroopSelectionViewModel viewModel = ViewModelProviders.of(SM.Game.getActivity()).get(TroopSelectionViewModel.class);
+        TroopSelectionViewModel viewModel = ViewModelProviders.of(SM.game.getActivity()).get(TroopSelectionViewModel.class);
         viewModel.setAttackingTerritory(attackingTerritory);
         viewModel.setDefendingTerritory(defendingTerritory);
 
         troopSelectionFragment = DefendingTroopSelectionFragment.newInstance();
-        SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
-        SM.Game.getCameraController().targetTerritory(defendingTerritory);
-        SM.Game.UI.hideAllGameInteractionButtons();
+        SM.game.UI.showBottomPaneFragment(troopSelectionFragment);
+        SM.game.getCameraController().targetTerritory(defendingTerritory);
+        SM.game.UI.hideAllGameInteractionButtons();
 
-        if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-            SM.Game.Notifications.showDefendNotification();
-            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
+        if (SM.game.getControllingPlayer() instanceof HumanPlayer) {
+            SM.game.Notifications.showDefendNotification();
+            SM.game.getActivity().runOnUiThread(() -> SM.game.UI.getConfirmButton().show());
         }
     }
 
     @Override
     public void DeinitializeState() {
         Log.d(TAG, "DEINIT STATE");
-        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.game.UI.removeActiveBottomPaneFragment();
     }
 
     @Override
@@ -95,4 +95,4 @@ public class SelectDefenseState extends IGameplayState {
     public Territory getDefendingTerritory() {
         return defendingTerritory;
     }
-}
+}*/

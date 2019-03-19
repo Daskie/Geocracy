@@ -17,7 +17,7 @@ import java.util.Set;
 
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.VecArrayUtil;
-import csc_cccix.geocracy.backend.game.Game;
+import csc_cccix.geocracy.backend.Game;
 import csc_cccix.geocracy.backend.graphics.Camera;
 import csc_cccix.geocracy.backend.graphics.Mesh;
 import csc_cccix.geocracy.backend.noise.SimplexNoise;
@@ -120,7 +120,7 @@ public class Terrain {
         shader.setContinentColors(contColors);
         shader.setSelectedTerritory(0);
         shader.setHighlightedTerritories(null);
-        shader.setPlayerColors(world.game.getGameData().getPlayers());
+        shader.setPlayerColors(world.game.getPlayers());
         shader.setTerritoryPlayers(world.getTerritories());
         float[] invMaxInlandDists = new float[64];
         for (int ti = 1; ti < territorySpecs.length; ++ti) {

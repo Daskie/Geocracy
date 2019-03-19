@@ -1,10 +1,10 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
-import csc_cccix.geocracy.backend.game.HumanPlayer;
+import csc_cccix.geocracy.backend.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.TerritoryDetailViewModel;
 import csc_cccix.geocracy.backend.world.Territory;
@@ -30,38 +30,38 @@ public class SelectedTerritoryState extends IGameplayState {
 
         Log.i(TAG, "INIT STATE");
 
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(selectedTerritory);
-        SM.Game.getCameraController().targetTerritory(selectedTerritory);
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().selectTerritory(selectedTerritory);
+        SM.game.getCameraController().targetTerritory(selectedTerritory);
 
-        ViewModelProviders.of(SM.Game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
+        ViewModelProviders.of(SM.game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
 
-        SM.Game.getActivity().runOnUiThread(() -> {
+        SM.game.getActivity().runOnUiThread(() -> {
 
-            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
-            SM.Game.UI.hideAllGameInteractionButtons();
+            SM.game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
+            SM.game.UI.hideAllGameInteractionButtons();
 
-            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-                SM.Game.UI.getEndTurnButton().show();
-                SM.Game.UI.getCancelBtn().show();
+            if (SM.game.getControllingPlayer() instanceof HumanPlayer) {
+                SM.game.UI.getEndTurnButton().show();
+                SM.game.UI.getCancelBtn().show();
 
                 // If current player is the owner of selected territory
-                if (selectedTerritory.getOwner().getId() == SM.Game.getGameData().getCurrentPlayer().getId()) {
+                if (selectedTerritory.getOwner().getId() == SM.game.getGameData().getCurrentPlayer().getId()) {
 
                     // If the territory contains enough units to perform an attack
                     if (selectedTerritory.getNArmies() >= 2) {
-                        SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+                        SM.game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
 
                         // If the territory has adjacent friendly territories to fortify from
                         if (selectedTerritory.getAdjacentFriendlyTerritories() != null) {
-                            SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, true);
+                            SM.game.UI.setFortifyButtonVisibilityAndActiveState(true, true);
                         } else {
-                            SM.Game.UI.setFortifyButtonVisibilityAndActiveState(true, false);
+                            SM.game.UI.setFortifyButtonVisibilityAndActiveState(true, false);
                         }
 
                     } else {
-                        SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(false, false);
-                        SM.Game.UI.setFortifyButtonVisibilityAndActiveState(false, false);
+                        SM.game.UI.setAttackModeButtonVisibilityAndActiveState(false, false);
+                        SM.game.UI.setFortifyButtonVisibilityAndActiveState(false, false);
                     }
 
                 }
@@ -73,11 +73,11 @@ public class SelectedTerritoryState extends IGameplayState {
 
     @Override
     public void DeinitializeState() {
-        SM.Game.UI.removeActiveBottomPaneFragment();
-        SM.Game.getWorld().unhighlightTerritories();
+        SM.game.UI.removeActiveBottomPaneFragment();
+        SM.game.getWorld().unhighlightTerritories();
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
+        SM.game.getActivity().runOnUiThread(() -> {
+            SM.game.UI.hideAllGameInteractionButtons();
         });
     }
 
@@ -113,7 +113,7 @@ public class SelectedTerritoryState extends IGameplayState {
 
             case END_TURN_TAPPED:
                 Log.d(TAG, "PLAYER ENDED THEIR TURN");
-                SM.Game.nextPlayer();
+                SM.game.nextPlayer();
                 SM.Advance(new DefaultState(SM));
                 break;
 
@@ -124,4 +124,4 @@ public class SelectedTerritoryState extends IGameplayState {
 
         return false;
     }
-}
+}*/

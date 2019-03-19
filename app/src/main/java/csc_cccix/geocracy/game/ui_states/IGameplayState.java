@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
@@ -36,4 +36,4 @@ public abstract class IGameplayState extends IState {
         return false;
     }
 
-}
+}*/

@@ -1,13 +1,13 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import java.util.HashSet;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.TerritoryDetailFragment;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.Player;
 import csc_cccix.geocracy.game.view_models.TerritoryDetailViewModel;
 import csc_cccix.geocracy.backend.world.Territory;
 
@@ -31,8 +31,8 @@ public class DistributeTerritoriesState extends IGameplayState {
         Log.i(TAG, "INIT STATE");
         highlightUnoccupiedTerritories();
 
-        if (SM.Game.currentPlayerIsHuman()) {
-            SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
+        if (SM.game.currentPlayerIsHuman()) {
+            SM.game.Notifications.showSelectTerritoryToAcquireNotification();
         }
 
     }
@@ -40,9 +40,9 @@ public class DistributeTerritoriesState extends IGameplayState {
     @Override
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
-        SM.Game.setFirstPlayer();
-        SM.Game.UI.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() ->  SM.Game.UI.getConfirmButton().hide());
+        SM.game.setFirstPlayer();
+        SM.game.UI.removeActiveBottomPaneFragment();
+        SM.game.getActivity().runOnUiThread(() ->  SM.game.UI.getConfirmButton().hide());
     }
 
     @Override
@@ -58,8 +58,8 @@ public class DistributeTerritoriesState extends IGameplayState {
                     //illegal territory selection for setting up territories
                     if (selectedTerritory.getOwner() != null){
 
-                        if (SM.Game.currentPlayerIsHuman()) {
-                            SM.Game.Notifications.showTerritoryAlreadyAcquiredNotification();
+                        if (SM.game.currentPlayerIsHuman()) {
+                            SM.game.Notifications.showTerritoryAlreadyAcquiredNotification();
                         }
 
                     } else {
@@ -74,19 +74,19 @@ public class DistributeTerritoriesState extends IGameplayState {
 
                 if (event.payload != null) {
                     selectedTerritory = (Territory) event.payload;
-                    ViewModelProviders.of(SM.Game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
+                    ViewModelProviders.of(SM.game.getActivity()).get(TerritoryDetailViewModel.class).setSelectedTerritory(selectedTerritory);
 
-                    SM.Game.getWorld().selectTerritory(selectedTerritory);
-                    SM.Game.getWorld().unhighlightTerritories();
-                    SM.Game.getCameraController().targetTerritory(selectedTerritory);
-                    if (selectedTerritory.getOwner() == null && SM.Game.currentPlayerIsHuman()) {
-                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().show());
+                    SM.game.getWorld().selectTerritory(selectedTerritory);
+                    SM.game.getWorld().unhighlightTerritories();
+                    SM.game.getCameraController().targetTerritory(selectedTerritory);
+                    if (selectedTerritory.getOwner() == null && SM.game.currentPlayerIsHuman()) {
+                        SM.game.getActivity().runOnUiThread(() -> SM.game.UI.getConfirmButton().show());
                     } else {
-                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.getConfirmButton().hide());
+                        SM.game.getActivity().runOnUiThread(() -> SM.game.UI.getConfirmButton().hide());
                     }
 
-                    SM.Game.getActivity().runOnUiThread(() -> {
-                        SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
+                    SM.game.getActivity().runOnUiThread(() -> {
+                        SM.game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
                     });
 
                 }
@@ -96,10 +96,10 @@ public class DistributeTerritoriesState extends IGameplayState {
             case CANCEL_TAPPED:
 
                 selectedTerritory = null;
-                SM.Game.getWorld().unselectTerritory();
-                SM.Game.getActivity().runOnUiThread(() -> {
-                    SM.Game.UI.removeActiveBottomPaneFragment();
-                    SM.Game.UI.getConfirmButton().hide();
+                SM.game.getWorld().unselectTerritory();
+                SM.game.getActivity().runOnUiThread(() -> {
+                    SM.game.UI.removeActiveBottomPaneFragment();
+                    SM.game.UI.getConfirmButton().hide();
                 });
 
                 highlightUnoccupiedTerritories();
@@ -114,39 +114,39 @@ public class DistributeTerritoriesState extends IGameplayState {
     public void addToSelectedTerritoryUnitCount(int amount) {
 
         Log.i(TAG, "ADDING TERRITORY TO PLAYERS INITIAL TERRITORIES");
-        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
+        Player currentPlayer = SM.game.getGameData().getCurrentPlayer();
         selectedTerritory.setOwner(currentPlayer);
         selectedTerritory.setNArmies(amount);
         currentPlayer.addOrRemoveNArmies(1);
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
+        SM.game.getActivity().runOnUiThread(() -> {
+            SM.game.UI.showBottomPaneFragment(TerritoryDetailFragment.newInstance());
         });
 
         Log.i(TAG, currentPlayer.getName() + " ADDED " + selectedTerritory.getTerritoryName());
 
-        SM.Game.nextPlayer();
+        SM.game.nextPlayer();
 
         // If all territories occupied, exit state
-        if(SM.Game.getWorld().allTerritoriesOccupied()) {
+        if(SM.game.getWorld().allTerritoriesOccupied()) {
             SM.Advance(new PlaceReinforcementsState(SM));
 
         } else {
 
-            if (SM.Game.currentPlayerIsHuman()) {
-                SM.Game.Notifications.showSelectTerritoryToAcquireNotification();
+            if (SM.game.currentPlayerIsHuman()) {
+                SM.game.Notifications.showSelectTerritoryToAcquireNotification();
             }
 
-            SM.Game.getWorld().unhighlightTerritories();
-            SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
+            SM.game.getWorld().unhighlightTerritories();
+            SM.game.getWorld().highlightTerritories(new HashSet<>(SM.game.getWorld().getUnoccupiedTerritories()));
         }
 
     }
 
     private void highlightUnoccupiedTerritories() {
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().highlightTerritories(new HashSet<>(SM.Game.getWorld().getUnoccupiedTerritories()));
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().highlightTerritories(new HashSet<>(SM.game.getWorld().getUnoccupiedTerritories()));
     }
 
 
-}
+}*/

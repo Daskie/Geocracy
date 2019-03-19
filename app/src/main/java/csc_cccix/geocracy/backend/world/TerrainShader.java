@@ -2,7 +2,7 @@ package csc_cccix.geocracy.backend.world;
 
 import android.util.Log;
 
-import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.Player;
 import csc_cccix.geocracy.backend.graphics.Shader;
 import glm_.mat4x4.Mat4;
 import glm_.vec3.Vec3;

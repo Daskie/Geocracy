@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.backend.game.Game;
+import csc_cccix.geocracy.backend.Game;
 import csc_cccix.geocracy.backend.graphics.Camera;
 import csc_cccix.geocracy.backend.graphics.Mesh;
 import csc_cccix.geocracy.backend.graphics.MeshMaker;
@@ -38,7 +38,7 @@ public class ArmyRenderer {
             Log.e("", "Failed to load shader");
         }
         shader.setActive();
-        shader.setPlayerColors(world.game.getGameData().getPlayers());
+        shader.setPlayerColors(world.game.getPlayers());
 
         if (!mesh.load()) {
             Log.e("", "Failed to load mesh");

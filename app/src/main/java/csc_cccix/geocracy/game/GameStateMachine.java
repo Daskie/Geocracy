@@ -1,13 +1,11 @@
 package csc_cccix.geocracy.game;
 
-import java.util.LinkedList;
+/*import java.util.LinkedList;
 import java.util.List;
-
-import csc_cccix.geocracy.game.ui_states.DistributeTerritoriesState;
 
 public class GameStateMachine extends IStateMachine {
 
-    public GameStateMachine(csc_cccix.geocracy.backend.game.Game game) {
+    public GameStateMachine(csc_cccix.geocracy.backend.Game game) {
         super(game);
 
         // Create and link all the states here...
@@ -39,4 +37,4 @@ public class GameStateMachine extends IStateMachine {
         return false;
     }
 
-}
+}*/

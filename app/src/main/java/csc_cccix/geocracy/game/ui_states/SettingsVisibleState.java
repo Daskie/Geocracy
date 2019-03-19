@@ -1,9 +1,8 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import csc_cccix.geocracy.fragments.SettingsFragment;
-import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.game.IState;
 import csc_cccix.geocracy.game.IStateMachine;
 
@@ -25,13 +24,13 @@ public class SettingsVisibleState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.i(TAG, "INIT STATE");
-        SM.Game.UI.showOverlayFragment(new SettingsFragment());
+        SM.game.UI.showOverlayFragment(new SettingsFragment());
     }
 
     @Override
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
-        SM.Game.UI.removeOverlayFragment();
+        SM.game.UI.removeOverlayFragment();
     }
 
     @Override
@@ -44,4 +43,4 @@ public class SettingsVisibleState extends IGameplayState {
 
         return false;
     }
-}
+}*/

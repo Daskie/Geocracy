@@ -1,11 +1,11 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import csc_cccix.geocracy.fragments.DistributeTroopsDetailFragment;
-import csc_cccix.geocracy.backend.game.HumanPlayer;
+import csc_cccix.geocracy.backend.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
-import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.Player;
 import csc_cccix.geocracy.backend.world.Territory;
 
 public class PlaceReinforcementsState extends IGameplayState {
@@ -26,28 +26,28 @@ public class PlaceReinforcementsState extends IGameplayState {
     @Override
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
-        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
+        Player currentPlayer = SM.game.getGameData().getCurrentPlayer();
 
         // TODO: rename get game status (or make enum)
-        //  Out of Game Setup
-        if(SM.Game.getGameData().getGameStatus())
+        //  Out of game Setup
+        if(SM.game.getGameData().getGameStatus())
             currentPlayer.addOrRemoveNArmiesToPool(currentPlayer.getBonus());
         else {
-            for(Player player : SM.Game.getGameData().getPlayers())
-                player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)SM.Game.getWorld().getNTerritories() / (float)SM.Game.getGameData().getPlayers().length));
+            for(Player player : SM.game.getGameData().getPlayers())
+                player.addOrRemoveNArmiesToPool((int)Math.floor(3.0 * (float)SM.game.getWorld().getNTerritories() / (float)SM.game.getGameData().getPlayers().length));
         }
 
         Log.i(TAG, "" + currentPlayer.getArmyPool());
 
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().unselectTerritory();
-        SM.Game.getWorld().highlightTerritories(currentPlayer.getOwnedTerritories());
-        SM.Game.UI.hideAllGameInteractionButtons();
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().unselectTerritory();
+        SM.game.getWorld().highlightTerritories(currentPlayer.getOwnedTerritories());
+        SM.game.UI.hideAllGameInteractionButtons();
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
-            SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
-                SM.Game.UI.setUpdateUnitCountButtonsVisibility(false, false);
+            SM.game.getActivity().runOnUiThread(() -> {
+                SM.game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(null, currentPlayer));
+                SM.game.UI.setUpdateUnitCountButtonsVisibility(false, false);
             });
 
         }
@@ -61,10 +61,10 @@ public class PlaceReinforcementsState extends IGameplayState {
     public void DeinitializeState() {
         Log.d(TAG, "DEINIT STATE");
 
-        SM.Game.setFirstPlayer();
+        SM.game.setFirstPlayer();
 
-        SM.Game.UI.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
+        SM.game.UI.removeActiveBottomPaneFragment();
+        SM.game.getActivity().runOnUiThread(() -> SM.game.UI.hideAllGameInteractionButtons());
     }
 
     @Override
@@ -79,20 +79,20 @@ public class PlaceReinforcementsState extends IGameplayState {
                     selectedTerritory = (Territory) event.payload;
 
                     // Show changes only for human player
-                    if (SM.Game.getGameData().getCurrentPlayer().getClass() == HumanPlayer.class) {
+                    if (SM.game.getGameData().getCurrentPlayer().getClass() == HumanPlayer.class) {
 
-                        SM.Game.getWorld().selectTerritory(selectedTerritory);
-                        SM.Game.getWorld().targetTerritory(selectedTerritory);
-                        SM.Game.getCameraController().targetTerritory(selectedTerritory);
+                        SM.game.getWorld().selectTerritory(selectedTerritory);
+                        SM.game.getWorld().targetTerritory(selectedTerritory);
+                        SM.game.getCameraController().targetTerritory(selectedTerritory);
 
                         // If current player owns the selected territory
-                        if (selectedTerritory.getOwner() == SM.Game.getGameData().getCurrentPlayer()){
-                            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true, true));
-                            SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.Game.getGameData().getCurrentPlayer()));
+                        if (selectedTerritory.getOwner() == SM.game.getGameData().getCurrentPlayer()){
+                            SM.game.getActivity().runOnUiThread(() -> SM.game.UI.setUpdateUnitCountButtonsVisibility(true, true));
+                            SM.game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, SM.game.getGameData().getCurrentPlayer()));
                         } else {
-                            SM.Game.getActivity().runOnUiThread(() -> {
-                                SM.Game.UI.hideAllGameInteractionButtons();
-                                SM.Game.Notifications.showCannotAssignUnitsToAnothersTerritoryNotification();
+                            SM.game.getActivity().runOnUiThread(() -> {
+                                SM.game.UI.hideAllGameInteractionButtons();
+                                SM.game.Notifications.showCannotAssignUnitsToAnothersTerritoryNotification();
                             });
                         }
 
@@ -113,15 +113,15 @@ public class PlaceReinforcementsState extends IGameplayState {
             case CONFIRM_TAPPED:
 
                 // Verify player has placed all their reinforcements
-                if (SM.Game.getGameData().getCurrentPlayer().getArmyPool() <= 0) {
-                    SM.Game.UI.removeActiveBottomPaneFragment();
+                if (SM.game.getGameData().getCurrentPlayer().getArmyPool() <= 0) {
+                    SM.game.UI.removeActiveBottomPaneFragment();
 
                     // Loop through next players
-                    SM.Game.nextPlayer();
-                    SM.Game.UI.hideAllGameInteractionButtons();
+                    SM.game.nextPlayer();
+                    SM.game.UI.hideAllGameInteractionButtons();
 
                     // If all players have placed reinforcements (is human players turn again)
-                    if(SM.Game.getGameData().getCurrentPlayer().getClass() == HumanPlayer.class) {
+                    if(SM.game.getGameData().getCurrentPlayer().getClass() == HumanPlayer.class) {
                         SM.Advance(new DefaultState(SM));
                     }
                 }
@@ -130,7 +130,7 @@ public class PlaceReinforcementsState extends IGameplayState {
 
             case CANCEL_TAPPED:
                 Log.d(TAG, "CANCELED!");
-                SM.Game.getWorld().unselectTerritory();
+                SM.game.getWorld().unselectTerritory();
                 selectedTerritory = null;
                 break;
 
@@ -140,19 +140,19 @@ public class PlaceReinforcementsState extends IGameplayState {
     }
 
     public void addToSelectedTerritoryUnitCount(int amount) {
-        Player currentPlayer = SM.Game.getGameData().getCurrentPlayer();
+        Player currentPlayer = SM.game.getGameData().getCurrentPlayer();
 
         if (selectedTerritory != null && selectedTerritory.getOwner() == currentPlayer) {
 
             if (currentPlayer.getArmyPool() - amount < 0) {
                 if (currentPlayer.getClass() == HumanPlayer.class) {
-                    SM.Game.Notifications.showInsufficentUnitPoolNotification();
+                    SM.game.Notifications.showInsufficentUnitPoolNotification();
                 }
                 return;
             }
             else if (amount < 0 && selectedTerritory.getNArmies() <= 1) {
                 if (currentPlayer.getClass() == HumanPlayer.class) {
-                    SM.Game.Notifications.showInsufficentTerritoryUnitsNotification();
+                    SM.game.Notifications.showInsufficentTerritoryUnitsNotification();
                 }
                 return;
             }
@@ -168,15 +168,15 @@ public class PlaceReinforcementsState extends IGameplayState {
         }
 
         if (currentPlayer.getClass() == HumanPlayer.class) {
-            if (SM.Game.getGameData().getCurrentPlayer().getArmyPool() <= 0) {
-                SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
+            if (SM.game.getGameData().getCurrentPlayer().getArmyPool() <= 0) {
+                SM.game.getActivity().runOnUiThread(() -> SM.game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
             } else {
-                SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, false));
+                SM.game.getActivity().runOnUiThread(() -> SM.game.UI.setConfirmButtonVisibilityAndActiveState(true, false));
             }
 
-            SM.Game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
+            SM.game.UI.showBottomPaneFragment(DistributeTroopsDetailFragment.newInstance(selectedTerritory, currentPlayer));
         }
 
     }
 
-}
+}*/

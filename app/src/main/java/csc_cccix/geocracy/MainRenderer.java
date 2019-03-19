@@ -1,4 +1,4 @@
-package csc_cccix.geocracy.backend.graphics;
+package csc_cccix.geocracy;
 
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -6,7 +6,6 @@ import android.util.Log;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.GameActivity;
 import glm_.vec2.Vec2i;
 

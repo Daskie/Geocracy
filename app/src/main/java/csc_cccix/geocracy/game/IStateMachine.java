@@ -1,19 +1,19 @@
 package csc_cccix.geocracy.game;
 
-import java.io.Serializable;
-
-import csc_cccix.geocracy.backend.game.Game;
+import csc_cccix.geocracy.backend.Game;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 
-public abstract class IStateMachine implements Serializable {
+public abstract class IStateMachine {
 
-    public csc_cccix.geocracy.backend.game.Game Game;
+    public csc_cccix.geocracy.backend.Game game;
+    public GameUI gameUI;
 
     public IState currentState;
     public IState previousState;
 
-    public IStateMachine(Game game) {
-        this.Game = game;
+    public IStateMachine(Game game, GameUI gameUI) {
+        this.game = game;
+        this.gameUI = gameUI;
     }
 
     public abstract IState CurrentState();

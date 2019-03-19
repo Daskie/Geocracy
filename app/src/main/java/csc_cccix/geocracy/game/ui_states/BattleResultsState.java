@@ -1,9 +1,8 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
-import csc_cccix.geocracy.fragments.BattleResultsFragment;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.BattleResultsViewModel;
 
@@ -41,25 +40,25 @@ public class BattleResultsState extends IGameplayState {
 
         }
 
-        ViewModelProviders.of(SM.Game.getActivity()).get(BattleResultsViewModel.class).setBattleResult(result);
+        ViewModelProviders.of(SM.game.getActivity()).get(BattleResultsViewModel.class).setBattleResult(result);
 
-        SM.Game.UI.showBottomPaneFragment(BattleResultsFragment.newInstance());
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(result.attackingTerritory);
-        SM.Game.getWorld().highlightTerritory(result.defendingTerritory);
-        SM.Game.getCameraController().targetTerritory(result.defendingTerritory);
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
+        SM.gameUI.showBottomPaneFragment(BattleResultsFragment.newInstance());
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().selectTerritory(result.attackingTerritory);
+        SM.game.getWorld().highlightTerritory(result.defendingTerritory);
+        SM.game.getCameraController().targetTerritory(result.defendingTerritory);
+        SM.game.getActivity().runOnUiThread(() -> SM.game.UI.hideAllGameInteractionButtons());
 
-        if (SM.Game.currentPlayerIsHuman()) {
-            SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
+        if (SM.game.currentPlayerIsHuman()) {
+            SM.game.getActivity().runOnUiThread(() -> SM.game.UI.setConfirmButtonVisibilityAndActiveState(true, true));
         }
 
     }
 
     @Override
     public void DeinitializeState() {
-        SM.Game.UI.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.hideAllGameInteractionButtons());
+        SM.game.UI.removeActiveBottomPaneFragment();
+        SM.game.getActivity().runOnUiThread(() -> SM.game.UI.hideAllGameInteractionButtons());
     }
 
     @Override
@@ -75,4 +74,4 @@ public class BattleResultsState extends IGameplayState {
 
         return false;
     }
-}
+}*/

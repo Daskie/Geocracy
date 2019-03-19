@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.fragments;
 
-import android.os.Bundle;
+/*import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.backend.game.Player;
+import csc_cccix.geocracy.backend.Player;
 import csc_cccix.geocracy.backend.world.Territory;
 
 public class DistributeTroopsDetailFragment extends Fragment {
@@ -43,4 +43,4 @@ public class DistributeTroopsDetailFragment extends Fragment {
 
         return view;
     }
-}
+}*/

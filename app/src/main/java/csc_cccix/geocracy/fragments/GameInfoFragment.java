@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.fragments;
 
-import android.os.Bundle;
+/*import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -56,4 +56,4 @@ public class GameInfoFragment extends Fragment {
         return new GameInfoFragment();
     }
 
-}
+}*/

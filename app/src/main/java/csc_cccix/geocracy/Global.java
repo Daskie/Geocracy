@@ -17,6 +17,7 @@ public class Global extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         application = this;
 
         if (LeakCanary.isInAnalyzerProcess(this)) return;

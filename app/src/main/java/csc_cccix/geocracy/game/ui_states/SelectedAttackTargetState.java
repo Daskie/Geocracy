@@ -1,10 +1,10 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.geocracy.fragments.troop_selection.AttackingTroopSelectionFragment;
-import csc_cccix.geocracy.backend.game.HumanPlayer;
+import csc_cccix.geocracy.backend.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.game.view_models.TroopSelectionViewModel;
 import csc_cccix.geocracy.backend.world.Territory;
@@ -33,23 +33,23 @@ public class SelectedAttackTargetState extends IGameplayState {
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
 
-        TroopSelectionViewModel viewModel = ViewModelProviders.of(SM.Game.getActivity()).get(TroopSelectionViewModel.class);
+        TroopSelectionViewModel viewModel = ViewModelProviders.of(SM.game.getActivity()).get(TroopSelectionViewModel.class);
         viewModel.setAttackingTerritory(attackingTerritory);
         viewModel.setDefendingTerritory(defendingTerritory);
 
         troopSelectionFragment = AttackingTroopSelectionFragment.newInstance();
-        SM.Game.UI.showBottomPaneFragment(troopSelectionFragment);
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(attackingTerritory);
-        SM.Game.getWorld().targetTerritory(defendingTerritory);
-        SM.Game.getCameraController().targetTerritory(defendingTerritory);
+        SM.game.UI.showBottomPaneFragment(troopSelectionFragment);
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().selectTerritory(attackingTerritory);
+        SM.game.getWorld().targetTerritory(defendingTerritory);
+        SM.game.getCameraController().targetTerritory(defendingTerritory);
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
-            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-                SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
-                SM.Game.UI.getConfirmButton().show();
-                SM.Game.UI.getCancelBtn().show();
+        SM.game.getActivity().runOnUiThread(() -> {
+            SM.game.UI.hideAllGameInteractionButtons();
+            if (SM.game.getControllingPlayer() instanceof HumanPlayer) {
+                SM.game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+                SM.game.UI.getConfirmButton().show();
+                SM.game.UI.getCancelBtn().show();
             }
         });
 
@@ -58,7 +58,7 @@ public class SelectedAttackTargetState extends IGameplayState {
     @Override
     public void DeinitializeState() {
         Log.d(TAG, "DEINIT STATE");
-        SM.Game.UI.removeActiveBottomPaneFragment();
+        SM.game.UI.removeActiveBottomPaneFragment();
     }
 
     @Override
@@ -96,4 +96,4 @@ public class SelectedAttackTargetState extends IGameplayState {
 
         return false;
     }
-}
+}*/

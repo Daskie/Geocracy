@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
 import csc_cccix.geocracy.fragments.FortifyTerritoryFragment;
 import csc_cccix.geocracy.game.IStateMachine;
@@ -28,19 +28,19 @@ public class FortifyTerritoryState extends IGameplayState {
 
         Log.i(TAG, "INIT STATE");
 
-        SM.Game.getWorld().unhighlightTerritories();
-        SM.Game.getWorld().selectTerritory(originTerritory);
-        SM.Game.getWorld().highlightTerritory(originTerritory);
+        SM.game.getWorld().unhighlightTerritories();
+        SM.game.getWorld().selectTerritory(originTerritory);
+        SM.game.getWorld().highlightTerritory(originTerritory);
 
         if (originTerritory.getAdjacentFriendlyTerritories() != null) {
-            SM.Game.getWorld().highlightTerritories(originTerritory.getAdjacentFriendlyTerritories());
+            SM.game.getWorld().highlightTerritories(originTerritory.getAdjacentFriendlyTerritories());
         }
 
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
+        SM.game.getActivity().runOnUiThread(() -> {
+            SM.gameUI.hideAllGameInteractionButtons();
 
-            if (SM.Game.currentPlayerIsHuman()) {
-                SM.Game.UI.getCancelBtn().show();
+            if (SM.game.currentPlayerIsHuman()) {
+                SM.gameUI.getCancelBtn().show();
             }
         });
 
@@ -50,9 +50,9 @@ public class FortifyTerritoryState extends IGameplayState {
     public void DeinitializeState() {
         Log.i(TAG, "DEINIT STATE");
 
-        SM.Game.UI.removeActiveBottomPaneFragment();
-        SM.Game.getActivity().runOnUiThread(() -> {
-            SM.Game.UI.hideAllGameInteractionButtons();
+        SM.gameUI.removeActiveBottomPaneFragment();
+        SM.game.getActivity().runOnUiThread(() -> {
+            SM.gameUI.hideAllGameInteractionButtons();
         });
     }
 
@@ -68,14 +68,14 @@ public class FortifyTerritoryState extends IGameplayState {
                     destinationTerritory = (Territory) event.payload;
 
                     // If current player owns the selected territory
-                    if (destinationTerritory.getOwner() == SM.Game.getGameData().getCurrentPlayer()){
-                        SM.Game.getWorld().selectTerritory(originTerritory);
-                        SM.Game.getWorld().targetTerritory(destinationTerritory);
-                        SM.Game.getCameraController().targetTerritory(destinationTerritory);
-                        SM.Game.getActivity().runOnUiThread(() -> SM.Game.UI.setUpdateUnitCountButtonsVisibility(true, true));
-                        SM.Game.UI.showBottomPaneFragment(FortifyTerritoryFragment.newInstance(originTerritory, destinationTerritory));
+                    if (destinationTerritory.getOwner() == SM.game.getGameData().getCurrentPlayer()){
+                        SM.game.getWorld().selectTerritory(originTerritory);
+                        SM.game.getWorld().targetTerritory(destinationTerritory);
+                        SM.game.getCameraController().targetTerritory(destinationTerritory);
+                        SM.game.getActivity().runOnUiThread(() -> SM.gameUI.setUpdateUnitCountButtonsVisibility(true, true));
+                        SM.gameUI.showBottomPaneFragment(FortifyTerritoryFragment.newInstance(originTerritory, destinationTerritory));
                     } else {
-                        SM.Game.Notifications.showCannotAssignUnitsToAnothersTerritoryNotification();
+                        SM.game.Notifications.showCannotAssignUnitsToAnothersTerritoryNotification();
                     }
 
                 }
@@ -91,7 +91,7 @@ public class FortifyTerritoryState extends IGameplayState {
                 break;
 
             case CONFIRM_TAPPED:
-                SM.Game.nextPlayer();
+                SM.game.nextPlayer();
                 SM.Advance(new DefaultState(SM));
                 break;
 
@@ -123,11 +123,11 @@ public class FortifyTerritoryState extends IGameplayState {
             }
         }
 
-        if (SM.Game.currentPlayerIsHuman()) {
-            SM.Game.getActivity().runOnUiThread(() -> {
-                SM.Game.UI.getConfirmButton().show();
-                SM.Game.UI.getCancelBtn().hide();
+        if (SM.game.currentPlayerIsHuman()) {
+            SM.game.getActivity().runOnUiThread(() -> {
+                SM.gameUI.getConfirmButton().show();
+                SM.gameUI.getCancelBtn().hide();
             });
         }
     }
-}
+}*/

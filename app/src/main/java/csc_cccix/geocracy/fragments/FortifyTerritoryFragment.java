@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.fragments;
 
-import android.os.Bundle;
+/*import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,41 +10,37 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import csc_cccix.R;
-import csc_cccix.geocracy.backend.world.Territory;
+import csc_cccix.geocracy.game.GameActivity;
 
 public class FortifyTerritoryFragment extends Fragment {
 
-    public static FortifyTerritoryFragment newInstance(Territory originTerritory, Territory targetTerritory) {
+    public static FortifyTerritoryFragment newInstance(int originTerritory, int targetTerritory) {
         FortifyTerritoryFragment newFragment = new FortifyTerritoryFragment();
         Bundle args = new Bundle();
-        args.putSerializable("originTerritory", originTerritory);
-        args.putSerializable("targetTerritory", targetTerritory);
+        args.putInt("originTerritoryId", originTerritory);
+        args.putInt("targetTerritoryId", targetTerritory);
         newFragment.setArguments(args);
         return newFragment;
     }
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fortify_territory, container, false);
 
-        Territory originTerritory = (Territory) getArguments().get("originTerritory");
-        Territory targetTerritory = (Territory) getArguments().get("targetTerritory");
+        GameActivity gameActivity = (GameActivity) getActivity();
+        Game game = gameActivity.game;
 
-        TextView originTerritoryID = view.findViewById(R.id.originTerritoryID);
-        originTerritoryID.setText("MOVE UNITS FROM: " + originTerritory.getTerritoryName());
+        Game.Territory originTerritory = game.territories.get(getArguments().getInt("originTerritoryId"));
+        Game.Territory targetTerritory = game.territories.get(getArguments().getInt("targetTerritoryId"));
 
-        TextView targetTerritoryID = view.findViewById(R.id.targetTerritoryID);
+        TextView originTerritoryText = view.findViewById(R.id.originTerritoryID);
+        originTerritoryText.setText("MOVE UNITS FROM: " + originTerritory.name);
 
-        if (targetTerritory != null) {
-            targetTerritoryID.setText("TO TERRITORY: " + targetTerritory.getTerritoryName());
-        } else {
-            targetTerritoryID.setText("SELECT A TARGET TERRITORY!");
-
-        }
+        TextView targetTerritoryText = view.findViewById(R.id.targetTerritoryID);
+        targetTerritoryText.setText("TO TERRITORY: " + targetTerritory.name);
 
         return view;
     }
 
-}
+}*/

@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.game.view_models;
 
-import android.app.Application;
+/*import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,4 +33,4 @@ public class TroopSelectionViewModel extends AndroidViewModel {
         return defendingTerritory;
     }
 
-}
+}*/

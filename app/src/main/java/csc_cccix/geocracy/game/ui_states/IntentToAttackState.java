@@ -1,8 +1,8 @@
 package csc_cccix.geocracy.game.ui_states;
 
-import android.util.Log;
+/*import android.util.Log;
 
-import csc_cccix.geocracy.backend.game.HumanPlayer;
+import csc_cccix.geocracy.backend.HumanPlayer;
 import csc_cccix.geocracy.game.IStateMachine;
 import csc_cccix.geocracy.backend.world.Territory;
 
@@ -26,15 +26,15 @@ public class IntentToAttackState extends IGameplayState {
     public void InitializeState() {
         Log.d(TAG, "INIT STATE");
 
-        SM.Game.getWorld().highlightTerritories(attackingTerritory.getAdjacentEnemyTerritories());
+        SM.game.getWorld().highlightTerritories(attackingTerritory.getAdjacentEnemyTerritories());
 
-        SM.Game.getActivity().runOnUiThread(() -> {
+        SM.game.getActivity().runOnUiThread(() -> {
 
-            SM.Game.UI.hideAllGameInteractionButtons();
+            SM.game.UI.hideAllGameInteractionButtons();
 
-            if (SM.Game.getControllingPlayer() instanceof HumanPlayer) {
-                    SM.Game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
-                    SM.Game.UI.getCancelBtn().show();
+            if (SM.game.getControllingPlayer() instanceof HumanPlayer) {
+                    SM.game.UI.setAttackModeButtonVisibilityAndActiveState(true, true);
+                    SM.game.UI.getCancelBtn().show();
             }
         });
 
@@ -81,4 +81,4 @@ public class IntentToAttackState extends IGameplayState {
 
         return false;
     }
-}
+}*/

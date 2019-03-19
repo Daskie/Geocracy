@@ -3,29 +3,28 @@ package csc_cccix.geocracy.game;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+
 import com.jakewharton.rxbinding2.view.RxView;
+
+import androidx.appcompat.app.AppCompatActivity;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.backend.game.Game;
-import csc_cccix.geocracy.game.ui_states.GameAction;
-import csc_cccix.geocracy.game.ui_states.GameEvent;
-import es.dmoral.toasty.Toasty;
+import csc_cccix.geocracy.backend.Game;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class GameActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = "GAME_ACTIVITY";
-    public static final transient String USER_ACTION = "USER_ACTION";
+    public static final String USER_ACTION = "USER_ACTION";
 
     public Game game;
+    public GameUI gameUI;
     private GameSurfaceView gameSurfaceView;
 
     public CompositeDisposable disposables;
@@ -50,43 +49,46 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         gameSurfaceView.getHolder().addCallback(this);
         gameSurfaceView.setActivity(this);
 
-        EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
+        //EventBus.subscribe("SAVE_GAME_EVENT", this, event -> handleSaveEvent((GameEvent) event));
 
         // Setup game
-        Boolean load = (Boolean)getIntent().getSerializableExtra("GAME_LOAD");
+        //Boolean load = (Boolean)getIntent().getSerializableExtra("GAME_LOAD");
         // Load game
-        if (load != null && load) {
-            game = Game.loadGame();
-            game.setupFromLoad(this);
-            if (game == null) {
-                Log.e("", "Failed to load game");
-                Util.exit();
-            }
-        }
+        //if (false && load != null && load) {
+        //    game = game.loadGame();
+        //    game.setupFromLoad(this);
+        //    if (game == null) {
+        //        Log.e("", "Failed to load game");
+        //        Util.exit();
+        //    }
+        //}
         // Start new game
-        else {
+        //else {
             String playerName = (String)getIntent().getSerializableExtra("PLAYER_NAME");
             int numPlayers = (int)getIntent().getSerializableExtra("NUM_PLAYERS");
             int mainPlayerColor = (int)getIntent().getSerializableExtra("MAIN_PLAYER_COLOR");
             long seed = (long)getIntent().getSerializableExtra(("SEED"));
             game = new Game(this, playerName, numPlayers, Util.colorToVec3(mainPlayerColor), seed);
-        }
+
+            gameUI = new GameUI(this, getSupportFragmentManager());
+            gameUI.showCurrentPlayerFragment();
+        //}
 
 //        game.UI.showOverlayFragment(new LoadingFragment());
 
     }
 
-    private void handleSaveEvent(GameEvent event) {
-        if (event.action == GameAction.SAVE_GAME_TAPPED) {
-            if (Game.saveGame(game)) {
-                runOnUiThread(() -> Toasty.info(this, "Game Saved!", Toast.LENGTH_LONG).show());
-            }
-            else {
-                Log.e("", "Failed to save game");
-                runOnUiThread(() -> Toasty.info(this, "Error saving game", Toast.LENGTH_LONG).show());
-            }
-        }
-    }
+    //private void handleSaveEvent(GameEvent event) {
+    //    if (event.action == GameAction.SAVE_GAME_TAPPED) {
+    //        if (game.saveGame(game)) {
+    //            runOnUiThread(() -> Toasty.info(this, "game Saved!", Toast.LENGTH_LONG).show());
+    //        }
+    //        else {
+    //            Log.e("", "Failed to save game");
+    //            runOnUiThread(() -> Toasty.info(this, "Error saving game", Toast.LENGTH_LONG).show());
+    //        }
+    //    }
+    //}
 
 
     @Override
@@ -118,7 +120,7 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 EventBus.publish("WORLD_TOUCH_EVENT", e);
             }
         }));
-        new Handler().postDelayed(game.UI::removeOverlayFragment, 4000);
+        new Handler().postDelayed(gameUI::removeOverlayFragment, 4000);
     }
 
     @Override
@@ -131,5 +133,18 @@ public class GameActivity extends AppCompatActivity implements SurfaceHolder.Cal
         // do nothing for now
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // TODO: all state needs to be stuffed in bundle
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // TODO: all state needs to be retrieved from bundle
+    }
 
 }

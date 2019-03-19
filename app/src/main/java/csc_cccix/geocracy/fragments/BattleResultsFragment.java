@@ -1,6 +1,6 @@
 package csc_cccix.geocracy.fragments;
 
-import android.os.Bundle;
+/*import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders;
 import csc_cccix.R;
 import csc_cccix.geocracy.Util;
 import csc_cccix.geocracy.game.view_models.BattleResultsViewModel;
-import csc_cccix.geocracy.backend.world.Territory;
 import glm_.vec3.Vec3;
 
 public class BattleResultsFragment extends Fragment {
@@ -57,4 +56,4 @@ public class BattleResultsFragment extends Fragment {
 
         return view;
     }
-}
+}*/

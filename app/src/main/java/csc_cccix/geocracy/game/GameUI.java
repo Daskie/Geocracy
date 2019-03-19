@@ -1,21 +1,22 @@
 package csc_cccix.geocracy.game;
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jakewharton.rxbinding2.view.RxView;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.fragments.CurrentPlayerFragment;
 import csc_cccix.geocracy.game.ui_states.GameAction;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 
-import static csc_cccix.geocracy.backend.game.Game.USER_ACTION;
+import static csc_cccix.geocracy.backend.Game.USER_ACTION;
 
 public class GameUI {
 
@@ -194,10 +195,10 @@ public class GameUI {
     }
 
     public void showCurrentPlayerFragment() {
-        if (activeCurrentPlayerFragment == null) activeCurrentPlayerFragment = CurrentPlayerFragment.newInstance();
-        FragmentTransaction ft = manager.beginTransaction();
-        ft.add(R.id.gameLayout, activeCurrentPlayerFragment);
-        ft.commit();
+        //if (activeCurrentPlayerFragment == null) activeCurrentPlayerFragment = CurrentPlayerFragment.newInstance();
+        //FragmentTransaction ft = manager.beginTransaction();
+        //ft.add(R.id.gameLayout, activeCurrentPlayerFragment);
+        //ft.commit();
     }
 
     public void setAttackModeButtonVisibilityAndActiveState(boolean isVisible, boolean isActive) {

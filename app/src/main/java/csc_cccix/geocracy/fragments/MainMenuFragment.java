@@ -2,9 +2,6 @@ package csc_cccix.geocracy.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,9 +12,11 @@ import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import csc_cccix.R;
 import csc_cccix.geocracy.EventBus;
-import csc_cccix.geocracy.backend.game.Game;
 import csc_cccix.geocracy.game.GameActivity;
 import csc_cccix.geocracy.main_menu.MenuActivity;
 import es.dmoral.toasty.Toasty;
@@ -25,7 +24,7 @@ import es.dmoral.toasty.Toasty;
 public class MainMenuFragment extends Fragment {
 
     Button continueButton;
-    Game loadedGame;
+    //Game loadedGame;
 
     @Nullable
     @Override
@@ -46,9 +45,9 @@ public class MainMenuFragment extends Fragment {
 
         continueButton = view.findViewById(R.id.continueButton);
 
-        if (Game.isSavedGame()) {
-            continueButton.setEnabled(true);
-        }
+        //if (Game.isSavedGame()) {
+        //    continueButton.setEnabled(true);
+        //}
 
         continueButton.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {

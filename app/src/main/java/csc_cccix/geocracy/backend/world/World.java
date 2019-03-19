@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,42 +13,38 @@ import java.util.Random;
 import java.util.Set;
 
 import csc_cccix.geocracy.Util;
-import csc_cccix.geocracy.backend.game.Game;
+import csc_cccix.geocracy.backend.Game;
 import csc_cccix.geocracy.backend.graphics.Camera;
 import csc_cccix.geocracy.backend.graphics.Mesh;
 import csc_cccix.geocracy.backend.graphics.MeshMaker;
 import glm_.vec3.Vec3;
 
-public class World implements Serializable {
-
-    private static final long serialVersionUID = 0L; // INCREMENT IF INSTANCE VARIABLES ARE CHANGED
+public class World {
 
     public static final int TESSELLATION_DEGREE = 5; // Should really not change
     private static final int MAX_N_TERRITORIES = 40; // Cannot be greater than 63
     private static final int MAX_N_CONTINENTS = 15; // Cannot be greater than 15
 
-    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
     Game game;
     private long seed;
     private Territory[] territories;
     private Continent[] continents;
-    // IF CHANGING INSTANCE VARIABLES, INCREMENT serialVersionUID !!!
 
-    private transient Terrain terrain;
-    private transient OceanRenderer oceanRenderer;
-    private transient Waterways waterways;
-    private transient ArmyRenderer armyRenderer;
-    private transient ArrowRenderer arrowRenderer;
-    private transient Territory selectedTerritory;
-    private transient Territory targetedTerritory;
-    private transient Set<Territory> highlightedTerritories;
-    private transient boolean selectionChange;
-    private transient boolean targetChange;
-    private transient boolean highlightChange;
-    private transient boolean ownershipChange;
-    private transient float[] ownershipChangeTimes;
-    private transient boolean isOwnershipChangeInProgress;
-    private transient boolean armyChange;
+    private Terrain terrain;
+    private OceanRenderer oceanRenderer;
+    private Waterways waterways;
+    private ArmyRenderer armyRenderer;
+    private ArrowRenderer arrowRenderer;
+    private Territory selectedTerritory;
+    private Territory targetedTerritory;
+    private Set<Territory> highlightedTerritories;
+    private boolean selectionChange;
+    private boolean targetChange;
+    private boolean highlightChange;
+    private boolean ownershipChange;
+    private float[] ownershipChangeTimes;
+    private boolean isOwnershipChangeInProgress;
+    private boolean armyChange;
 
     public World(Game game, long seed) {
         this.game = game;

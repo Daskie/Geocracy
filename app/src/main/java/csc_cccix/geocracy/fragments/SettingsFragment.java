@@ -1,9 +1,6 @@
 package csc_cccix.geocracy.fragments;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,15 +12,16 @@ import android.widget.SeekBar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxSeekBar;
 
-import java.io.Serializable;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import csc_cccix.R;
 import csc_cccix.geocracy.AudioService;
 import csc_cccix.geocracy.EventBus;
 import csc_cccix.geocracy.game.ui_states.GameAction;
 import csc_cccix.geocracy.game.ui_states.GameEvent;
 
-public class SettingsFragment extends Fragment implements Serializable {
+public class SettingsFragment extends Fragment {
 
     @Nullable
     @Override

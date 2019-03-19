@@ -1,11 +1,9 @@
-package csc_cccix.geocracy.backend.game;
+package csc_cccix.geocracy.backend;
 
-import java.util.ArrayList;
+/*import java.util.ArrayList;
 import java.util.Arrays;
 
 import androidx.lifecycle.ViewModelProviders;
-import csc_cccix.geocracy.backend.game.Game;
-import csc_cccix.geocracy.backend.game.Player;
 import csc_cccix.geocracy.game.view_models.GameInfoViewModel;
 import csc_cccix.geocracy.game.view_models.GameViewModel;
 
@@ -52,4 +50,4 @@ public class GameData {
         setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
     }
 
-}
+}*/

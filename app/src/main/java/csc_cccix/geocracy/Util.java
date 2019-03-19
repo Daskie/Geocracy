@@ -22,11 +22,9 @@ import glm_.vec4.Vec4;
 import static android.opengl.GLU.gluErrorString;
 import static glm_.Java.glm;
 
-public abstract class Util {
+public final class Util {
 
-    private Util() {
-
-    }
+    private Util() {}
 
     // For use with floating point comparisons
     public static final float EPSILON = 1e-6f;
